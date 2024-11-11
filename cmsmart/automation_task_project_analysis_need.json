@@ -1,0 +1,344 @@
+{
+  "name": "automation task project analysis need",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e483fa45-d010-4ce0-a342-0b0465423b23",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        480,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "={{ $runIndex+1 }}",
+        "additionalFields": {
+          "fromDate": "= {{ $today.set({ day: 1 }).minus({month : 0}).format('dd-MM-yyyy') }} ",
+          "toDate": "= {{ $today.set({ day: 1 }).plus({month :1}).minus({day : 0}).format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "1175544b-02b8-46bd-ba87-90b993fd3e76",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        860,
+        480
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "d63beef1-b68c-4d2b-a03f-f106144fecb6",
+      "name": "IF6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "57ffd6fc-4bc8-4fc3-a687-05da09ea3be0",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1340,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "b7b9f372-6fb8-475a-9acc-47939fd7cd8b",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        500
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a862481e-bd6a-4225-bbd7-85b55c0e7724",
+              "leftValue": "={{ $json.data.status.id }}",
+              "rightValue": "=7b3ae116-4093-4e7e-b7e1-c78792ba5160",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4e3721e8-68a6-41aa-887d-b133767ab32a",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=Hey {{ $('Cloodo CRM1').item.json.data.agent.name }}, , project analysis need - Proposal ",
+        "taskPriority": "high",
+        "start_date": "={{$today}}",
+        "due_date": "={{$today.plus({days:3})}}",
+        "users": "={{ $('Cloodo CRM1').item.json.data.agent.id }}",
+        "additionalFields": {
+          "ProjectID": "={{ $('Cloodo CRM1').item.json.data.project.id }}",
+          "taskDescription": "=Please assign this task to BA to request an official project analysis documentation before sending to client.\nPlease create a milestone to upload the BA documentation - SRS, SRD, Test Case...\nLink : <a href=\"https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Cloodo CRM1').item.json.data.id }}\">Click here</a><br>\nNote:\nIf you don't assign to other person, then you are the BA of this proposal \n ",
+          "taskCategoryId": "7114374e-0342-414e-b4dc-f4ae2d99c757",
+          "taskLabelId": "={{[\"afe2a56a-e333-4ab9-b731-22f16405cbbe\"]}}",
+          "estimate_hours": 8
+        },
+        "requestOptions": {}
+      },
+      "id": "63f614e8-3119-4a4a-b380-c0cf7a29279f",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        2560,
+        480
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "search": "=Hey {{ $('Cloodo CRM1').item.json.data.agent.name }}, please collect information about this Project "
+        },
+        "requestOptions": {}
+      },
+      "id": "772271e8-8716-4da8-ba55-6e727f64b223",
+      "name": "Search task facebook",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        2140,
+        500
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.total }}",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "154d6b24-1318-4c05-a313-793c0fd14d72",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 20
+            }
+          ]
+        }
+      },
+      "id": "ab67ab9b-09da-4731-92e8-37e49afa9247",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        640,
+        320
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "IF6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF6": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search task facebook": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "48137352-ce37-4b70-9c91-af1158c28ebc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "z1ljRQu2mrC7mwOa",
+  "tags": []
+}

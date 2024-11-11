@@ -1,0 +1,890 @@
+{
+  "name": "New Stores Chat and Email",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "fbebab3c-28c9-4377-98a0-5552eda0a96b",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a5646e93-98d6-4ca1-b489-e30cece704a7",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a1c753ad-aef4-41ee-b3b4-9942edd15783",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1400,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1740228309,
+          "mode": "list",
+          "cachedResultName": "NewCustomer",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=1740228309"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Id": "={{ $json.uuid }}",
+            "Status": "send"
+          },
+          "matchingColumns": [
+            "Id"
+          ],
+          "schema": [
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "StoreName",
+              "displayName": "StoreName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "User_Id",
+              "displayName": "User_Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Shop_url",
+              "displayName": "Shop_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Integration",
+              "displayName": "Integration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "140d3228-40b3-410a-8fe8-5e19fe15aaf8",
+      "name": "Save to google sheet1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2600,
+        40
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "6de431a2-849a-432c-a59c-110cce74cb28",
+      "name": "No Operation, do nothing1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "messageImport": "=Hi {{ $json.name }}, welcome to Printcart Dashboard.\n<br> I am David, Admin of Printcart Dashboard, and I would like to say hello and open a chat connection to receive any feedback and support request from you any time.<br>\nI using this workchat to inform you some updates about your stores operations as well as giving some more tips and tutorials. You can chat with me here and I will reply back as soon as possiple.<br>\nPlease also do not hesitate to send email to me at ceo@printcart.com<br>\nThanks<br>\nDavid",
+        "userId": "={{ $json.id }}"
+      },
+      "id": "acc7dcc1-8745-4a2f-bfbc-efe1955cb58c",
+      "name": "Workchat",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        2580,
+        -220
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "vmWmvYNeiMEbsF91",
+          "name": "Workchat Token account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = items[0].json;\nreturn item;"
+      },
+      "id": "4341d818-ae25-469d-b34b-0742081aec3d",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.id = null;\n}\n\nreturn $input.all();"
+      },
+      "id": "67c5dfb2-62e3-4c5b-bd60-0e1fc955891a",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1880,
+        -380
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter out items with id = null\nconst itemsWithId = items.filter(item => item.json.id !== null);\n\n// Extract id from the first item with id\nconst idToCombine = itemsWithId.length > 0 ? itemsWithId[0].json.id : null;\n\n// Combine id with other items\nconst combinedItems = items.map(item => {\n    if (item.json.id === null) {\n        item.json.id = idToCombine;\n    }\n  \n    return item;\n});\n// Filter out items with only id\nconst filteredItems = combinedItems.filter(item => Object.keys(item.json).length > 1);\nreturn filteredItems;"
+      },
+      "id": "0ad59137-f9c9-4d4e-8700-de393f163942",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2320,
+        -60
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "4a769b38-6531-4762-8fe3-af0493957c70",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        2140,
+        -180
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "c36f6b63-41a0-4ee2-8bf5-5e785da4455d",
+      "name": "No Operation, do nothing2",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2820,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1740228309,
+          "mode": "list",
+          "cachedResultName": "NewCustomer",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=1740228309"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Id",
+              "lookupValue": "={{ $json.Id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "97bad70e-89d9-4d1c-af8a-0fb67feffe67",
+      "name": "Check exist",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        -120
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.email, u.name, s.store_name, s.uuid\nFROM users u\nJOIN stores s ON s.user_id = u.id\nWHERE s.id = '{{ $json.User_Id }}';",
+        "options": {}
+      },
+      "id": "7b7c67d6-2a6d-4d62-882c-234726767faa",
+      "name": "Get project information",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1700,
+        -380
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.id \nFROM users u \nWHERE u.email = '{{ $json.email }}';",
+        "options": {}
+      },
+      "id": "b52bb2bc-6caf-439f-ac0c-9eb75b306760",
+      "name": "Get user workchat Id",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1700,
+        -80
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "9e7b71a3-e7a9-4206-ac69-d19a814289c0",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -440,
+        -480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1740228309,
+          "mode": "list",
+          "cachedResultName": "NewCustomer",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=1740228309"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Id": "={{ $json.uuid }}",
+            "StoreName": "={{ $json.store_name }}",
+            "Date": "={{ $json.created_at }}",
+            "User_Id": "={{ $json.id }}",
+            "Shop_url": "={{ $json.shop_url }}",
+            "Integration": "={{ $json.integration }}"
+          },
+          "matchingColumns": [
+            "Id"
+          ],
+          "schema": [
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "StoreName",
+              "displayName": "StoreName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "User_Id",
+              "displayName": "User_Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Shop_url",
+              "displayName": "Shop_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Integration",
+              "displayName": "Integration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8db54332-b787-412e-a240-ca416afe27dd",
+      "name": "Get product today",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        80,
+        -120
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT s.*\nFROM stores s\nWHERE DATE(s.created_at) = CURDATE() ;\n",
+        "options": {}
+      },
+      "id": "d287207d-b348-4be6-a205-50b292b20a85",
+      "name": "Get User",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -180,
+        -120
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@printcart.com",
+        "toEmail": "={{ $json.email }}",
+        "subject": "You have a new order in Shopify through Printcart",
+        "html": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Printcart Welcome</title>\n    <style>\n        body {\n            background-color: #f4f4f9;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            height: 100vh;\n            margin: 0;\n            font-family: 'Helvetica Neue', Arial, sans-serif;\n            color: #333;\n            font-size: 18px;\n            line-height: 1.3;\n        }\n        .button {\n            padding: 10px 20px;\n            background-color: #007bff;\n            color: #fff;\n            text-decoration: none;\n            border-radius: 5px;\n            display: inline-block;\n            border: none;\n            cursor: pointer;\n            transition: background-color 0.3s ease, transform 0.3s ease;\n        }\n        .button:hover {\n            background-color: #0056b3;\n            transform: scale(1.05);\n        }\n        .center-container {\n            text-align: center;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            padding: 20px;\n            font-family: Arial, sans-serif;\n        }\n        footer {\n            background-color: #140c0c;\n            padding: 20px;\n            text-align: center;\n            font-size: 14px;\n            color: #eee7e7;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"content\">\n            Dear (Example),<br /><br />\n            Welcome to Printcart! We're thrilled to have you on board and excited to help you enhance your store's printing capabilities.<br /><br />\n            With Printcart, you can offer your customers a seamless and personalized printing experience, from custom business cards to unique promotional materials.<br /><br />\n            <input type=\"hidden\" id=\"userId\" value=\"2132132\">\n            <input type=\"hidden\" id=\"email\" value=\"hidsf21u@gmail.com\">\n            If you want to receive more notifications about your order, product, or design, please click the button below.<br /><br />\n            <div class=\"center-container\">\n                <button id=\"subscribeButton\" class=\"button\" onclick=\"subscribe()\">Subscribed</button><br /><br />\n            </div>\n            If you have any questions or need assistance, don't hesitate to reach out to our support team at <a href=\"mailto:support@printcart.com\">support@printcart.com</a>. We're here to help ensure a smooth printing process and a satisfied customer experience.<br /><br />\n            Thank you for using Printcart, and best wishes for a successful order fulfillment!<br /><br />\n            Warm regards,<br /><br />\n            Ryan D.G. (Mr.)<br />\n            Business & Project Consultant<br /><br />\n            Website: <a href=\"https://www.printcart.com\" style=\"color: #007bff\">www.printcart.com</a><br />\n            Skype: live:.cid.e5694f64b5c806f6<br />\n            WhatsApp: <a href=\"https://wa.me/84967319788\" style=\"color: #007bff\">https://wa.me/84967319788</a><br />\n            Facebook: <a href=\"https://www.facebook.com/printcart.webtoprint\" style=\"color: #007bff\">https://www.facebook.com/printcart.webtoprint</a><br /><br />\n        </div>\n        <footer>\n            &copy; Printcart is Web2Print and POD Platform backed by Netbase JSC. We are trusted by thousands of worldwide web-to-print partners since 2012.\n        </footer>\n    </div>\n\n    <script>\n        function subscribe() {\n            const userId = document.getElementById('userId').value;\n            const email = document.getElementById('email').value;\n\n            const data = {\n                userId: userId,\n                email: email\n            };\n\n            fetch('https://workflow.cloodo.com/webhook/2c266641-dc85-4413-95b8-c6eb3a6cd49c/webhook', {\n                method: 'POST',\n                headers: {\n                    'Content-Type': 'application/json'\n                },\n                body: JSON.stringify(data)\n            })\n            .then(response => response.json())\n            .then(data => {\n                alert('Subscription successful!');\n            })\n            .catch((error) => {\n                alert('Subscription successful!');\n            });\n        }\n    </script>\n</body>\n</html>\n",
+        "options": {
+          "ccEmail": "store@printcart.com"
+        }
+      },
+      "id": "58215f8e-db85-4e02-bf8b-3faa432f719e",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2040,
+        140
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "jL633h5uTtTsmeIc",
+          "name": "Printcart Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1740228309,
+          "mode": "list",
+          "cachedResultName": "NewCustomer",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=1740228309"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Id",
+              "lookupValue": "={{ $json.Id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "293ed72a-a716-43fb-95f6-cc189fd89a58",
+      "name": "Check exist1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        -140
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0",
+          "mode": "list",
+          "cachedResultName": "Check error account and subcribed/unsubscribed ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1885315609,
+          "mode": "list",
+          "cachedResultName": "Unsubscribed",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit#gid=1885315609"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Id",
+              "lookupValue": "={{ $json.User_Id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0e105c11-634a-4b12-95e2-b8d71c55bd92",
+      "name": "Google Sheets1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        -360
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "Id",
+              "field2": "User_Id"
+            }
+          ]
+        },
+        "joinMode": "keepNonMatches",
+        "options": {}
+      },
+      "id": "9afc864e-c133-422e-be2b-0c22f2535d20",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = items;\n\nconst outputData = inputData.filter(item => item.json.StoreName);\n\nreturn outputData;\n"
+      },
+      "id": "a6a21615-cfa7-4d5c-a4f4-bafd0a3c409f",
+      "name": "Code3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1160,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Disactive\n30/09/2024"
+      },
+      "id": "6c155644-568e-4e55-a244-1a3522d12e5c",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2560,
+        -440
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Get project information",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workchat": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Save to google sheet1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check exist": {
+      "main": [
+        [
+          {
+            "node": "Check exist1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get project information": {
+      "main": [
+        [
+          {
+            "node": "Get user workchat Id",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get user workchat Id": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get product today": {
+      "main": [
+        [
+          {
+            "node": "Check exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User": {
+      "main": [
+        [
+          {
+            "node": "Get product today",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Workchat",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save to google sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check exist1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8d9943a4-4ab5-47b3-8aee-22cb46f3daec",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "pQIzg93JJHJc3C2w",
+  "tags": []
+}

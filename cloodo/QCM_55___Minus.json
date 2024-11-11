@@ -1,0 +1,369 @@
+{
+  "name": "QCM 55 - Minus",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "ba8487ed-18fb-4847-a9a9-5bb7d2ed4f11",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "e15c2c90-6b77-4230-bad8-55905578fb79",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        160,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "ab81ed03-eecd-4a6a-b05a-4de8ec1d60b7",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -80,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "statusId": "808f256d-9914-42cd-b830-8bd1763cec8d",
+          "fromDate": "= {{ $today.set({ day: 1 }).plus({month : 0}).format('dd-MM-yyyy') }} ",
+          "toDate": "= {{ $today.set({ day: 1 }).plus({month :1}).minus({day :1}).format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "e00c1b9e-b9d1-4e11-8166-189008cea5bc",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05FYKF1SJU",
+          "mode": "list",
+          "cachedResultName": "cloodo-task"
+        },
+        "text": "=QCM55 {{ $('IF is not estimate + not KPI project').item.json.data.assigned_by.name }}: -1 point because the created Task does not have an estimated time. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF is not estimate + not KPI project').item.json.data.id }}",
+        "otherOptions": {}
+      },
+      "id": "1cb45632-dbad-4466-9b17-ede4a45fc6bc",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1260,
+        320
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 22,
+              "triggerAtMinute": 15
+            }
+          ]
+        }
+      },
+      "id": "5e1d357f-2b5d-416e-a2f7-344527bd6a27",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -700,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM55 {{ $('IF is not estimate + not KPI project').item.json.data.assigned_by.name }}: -1 point because the created Task does not have an estimated time. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF is not estimate + not KPI project').item.json.data.id }} ",
+        "max_limit_record": 50
+      },
+      "id": "d9ab5b7a-742b-45fa-92fb-ba84fc5f1840",
+      "name": "Cloodo Point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        620,
+        340
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.current_page }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "f0f98377-4840-461a-bb70-5eb3308a4afb",
+      "name": "Loop page",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "3fe4260e-fa08-4601-9405-5fc38e3970d7",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        840,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.data.estimate_hours }}",
+              "operation": "equal"
+            },
+            {
+              "value1": "={{ $json.data.estimate_minutes }}",
+              "operation": "equal"
+            }
+          ],
+          "string": [
+            {
+              "value1": "={{ $json.data.project.id }}",
+              "operation": "notEqual",
+              "value2": "50508bb2-c120-4bbc-8336-11938a90c6e8"
+            },
+            {
+              "value1": "={{ $json.data.assigned_by.id }}",
+              "operation": "notEqual",
+              "value2": "5b731bad-fc3a-4abd-b768-4a69da1df5ad"
+            },
+            {
+              "value1": "={{ $json.data.assigned_by.id }}",
+              "operation": "notEqual",
+              "value2": "2c991f1a-6665-4533-bfca-ac969f431eb2"
+            }
+          ]
+        }
+      },
+      "id": "25ccf0e3-ce1a-4811-beb2-c69d7631aa45",
+      "name": "IF is not estimate + not KPI project",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        380,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('IF is not estimate + not KPI project').item.json.data.assigned_by.id }}",
+        "points": 1,
+        "note": "=QCM55 {{ $('IF is not estimate + not KPI project').item.json.data.assigned_by.name }}: -1 point because the created Task does not have an estimated time. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF is not estimate + not KPI project').item.json.data.id }} "
+      },
+      "id": "4ca417e1-8924-484f-8bce-15ce8534db8f",
+      "name": "Cloodo Point2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        320
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "IF is not estimate + not KPI project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point1": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop page": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF is not estimate + not KPI project": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a928608d-a160-4644-b018-96cd17655764",
+  "meta": {
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "mTH9UKLTj3fXmMXO",
+  "tags": []
+}

@@ -1,0 +1,440 @@
+{
+  "name": "automation task changes proposal draft",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1fea9e47-8e87-44c7-8f35-b919906f5b6e",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        1060,
+        460
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "7bfa6558-e2e2-46a2-8f2c-1a21e2035cd0",
+      "name": "IF6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "420039a8-ab0d-4784-834a-248a7956da3e",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1700,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "236e8846-1c83-488d-a20f-24a065e00362",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1960,
+        600
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a862481e-bd6a-4225-bbd7-85b55c0e7724",
+              "leftValue": "={{ $json.data.status.id }}",
+              "rightValue": "=64dd83e9-f109-446b-95a0-1dc8d1dfb6b7",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "4d772ba6-a57f-4107-b69b-ab4ef282764f",
+              "leftValue": "={{ $json.data.agent }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "460e45c3-8f30-4c51-b4a2-67507a95e26e",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2200,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "d327d008-afb1-4323-b565-ece8b745a373",
+              "leftValue": "={{$today.minus({day :2})}}",
+              "rightValue": "={{ new Date($json.data.created_at).toDateTime() }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "beforeOrEquals"
+              }
+            },
+            {
+              "id": "8959b5d1-07ba-43d6-95c6-dc2da8890010",
+              "leftValue": "={{ new Date($json.data.created_at).toDateTime() }}",
+              "rightValue": "={{$today}}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "beforeOrEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "fe977804-7dc9-4d8e-87e5-349a4c2c238e",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2460,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "={{ $runIndex+1 }}",
+        "additionalFields": {
+          "fromDate": "= {{ $today.set({ day: 1 }).minus({month : 0}).format('dd-MM-yyyy') }} ",
+          "toDate": "= {{ $today.set({ day: 1 }).plus({month :1}).minus({day : 0}).format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "07e552ae-8fdc-4500-b952-35e65f483e18",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        560
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=hey {{ $('If1').item.json.data.agent.name }}, you have a proposal draft. Please change status ",
+        "start_date": "={{$today.minus({day:1})}}",
+        "due_date": "={{ $('If1').item.json.data.created_at.toDateTime().plus({day:3}) }}",
+        "users": "={{ $('If1').item.json.data.agent.id }}",
+        "additionalFields": {
+          "ProjectID": "={{ $('If1').item.json.data.project.id }}",
+          "taskDescription": "=You have a proposal draft, please change its status or you will be fined according to the company's qcm\nLink : <a href=\"https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('If1').item.json.data.id }}\">Click here</a><br> ",
+          "estimate_hours": 8
+        },
+        "requestOptions": {}
+      },
+      "id": "91ba1d6e-f485-4d05-a239-0ec7d8dfc347",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3140,
+        400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "search": "=hey {{ $json.data.agent.name }}, you have a proposal draft. Please change status "
+        },
+        "requestOptions": {}
+      },
+      "id": "d81d82d4-20b3-461e-83d5-8da98fc6855c",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        2680,
+        480
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "819eab62-5164-49e5-be5c-ade3048e1a2a",
+              "leftValue": "={{ $json.meta.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b276ea93-8864-4bc4-82e7-0588247bebfc",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2900,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "id": "f920f638-af70-4e5f-a053-dbefc8f1686b",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "update",
+        "ID": "={{ $('Cloodo CRM1').item.json.data.id }}",
+        "additionalFields": {
+          "agent_id": "={{ $json.data.agent.user.id }}",
+          "status": "draft"
+        },
+        "requestOptions": {}
+      },
+      "id": "45b0e671-5a28-4ab8-a161-bb31ac067b85",
+      "name": "Cloodo CRM3",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3520,
+        560
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "IF6": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM2": {
+      "main": [
+        [
+          {
+            "node": "IF6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1bfc3603-2f6c-4b1a-af07-3161b2160c1e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "AwhktRTT7DNPSDGz",
+  "tags": []
+}

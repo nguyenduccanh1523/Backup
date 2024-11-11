@@ -1,0 +1,2211 @@
+{
+  "name": "QCM55 69 70",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "7329aae9-245c-482e-a131-1d6ea0c0454b",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        700,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "page": "={{ $runIndex+1 }}",
+        "additionalFields": {
+          "fromDate": "= {{ $today.set({ day: 27 }).minus({month : 0}).format('yyyy-MM-dd') }} ",
+          "toDate": "= {{ $today.set({ day: 1 }).plus({month :1}).minus({day : 1}).format('yyyy-MM-dd') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "f847fcdf-544b-4ea8-8769-f7eb04072b11",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "8d62957d-2cf9-494a-9073-5e289b17c1bc",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1460,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "fbaf33d5-aef5-4dae-9c9c-d752207dd815",
+      "name": "IF6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "ac39c482-21f9-4f4d-a789-4fd37935ff71",
+              "leftValue": "={{ $json.data.category }}",
+              "rightValue": "2c991f1a-6665-4533-bfca-ac969f431eb2",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "92363054-a760-4e1a-a6ca-6ceee6095822",
+              "leftValue": "={{ $json.data.labels }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "e7fae8ec-43fb-446c-83a3-16335488d587",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2080,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "66c1bf8e-f1ec-4878-9ca5-8d151e72f3fb",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1820,
+        500
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "search": "=QCM70: Minus 1 point for Estimate time exceeds the specified level : <a href=\"https://worksuite.cloodo.com/apps/work/tasks/{{ $('Cloodo Project1').item.json.data.id }}\">Click here</a><br>  \nTable Estimate time:<a href=\"https://docs.google.com/spreadsheets/d/1gDjf1jpT7T6nfLRSD6gf0w5jpOsWVpYCZ2ySsxmODLg/edit#gid=0\">Click here</a><br>"
+        },
+        "requestOptions": {}
+      },
+      "id": "d391fdf6-9897-47dd-8b51-b985c5778995",
+      "name": "Search task facebook",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        5260,
+        1100
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.total }}",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "ee896c2d-7d66-4154-9c79-793baadd9382",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5700,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Cloodo Project1').item.json.data.assigned_by.id }}",
+        "points": 1,
+        "note": "=QCM70: Minus 1 point for Estimate time exceeds the specified level : <a href=\"https://worksuite.cloodo.com/apps/work/tasks/{{ $('Cloodo Project1').item.json.data.id }}\">Click here</a><br>  \nTable Estimate time:<a href=\"https://docs.google.com/spreadsheets/d/1gDjf1jpT7T6nfLRSD6gf0w5jpOsWVpYCZ2ySsxmODLg/edit#gid=0\">Click here</a><br>"
+      },
+      "id": "a9293252-8cd6-4610-9437-82dcabe40a3e",
+      "name": "QCM45",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        6140,
+        880
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "2d67b367-c5ca-4463-b512-fe448149b416",
+              "leftValue": "={{ $json.assigned_by.id }}",
+              "rightValue": "2c991f1a-6665-4533-bfca-ac969f431eb2",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c82744fb-1377-46ef-8c84-0585e8986d39",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1640,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "23990dff-64f4-42a1-a108-371fa9857a90",
+              "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+              "rightValue": "5cd1ae7b-83b0-4fb9-95e3-7d8e925d0a33",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3734ab89-88a4-4bd2-94cb-af52a04d2035",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2920,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "5fadbb30-fc93-404b-8450-08c1fc4759d6",
+              "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+              "rightValue": "72d5dae7-b40a-451b-a7d4-2a8cb9b718f1",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "acf21324-e1b6-4c82-ae0d-c3886b75abb5",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        3140,
+        1100
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "search": "=QCM69{{ $('Cloodo Project1').item.json.data.assigned_by.name }}: Minus 1 point for Task does not have Task category or Task label or incorrectly entered Task category or Task label : https://worksuite.cloodo.com/apps/work/tasks/{{ $('Cloodo Project1').item.json.data.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "244e810d-3abd-484f-b26f-721ae797b83d",
+      "name": "Search task facebook1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        4180,
+        1180
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.total }}",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "b0b31749-2588-4c74-ac82-6a61610ab32b",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5000,
+        1520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Cloodo Project1').item.json.data.assigned_by.id }}",
+        "points": 1,
+        "note": "=QCM69{{ $('Cloodo Project1').item.json.data.assigned_by.name }}: Minus 1 point for Task does not have Task category or Task label or incorrectly entered Task category or Task label : https://worksuite.cloodo.com/apps/work/tasks/{{ $('Cloodo Project1').item.json.data.id }}"
+      },
+      "id": "c7545873-4dea-4e82-b5ba-ba706b8b33ca",
+      "name": "QCM",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5260,
+        1400
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e782900d-0c87-4118-9a84-c3c5671dc957",
+              "leftValue": "={{ $('If').item.json.data.estimate_minutes }}",
+              "rightValue": 4,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "213078df-2ace-473c-91cc-3036dabb0194",
+      "name": "If5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        4080,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e782900d-0c87-4118-9a84-c3c5671dc957",
+              "leftValue": "={{ $('If').item.json.data.estimate_hours }}",
+              "rightValue": 24,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5415c223-eafd-4ba8-ad0d-ef816fb896c3",
+      "name": "If6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        4040,
+        2200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e782900d-0c87-4118-9a84-c3c5671dc957",
+              "leftValue": "={{ $('If').item.json.data.estimate_hours }}",
+              "rightValue": 4,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "198ca4ad-ee71-496f-b82d-1beff6657a6a",
+      "name": "If7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        3960,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e782900d-0c87-4118-9a84-c3c5671dc957",
+              "leftValue": "={{ $('If').item.json.data.estimate_hours }}",
+              "rightValue": 8,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "09d13ce5-8190-4aeb-b5af-a9c1fcdc6cdb",
+      "name": "If8",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        3960,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e782900d-0c87-4118-9a84-c3c5671dc957",
+              "leftValue": "={{ $('If').item.json.data.total_estimate }}",
+              "rightValue": 30,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b1e6f6c9-cb0d-4181-9ee5-7f13cc13469e",
+      "name": "If9",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        3960,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e782900d-0c87-4118-9a84-c3c5671dc957",
+              "leftValue": "={{ $('If').item.json.data.estimate_hours }}",
+              "rightValue": 2,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a9836f94-1bef-4a77-9c99-01f1861155c6",
+      "name": "If10",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        3900,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "9de25975-9473-41d0-bebd-331997b0616e",
+              "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+              "rightValue": "21e1670f-8a46-41bf-a840-c6557a500cb6",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "506f845b-4550-4ca9-9d67-f5fc3a8c8252",
+      "name": "If11",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        3320,
+        1780
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "02a6bb37-454f-40e4-a401-184d2280961d",
+              "leftValue": "={{ $('If').item.json.data.estimate_minutes }}",
+              "rightValue": 30,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c3a27061-64cd-4c7a-9537-776f95d3bd9e",
+      "name": "If12",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        4040,
+        1340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "439febe6-b085-4207-b67d-24c63565f009",
+              "leftValue": "={{ $('If').item.json.data.estimate_minutes }}",
+              "rightValue": 15,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4451e9f1-1742-46da-bea0-0b6cda9d2feb",
+      "name": "If13",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        4040,
+        1480
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "439febe6-b085-4207-b67d-24c63565f009",
+              "leftValue": "={{ $('If').item.json.data.estimate_minutes }}",
+              "rightValue": 15,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b2856f2f-b7f5-4511-adb5-0ac1efb9159e",
+      "name": "If14",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        4040,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "1b2e9f37-e741-4ce1-8c4c-ffbc28fdc978",
+              "leftValue": "={{ $('If').item.json.data.estimate_hours }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f906030b-888a-4fa6-810c-aa5204101576",
+      "name": "If15",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        4040,
+        1760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "1b2e9f37-e741-4ce1-8c4c-ffbc28fdc978",
+              "leftValue": "={{ $('If').item.json.data.estimate_hours }}",
+              "rightValue": 4,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b19037af-075f-444e-92d3-c218a047efcc",
+      "name": "If16",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        4040,
+        1900
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "1b2e9f37-e741-4ce1-8c4c-ffbc28fdc978",
+              "leftValue": "={{ $('If').item.json.data.estimate_hours }}",
+              "rightValue": 8,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "68816cb5-cfca-49d3-9f1e-239ec01bdfe4",
+      "name": "If17",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        4040,
+        2040
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 19
+            }
+          ]
+        }
+      },
+      "id": "6a4fe95f-e6f8-4e02-a3b1-f79f57990d9b",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        700,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "221d7c01-3e08-4dc6-8435-baee055c04bf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Writing Content"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "4c2c3d47-f001-4e37-b923-d9f516e568c3",
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "0cc24516-7299-44b6-9ca1-cf2050c91af6",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Social Promoting"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "af04823c-b8de-4919-a99a-57a8b310c4d9",
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "605f5817-7c14-4025-a224-d14cc174fe62",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Design"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "1afd0b07-eb54-4b36-a802-b8cee8b63ec5",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        3320,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "5cd1ae7b-83b0-4fb9-95e3-7d8e925d0a33",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "197a7137-4eed-4f61-85cb-850d3d5efb0e",
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "72d5dae7-b40a-451b-a7d4-2a8cb9b718f1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "c8fa3426-adb2-44e3-8b7f-7a9676fda291",
+      "name": "check label",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        3100,
+        1300
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "72d5dae7-b40a-451b-a7d4-2a8cb9b718f1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "eb7c3b03-fc69-4455-80c8-354c1bfa2607",
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "21e1670f-8a46-41bf-a840-c6557a500cb6",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "a632817c-c029-4c7c-a64e-9c54e36f7675",
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "6c8028d6-7612-4bfa-9e42-bb8e18fd2471",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "a0d68883-eadb-442c-829b-6504354a8092",
+      "name": "Switch2",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        2880,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('If').item.json.data.category.id }}",
+                    "rightValue": "fc140da4-bb6a-44f8-aaac-7c7607447537",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Testing and Handover"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "69737fb6-50a0-43bf-b554-d7a3a7ed3b7d",
+                    "leftValue": "={{ $('If').item.json.data.category.id }}",
+                    "rightValue": "7608c26a-5c91-4446-8f56-ba958d139ab6",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Client Engagement"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "601c9c32-b409-48f0-b919-1f717f326261",
+                    "leftValue": "={{ $('If').item.json.data.category.id }}",
+                    "rightValue": "6dae623e-6b93-4e9b-a1f7-172c240b0abe",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Research and Development"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "1d4f989e-e2a9-40e0-9e4b-2fa2c6b5acdf",
+                    "leftValue": "={{ $('If').item.json.data.category.id }}",
+                    "rightValue": "457ab05c-7d1b-485f-bc3a-05d9fcf8a4bb",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Communication and PR"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "18614abd-bdce-48a2-831b-59a5860e6b61",
+                    "leftValue": "={{ $('If').item.json.data.category.id }}",
+                    "rightValue": "7114374e-0342-414e-b4dc-f4ae2d99c757",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Client Projects"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "12e969ec-a97f-4340-ae5d-84250f5732e1",
+                    "leftValue": "={{ $('If').item.json.data.category.id }}",
+                    "rightValue": "0a2aae3b-2946-4ca5-8e1a-ce913b41ba8e",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "c1b7589a-dff7-416d-9a6d-86625db1982b",
+      "name": "check category1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        2280,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "15af5dd9-e64b-452a-99ef-6a5bf5b3d2c0",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Project Analysis"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "d66c5fef-70ce-4e2a-9f93-c9a0804373f3",
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "72d5dae7-b40a-451b-a7d4-2a8cb9b718f1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Bug Fixing"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "2f363b41-b1bc-445a-8834-8dad118638b7",
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "e947316f-0b9c-4c8d-85e7-756453484a9e",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Qualify Lead"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "6cfcf1e1-b12b-4ab2-ad04-91b86ca96fb4",
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "5cd1ae7b-83b0-4fb9-95e3-7d8e925d0a33",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "bc5c690a-0b38-45b7-a456-3bc6b854951f",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        3320,
+        2060
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.assigned_by.id }}",
+              "operation": "notEqual",
+              "value2": "5b731bad-fc3a-4abd-b768-4a69da1df5ad"
+            }
+          ]
+        }
+      },
+      "id": "fc7b76cc-9a50-4885-add9-930e17107263",
+      "name": "IF is not estimate + not KPI project",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM55 {{ $('IF is not estimate + not KPI project').item.json.data.assigned_by.name }}: -1 point because the created Task does not have an estimated time. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF is not estimate + not KPI project').item.json.data.id }} ",
+        "max_limit_record": 50
+      },
+      "id": "a2de31f6-5485-4523-9556-f037d4ce689c",
+      "name": "Cloodo Point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3160,
+        40
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "40c33325-ce49-433b-bb33-954246b76123",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3340,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('IF is not estimate + not KPI project').item.json.data.assigned_by.id }}",
+        "points": 1,
+        "note": "=QCM55 {{ $('IF is not estimate + not KPI project').item.json.data.assigned_by.name }}: -1 point because the created Task does not have an estimated time. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF is not estimate + not KPI project').item.json.data.id }} "
+      },
+      "id": "c77551ff-dfa8-4474-b1b8-d226def6e948",
+      "name": "Cloodo Point2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3540,
+        20
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a45318eb-7050-4c60-9f60-bd6a12b6514f",
+              "leftValue": "={{ $json.data.estimate }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "68132dab-1c42-4e14-a73d-039f8096ec3d",
+      "name": "If18",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2100,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "afe2a56a-e333-4ab9-b731-22f16405cbbe",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Preparing Proposal"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "30efd184-21fc-44a7-9793-a3aaccc2b342",
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "e947316f-0b9c-4c8d-85e7-756453484a9e",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Qualify Lead"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "1ca6ff8a-088c-4797-b43e-eeb0c6b3fa51",
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "6d088815-3ff9-49a7-ac31-fe11bc04f38b",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Ticket Support"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "cdb7572b-df5b-46a3-8aca-6d24844b7e05",
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "8532e892-e355-46d4-891b-db3a445e4d12",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Client Meeting"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "2f438708-0212-4e7c-9d5c-2ffa64bf5b4a",
+                    "leftValue": "={{ $('If').item.json.data.labels[0].id }}",
+                    "rightValue": "15af5dd9-e64b-452a-99ef-6a5bf5b3d2c0",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Project Analysis"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "8a3730f7-698a-46d6-ab65-6b2f0be87043",
+      "name": "check label1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        3280,
+        1540
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "IF6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF6": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Search task facebook1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "check category1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search task facebook": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search task facebook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "If10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search task facebook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search task facebook1": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If7": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If8": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If9": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If10": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If12": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If13": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If14": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If15": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If16": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If17": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If11": {
+      "main": [
+        [
+          {
+            "node": "If16",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search task facebook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "If16",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If16",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If16",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search task facebook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check label": {
+      "main": [
+        [
+          {
+            "node": "If12",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If12",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search task facebook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "QCM45",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "QCM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search task facebook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check category1": {
+      "main": [
+        [
+          {
+            "node": "check label",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "check label1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If11",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search task facebook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "If17",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If16",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If16",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search task facebook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF is not estimate + not KPI project": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point1": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If18": {
+      "main": [
+        [],
+        [
+          {
+            "node": "IF is not estimate + not KPI project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check label1": {
+      "main": [
+        [
+          {
+            "node": "If13",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If14",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If15",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If15",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If15",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search task facebook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ffb7dcc6-fd74-4b4d-b19e-7a35b121bb65",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "YDsoM1CJ6ESEGnm7",
+  "tags": []
+}

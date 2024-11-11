@@ -1,0 +1,340 @@
+{
+  "name": "QCM27",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "213278cc-e09a-46fd-ba10-a0822b7b3644",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1060,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "cad13c98-659e-4b66-a168-3cb0932da366",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -840,
+        620
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": 10
+            }
+          ]
+        }
+      },
+      "id": "327b43c4-b1da-4413-9607-ddcbdf47371a",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        620
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "de7b33b4-96b1-4c4f-bf25-e464d176ddc4",
+      "name": "No Operation, do nothing2",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        500,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.projects }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "e02643ad-fd2c-4efc-a1d7-eb0ce88c4acb",
+      "name": "IF Project empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.total }}",
+              "operation": "equal",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "fd3790f2-ed7f-44b9-bccf-5895f955d6c4",
+      "name": "IF Exists Project",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        240,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "update",
+        "ID": "={{ $('Engagement Item').item.json.id }}",
+        "additionalFields": {
+          "projectId": "={{ $json.data[0].id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "4493849b-ad98-4541-ab17-9d9a14e31086",
+      "name": "Update Engagement Project",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        520,
+        400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "additionalFields": {
+          "client_id": "={{ $json.requester.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "ea3b83fa-7237-42ff-b322-54a33026d909",
+      "name": "Filter Project by Client ID",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        0,
+        420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "7b49e619-961b-42fa-ba07-22f7dff3212c",
+      "name": "Engagement Item",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -400,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "53a8dce0-e984-4296-8183-f7d9c5d24a83",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1060,
+        420
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "03f05ada-e1ba-46fd-b765-dd607e32a00d",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        760,
+        400
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Engagement Item",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Project empty": {
+      "main": [
+        [
+          {
+            "node": "Filter Project by Client ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Exists Project": {
+      "main": [
+        [
+          {
+            "node": "Update Engagement Project",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Engagement Project": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Project by Client ID": {
+      "main": [
+        [
+          {
+            "node": "IF Exists Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Engagement Item": {
+      "main": [
+        [
+          {
+            "node": "IF Project empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e532b232-9188-4de7-9681-02fd8316c00c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "ZdF1cM8N08mveFET",
+  "tags": []
+}

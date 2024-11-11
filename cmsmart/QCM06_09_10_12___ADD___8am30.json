@@ -1,0 +1,733 @@
+{
+  "name": "QCM06 09 10 12 - ADD - 8am30",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "bf188af3-b278-455d-863f-b657b913d2be",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -920,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "75a25637-8613-43d4-ac52-8a1f93295f9b",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        120,
+        340
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "515ef730-7281-4784-8f49-7d329b108385",
+      "name": "IF6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "4166f9f3-b426-4151-a0d1-b5045952620a",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -100,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a862481e-bd6a-4225-bbd7-85b55c0e7724",
+              "leftValue": "={{ $json.data.status.id }}",
+              "rightValue": "=f48f9b26-0df1-45c1-a402-3d4d18671088",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "4d772ba6-a57f-4107-b69b-ab4ef282764f",
+              "leftValue": "={{ $json.data.agent }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2dcbfd35-121f-4641-af93-3c0d2e8c3f43",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -860,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "={{ $runIndex+1 }}",
+        "additionalFields": {
+          "fromDate": "= {{ $today.set({ day: 1 }).minus({month : 0}).format('dd-MM-yyyy') }} ",
+          "toDate": "= {{ $today.set({ day: 1 }).plus({month :1}).minus({day : 0}).format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "4ae2e846-c13a-405f-89b0-dc2e95ea01b7",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -580,
+        220
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM09 {{ $('Cloodo CRM').item.json.data.agent.name }}: Plus 6 point for proposal have Waiting status. \nLink: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Cloodo CRM').item.json.data.id }}",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "d9602c64-8486-433f-b1db-ed2af524e10f",
+      "name": "Cloodo Point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        320
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "0e23d638-b97c-4cdf-bf3f-af0b4db6929b",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Cloodo CRM').item.json.data.agent.id }}",
+        "points": 6,
+        "note": "=QCM09 {{ $('Cloodo CRM').item.json.data.agent.name }}: Plus 6 point for proposal have Waiting status. \nLink: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Cloodo CRM').item.json.data.id }}"
+      },
+      "id": "6ba2e699-cc62-455f-a28c-b4153f5202f6",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        300
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM10 {{ $('Cloodo CRM').item.json.data.agent.name }}: Plus 2 point for proposal have Analyzing status. \nLink: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Cloodo CRM').item.json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "3ff8967f-cb4d-482b-8186-97c2586eae08",
+      "name": "Cloodo Point2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        600
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "6d3a2dcb-af95-4cc6-8239-2cf5d2c943db",
+      "name": "IF not found1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Cloodo CRM').item.json.data.agent.id }}",
+        "points": 2,
+        "note": "=QCM10 {{ $('Cloodo CRM').item.json.data.agent.name }}: Plus 2 point for proposal have Analyzing status. \nLink: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Cloodo CRM').item.json.data.id }}"
+      },
+      "id": "5ea1a049-8e99-417a-9361-bab8ee10eecd",
+      "name": "Cloodo Point3",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        580
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "triggerAtHour": 8,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "6209f443-0492-4218-b412-e9d756795107",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1160,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.created_by.id }}",
+              "value2": "2c991f1a-6665-4533-bfca-ac969f431eb2"
+            }
+          ]
+        }
+      },
+      "id": "936f1347-b2d6-4d88-b43e-eab7e3518847",
+      "name": "IF not is Client and not create by admin",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Cloodo CRM').item.json.data.created_by.id }}",
+        "points": 2,
+        "note": "=QCM06 {{ $('Cloodo CRM').item.json.data.agent.name }} is rewarded with +2 points for creating new Proposal: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Cloodo CRM').item.json.data.id }}"
+      },
+      "id": "6210bd17-1cc1-4c94-a789-62e41db8bd4c",
+      "name": "QCM06",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        740
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM06 {{ $('Cloodo CRM').item.json.data.agent.name }} is rewarded with +2 points for creating new Proposal: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Cloodo CRM').item.json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "8cdeb524-d412-4d72-b522-6f39e981ee48",
+      "name": "Cloodo Point4",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        760
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "b3d333d5-be40-4cfd-a9c0-ce4d18356ebe",
+      "name": "IF not found2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM12 {{ $json.data.agent.name }} is rewarded with +4 points for Proposal/Estimate transitioning to the Contract Signed/Accepted status (close won): https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "f7fb57eb-e397-47b1-8628-1fd3f20b993a",
+      "name": "Cloodo Point5",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        1120
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "d7443eff-8510-47f3-b819-8a5446edc881",
+      "name": "IF not found3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Cloodo CRM').item.json.data.agent.id }}",
+        "points": 4,
+        "note": "=QCM12 {{ $('Cloodo CRM').item.json.data.agent.name }} is rewarded with +4 points for Proposal/Estimate transitioning to the Contract Signed/Accepted status (close won): https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Cloodo CRM').item.json.data.id }}"
+      },
+      "id": "8cc21211-ad33-47c8-8577-af068919972a",
+      "name": "Cloodo Point6",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        1100
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data.status.id }}",
+                    "rightValue": "=f48f9b26-0df1-45c1-a402-3d4d18671088",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "12079e4a-e3fd-4648-8955-b9670e702aac",
+                    "leftValue": "={{ $json.data.status.id }}",
+                    "rightValue": "7b3ae116-4093-4e7e-b7e1-c78792ba5160",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "b6758647-6a61-4c3e-88db-05edfefc9c0e",
+                    "leftValue": "={{ $json.data.status.id }}",
+                    "rightValue": "fc9899c9-915d-4f23-b4a0-312d8c966af2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "33ba85cd-4fa2-40ae-b387-c2ac37e36113",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        700,
+        480
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF6": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM2": {
+      "main": [
+        [
+          {
+            "node": "IF6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point1": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point2": {
+      "main": [
+        [
+          {
+            "node": "IF not found1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not is Client and not create by admin": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point4": {
+      "main": [
+        [
+          {
+            "node": "IF not found2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found2": {
+      "main": [
+        [
+          {
+            "node": "QCM06",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point5": {
+      "main": [
+        [
+          {
+            "node": "IF not found3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found3": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cloodo Point2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cloodo Point5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF not is Client and not create by admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2c579238-5912-48b2-b24f-3fffcf16cbb1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "GDkmpjQU7Uez8TF1",
+  "tags": []
+}

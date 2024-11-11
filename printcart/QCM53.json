@@ -1,0 +1,1080 @@
+{
+  "name": "QCM53",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM17 {{ $('Results1').item.json['Name assigned_to'] }}",
+        "max_limit_record": 50
+      },
+      "id": "88ab4d4e-b539-401f-a00b-422b204fe32e",
+      "name": "25",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        740,
+        540
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM19 {{ $('Results1').item.json['Name assigned_to'] }}",
+        "max_limit_record": 50
+      },
+      "id": "ecddc5ea-c900-4565-8e54-11bb63e9bb5e",
+      "name": "75",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        740,
+        960
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ parseInt($('Get a task').item.json.data.custom_fields_data[3].value) }}",
+              "value2": "={{ parseInt($('Get a task').item.json.data.custom_fields_data[2].value) }}"
+            }
+          ]
+        }
+      },
+      "id": "bab6db52-7036-4db8-80eb-7dcc3386b77a",
+      "name": "IF2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "8908f4cf-9d3c-4200-83fe-9e8f7b0a030c",
+      "name": "Get a task",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        760
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "  const textToCheck = $input.item.json.heading; \n\nlet obj = $input.item;\n\n  if (textToCheck.toLowerCase().includes('review')) {\n     obj.json.resust = 1;\n  }\n  else{\n    obj.json.resust = 0;\n  }\nreturn obj;"
+      },
+      "id": "b7268020-19fb-49e3-903c-757543cea68e",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -760,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "number": [
+            {
+              "name": "KPI Target",
+              "value": "={{ $('Get a task').item.json.data.custom_fields_data[2].value }}"
+            },
+            {
+              "name": "KPI Actual",
+              "value": "={{ $('Get a task').item.json.data.custom_fields_data[3].value }}"
+            },
+            {
+              "name": "ID assigned_to",
+              "value": "={{ $('Get a task').item.json.data.assigned_to[0].id }}"
+            },
+            {
+              "name": "KPI Bonus-Fined",
+              "value": "={{ $('Get a task').item.json.data.custom_fields_data[4].value }}"
+            },
+            {
+              "name": "Project ID",
+              "value": "={{ $json.data.project.id }}"
+            },
+            {
+              "name": "id Milestone",
+              "value": "={{ $json.data.id }}"
+            },
+            {
+              "name": "project id",
+              "value": "={{ $json.data.project.id }}"
+            },
+            {
+              "name": "ID assigned",
+              "value": "={{ $json.data.assigned_to[0].id }}"
+            }
+          ],
+          "string": [
+            {
+              "name": "=Name assigned_to",
+              "value": "={{ $('Get a task').item.json.data.assigned_to[0].name }}"
+            },
+            {
+              "name": "project_name",
+              "value": "={{ $json.data.project.project_name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4e9cc09e-d2e6-4f7a-a5cf-78b08c9fd53e",
+      "name": "Input data1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        100,
+        740
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "421956ab-3561-4ade-b35f-da4c28f2b6f6",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1720,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "additionalFields": {
+          "search": "=KPI Thang ",
+          "fromDate": "= {{ $today.set({ day: 1 }).format('dd-MM-yyyy') }} ",
+          "toDate": "={{ $today.set({ day: 1}).plus({ months: 1 }).minus({days: 1}).format('dd-MM-yyyy') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "06c0af0c-5a5b-451f-a0d6-a28d4e290292",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -1560,
+        820
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtDayOfMonth": "={{ $today.set({ day: 1 }).plus({ months: 1 }).minus({days: 1}).format('dd') }}",
+              "triggerAtHour": 22,
+              "triggerAtMinute": 25
+            },
+            {
+              "field": "months",
+              "triggerAtDayOfMonth": "={{ $today.set({ day: 1 }).plus({ months: 1 }).minus({days: 2}).format('dd') }}",
+              "triggerAtHour": 22,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "id": "23742392-4a4c-4d41-a9b4-e5a7235baf9b",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1760,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "3256ff5e-7b92-4f53-8a50-d7e30c222b29",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        -1200,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.task",
+        "options": {}
+      },
+      "id": "04df7181-c43c-4943-916d-5ff160900574",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        -920,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "Phat",
+              "value": "={{ ($json['KPI Target'] - $json['KPI Actual'] )* 10 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "44dd18c9-b6cc-43cc-9b3a-80bcfc694c46",
+      "name": "Results1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        280,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Results1').item.json['ID assigned_to'] }}",
+        "points": "={{ $('Item Lists4').item.json.point }}",
+        "note": "=QCM53 {{ $('Results1').item.json['Name assigned_to'] }} -{{ $('Item Lists4').item.json.point }} points for not reaching the review request target for the month will result in points being deducted based on milestones closed during the month "
+      },
+      "id": "23f73706-fd52-442e-865d-581a9830dbe1",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1720,
+        960
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Results1').item.json['ID assigned_to'] }}",
+        "points": "={{ $('Item Lists3').item.json.point }}",
+        "note": "=QCM53 {{ $('Results1').item.json['Name assigned_to'] }} -{{ $('Item Lists2').item.json.point }} points for not reaching the review request target for the month will result in points being deducted based on milestones closed during the month "
+      },
+      "id": "1605c85e-d2a7-48ec-9329-43f5660e8701",
+      "name": "Cloodo Point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        540
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $json['ID assigned_to'] }}",
+        "points": "={{ $json.Phat }}",
+        "note": "=QCM53 {{ $json['Name assigned_to'] }} -{{ $json.Phat }} points for asking for a lack of review"
+      },
+      "id": "714a052b-2ef4-4203-86c8-1540acef1584",
+      "name": "Cloodo Point2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        480,
+        740
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Results1').item.json['ID assigned_to'] }}",
+        "points": "={{ $('Item Lists3').item.json.point }}",
+        "note": "=QCM53 {{ $('Results1').item.json['Name assigned_to'] }} -{{ $('Item Lists3').item.json.point }} points for not reaching the review request target for the month will result in points being deducted based on milestones closed during the month "
+      },
+      "id": "3feaac81-ff90-4725-9c0a-dc6b935e4d47",
+      "name": "Cloodo Point3",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1720,
+        740
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "1b5eea70-91e5-435d-9e96-e100b7bc0a56",
+      "name": "IF not exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        980,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{parseInt($json.total_records)  }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "95c771ce-fc04-40f4-baf1-4ff44311f8b5",
+      "name": "IF not exists1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{parseInt($json.total_records)  }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "93af97b9-fb84-4a16-ad19-a1c355eb33b6",
+      "name": "IF not exists2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.resust }}",
+              "operation": "equal",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "7f475092-25cf-4fc6-9e29-ef133daf7d7b",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "1af5ecc4-12ab-4df1-a540-259dd8178576",
+      "name": "Item Lists2",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        1260,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ $json.created_at }}",
+              "value2": "= {{ $today.set({ day: 1 }).format('dd-MM-yyyy') }} "
+            }
+          ]
+        }
+      },
+      "id": "aaf3a460-0e11-412d-8d62-af8c65fbdace",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "daa2494f-51c1-4b59-9733-860d67cfcdef",
+      "name": "Item Lists3",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        1260,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ $json.created_at }}",
+              "value2": "= {{ $today.set({ day: 1 }).format('dd-MM-yyyy') }} "
+            }
+          ]
+        }
+      },
+      "id": "f8a7904f-323a-4d10-9990-fec3b6d485dc",
+      "name": "IF3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "33bfc096-2beb-4443-8ea4-bb7c279a1ca5",
+      "name": "Item Lists4",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        1260,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ $json.created_at }}",
+              "value2": "= {{ $today.set({ day: 1 }).format('dd-MM-yyyy') }} "
+            }
+          ]
+        }
+      },
+      "id": "57311cfe-b8ab-44b5-bf4e-58aeb89d5b71",
+      "name": "IF4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM18 {{ $('Results1').item.json['Name assigned_to'] }}",
+        "max_limit_record": 50
+      },
+      "id": "b1962ad9-d344-4460-a163-c99486b59a83",
+      "name": "-35",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        740,
+        740
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05FYKF1SJU",
+          "mode": "list",
+          "cachedResultName": "cloodo-task"
+        },
+        "text": "=QCM53 {{ $json['Name assigned_to'] }} -{{ $json.Phat }} points for asking for a lack of review",
+        "otherOptions": {}
+      },
+      "id": "96f096ee-9bcc-4368-a55f-dac498c13d14",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        400
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05FYKF1SJU",
+          "mode": "list",
+          "cachedResultName": "cloodo-task"
+        },
+        "text": "=QCM53 {{ $('Results1').item.json['Name assigned_to'] }} -{{ $('Item Lists2').item.json.point }} points for not reaching the review request target for the month will result in points being deducted based on milestones closed during the month ",
+        "otherOptions": {}
+      },
+      "id": "2b478442-d52d-4567-ba67-a23026022076",
+      "name": "Slack1",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1940,
+        540
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05FYKF1SJU",
+          "mode": "list",
+          "cachedResultName": "cloodo-task"
+        },
+        "text": "=QCM53 {{ $('Results1').item.json['Name assigned_to'] }} -{{ $('Item Lists3').item.json.point }} points for not reaching the review request target for the month will result in points being deducted based on milestones closed during the month ",
+        "otherOptions": {}
+      },
+      "id": "f242224d-7b4b-40b4-ab90-9faa2bd1d9e2",
+      "name": "Slack2",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1920,
+        740
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05FYKF1SJU",
+          "mode": "list",
+          "cachedResultName": "cloodo-task"
+        },
+        "text": "=QCM53 {{ $('Results1').item.json['Name assigned_to'] }} -{{ $('Item Lists4').item.json.point }} points for not reaching the review request target for the month will result in points being deducted based on milestones closed during the month ",
+        "otherOptions": {}
+      },
+      "id": "6e49185a-39eb-491e-a788-4194f117bc23",
+      "name": "Slack3",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1920,
+        960
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "2183b23b-1bc4-4e04-880e-c6af070a8ed7",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -1060,
+        600
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "14840ac4-3e5e-4dc3-aeaa-112447cb6b2e",
+              "leftValue": "={{ $json.data[0].status }}",
+              "rightValue": "complete",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0fba1343-a31b-43b1-a8f7-e043d3d3070d",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1380,
+        820
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "25": {
+      "main": [
+        [
+          {
+            "node": "IF not exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "75": {
+      "main": [
+        [
+          {
+            "node": "IF not exists2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF2": {
+      "main": [
+        [
+          {
+            "node": "Input data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a task": {
+      "main": [
+        [
+          {
+            "node": "IF2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input data1": {
+      "main": [
+        [
+          {
+            "node": "Results1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Results1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point": {
+      "main": [
+        [
+          {
+            "node": "Slack3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point1": {
+      "main": [
+        [
+          {
+            "node": "Slack1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point2": {
+      "main": [
+        [
+          {
+            "node": "25",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "-35",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "75",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point3": {
+      "main": [
+        [
+          {
+            "node": "Slack2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Item Lists2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Item Lists3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Item Lists4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Get a task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists2": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists3": {
+      "main": [
+        [
+          {
+            "node": "IF3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF3": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists4": {
+      "main": [
+        [
+          {
+            "node": "IF4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF4": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "-35": {
+      "main": [
+        [
+          {
+            "node": "IF not exists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "331ef79f-7f88-45bb-9c0b-57f8715bb506",
+  "meta": {
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "ppVBr7kOUytfl0K3",
+  "tags": []
+}

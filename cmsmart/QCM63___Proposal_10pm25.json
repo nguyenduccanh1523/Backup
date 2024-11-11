@@ -1,0 +1,241 @@
+{
+  "name": "QCM63 - Proposal 10pm25",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "db36674d-d5d3-4396-98a6-42bca4250798",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        760,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT proposals.id,proposals.status,proposals.uuid,proposals.created_at,agent_id,users.name,proposals.updated_at,users.uuid as useid FROM `proposals`\njoin users\non users.id=proposals.agent_id\nWHERE `company_id`=675\nAND (proposals.status_id = '672' or proposals.status = '671')\nAND proposals.deleted_at IS NULL\nORDER BY `proposals`.`updated_at` DESC",
+        "options": {}
+      },
+      "id": "3ea39f8b-7ad8-4cf8-86f5-9180986ab5b1",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        340
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "SJei6ksLjiCIXFRS",
+          "name": "Worksuite database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ $json.created_at }}",
+              "value2": "={{ $today.set({ day: 1 }).plus({ months: -1}).format('yyyy-MM-dd') }}"
+            },
+            {
+              "value1": "={{ $json.created_at }}",
+              "operation": "before",
+              "value2": "={{ $today.set({ day: 1 }).plus({ months: 0}).format('yyyy-MM-dd') }}"
+            }
+          ],
+          "number": [
+            {
+              "value1": "={{ $json.agent_id }}",
+              "operation": "notEqual",
+              "value2": 12546
+            }
+          ]
+        }
+      },
+      "id": "855d54c4-a100-4d4b-aee5-3fd9973863a9",
+      "name": "IF create this month2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM63: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $json.uuid }}",
+        "max_limit_record": 50
+      },
+      "id": "5af6d2e9-38ea-4acb-b916-8bba29ab83de",
+      "name": "search point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        320
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "9367bd4a-ea48-4141-8488-9ffa0093fbd3",
+      "name": "IF not found1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1640,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('IF create this month2').item.json.useid }}",
+        "points": 3,
+        "note": "=QCM63: {{ $('IF create this month2').item.json.name }} is rewarded with -3 points for Proposal/Estimate without changing the Acepted/Declined status within 30 days : https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('IF create this month2').item.json.uuid }} "
+      },
+      "id": "e52d77d8-0f9c-47cb-a28f-30e41549952c",
+      "name": "QCM12",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1900,
+        320
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtDayOfMonth": "={{ $today.set({ day: 1 }).plus({ months: 1 }).minus({days: 1}).format('dd') }}",
+              "triggerAtHour": 22,
+              "triggerAtMinute": 25
+            },
+            {
+              "field": "months",
+              "triggerAtDayOfMonth": "={{ $today.set({ day: 1 }).plus({ months: 1 }).minus({days: 2}).format('dd') }}",
+              "triggerAtHour": 22,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "id": "09fb4a2b-41ba-4268-aa00-5161c6afb370",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        780,
+        600
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "IF create this month2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF create this month2": {
+      "main": [
+        [
+          {
+            "node": "search point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search point": {
+      "main": [
+        [
+          {
+            "node": "IF not found1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "QCM12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1b7eff6f-4927-4a78-b03d-269ad4ba32ef",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "bhywJfWNYUufbTvP",
+  "tags": []
+}

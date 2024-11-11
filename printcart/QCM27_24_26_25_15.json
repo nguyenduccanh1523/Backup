@@ -1,0 +1,1079 @@
+{
+  "name": "QCM27-24-26-25-15",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "52172337-9d7f-44b0-acfa-c07395025b41",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        900,
+        940
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "1a2c6ada-efcf-4426-9053-287efd7ee5df",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1460,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.data.created_at }}",
+              "operation": "largerEqual",
+              "value2": "={{ $today.minus({day:1}) }}"
+            }
+          ]
+        }
+      },
+      "id": "4061b3a3-ee97-4992-80d4-569bd12388ba",
+      "name": "IF create Yesterday",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1900,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05PR7A8DKN",
+          "mode": "list",
+          "cachedResultName": "worksuite-point"
+        },
+        "text": "={{ $json.message }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "a3a31d0e-a0a6-4823-82fa-021db946e3fa",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        4240,
+        840
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23,
+              "triggerAtMinute": 20
+            }
+          ]
+        }
+      },
+      "id": "b0dd68fa-5029-4fb6-b9c8-3c7890d7a5ad",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        900,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.data[9].created_at }}",
+              "operation": "largerEqual",
+              "value2": "={{ $today.minus({day:1}) }}"
+            }
+          ]
+        }
+      },
+      "id": "94162bb7-638e-4dd3-a34c-4da61fb4dfab",
+      "name": "IF Loop",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        980
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "6ce09304-84af-43cb-b348-e9b9bf86db49",
+      "name": "End",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2560,
+        1320
+      ]
+    },
+    {
+      "parameters": {
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "258ebd64-6486-4b58-9a65-0e5493d212ed",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        840
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "80d9a8b7-6922-4f59-9176-4899c2872969",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        760
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.project_admin }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "c0be1b14-a01b-4de0-8721-7b9fd6db52c8",
+      "name": "IF Project Admin not Empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2180,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.data.members.length }}",
+              "operation": "equal",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "503ead22-d74a-48d9-a822-fdd102967e16",
+      "name": "IF Project Member is One",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2340,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "projectAdmin",
+        "ID": "={{ $json.data.id }}",
+        "project_admin_id": "={{ $json.data.members[0].id }}",
+        "requestOptions": {}
+      },
+      "id": "9de32ddf-746d-4ed0-822d-280dc1b92824",
+      "name": "Update Project Admin",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        2540,
+        920
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05PR7A8DKN",
+          "mode": "list",
+          "cachedResultName": "worksuite-point"
+        },
+        "text": "=xxx Project point error: Project have many members: https://worksuite.cloodo.com/work/project/{{ $('Item Lists').item.json.id }} ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "690d0108-8638-4a3b-85d7-e99a3eb24cf1",
+      "name": "Slack error log",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        2560,
+        1120
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.category }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "70164f9c-c989-478d-b43f-f6d03e46f8d9",
+      "name": "IF category not Empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2760,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.department }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "2ffb1fbd-b0ed-4b77-b794-141d00f28469",
+      "name": "IF Department not empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2940,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Cloodo Project1').item.json.data.client }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "9b7341d5-4f1f-4186-9d97-ec5d758eeafc",
+      "name": "IF Client Empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3140,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=category: https://worksuite.cloodo.com/work/project/{{ $('Item Lists').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "8d5369bf-3989-488d-ad4e-af4bcd9b2336",
+      "name": "Search point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3240,
+        1240
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=Department: https://worksuite.cloodo.com/work/project/{{ $('Item Lists').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "16f4af29-2260-4fec-9400-89873b8d480f",
+      "name": "Search point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3240,
+        1020
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "4c767057-7cb9-4215-bf66-b2ff52139943",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3460,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "7b064da0-11e9-4e99-b8bd-4e266398b179",
+      "name": "IF not found1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=Client: https://worksuite.cloodo.com/work/project/{{ $('Item Lists').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "59bc378e-363a-4b3d-a2ac-5a2ca4d47345",
+      "name": "Search point2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3400,
+        760
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "ad03efcf-9b4e-4d46-b7ab-047e109265fa",
+      "name": "IF not found2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3640,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT projects.id,projects.user_client_id,projects.project_admin,DATEDIFF(NOW(),projects.created_at) AS day_count,\nengagement.id AS engagement_id,engagement.subject,engagement.created_at AS engagement_created_at,custom_field_datas.value AS project_type FROM projects\nLEFT JOIN \n(\n    SELECT * FROM custom_field_datas\n    WHERE model=\"App\\\\Models\\\\Project\" AND custom_field_id=255    \n)\nAS custom_field_datas ON projects.id=custom_field_datas.model_id \nLEFT JOIN\n(\n    SELECT * FROM tickets\n    WHERE DATEDIFF(NOW(),created_at) <= 36 \n    ORDER BY tickets.created_at DESC\n)\nAS engagement ON projects.id = engagement.project_id\nWHERE projects.company_id = 2\nAND DATEDIFF(NOW(),projects.created_at) BETWEEN 31 AND 36 \nAND custom_field_datas.value NOT LIKE \"%Inactive%\"\nORDER BY projects.created_at DESC;",
+        "options": {}
+      },
+      "id": "1c9e9ca6-e9b6-40b6-ad03-d395d72757d9",
+      "name": "Select project created more than 30 days",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1160,
+        520
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "ID": "={{ $json.id }}",
+        "additionalFields": {
+          "custom_fields_data": "={\"project-type-1_256\":\"{{ $json.project_type }},Inactive\"} "
+        },
+        "requestOptions": {}
+      },
+      "id": "f3d920b3-0a5c-499c-a79c-46025ddf5778",
+      "name": "Update Project Inactive",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        500
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "update",
+        "ID": "={{ $('Select project created more than 30 days').item.json.client_id }}",
+        "additionalFields": {
+          "custom_fields_data": "{\"status-funnel_223\" :  \"6\"}"
+        },
+        "requestOptions": {}
+      },
+      "id": "4e8b6455-d675-44ae-924b-19422c2c4106",
+      "name": "Update Client Non-Active",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1860,
+        500
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.engagement_id }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "cfe576b4-5b3a-4a81-abbe-cb6ff3640384",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Update Project Inactive').item.json.data.project_admin }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "98129582-5da9-431b-a591-626fed18cec6",
+      "name": "IF Project admin is not empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $json.data.project_admin.id }}",
+        "points": 2,
+        "note": "=QCM15 {{ $json.data.project_admin.name }} is rewarded with +2 points for creating new Project: https://worksuite.cloodo.com/apps/work/project/{{ $('Item Lists').item.json.id }}  "
+      },
+      "id": "90946e72-3a94-4d2e-986d-98f2c1b2fbcb",
+      "name": "QCM15",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3660,
+        520
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $json.data.project_admin.id }}",
+        "points": 1,
+        "note": "=QCM25 {{ $json.data.project_admin.name }} was fined -1 point for creating a project without selecting a Client: https://worksuite.cloodo.com/apps/work/project/{{ $('Item Lists').item.json.id }}  "
+      },
+      "id": "fa3128f9-b1d2-444f-a08e-125410fa24b5",
+      "name": "QCM25",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3880,
+        760
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $json.data.project_admin.id }}",
+        "points": 1,
+        "note": "=QCM26 {{ $json.data.project_admin.name }} was fined -1 point for creating a project without selecting a Department: https://worksuite.cloodo.com/apps/work/project/{{ $('Item Lists').item.json.id }}  "
+      },
+      "id": "ece2123d-3d50-4eb3-897a-d137640ec7dd",
+      "name": "QCM26",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3660,
+        1000
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $json.data.project_admin.id }}",
+        "points": 1,
+        "note": "=QCM24 {{ $json.data.project_admin.name }} was fined -1 point for creating a project without selecting a category: https://worksuite.cloodo.com/apps/work/project/{{ $('Item Lists').item.json.id }}  "
+      },
+      "id": "f8ec4453-157d-478c-89b2-c4da90dfe428",
+      "name": "QCM24",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3680,
+        1220
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Update Project Inactive').item.json.data.project_admin.id }}",
+        "points": 5,
+        "note": "=QCM27 {{ $('Update Project Inactive').item.json.data.project_admin.name }} is penalized with a deduction of -5 points because, after 30 days of the new AM Care project, no engagement has been generated: https://worksuite.cloodo.com/apps/work/project/{{ $('Update Project Inactive').item.json.data.id }}"
+      },
+      "id": "df6de243-ddc9-48fd-958b-bb82431fbc8d",
+      "name": "QCM27",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2340,
+        480
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=Client: https://worksuite.cloodo.com/work/project/{{ $('Item Lists').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "c03572a7-2fbb-4e41-99e9-de311a84911d",
+      "name": "Search point3",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        520
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF create Yesterday": {
+      "main": [
+        [
+          {
+            "node": "IF Project Admin not Empty",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "End",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Loop": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "End",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "IF create Yesterday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Project Admin not Empty": {
+      "main": [
+        [
+          {
+            "node": "IF category not Empty",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IF Project Member is One",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Project Member is One": {
+      "main": [
+        [
+          {
+            "node": "Update Project Admin",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack error log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Project Admin": {
+      "main": [
+        [
+          {
+            "node": "IF category not Empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF category not Empty": {
+      "main": [
+        [
+          {
+            "node": "IF Department not empty",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Department not empty": {
+      "main": [
+        [
+          {
+            "node": "IF Client Empty",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Client Empty": {
+      "main": [
+        [
+          {
+            "node": "Search point3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search point2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point1": {
+      "main": [
+        [
+          {
+            "node": "IF not found1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "QCM24",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "QCM26",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point2": {
+      "main": [
+        [
+          {
+            "node": "IF not found2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found2": {
+      "main": [
+        [
+          {
+            "node": "QCM25",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select project created more than 30 days": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Project Inactive": {
+      "main": [
+        [
+          {
+            "node": "Update Client Non-Active",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Client Non-Active": {
+      "main": [
+        [
+          {
+            "node": "IF Project admin is not empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Update Project Inactive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Project admin is not empty": {
+      "main": [
+        [
+          {
+            "node": "QCM27",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM15": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM25": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM26": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM24": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point3": {
+      "main": [
+        [
+          {
+            "node": "QCM15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a31a2e8c-bcc1-421d-b16e-d0e11b125f7e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "BPazYNddj8eSpovd",
+  "tags": []
+}

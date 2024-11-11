@@ -1,0 +1,610 @@
+{
+  "name": "Auto Reply from Workchat",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "41117add-ddc2-40de-b2ec-38ca873e7016",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        400,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "hieudsgh@gmail.com",
+        "toEmail": "hieuproman123hp@gmail.com",
+        "subject": "Test",
+        "html": "<table style=\"margin: 0 auto;\" role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\">\n    <tbody>\n        <tr>\n            <td style=\"padding: 0 1rem 1rem 1rem; background-color: #fff;margin: 1rem 20rem;\">\n                <div style=\"text-align: center !important; margin: 1.5rem 0;\">\n                    <a href=\"https://www.printcart.com/\">\n                        <img src=\"https://d3fotnjj3t3w05.cloudfront.net/default/logo-printcart.jpg\" width=\"auth\" height=\"70px\" alt=\"PrintCart\">\n                    </a>\n                </div>\n\n                <h2>Reset your PrintCart password</h2>\n\n                <div style=\"border: rgb(212, 212, 212) 1px solid; border-radius: 8px;\">\n                    <p style=\"text-align: center; font-size: 14pt; font-weight: bold;\">PrintCart password reset</p>\n\n                    <p style=\"font-size: 13pt; margin: 1.5rem 0 0.5rem 2rem;\">\n                        We heard that you lost your PrintCart password. Sorry about that!\n                    </p>\n\n                    <p style=\"font-size: 13pt; margin: 1rem 0 0.5rem 2rem;\">\n                        But don’t worry! You can use the following button to reset your password:\n                    </p>\n\n                    <a href=\"{{$url_password_reset}}\" style=\"background-color: #28a745!important; color: #fff;text-decoration: none;\n                        font-weight: bold; line-height: 1.5; border-radius: 0.5em; display: flex; align-items: center; justify-content: center;\n                        margin: 1.8rem 32rem; border: 1px solid #28a745; padding: 10px; font-size: 13pt;\">\n                        Reset your password\n                    </a>\n                    <p style=\"font-size: 13pt; margin: 1rem 0 0.5rem 2rem;\">\n                        If you don’t use this link within 1 hours, it will expire. To get a new password reset link, visit:\n                        <a href=\"{{env('DASHBOARD_URL', 'https://dashboard.printcart.com')}}/password-reset\" style=\"color: #0366d6;text-decoration: none; \">\n                            Password Reset\n                        </a>\n                    </p>\n\n                    <p style=\"font-size: 13pt; margin: 1rem 0 0.5rem 2rem;\">\n                        Thanks,<br>The PrintCart Team\n                    </p>\n                </div>\n\n                <p style=\" font-size: 13pt; margin-bottom: 0.25rem; margin-top: 1.5rem; text-align: center; color: #6a737d!important;\">\n                    You're receiving this email because a password reset was requested for your account.\n                </p>\n            </td>\n        </tr>\n    </tbody>\n</table>\n",
+        "options": {}
+      },
+      "id": "877f6584-4539-4414-9d83-2e955285dd2c",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1120,
+        600
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "jL633h5uTtTsmeIc",
+          "name": "Printcart Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT user_one, user_id\nFROM user_chats\nWHERE DATE(created_at) = CURDATE();",
+        "options": {}
+      },
+      "id": "5028a8ab-0009-4b1e-8cbd-8a81d590b93e",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        320
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0",
+          "mode": "list",
+          "cachedResultName": "Check error account and auto answer ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1434967470,
+          "mode": "list",
+          "cachedResultName": "Auto answer",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit#gid=1434967470"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "userId": "={{ $json.id }}",
+            "name": "={{ $json.name }}"
+          },
+          "matchingColumns": [
+            "userId"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "userId",
+              "displayName": "userId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f36af344-6771-407b-95d5-db345a16f590",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1480,
+        280
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0",
+          "mode": "list",
+          "cachedResultName": "Check error account and auto answer ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1434967470,
+          "mode": "list",
+          "cachedResultName": "Auto answer",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit#gid=1434967470"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "=userId",
+              "lookupValue": "={{ $json.userId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4f7f7d2b-6c63-421c-94bf-ae525322155e",
+      "name": "Google Sheets1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1660,
+        280
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "0f6ad13b-eab3-4f6c-9463-546da0a4ce10",
+              "leftValue": "={{ $json.created_at }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "450bb5de-df22-43ff-beb6-db97b1308133",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "845a5a5e-9a0d-418e-81e7-b73befa64bd7",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1860,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "ac4f3d62-1fb3-4ab1-8109-1b84861e3e3e",
+              "leftValue": "={{ $json.user_one }}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8c5bf05e-f6dd-431b-ac97-8a7044af990c",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.name, u.id\nFROM users u\nWHERE u.id = '{{ $json.user_one }}';",
+        "options": {}
+      },
+      "id": "18744110-9732-43c9-8de5-07490a9cfad5",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1280,
+        280
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "messageImport": "=Hello {{ $json.name }}! Thank you for reaching out to us. We've received your message and will respond as soon as possible.\nFor faster assistance, you can contact us directly via WhatsApp: +84 97 356 87 56 or Skype: https://join.skype.com/invite/yhgM2jFutRxC.\nHave a great day!",
+        "userId": "={{ $json.userId }}"
+      },
+      "id": "1623a087-ca0c-42de-bcd1-db3f80a74220",
+      "name": "Workchat",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        2140,
+        60
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "vmWmvYNeiMEbsF91",
+          "name": "Workchat Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0",
+          "mode": "list",
+          "cachedResultName": "Check error account and auto answer ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1434967470,
+          "mode": "list",
+          "cachedResultName": "Auto answer",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit#gid=1434967470"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "userId": "={{ $json.userId }}",
+            "name": "={{ $json.name }}",
+            "created_at": "={{ $now.format('yyyy-MM-dd') }}",
+            "status": "sent"
+          },
+          "matchingColumns": [
+            "userId"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "userId",
+              "displayName": "userId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "566cc2a9-c750-4f1a-9ed3-f7717194937c",
+      "name": "Google Sheets2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2140,
+        260
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "0e887273-b1e9-404f-870d-e3d0c1fe0276",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM user_chats\nWHERE DATE(created_at) = CURDATE();",
+        "options": {}
+      },
+      "id": "7b91ee68-47a7-451f-9ee5-2cedd08207c7",
+      "name": "MySQL2",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1020,
+        40
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "ac4f3d62-1fb3-4ab1-8109-1b84861e3e3e",
+              "leftValue": "={{ $json.user_one }}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "bce59b82-6e07-4f56-8491-7724e036f639",
+              "leftValue": "={{ $json.user_id }}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "ed9bbf4c-b6f0-46b5-9127-26a2a0e3ee06",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        820,
+        320
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Workchat",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7fc8c177-52a8-4dec-ba32-a8c458a4738d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "b4VKGAL3Ow9xR4Pi",
+  "tags": []
+}

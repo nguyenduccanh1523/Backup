@@ -1,0 +1,840 @@
+{
+  "name": "WF06 - Create Proposal From Engagement",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b83484fb-6daf-4003-a1fa-4d87e7363518",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2320,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "cursor": "={{ $json.meta.next_cursor }}",
+        "additionalFields": {
+          "fromDate": "= {{ $today.set({ day: 1 }).minus({month : 0}).format('dd-MM-yyyy') }} ",
+          "toDate": "= {{ $today.set({ day: 1 }).plus({month :1}).minus({day : 0}).format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "0c9ae1bd-882c-4905-a50a-fbee1651ebe6",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -2020,
+        800
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.meta.next_cursor }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "80cd90fd-db37-484c-a377-4377d56852b5",
+      "name": "IF6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1780,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "80000939-20fe-4743-affe-cef95d118813",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -1760,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "65f5f00f-a98d-4776-84c6-b02690e9d766",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        760
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "id": "90b17103-dead-4eaf-8e00-41b933eb37c9",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2320,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "e668c040-3063-43a1-acc1-0b084a3db912",
+              "leftValue": "={{ $json.original.data.agent }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d420677b-7cc1-436e-8cd0-cae1d36bd609",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -580,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "12e6a45c-6267-4f7c-bf1e-c4a87660c25d",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "=5c7315ad-a173-4c3e-b3ff-6af13ee6c217",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "05090738-e5ae-457a-8af8-c3f7b8cfa24a",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "89050de5-8c35-4947-92d2-2c108b32aaa4",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "3dd6faea-88d9-49e8-a8b3-fd96d89594cd",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "6dc7b7c5-a130-4357-9d83-03030a8a134f",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "ff62b857-e9f1-42a0-af7d-831c6f865c8a",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "a7449e63-6ce3-4840-ab67-27298faf086f",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "83d831bc-e429-4a5d-9e12-08419b5b4dca",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "0c8ba87a-f6ae-44c2-9c4d-404c49ec255b",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "5d65b9f3-3027-498b-bffb-517fee0e224d",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "28cab752-15e1-433e-8abf-609fde9b5b7f",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "fc3fff50-6c1e-4d14-8e4f-d5b66b54429f",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "9546d9cc-0b9f-4c16-967d-c47b100bd206",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "cf9561a1-4344-4b8a-82f7-cab1e46532cd",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "344e6fd1-2512-463c-88c9-ddfbdee7cb8e",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "a381e86e-42c3-44b2-9841-ddac741a19c0",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "876abef0-244e-41da-8b21-311ff67d8b78",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "4116046f-0a85-47a7-93e6-26882305ef6f",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "6dca6729-7610-4c8c-bc4a-b4d5399e7ce0",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "12540958-9ec9-4ee4-a185-46bf801d6ec3",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1260,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "381b7d32-0268-49b9-acc8-b2333a663828",
+              "leftValue": "={{ $json.agent.id }}",
+              "rightValue": "={{ $json.create_by.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "08064878-c872-43e4-a036-6b5379fac133",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1520,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "93403279-6895-46b7-9f26-5a5e93493de9",
+              "leftValue": "={{ $json.meta.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "16f9bf74-75ef-4bf4-a196-fda3f62cfd29",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        740,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "listingleads",
+        "operation": "getmany",
+        "additionalFields": {
+          "searchLead": "={{ $json.original.data.requester.email }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "34384599-bd81-4138-9a1f-446ccdc7eb32",
+      "name": "Cloodo CRM4",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        0,
+        720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "278f5d46-4e4f-4da1-8c73-df5a82961490",
+              "leftValue": "={{ $json.original.data.requester.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "630b3ae3-3fb5-4ad8-9bd2-17f5b2a51a07",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "=",
+        "additionalFields": {
+          "ticketID": "={{ $('Cloodo CRM1').item.json.data.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "410ac7a9-1140-44fb-b83f-35dfce3de67d",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        500,
+        660
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "279aaa32-04b9-428e-af21-f03171e61bc5",
+              "leftValue": "={{ $json.data[0].id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "591539d8-08ab-4594-87d8-d41d686abd6b",
+      "name": "If5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "listingleads",
+        "operation": "Creat",
+        "email": "={{ $('If4').item.json.original.data.requester.email }}",
+        "name": "={{ $('If4').item.json.original.data.requester.name }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "30a2e709-8eff-4e53-837d-6ace2d1ba3ce",
+      "name": "Cloodo CRM5",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        520,
+        880
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "Creat",
+        "lead_id": "={{ $('If5').item.json.data[0].id }}",
+        "valid_till": "={{$today}}",
+        "sub_total": 0,
+        "total": 0,
+        "discount": 0,
+        "calculate_tax": "before_discount",
+        "additionalFields": {
+          "project_id": "={{ $('Cloodo CRM1').item.json.data.projects.id }}",
+          "agent_id": "={{ $('Cloodo CRM1').item.json.data.agent.user.id }}",
+          "ticket_id": "={{ $('Cloodo CRM1').item.json.data.id }}",
+          "descriptionP": "="
+        },
+        "requestOptions": {}
+      },
+      "id": "bccf00ef-9194-437d-86fb-f2767d8138a9",
+      "name": "Cloodo CRM3",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        980,
+        300
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4f6cd729-183c-439e-969a-ced76f039a4f",
+              "leftValue": "={{ $json.data.projects.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ee59303c-611e-4c1a-a1bc-17f867f3b00a",
+      "name": "If6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -820,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/proposals",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json, text/plain, */*"
+            },
+            {
+              "name": "accept-language",
+              "value": "en-US,en;q=0.9,vi;q=0.8,vi-VN;q=0.7,fr-FR;q=0.6,fr;q=0.5"
+            },
+            {
+              "name": "authorization",
+              "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3MzA3Nzk0OTAsImV4cCI6MTczMTY0MzQ5MCwibmJmIjoxNzMwNzc5NDkwLCJqdGkiOiJJZ1V2M3FhR0tqZDN2NWpTIiwic3ViIjoiNSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.10nJaCt_WsYvLFi-8DuvrodjEtb_LFhDHN4qNK94EsA"
+            },
+            {
+              "name": "dnt",
+              "value": "1"
+            },
+            {
+              "name": "origin",
+              "value": "https://worksuite.cloodo.com"
+            },
+            {
+              "name": "priority",
+              "value": "u=1, i"
+            },
+            {
+              "name": "referer",
+              "value": "https://worksuite.cloodo.com/"
+            },
+            {
+              "name": "sec-ch-ua",
+              "value": "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\""
+            },
+            {
+              "name": "sec-ch-ua-mobile",
+              "value": "?0"
+            },
+            {
+              "name": "sec-ch-ua-platform",
+              "value": "\"Windows\""
+            },
+            {
+              "name": "sec-fetch-dest",
+              "value": "empty"
+            },
+            {
+              "name": "sec-fetch-mode",
+              "value": "cors"
+            },
+            {
+              "name": "sec-fetch-site",
+              "value": "same-site"
+            },
+            {
+              "name": "user-agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_179928fdaa0b8079dca0a2d5c99c965c7c9b22a673e27e3977f0c6a06e799c4e"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"ticket_id\": \"{{ $('Cloodo CRM1').item.json.data.id }}\",\n    \"currency_id\": \"fc8ccb7f-26f1-4a95-ba91-177791deff17\",\n    \"lead_id\": \"{{ $('If5').item.json.data[0].id }}\",\n    \"discount\": \"0\",\n    \"discount_type\": \"percent\",\n    \"valid_till\": \"{{ $today.format('yyyy-MM-dd') }}\",\n    \"sub_total\": 0,\n    \"total\": 0,\n    \"status_id\": \"8f4d7b58-adbe-4ecc-910c-821c9b2b3bbf\",\n    \"description\": \"{{ $('If4').item.json.modifiedMessage }}\",\n    \"proposal_items\": [],\n    \"agent_id\": \"{{ $('Cloodo CRM1').item.json.data.agent.user.id }}\",\n    \"project_id\": \"{{ $('Cloodo CRM1').item.json.data.projects.id }}\",\n    \"milestone_items\": [],\n    \"calculate_tax\": \"before_discount\",\n    \"proposal_files\": []\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "ec63b1c1-6b94-4b87-a7d3-f529b1b36497",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let results = []; // Mảng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  const foundMessage = item?.json?.data?.reply?.message;\n\n  if (foundMessage) {\n    // Escape các dấu ngoặc kép và thay thế dòng mới bằng '\\n'\n    const escapedMessage = foundMessage\n      .replace(/\"/g, '\\\\\"') // Escape dấu ngoặc kép\n      .replace(/\\n/g, '\\\\n'); // Thay thế dòng mới\n\n    // Lưu trữ đối tượng gốc cùng với message đã sửa đổi\n    results.push({\n      original: item.json, // Lưu đối tượng gốc\n      modifiedMessage: escapedMessage // Lưu message đã sửa đổi\n    });\n  }\n}\n\nreturn results; // Trả về mảng kết quả"
+      },
+      "id": "d2229e00-9830-4dc1-a503-bdc4e39617ab",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -800,
+        760
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "IF6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF6": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM2": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM4": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cloodo CRM5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d6d52ca0-e62a-43a5-9eb1-c6b6b280ba3c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "JmZhN2mIg0giAzg9",
+  "tags": []
+}

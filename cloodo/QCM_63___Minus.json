@@ -1,0 +1,240 @@
+{
+  "name": "QCM 63 - Minus",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0447bb3e-15ae-4c48-8933-5b4135fe022f",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT proposals.id,proposals.status,proposals.uuid,proposals.created_at,agent_id,users.name,proposals.updated_at,users.uuid as useid FROM `proposals`\njoin users\non users.id=proposals.agent_id\nWHERE `company_id`=3\nAND (proposals.status_id = '10' or proposals.status = '12')\nAND proposals.deleted_at IS NULL\nORDER BY `proposals`.`updated_at` DESC;",
+        "options": {}
+      },
+      "id": "f63ead02-acef-4200-8730-372ca761c981",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -20,
+        480
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "FOooovKbaFTCSgRE",
+          "name": "Cloodo Admin read only"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ $json.created_at }}",
+              "value2": "={{ $today.set({ day: 1 }).plus({ months: -1}).format('yyyy-MM-dd') }}"
+            },
+            {
+              "value1": "={{ $json.created_at }}",
+              "operation": "before",
+              "value2": "={{ $today.set({ day: 1 }).plus({ months: 0}).format('yyyy-MM-dd') }}"
+            }
+          ],
+          "number": [
+            {
+              "value1": "={{ $json.agent_id }}",
+              "operation": "notEqual",
+              "value2": 12546
+            }
+          ]
+        }
+      },
+      "id": "e3a91f30-2b35-4ef4-8bf8-4b7a5986f6c0",
+      "name": "IF create this month2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        220,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM63: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $json.uuid }}",
+        "max_limit_record": 50
+      },
+      "id": "06c0178e-4584-4887-8c77-015252df2e1e",
+      "name": "search point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        460,
+        460
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "4e3880c9-936e-428b-8b15-56d3907c7554",
+      "name": "IF not found1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        660,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtDayOfMonth": "={{ $today.set({ day: 1 }).plus({ months: 1 }).minus({days: 1}).format('dd') }}",
+              "triggerAtHour": 22,
+              "triggerAtMinute": 25
+            },
+            {
+              "field": "months",
+              "triggerAtDayOfMonth": "={{ $today.set({ day: 1 }).plus({ months: 1 }).minus({days: 2}).format('dd') }}",
+              "triggerAtHour": 22,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "id": "249fd866-e91e-40b7-b4f7-c89107f189f3",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('IF create this month2').item.json.useid }}",
+        "points": 3,
+        "note": "=QCM63: {{ $('IF create this month2').item.json.name }} is rewarded with -3 points for Proposal/Estimate without changing the Acepted/Declined status within 30 days : https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('IF create this month2').item.json.uuid }} "
+      },
+      "id": "e011a60d-8c4f-4d11-969f-be5250d138eb",
+      "name": "QCM63",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        920,
+        460
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "IF create this month2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF create this month2": {
+      "main": [
+        [
+          {
+            "node": "search point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search point": {
+      "main": [
+        [
+          {
+            "node": "IF not found1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "QCM63",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2b488f1c-dcc2-44cc-8abd-39eedfd03cd1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "hwIwlMuDePLliWAB",
+  "tags": []
+}

@@ -1,0 +1,913 @@
+{
+  "name": "Chat and Email Order Shopify",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "872f02be-1ec7-4dac-b3e2-d7272bda76c2",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT projects.*\nFROM projects\nINNER JOIN stores ON projects.store_id = stores.id\nWHERE DATE(projects.created_at) = CURDATE()   \nAND stores.integration = 'shopify';",
+        "options": {}
+      },
+      "id": "14998c12-80f1-4138-a142-b4281fcd40b3",
+      "name": "Get Project",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        -120
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a5646e93-98d6-4ca1-b489-e30cece704a7",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1a6e4d69-6d2d-40a0-ba5b-0b59c652340c",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        820,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 630193140,
+          "mode": "list",
+          "cachedResultName": "Order From Shopify",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=630193140"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.uuid }}",
+            "OrderName": "={{ $json.projectName }}",
+            "date": "={{ $json.created_at }}",
+            "status": "send",
+            "StoreName": "={{ $json.storeName }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "OrderName",
+              "displayName": "OrderName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "StoreName",
+              "displayName": "StoreName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ea245e82-365b-4b0f-8f48-a70ccc17d2ce",
+      "name": "Save to google sheet1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1880,
+        -360
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "1241a749-9cdf-4c63-8f38-61b64115dadf",
+      "name": "No Operation, do nothing1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "messageImport": "=You have a new order in\nShop: {{ $json.storeName }},\nFrom: Shopify,\nAt: {{ $json.created_at }},\nOrder name: {{ $json.projectName }}",
+        "userId": "={{ $json.id }}"
+      },
+      "id": "32858198-f317-43e3-963b-f0e07295bb1f",
+      "name": "Workchat",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        -140
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "vmWmvYNeiMEbsF91",
+          "name": "Workchat Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = items[0].json;\nreturn item;"
+      },
+      "id": "adfcc9f9-9438-49bf-ab21-6bf2fad810d8",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.id = null;\n}\n\nreturn $input.all();"
+      },
+      "id": "0354d5f8-bdf1-4db4-9234-c73722473ecf",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter out items with id = null\nconst itemsWithId = items.filter(item => item.json.id !== null);\n\n// Extract id from the first item with id\nconst idToCombine = itemsWithId.length > 0 ? itemsWithId[0].json.id : null;\n\n// Combine id with other items\nconst combinedItems = items.map(item => {\n    if (item.json.id === null) {\n        item.json.id = idToCombine;\n    }\n  \n    return item;\n});\n// Filter out items with only id\nconst filteredItems = combinedItems.filter(item => Object.keys(item.json).length > 1);\nreturn filteredItems;"
+      },
+      "id": "abfb0c75-1b58-4e72-8250-9f67c5d421d4",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1640,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "bc2405dd-9b32-4e2b-964e-c31fcf85dfbe",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        1420,
+        -140
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "aaa36db7-5820-4b3e-bffc-44552581200f",
+      "name": "No Operation, do nothing2",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 630193140,
+          "mode": "list",
+          "cachedResultName": "Order From Shopify",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=630193140"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5eef0f34-45e6-40f1-82bc-da3447312566",
+      "name": "Check exist",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        -120
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.email,u.name as UserName, p.created_at, s.store_name as storeName, p.uuid, p.name as projectName\nFROM projects p\nJOIN stores s ON p.store_id = s.id\nJOIN users u ON s.user_id = u.id\nWHERE p.uuid = '{{ $json.id }}';",
+        "options": {}
+      },
+      "id": "06fb1227-ad9f-4174-bb7c-58fbafd5c023",
+      "name": "Get project information",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        -300
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.id, u.name AS userName\nFROM users u \nWHERE u.email = '{{ $json.email }}';",
+        "options": {}
+      },
+      "id": "0a7adcac-07f2-4f04-a805-07b2c90a7a6d",
+      "name": "Get user workchat Id",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        -40
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "xb8mMTZBhISimPeO",
+          "name": "Cloodo Workchat Admin"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 630193140,
+          "mode": "list",
+          "cachedResultName": "Order From Shopify",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=630193140"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.uuid }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "OrderName",
+              "displayName": "OrderName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "UserName",
+              "displayName": "UserName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "StoreName",
+              "displayName": "StoreName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7a137614-f26b-4205-a066-e4c3de45dd09",
+      "name": "Get project today",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        -120
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "id": "cfb57472-e060-4b95-9947-604ec416a050",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -40,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@printcart.com",
+        "toEmail": "={{ $json.email }}",
+        "subject": "You have a new order in Shopify through Printcart",
+        "html": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>New Order Notification</title>\n<style>\n  body {\n    font-family: Arial, sans-serif;\n    line-height: 1.6;\n    background-color: #f4f4f4;\n    margin: 0;\n    padding: 0;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    padding: 20px;\n    background-color: #fff;\n    border: 1px solid #ccc;\n    border-radius: 5px;\n  }\n  .content {\n    color: #333;\n    font-size: 16px;\n    margin-bottom: 20px;\n  }\n  .button {\n    display: inline-block;\n    padding: 10px 20px;\n    background-color: #fff;\n    text-decoration: none;\n    border-radius: 5px;\n    border: 2px solid #007bff;\n    transition: background-color 0.3s ease;\n  }\n  .button:hover {\n    background-color: #0056b3;\n    color: #fff;\n  }\n</style>\n</head>\n<body>\n<div class=\"container\">\n <div class=\"content\">\n  Dear {{ $json.UserName }},<br><br>\n  Congratulations! You have a new order through Printcart waiting to be fulfilled. Here are the details:<br><br>\n  Store Name: {{ $json.storeName }}<br>\n  Order Number:  {{ $json.id }}<br>\n  Order Date: {{ $json.created_at }}<br><br>\n  To fulfill the order, please log in to your Printcart dashboard and navigate to the Orders section. From there, you can view the order details, check the custom design, and download it for printing production.<br><br>\n  <a href=\"https://dashboard.printcart.com/orders\" class=\"button\">Process Order Fulfilment</a><br><br>\n  If you have any questions or need assistance with fulfilling the order, don't hesitate to reach out to our support team at <a href=\"mailto:support@printcart.com\">support@printcart.com</a>. We're here to help ensure a smooth printing process and a satisfied customer experience.<br><br>\n  Thank you for using Printcart, and best wishes for a successful order fulfillment!<br><br>\n  Warm regards,<br>\n  The Printcart Team\n</div>\n</div>\n</body>\n</html>\n",
+        "options": {
+          "ccEmail": "sales@printcart.com"
+        }
+      },
+      "id": "31ffb12b-102a-4a35-b621-cce920ac41e9",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        460,
+        380
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "jL633h5uTtTsmeIc",
+          "name": "Printcart Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "createProject",
+        "note": "Test Order",
+        "name": "Test Order 2",
+        "status": {
+          "type": "accepted"
+        }
+      },
+      "id": "3495b61a-516d-418d-8f2f-976698c6ec24",
+      "name": "Printcart",
+      "type": "@printcart/n8n-nodes-printcart.printcart",
+      "typeVersion": 1,
+      "position": [
+        380,
+        -480
+      ],
+      "credentials": {
+        "printcartTokenApi": {
+          "id": "blnlEUH2sbIhOirg",
+          "name": "RedFlower Shopify"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@printcart.com",
+        "toEmail": "=hieuwork.com@gmail.com",
+        "subject": "You have a new order in Shopify through Printcart",
+        "html": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>New Order Notification</title>\n<style>\n  body {\n    font-family: Arial, sans-serif;\n    line-height: 1.6;\n    background-color: #f4f4f4;\n    margin: 0;\n    padding: 0;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    padding: 20px;\n    background-color: #fff;\n    border: 1px solid #ccc;\n    border-radius: 5px;\n  }\n  .content {\n    color: #333;\n    font-size: 16px;\n    margin-bottom: 20px;\n  }\n  .button {\n    display: inline-block;\n    padding: 10px 20px;\n    background-color: #fff;\n    text-decoration: none;\n    border-radius: 5px;\n    border: 2px solid #007bff;\n    transition: background-color 0.3s ease;\n  }\n  .button:hover {\n    background-color: #0056b3;\n    color: #fff;\n  }\n</style>\n</head>\n<body>\n<div class=\"container\">\n <div class=\"content\">\n  Dear {{ $json.UserName }},<br><br>\n  Congratulations! You have a new order through Printcart waiting to be fulfilled. Here are the details:<br><br>\n  Store Name: {{ $json.storeName }}<br>\n  Order Number:  {{ $json.id }}<br>\n  Order Date: {{ $json.created_at }}<br><br>\n  To fulfill the order, please log in to your Printcart dashboard and navigate to the Orders section. From there, you can view the order details, check the custom design, and download it for printing production.<br><br>\n  <a href=\"https://dashboard.printcart.com/orders\" class=\"button\">Process Order Fulfilment</a><br><br>\n  If you have any questions or need assistance with fulfilling the order, don't hesitate to reach out to our support team at <a href=\"mailto:support@printcart.com\">support@printcart.com</a>. We're here to help ensure a smooth printing process and a satisfied customer experience.<br><br>\n  Thank you for using Printcart, and best wishes for a successful order fulfillment!<br><br>\n  Warm regards,<br>\n  The Printcart Team\n</div>\n</div>\n</body>\n</html>\n",
+        "options": {
+          "ccEmail": "sales@printcart.com"
+        }
+      },
+      "id": "32f919a3-5ff0-4e4e-af55-145ae932c99b",
+      "name": "Send Email1",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        460,
+        580
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "jL633h5uTtTsmeIc",
+          "name": "Printcart Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.UserName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.UserName }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n <div class=\"content\">\n            Dear {{ $json.UserName }},<br><br>\n<div>\n         Congratulations! You have a new order through Printcart waiting to be fulfilled. Here are the details:<br><br>\n  Store Name: {{ $json.storeName }}<br>\n  Order Number:  {{ $json.id }}<br>\n  Order Date: {{ $json.created_at }}<br><br>\n  To fulfill the order, please log in to your Printcart dashboard and navigate to the Orders section. From there, you can view the order details, check the custom design, and download it for printing production.<br><br>\n  <div class=\"center-container\" >\n  <a href=\"https://dashboard.printcart.com/orders\" style=\"color: #fff\" class=\"button\">Process Order Fulfilment</a><br><br>\n</div>\n</div>\n</body>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "81"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "788739bc-2e43-49b4-8756-2b583c8a3518",
+      "name": "HTTP Request2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1880,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=support@printcart.com"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.UserName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.UserName }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n <div class=\"content\">\n            Dear {{ $json.UserName }},<br><br>\n<div>\n         Congratulations! You have a new order through Printcart waiting to be fulfilled. Here are the details:<br><br>\n  Store Name: {{ $json.storeName }}<br>\n  Order Number:  {{ $json.id }}<br>\n  Order Date: {{ $json.created_at }}<br><br>\n  To fulfill the order, please log in to your Printcart dashboard and navigate to the Orders section. From there, you can view the order details, check the custom design, and download it for printing production.<br><br>\n  <div class=\"center-container\" >\n  <a href=\"https://dashboard.printcart.com/orders\" style=\"color: #fff\" class=\"button\">Process Order Fulfilment</a><br><br>\n</div>\n</div>\n</body>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "81"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "37a05b6e-3ffd-43f1-aeee-f78268c9fda1",
+      "name": "HTTP Request3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1880,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=phamngochuy0102@gmail.com"
+            },
+            {
+              "name": "uname",
+              "value": "=ocean"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello ocean"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n <div class=\"content\">\n            Dear ocean,<br><br>\n<div>\n         Congratulations! You have a new order through Printcart waiting to be fulfilled. Here are the details:<br><br>\n  Store Name: 1<br>\n  Order Number: 2<br>\n  Order Date: 3<br><br>\n  To fulfill the order, please log in to your Printcart dashboard and navigate to the Orders section. From there, you can view the order details, check the custom design, and download it for printing production.<br><br>\n  <div class=\"center-container\" >\n  <a href=\"https://dashboard.printcart.com/orders\" style=\"color: #fff\" class=\"button\">Process Order Fulfilment</a><br><br>\n</div>\n</div>\n</body>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "81"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "460edcbe-f36e-4fad-a300-8cb488ad45f8",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1880,
+        460
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project": {
+      "main": [
+        [
+          {
+            "node": "Get project today",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Get project information",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workchat": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save to google sheet1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Workchat",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to google sheet1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check exist": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get project information": {
+      "main": [
+        [
+          {
+            "node": "Get user workchat Id",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get user workchat Id": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get project today": {
+      "main": [
+        [
+          {
+            "node": "Check exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "60652fda-dd78-44b7-bf89-eeef5fecdb1a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "5ks3GUNXHNCY0UYO",
+  "tags": []
+}

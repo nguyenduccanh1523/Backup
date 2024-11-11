@@ -1,0 +1,529 @@
+{
+  "name": "QCM68",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "51bb6a21-e9ac-4b26-831f-b1c59a44204b",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        560,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "6e965472-51da-468b-8e04-c831861e40ff",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        980,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.current_page }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "f9f86640-7d63-4cc9-b37f-9b08bf7097ce",
+      "name": "Loop page",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        960,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT pm.uuid, t.uuid AS taskUUID, u.uuid AS agentUUID, u.name AS userName \nFROM project_milestones pm\nJOIN tasks t ON t.milestone_id = pm.id\nJOIN users u ON u.id = pm.agent_id\nWHERE pm.uuid = '{{ $('Split Out').item.json.id }}'\nAND t.task_category_id = '125'\nUNION ALL\nSELECT '{{ $('Split Out').item.json.id }}' AS uuid, '' AS taskUUID, u.uuid AS agentUUID, u.name AS userName\nFROM users u\nJOIN project_milestones pm ON u.id = pm.agent_id\nWHERE pm.uuid = '{{ $('Split Out').item.json.id }}'\nAND NOT EXISTS (\n    SELECT 1\n    FROM project_milestones pm\n    JOIN tasks t ON t.milestone_id = pm.id\n    JOIN users u ON pm.agent_id = u.id\n    WHERE pm.uuid = '{{ $('Split Out').item.json.id }}'\n    AND t.task_category_id = '125'\n);\n",
+        "options": {}
+      },
+      "id": "ea542b00-6cc0-4ef7-9825-3573f18e0ca6",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        980,
+        80
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "7e0db6c5-1377-4d5c-8cf3-f007d4fca951",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "fromDate": "={{ $now.minus({day:10}).format(\"yyyy-MM-dd\") }}",
+          "toDate": "={{ $now.format(\"yyyy-MM-dd\") }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "fcfd01b4-203a-4ac7-88b3-482f941dd35e",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        760,
+        340
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a75dc872-0c28-4516-a8f8-ea7799460cbd",
+              "leftValue": "={{ $json.taskUUID }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e0fe5ff2-5909-4db5-8d9b-c7d4fcbf63c3",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        80
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM68: {{ $('If1').item.json.agent.name}} minus 3 point because no tasks belong to the Milestone Roadmap label after closed the milestone: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('If1').item.json.id }}  ",
+        "max_limit_record": 50
+      },
+      "id": "b5e06c9f-22fd-4cde-9e7a-0665e874af4a",
+      "name": "QCM",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2060,
+        280
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "0b8452e4-7961-4ee9-8187-930e5b578a95",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If1').item.json.agent.id }}",
+        "points": 3,
+        "note": "=QCM68: {{ $('If1').item.json.agent.name}} minus 3 point because no tasks belong to the Milestone Roadmap label after closed the milestone: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('If1').item.json.id }}  "
+      },
+      "id": "92635745-871e-4522-95db-e5e88debaef0",
+      "name": "QCM68",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2460,
+        260
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a19a08a7-86e3-4b79-8de3-dc36106bae50",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "complete",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "83ad434b-c9fc-44f9-b0e6-57e0f6ccd18b",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/tasks/{{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json, text/plain, */*"
+            },
+            {
+              "name": "authorization",
+              "value": "=Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3MjE5NjQ4NzMsImV4cCI6MTcyNDU1Njg3MywibmJmIjoxNzIxOTY0ODczLCJqdGkiOiJFcHQ1TnlLc0pTYTJHYmJLIiwic3ViIjoiNSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.uRygazXhIKHidXZ9J7YaFjFwt7-6eGZRa9jWSl20YSI"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_179928fdaa0b8079dca0a2d5c99c965c7c9b22a673e27e3977f0c6a06e799c4e"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "9472541f-e948-4ee4-906a-f19d7f5e49fd",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        740,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(t.id) AS task_count\nFROM tasks t\nJOIN project_milestones m ON t.milestone_id = m.id\nJOIN task_label_lists tl ON t.id = tl.task_id\nWHERE m.uuid = '{{ $json.id }}'\nAND tl.label_id = 65;\n\n",
+        "options": {}
+      },
+      "id": "ea854bf2-0d6c-4a35-8702-5014223bf3a5",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        240
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM task_labels\nWHERE company_id = 2\n/*65",
+        "options": {}
+      },
+      "id": "b7d4ca29-8227-4058-a9c3-df6ac22b8776",
+      "name": "MySQL2",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        560
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "cb4cafcf-77b1-4892-981e-a3c47353faa0",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        1660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a3c6a618-5024-41e4-908d-4fa4635f6a45",
+              "leftValue": "={{ $json.task_count }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ef428dd7-fc77-465a-b02f-3b73e998e7fa",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1860,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop page": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "QCM68",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "QCM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a3b59487-706e-4c8f-a744-a65169c1e7f5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "0XLqfxRTlsc9IXnC",
+  "tags": []
+}

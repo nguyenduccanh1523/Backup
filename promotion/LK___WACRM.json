@@ -1,0 +1,1504 @@
+{
+  "name": "LK - WACRM",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "237b5846-0fb5-425f-b4b4-33a7c82eef18",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        540,
+        1920
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Write Content\nUse prompt is provided, we will use AI to write content to post",
+        "height": 286.29688456916756,
+        "width": 215.54603652481288,
+        "color": 7
+      },
+      "id": "ab4feced-1016-483e-9be1-c706e2dffb9c",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4500,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Convert Content\nConvert content to JSON before we use it to Post",
+        "height": 278.86186740349893,
+        "width": 225.7205689806704,
+        "color": 2
+      },
+      "id": "f95a1e94-f949-4f79-ac2c-c511a6a3f7c4",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4800,
+        1627
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Register Post Image\nWe need to use ID of linkedin page, where we need to post. Get its ID and register post image with linkedin",
+        "height": 296.6672992012496,
+        "width": 281.21938177361005,
+        "color": 5
+      },
+      "id": "68b003d7-8e19-459c-a36e-4866c5c97451",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5100,
+        1609
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Image\nUse image link we got before, use it to get an image and export it as a Binary image file",
+        "height": 291.58003297332107,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "41ad438d-5304-4987-8c88-45c5ecb73777",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5460,
+        1614
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Image\nUse uploadUrl returned at Register node previous to PUT image binary file we just got at previous node",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "6d6b3f5c-80eb-434a-9590-d94cf8f8bc4e",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5780,
+        1600
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Execute Post - DAVID NGUYEN\nuse image file and content we got before, execute post these on linkedin page",
+        "height": 305.99395395245244,
+        "width": 235.06177229791805,
+        "color": 5
+      },
+      "id": "e7a7c857-4578-4fcf-b2b1-674fc5b3eca2",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        6088,
+        1600
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get object posted of WACRM\n\n",
+        "height": 296.5719004024541,
+        "width": 211.67528287330384,
+        "color": 4
+      },
+      "id": "a99451f3-e327-49a6-a3bd-784c499c7959",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        900,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2,
+                1,
+                3,
+                5,
+                4,
+                6
+              ],
+              "triggerAtHour": 8,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "3a2e3944-bc33-4665-b3f7-86765eaf1c4e",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        520,
+        1500
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "attributes.project_reviews, attributes.faqs, attributes.feature_image, attributes.features, attributes.posts, attributes.project_files, attributes.screenshots, attributes.awards",
+        "options": {}
+      },
+      "id": "52d040b4-32b2-4d37-bcc3-66788ef3c82c",
+      "name": "Split Out Attributes",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        1740
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "['attributes.faqs'], ['attributes.features'], ['attributes.project_reviews'], ['attributes.posts'], ['attributes.project_files'],  ['attributes.awards']",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "parent, id_parent",
+        "options": {}
+      },
+      "id": "964b5beb-0ab2-4f8a-b2b7-2cc7e8a1e8e0",
+      "name": "Split Out Each Attribute",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        1740
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $items(); // Get all items from the current input\nconst selectedItems = $node[\"Get object posted\"].json; // Get previously selected items\n\n// If selectedItems is not an array, wrap it in an array\nconst selectedItemsArray = Array.isArray(selectedItems) ? selectedItems : [selectedItems];\n\n// Filter out already selected items\nconst remainingItems = items.filter(item => \n    !selectedItemsArray.some(selected => selected.id === item.json.id)\n);\n\n// If no remaining items, throw an error\nif (remainingItems.length === 0) {\n    throw new Error('All items have already been selected.');\n}\n\n// Select a random item from the remaining ones\nconst randomIndex = Math.floor(Math.random() * remainingItems.length);\nconst selectedItem = remainingItems[randomIndex];\n\n// Return the randomly selected item\nreturn [selectedItem];\n"
+      },
+      "id": "d5653d18-3216-4183-a91c-7c7a33e325ff",
+      "name": "Random",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2520,
+        1740
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Write a random daily different Linkedin Post on WACRM Linkedin Page as Mr David Nguyen, Senior Consultant WhatsApp Business Solution\n\nSummarize or introduce the content in the URL attached below as the main content of the post:\n\ntype: {{ $('Random')?.item?.json?.type }}\nname: {{ $('Random')?.item?.json?.name }}\ndescription: {{ $('Random').item.json.description }}\n\n\n\nWACRM - Ultimate WhatsApp CRM & AI Assistant\n\nWACRM integrates WhatsApp with Chrome for seamless CRM, real-time engagement, customizable widgets, AI assistance, and scalable support.\n\nWACRM is a comprehensive communication solution designed to enhance customer relationship management (CRM) by integrating WhatsApp with Chrome. This integration allows businesses to streamline their communication channels, providing seamless interactions with clients and improving customer service efficiency.\n\nFree Version with Advanced Features\n\nReal-time Engagement: Engage with visitors instantly through a customizable live chat widget that blends seamlessly with your Chrome extension's design.\nIntegrate WhatsApp: Scan the QR Code to integrate multiple WhatsApp numbers into a unified interface, allowing management of all customer interactions from various accounts.\nActive Contacts: Maintain a real-time database of active contacts for efficient follow-ups and personalized customer service.\nMerge Contacts to Clients: Seamlessly merge and organize contacts into your client database, ensuring updated and accurate client information.\nComprehensive Dashboard: Access an intuitive dashboard to track key performance indicators (KPIs), chat volumes, and customer satisfaction scores.\nPredefined Responses: Utilize predefined chat templates to respond quickly and consistently to common customer inquiries, saving time and ensuring consistency.\nCustomizable Templates: Create and customize templates to suit specific business needs and enhance customer service efficiency.\nMedia Files Storage: Store and manage media files exchanged during chats, ensuring easy access.\nCreate Client Task: Assign tasks to team members based on chat conversations, ensuring follow-ups and completion of action items.\nChat History Sharing: Share chat histories with team members or clients to ensure transparency and continuity in communications.\nPremium Version and Custom Advanced Setup\n\nContact Data Exports: Export contact data for further analysis or integration with other business tools and CRM systems.\nCustom Workflow Setup: We release API and private support services to be used to configure advanced workflows for managing complex business processes, enhancing productivity and operational efficiency.\nChatGPT Integration: Integrate AI-powered assistants like ChatGPT to handle routine inquiries, provide instant responses, and improve customer service efficiency.\nSmart Responses: Utilize AI for intelligent and context-aware responses, enhancing the overall customer experience.\nWhatsApp Business: Send bulk messages, promotions, and updates to customers using WhatsApp Business, enhancing marketing efforts and communication reach.\nDeveloper API: Utilize developer APIs to customize and extend WACRM functionalities according to specific business needs.\nIntegration Capabilities: Seamlessly integrate with other tools and platforms, enhancing the overall functionality and connectivity.\nBenefits Across Industries\n\nEnhanced Customer Support: Provide quick and efficient support, leading to higher customer satisfaction and loyalty.\nStreamlined Communication: Manage multiple communication channels from a single interface, improving efficiency and response times.\nImproved Customer Insights: Gain valuable insights into customer behavior and preferences through detailed analytics and reporting.\nScalability: Easily scale communication capabilities as your business grows, accommodating increasing volumes of customer interactions.\nWACRM is ideal for a diverse range of users including small and medium-sized businesses like e-commerce stores, service agencies, and retail businesses; large enterprises with multiple divisions and extensive customer support teams; and startups across tech, product, and service sectors. Freelancers and consultants can manage client interactions efficiently, while agencies such as marketing, design, and development firms benefit from enhanced client engagement. Educational institutions, nonprofit organizations, healthcare providers, real estate agencies, and the hospitality and travel industry can all use WACRM to provide real-time support, streamline communications, and improve customer satisfaction.\n\n\n\nThe post has relates tags, keep the original URL inside the content if provided as links for CTA, keep the images or video inside content if have\n\n\n\nThe tone should be positive, friendly by professionalism, like a way that I post to share our updated business which is open, easy-going for most of potential partners, keep them connect and motivated with what we are doing for their ecommerce project\n\n\n\nInclude the contact below to used for CTA:\n\n\n\nMrs David Nguyen - Senior Consultant\n\nWhatsApp Business Consultant\n\nEmail: support@cloodo.com\n\nWhatsapp: +84965586069"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "299e3464-d7ca-403c-8a3a-9bcb24ab75c5",
+      "name": "OpenAI",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        4560,
+        1740
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "token",
+        "operation": "getAll",
+        "contentType": "={{ $json.type }}/{{ $json.id }}?populate=*",
+        "options": {}
+      },
+      "id": "6a852a8f-91fe-4a93-90eb-4781f96720dd",
+      "name": "Detail Feature",
+      "type": "n8n-nodes-base.strapi",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        1460
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "Cm4uH9F0K2CASK8a",
+          "name": "Strapi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "token",
+        "contentType": "faqs",
+        "entryId": "={{ $json.id }}"
+      },
+      "id": "25940eaf-07e6-4191-a1a0-2d0d69aadfee",
+      "name": "Detail FAQ",
+      "type": "n8n-nodes-base.strapi",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        1640
+      ],
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "Cm4uH9F0K2CASK8a",
+          "name": "Strapi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "token",
+        "operation": "getAll",
+        "contentType": "=awards/{{ $json.id }}?populate=*",
+        "options": {}
+      },
+      "id": "3684e26d-f76c-449f-8055-663d8bb782db",
+      "name": "Detail Awards",
+      "type": "n8n-nodes-base.strapi",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        1820
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "Cm4uH9F0K2CASK8a",
+          "name": "Strapi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "token",
+        "operation": "getAll",
+        "contentType": "=project-reviews/{{ $json.id }}?populate=*",
+        "options": {}
+      },
+      "id": "042108c4-dc29-424f-bb7b-20ded671e13a",
+      "name": "Detail Project Review",
+      "type": "n8n-nodes-base.strapi",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        2020
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "Cm4uH9F0K2CASK8a",
+          "name": "Strapi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Split Each Attribute\nSplit each item in the attribute field that split the previous node",
+        "height": 297.18551537799755,
+        "width": 262.49500570503653,
+        "color": 6
+      },
+      "id": "8d3439bd-d73e-4420-8f2d-dffbafe79345",
+      "name": "Sticky Note15",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1800,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Reformat Fields\nreformat field of each item, what we need to use it to post",
+        "height": 294.00235013248516,
+        "width": 227.14575873091968,
+        "color": 2
+      },
+      "id": "c08e5b6d-fed3-4d15-bc11-86834f30d14f",
+      "name": "Sticky Note16",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2140,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Info of WACRM\nGet all info of WACRM project",
+        "height": 295.3600183930015,
+        "width": 219.6561390424718,
+        "color": 6
+      },
+      "id": "bb82a0f8-2399-4e88-b31b-c35689540701",
+      "name": "Sticky Note20",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Split Attributes\nSplit attribute fields of project we will post",
+        "height": 296.8121833646138,
+        "width": 219.6561390424718,
+        "color": 6
+      },
+      "id": "f709896f-4a2c-48d1-b818-38a90df8c2ef",
+      "name": "Sticky Note21",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst listItemReFormat = [];\n\nfor (const item of $input.all()) {\n  const itemData = item?.json\n  \n  const objFAQ = {}\n  const objFeature = {}\n  const objAward = {}\n  const objProjectMedia = {}\n  const objProjectReview = {}\n  \n  if(itemData[\"['attributes.faqs']\"]){\n    objFAQ.id = itemData[\"['attributes.faqs']\"].id\n    objFAQ.name = itemData[\"['attributes.faqs']\"]?.attributes?.question\n    objFAQ.description = itemData[\"['attributes.faqs']\"]?.attributes?.answer\n    objFAQ.type = 'faqs'\n    objFAQ.obj = 'project'\n    objFAQ.parent = itemData.parent || '';  \n    objFAQ.id_parent = itemData.id_parent || ''; \n  }\n\n  if(itemData[\"['attributes.features']\"]){\n    objFeature.id = itemData[\"['attributes.features']\"].id\n    objFeature.name = itemData[\"['attributes.features']\"]?.attributes?.title\n    objFeature.description = itemData[\"['attributes.features']\"]?.attributes?.text\n    objFeature.type = 'features'\n    objFeature.obj = 'project'\n    objFeature.parent = itemData.parent || '';  \n    objFeature.id_parent = itemData.id_parent || '';  \n  }\n\n    if(itemData[\"['attributes.awards']\"]){\n    objAward.id = itemData[\"['attributes.awards']\"].id\n    objAward.name = itemData[\"['attributes.awards']\"]?.attributes?.name\n    objAward.description = itemData[\"['attributes.awards']\"]?.attributes?.highlight\n    objAward.type = 'awards'\n    objAward.obj = 'project'\n  }\n\n  if(itemData[\"['attributes.project_files']\"]){\n    objProjectMedia.id = itemData[\"['attributes.project_files']\"].id\n    objProjectMedia.name = itemData[\"['attributes.project_files']\"]?.attributes?.file_name\n    objProjectMedia.description = itemData[\"['attributes.project_files']\"]?.attributes?.description\n    objProjectMedia.type = 'project_files'\n    objProjectMedia.obj = 'project'\n    objProjectMedia.parent = itemData.parent || '';  \n    objProjectMedia.id_parent = itemData.id_parent || '';  \n  }\n\n  if(itemData[\"['attributes.project_reviews']\"] && itemData[\"['attributes.project_reviews']\"]?.attributes?.rating === 5){\n    objProjectReview.id = itemData[\"['attributes.project_reviews']\"].id\n    objProjectReview.name = itemData[\"['attributes.project_reviews']\"]?.attributes?.rating\n    objProjectReview.description = itemData[\"['attributes.project_reviews']\"]?.attributes?.comment\n    objProjectReview.type = 'project_reviews'\n    objProjectReview.obj = 'project'\n    objProjectReview.parent = itemData.parent || '';  \n    objProjectReview.id_parent = itemData.id_parent || '';  \n  }\n  \n  \n  objFAQ && objFAQ.id && listItemReFormat.push(objFAQ)\n  objAward && objAward.id && listItemReFormat.push(objAward)\n  objFeature && objFeature.id&& listItemReFormat.push(objFeature)\n  // objProjectMedia && objProjectMedia.id&& listItemReFormat.push(objProjectMedia)\n  objProjectReview && objProjectReview.id&& listItemReFormat.push(objProjectReview)\n}\nconst items = $items\n\nreturn listItemReFormat\n"
+      },
+      "id": "6d3ba276-5938-4330-9c37-60e4af2614d4",
+      "name": "Reformat fields",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2200,
+        1740
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Random to post\nRandon one item to post\n",
+        "height": 253.26605474046238,
+        "width": 227.14575873091968,
+        "color": 2
+      },
+      "id": "f6fd90ab-2d82-44da-9765-128dd44dfffc",
+      "name": "Sticky Note32",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2460,
+        1640
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2105919183,
+          "mode": "list",
+          "cachedResultName": "LK - WACRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=2105919183"
+        },
+        "options": {}
+      },
+      "id": "9dacee54-8636-46d3-9546-2feec679f12f",
+      "name": "Get object posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        1740
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "token",
+        "operation": "getAll",
+        "contentType": "projects?filters[$and][0][alias][$eq]=whatsapp-crm&populate=*",
+        "options": {}
+      },
+      "id": "b66963ea-5404-4bdb-9517-e250e8cb30e7",
+      "name": "Get Project WACRM",
+      "type": "n8n-nodes-base.strapi",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        1740
+      ],
+      "executeOnce": true,
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "Cm4uH9F0K2CASK8a",
+          "name": "Strapi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ad3a897d-3803-48c8-b7cc-35dc7a4ced5e",
+              "name": "attributes.image",
+              "value": "={{ $json.attributes.image.data[0].attributes.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "ec4a1b29-4885-4842-bf05-ad9d34a97d9d",
+      "name": "Set Image Post For Feature",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3400,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ad3a897d-3803-48c8-b7cc-35dc7a4ced5e",
+              "name": "attributes.image",
+              "value": "https://media-cloodo.s3.amazonaws.com/question_518957ddc9.jpg?updated_at=2024-10-15T04:27:09.223Z",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "d589c476-61bc-4830-a7a7-d708e35289ed",
+      "name": "Set Image Post For FAQ",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3400,
+        1640
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ad3a897d-3803-48c8-b7cc-35dc7a4ced5e",
+              "name": "attributes.image",
+              "value": "={{ $json.attributes.icon.data[0].attributes.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "d3215dc9-3bf1-4c6b-9bd9-365d938be8ba",
+      "name": "Set Image Post For Award",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3400,
+        1820
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "features",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "00e4de34-1467-4446-815f-5463c0ff53bd",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "faqs",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "5b4d0d70-e141-4476-aee8-121aa48b3524",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "awards",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "0485fabf-1ae1-4a6e-a974-10effeba202b",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "project_reviews",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f5563dd8-5b89-4ba1-841f-cd7b4f80826e",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        2820,
+        1740
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ad3a897d-3803-48c8-b7cc-35dc7a4ced5e",
+              "name": "attributes.image",
+              "value": "={{ $json.attributes.project.data.attributes.screenshots[0] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "afcd4f59-8ad5-480b-af2f-3da7727f0dd5",
+      "name": "Set Image Post For Review",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3400,
+        2020
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check obj selected\nCheck what obj is selected to post\n",
+        "height": 273.3762559090725,
+        "width": 227.14575873091968,
+        "color": 5
+      },
+      "id": "8a436484-7a62-45ad-9a3e-caaef2f042a1",
+      "name": "Sticky Note46",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2760,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Save info\nSave info of obj we  need to post\n\n",
+        "height": 293.4864570776825,
+        "width": 227.14575873091968,
+        "color": 5
+      },
+      "id": "7382c7eb-3df0-4225-88eb-9f82fe61a3ea",
+      "name": "Sticky Note47",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3720,
+        1611.863150382205
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const inputText = $('OpenAI').item.json.message.content;\nconst jsonObject = JSON.stringify(inputText);\nreturn {\n  html: jsonObject\n};"
+      },
+      "id": "6c1b5a20-2241-4e90-8e47-370efee42dc9",
+      "name": "Convert Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4860,
+        1740
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/assets?action=registerUpload",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer AQVoSobmrOv4ikccXh2BaVd22MJv_AI6jo3wlHAxD98LNZ-AchKQDAhn4FYFYPvR6mMSeTFSe4x99eT0kCVtS8ulPK_RpHqNpkOqAZggofoWqegmQGDPn5RMaJHSblKHB4stFow3qG8hWfBm3CNZbfOusUH3Cww5pydbSpkgeCCrUP3_8LY1Ii3AsmiY1v8eQrunQq1bCCI5_vpUjrXF8z6yyQocTWN3HszJI4cZS4U1Gj60Amq72Mjv6KLOAKKM_f2N4BvbV007smOL6bwpGwIRc6HJ6Pyuw9x_yj3NXBEVvs9qeuwABAUPy0-CEREFhkz-xvR2yi_2noBA5Q7AdcpB0-pdFQ"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"registerUploadRequest\": {\n    \"recipes\": [\n      \"urn:li:digitalmediaRecipe:feedshare-image\"\n    ],\n    \"owner\": \"urn:li:organization:104847031\",\n    \"serviceRelationships\": [\n      {\n        \"identifier\": \"urn:li:userGeneratedContent\",\n        \"relationshipType\": \"OWNER\"\n      }\n    ]\n  }\n}\n",
+        "options": {}
+      },
+      "id": "2d4f16c6-eae0-46b7-bd10-2f5728309b20",
+      "name": "registerUpload",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        5180,
+        1740
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Merge').item.json.attributes.image || $('Get Project WACRM').item.json.attributes.screenshots[0].src }}",
+        "options": {}
+      },
+      "id": "ad04f36f-473a-4bb2-a822-0d0f3df98f11",
+      "name": "HTTP GET img",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        5520,
+        1740
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $json.value.uploadMechanism['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'].uploadUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "image/png"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "1381f422-af35-46bd-8b5d-91c10781f93a",
+      "name": "PUT Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        5840,
+        1740
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.linkedin.com/v2/ugcPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "=Authorization",
+              "value": "=Bearer AQVoSobmrOv4ikccXh2BaVd22MJv_AI6jo3wlHAxD98LNZ-AchKQDAhn4FYFYPvR6mMSeTFSe4x99eT0kCVtS8ulPK_RpHqNpkOqAZggofoWqegmQGDPn5RMaJHSblKHB4stFow3qG8hWfBm3CNZbfOusUH3Cww5pydbSpkgeCCrUP3_8LY1Ii3AsmiY1v8eQrunQq1bCCI5_vpUjrXF8z6yyQocTWN3HszJI4cZS4U1Gj60Amq72Mjv6KLOAKKM_f2N4BvbV007smOL6bwpGwIRc6HJ6Pyuw9x_yj3NXBEVvs9qeuwABAUPy0-CEREFhkz-xvR2yi_2noBA5Q7AdcpB0-pdFQ"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"author\": \"urn:li:organization:104847031\",\n    \"lifecycleState\": \"PUBLISHED\",\n    \"specificContent\": {\n        \"com.linkedin.ugc.ShareContent\": {\n            \"shareCommentary\": {\n                \"text\": {{ $('Convert Content').item.json.html }}\n            },\n            \"shareMediaCategory\": \"IMAGE\",\n            \"media\": [\n                {\n                    \"status\": \"READY\",\n                    \"media\": \"{{ $('registerUpload').item.json.value.asset }}\",\n                    \"description\": {\n                        \"text\": \"Cloodo Project\"\n                    },\n                    \"title\": {\n                        \"text\": \"We are Cloodo\"\n                    }\n                }\n            ]\n        }\n    },\n    \"visibility\": {\n        \"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\"\n    }\n}\n",
+        "options": {}
+      },
+      "id": "c555db5b-05aa-4a5a-9da6-8e1adbb54f36",
+      "name": "HTTP Request Post To WACRM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        6160,
+        1740
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Mark Obj Posted\nSave time the obj is posted",
+        "height": 283.7668895029362,
+        "width": 231.604468165266,
+        "color": 4
+      },
+      "id": "8eecfda2-afc9-4ac0-8fb6-abac7e8fcaa3",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        6400,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2105919183,
+          "mode": "list",
+          "cachedResultName": "LK - WACRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=2105919183"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Merge').item.json.id }}",
+            "obj": "={{ $('Random').item.json.obj }}",
+            "type": "={{ $('Random').item.json.type }}",
+            "description": "={{ $('Random').item.json.description }}",
+            "selectedPost": "={{ $now }}",
+            "image": "={{ $('Merge').item.json.attributes.image }}",
+            "name": "={{ $('Random').item.json.name }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "obj",
+              "displayName": "obj",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "selectedPost",
+              "displayName": "selectedPost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "531f635e-09ac-44e4-8888-5911ef6a3c17",
+      "name": "Save ID obj posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        6460,
+        1740
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "id": "da2c9925-c9f6-4f7e-8f29-a33b1e4c67c9",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3780,
+        1720
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Valid Link \nCheck the image link selected in previous node is enable to post",
+        "height": 290.11747934565517,
+        "width": 215.54603652481288,
+        "color": 5
+      },
+      "id": "b80ec3e4-959d-4ab2-b255-b121a12569e3",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4060,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "##Link Posted Faile\nSave time the link is selected and note reason it can't posted and rerun flow",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 4
+      },
+      "id": "8449e6a6-ac29-4121-b8dd-71819e24dbc5",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        6080,
+        2660
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 696570583,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=696570583"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "STT": "={{ $('Get Cmsmart Link').item.json.STT }}",
+            "LK PostedAt": "={{ $now }}",
+            "Note": "Image Notfound",
+            "FB PostedAt": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "STT"
+          ],
+          "schema": [
+            {
+              "id": "STT",
+              "displayName": "STT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Top pages",
+              "displayName": "Top pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "FB PostedAt",
+              "displayName": "FB PostedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LK PostedAt",
+              "displayName": "LK PostedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Store Service",
+              "displayName": "Store Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6ba278a7-4e1b-4ccb-ad7e-01dc51137df2",
+      "name": "Mark Link Posted Failed",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        6140,
+        2800
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.attributes.image }}",
+        "options": {}
+      },
+      "id": "64e414e7-93c7-4388-aed9-58fa2c51042a",
+      "name": "Check Valid Image Link",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        4120,
+        1740
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "96287d34-596c-4736-8082-d658e68d6199",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "4f95d1de-82da-4b07-a560-2a7fd9291890",
+      "name": "Loop when image link is not valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        4340,
+        2020
+      ],
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "content": "## Store",
+        "height": 962.8077902233423,
+        "width": 689.6980286514851,
+        "color": 7
+      },
+      "id": "cc882373-f14f-4b89-82d7-ec0c13a71465",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5880,
+        2300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get object posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get object posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out Attributes": {
+      "main": [
+        [
+          {
+            "node": "Split Out Each Attribute",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out Each Attribute": {
+      "main": [
+        [
+          {
+            "node": "Reformat fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Convert Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reformat fields": {
+      "main": [
+        [
+          {
+            "node": "Random",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detail Feature": {
+      "main": [
+        [
+          {
+            "node": "Set Image Post For Feature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get object posted": {
+      "main": [
+        [
+          {
+            "node": "Get Project WACRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project WACRM": {
+      "main": [
+        [
+          {
+            "node": "Split Out Attributes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detail FAQ": {
+      "main": [
+        [
+          {
+            "node": "Set Image Post For FAQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detail Awards": {
+      "main": [
+        [
+          {
+            "node": "Set Image Post For Award",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Detail Feature",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Detail FAQ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Detail Awards",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Detail Project Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detail Project Review": {
+      "main": [
+        [
+          {
+            "node": "Set Image Post For Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Image Post For FAQ": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set Image Post For Award": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Set Image Post For Review": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Set Image Post For Feature": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Content": {
+      "main": [
+        [
+          {
+            "node": "registerUpload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "registerUpload": {
+      "main": [
+        [
+          {
+            "node": "HTTP GET img",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP GET img": {
+      "main": [
+        [
+          {
+            "node": "PUT Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Image": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Post To WACRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Post To WACRM": {
+      "main": [
+        [
+          {
+            "node": "Save ID obj posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Check Valid Image Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Valid Image Link": {
+      "main": [
+        [
+          {
+            "node": "Loop when image link is not valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop when image link is not valid": {
+      "main": [
+        [
+          {
+            "node": "Get object posted",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7c9e67e9-785c-46c1-85b7-4587cdbf8349",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "eXDOq5zF9nwKYTEa",
+  "tags": []
+}

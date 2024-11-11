@@ -1,0 +1,865 @@
+{
+  "name": "Send email to New Design",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "2abed406-3763-4c3e-9dc1-0b823d78c411",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "cfb83549-47d3-4be3-8c4c-c1e16f96d011",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -300,
+        120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "b14ebe99-fe4e-4c6e-b7e7-f3a86113e4a5",
+      "name": "Replace Me1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        -660
+      ]
+    },
+    {
+      "parameters": {
+        "messageImport": "=Dear {{ $json.name }},<br>\nYou have a new custom design created by your client through Printcart waiting to be<br>\nStore Name: {{ $json.storeName }}\nDesign Date: {{ $now.format(\"yyyy-MM-dd\") }}<br>\nLink: https://dashboard.printcart.com/design/{{ $json.designUUID }}",
+        "userId": "={{ $json.userId }}"
+      },
+      "id": "73d6f1b0-d075-44a8-a247-1effbce05a57",
+      "name": "Workchat",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        2280,
+        -220
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "vmWmvYNeiMEbsF91",
+          "name": "Workchat Token account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "e837771c-1287-46a8-8c6d-9c4fefc369b2",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        1680,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT d.id, d.uuid, d.created_at \nFROM designs d\nWHERE DATE(d.created_at) = CURDATE() - 1\nORDER BY d.created_at DESC\nLIMIT 50;",
+        "options": {}
+      },
+      "id": "2f5b02f4-d709-4b05-93a9-2fdd4f3233e5",
+      "name": "Get Designs",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -40,
+        120
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.name AS userName, u.email, s.store_name AS storeName, d.id AS designId, d.uuid AS designUUID\nFROM designs d\nJOIN images i ON d.design_image_id = i.id\nJOIN stores s ON s.id = i.store_id\nJOIN users u ON u.id = s.user_id\nWHERE d.id = {{ $json.ID }}",
+        "options": {}
+      },
+      "id": "748c58ca-0f07-44ac-bf5a-e3672dfc089d",
+      "name": "Get users",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1140,
+        100
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT users.id AS userId, users.uuid, users.name,users.email\nFROM users \nWHERE email = '{{ $json.email }}';",
+        "options": {}
+      },
+      "id": "8bad6df0-66e1-46d4-9a9d-9f8576512600",
+      "name": "Get users from cloodo",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1420,
+        -180
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1530485171,
+          "mode": "list",
+          "cachedResultName": "Designs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=1530485171"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID",
+              "lookupValue": "={{ $json.ID }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f70f8b71-3227-40a1-ae9c-376542830ad6",
+      "name": "Check exist",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        420,
+        120
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1530485171,
+          "mode": "list",
+          "cachedResultName": "Designs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=1530485171"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.id }}",
+            "Created At": "={{ $json.created_at }}",
+            "UUID": "={{ $json.uuid }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "UUID",
+              "displayName": "UUID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Created At",
+              "displayName": "Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0fe37449-d9e8-44b8-b0dd-fea0df6ee821",
+      "name": "Get project today",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        180,
+        120
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = items;\n\nconst outputData = inputData.filter(item => item.json.UUID);\n\nreturn outputData;\n"
+      },
+      "id": "b59e29e3-0f5c-4b1b-9969-92a87a383122",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        620,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1530485171,
+          "mode": "list",
+          "cachedResultName": "Designs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=1530485171"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.designId }}",
+            "email": "={{ $json.email }}",
+            "Customer": "={{ $json.userName }}",
+            "StoreName": "={{ $json.storeName }}",
+            "UUID": "={{ $json.designUUID }}",
+            "Status": "sent",
+            "UserId": "={{ $json.userId }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "UUID",
+              "displayName": "UUID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Created At",
+              "displayName": "Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer",
+              "displayName": "Customer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "UserId",
+              "displayName": "UserId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "StoreName",
+              "displayName": "StoreName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7a028dfa-6746-43e1-aa35-800bf1fbf4e9",
+      "name": "Check exist2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2280,
+        400
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM users u\nWHERE u.email = '{{ $json.email }}'",
+        "options": {}
+      },
+      "id": "7cf8defb-4b19-4e52-a3c2-a27e62dd9e12",
+      "name": "Get users1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1720,
+        -640
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "5a1190fd-1e79-4ce0-8f5e-c308b086431f",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "a62b5bb3-19f2-45c9-b4d1-a11df0cbd081",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c2f39a3b-e0c3-4120-9325-09855c69e10b",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "107696f5-efb6-42da-b568-ad10621365d6",
+      "name": "Merge3",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        2240,
+        -660
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = items;\n\nconst outputData = inputData.filter(item => item.json.UserId);\n\nreturn outputData;\n"
+      },
+      "id": "2a07a2f8-a218-45a2-ab7a-b07ee54c3d73",
+      "name": "Code3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2440,
+        -660
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=hieuproman123hp@gmail.com"
+            },
+            {
+              "name": "=uname",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.name }}"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "73"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification for New Unsynchronized Product in Printcart</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n <div class=\"content\">\n            Dear {{ $json.userName }},<br><br>\n            You have a new custom design created by your client through Printcart waiting to be\n            download.\n            Here are the details:<br><br>\n            Store Name: {{ $json.storeName }}<br>\n            Product Name: {{ $json.product_name}}<br>\n            Design Date: {{ $now.format(\"yyyy-MM-dd\") }}<br>\n            Design ID: {{ $json.designID }}<br><br>\n            To manage the design and working with your client to ensure the quality of design, please log in to your\n            Printcart dashboard and navigate to the Design Files section. From there, you can check the custom design\n            and download it for printing production.\n            <br>\n</div>\n        <div class=\"center-container\">\n            <a href=\"https://dashboard.printcart.com/design/{{ $json.designID }}\" style=\"color: #fff\" class=\"button\">Download Custom Design</a>\n        </div><br>\n</div>\n</body>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5b6481fc-30db-48c5-90c0-ceab10899f3e",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1400,
+        -640
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "5a1190fd-1e79-4ce0-8f5e-c308b086431f",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "fabb2772-170f-499c-848d-ea47643e6046",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        840,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.name }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification for New Unsynchronized Product in Printcart</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n <div class=\"content\">\n            Dear {{ $json.name }},<br><br>\n<div>\n            You have a new custom design created by your client through Printcart waiting to be\n</div>\n            download.\n            Here are the details:<br><br>\n            Store Name: {{ $json.storeName }}<br>\n            Design Date: {{ $now.format(\"yyyy-MM-dd\") }}<br>\n            Design ID: {{ $json.designId }}<br><br>\n<div>\n            To manage the design and working with your client to ensure the quality of design, please log in to your\n            Printcart dashboard and navigate to the Design Files section. From there, you can check the custom design\n            and download it for printing production.\n            <br>\n</div>\n</div>\n        <div class=\"center-container\">\n            <a href=\"https://dashboard.printcart.com/design/{{ $json.designUUID}}\" style=\"color: #fff\" class=\"button\">Download Custom Design</a>\n        </div><br>\n</div>\n</body>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "73"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "50784813-8be0-41cc-9de9-50bb7cde816a",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2280,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=support@printcart.com"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.name }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification for New Unsynchronized Product in Printcart</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n <div class=\"content\">\n            Dear {{ $json.name }},<br><br>\n<div>\n            You have a new custom design created by your client through Printcart waiting to be\n</div>\n            download.\n            Here are the details:<br><br>\n            Store Name: {{ $json.storeName }}<br>\n            Design Date: {{ $now.format(\"yyyy-MM-dd\") }}<br>\n            Design ID: {{ $json.designId }}<br><br>\n<div>\n            To manage the design and working with your client to ensure the quality of design, please log in to your\n            Printcart dashboard and navigate to the Design Files section. From there, you can check the custom design\n            and download it for printing production.\n            <br>\n</div>\n</div>\n        <div class=\"center-container\">\n            <a href=\"https://dashboard.printcart.com/design/{{ $json.designUUID}}\" style=\"color: #fff\" class=\"button\">Download Custom Design</a>\n        </div><br>\n</div>\n</body>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "73"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2362cb0b-9ae4-432d-a4ab-474e1c0929e4",
+      "name": "Send Email1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2280,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Condition \nCheck email and name are exist",
+        "height": 317.37492842347797,
+        "color": 4
+      },
+      "id": "2b87c179-b973-430a-b7fa-c11f39298c12",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        -80
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Designs": {
+      "main": [
+        [
+          {
+            "node": "Get project today",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get users": {
+      "main": [
+        [
+          {
+            "node": "Get users from cloodo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get users from cloodo": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Designs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check exist": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get project today": {
+      "main": [
+        [
+          {
+            "node": "Check exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Workchat",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check exist2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get Designs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Get users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2fe0bf3b-480b-482d-a0e0-90983908de8c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "0PdpCMV54zRHCnlW",
+  "tags": []
+}

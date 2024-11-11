@@ -1,0 +1,488 @@
+{
+  "name": "WF 13 -  Task Invoice Close Won proposal",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e962d23c-4719-4211-a040-0cf44d885ca6",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        760,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "={{ $runIndex+1 }}",
+        "additionalFields": {
+          "fromDate": "= {{ $today.set({ day: 1 }).minus({month : 0}).format('dd-MM-yyyy') }} ",
+          "toDate": "= {{ $today.set({ day: 1 }).plus({month :1}).minus({day : 0}).format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "b68bdbec-447d-497d-bc12-0018fe42873d",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        980,
+        480
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "50599a83-b4d6-4248-8a58-8347f05fec3d",
+      "name": "IF6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "a96e96a6-8586-4f61-9c79-ce3f33150588",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1460,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "61757864-4f8b-4251-b951-ec9b8ca66184",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1720,
+        540
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a862481e-bd6a-4225-bbd7-85b55c0e7724",
+              "leftValue": "={{ $json.data.status.id }}",
+              "rightValue": "=fc9899c9-915d-4f23-b4a0-312d8c966af2",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f422a7a2-c9bb-47f3-8ea6-252d9e3caa58",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2180,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=Hey {{ $('Cloodo CRM1').item.json.data.agent.name }}, create invoice for proposal {{ $('Cloodo CRM1').item.json.data.id }}",
+        "taskPriority": "high",
+        "start_date": "={{$today}}",
+        "due_date": "={{$today.plus({days:3})}}",
+        "users": "={{ $('Cloodo CRM1').item.json.data.agent.id }}",
+        "additionalFields": {
+          "ProjectID": "={{ $('Cloodo CRM1').item.json.data.project.id }}",
+          "taskDescription": "=Congrate for your Won on Proposal ID but it seems that you forget to create an invoice for this Proposal<br>\nAfter the invoice is paid, please update payment ID from this invoice also<br>\nA Huy\n<br>\nLink : <a href=\"https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Cloodo CRM1').item.json.data.id }}\">Click here</a><br>",
+          "taskCategoryId": "8f0b6f06-de8d-4624-ba60-46e766dbeb3b"
+        },
+        "requestOptions": {}
+      },
+      "id": "68a9700c-c8dd-4718-9070-6ec909d317b8",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        2820,
+        320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "search": "=Hey {{ $('Cloodo CRM1').item.json.data.agent.name }}, create invoice for proposal {{ $('Cloodo CRM1').item.json.data.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "88c5573f-987d-4852-9cb6-951184e26e91",
+      "name": "Search task facebook",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        2440,
+        340
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.total }}",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "cec64765-4ffd-4b9c-9d1c-f2ccb77c27df",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2600,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "7f5d8749-44e6-49d3-b822-fd1c1e0ba61f",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        760,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=Hey Linh, remind to follow up Waiting Proposal {{ $('Cloodo CRM1').item.json.data.id }}",
+        "taskPriority": "high",
+        "start_date": "={{$today}}",
+        "due_date": "={{$today.plus({days:3})}}",
+        "users": "={{ $('Cloodo CRM1').item.json.data.agent.id }}",
+        "additionalFields": {
+          "ProjectID": "={{ $('Cloodo CRM1').item.json.data.project.id }}",
+          "taskDescription": "=Ah {{ $('Cloodo CRM1').item.json.data.agent.name }}, It's been a few days your sent date or the proposal ID, please create an email to follow up your proposal sent to the client <br>\nHope you have a good response<br>\nA Huy<br>\nLink : <a href=\"https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Cloodo CRM1').item.json.data.id }}\">Click here</a><br>",
+          "taskCategoryId": "8f0b6f06-de8d-4624-ba60-46e766dbeb3b"
+        },
+        "requestOptions": {}
+      },
+      "id": "77a340ef-1860-44ab-a19c-50a011679a0c",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        2620,
+        600
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.total }}",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "72d5af53-bd63-4c64-8be0-c792240bf4bb",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2360,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "search": "=Hey Linh, remind to follow up Waiting Proposal {{ $('Cloodo CRM1').item.json.data.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "172d9c4e-a075-454e-b371-a032939dc533",
+      "name": "Search task exist1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        2160,
+        620
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "4f0eebe3-e1bf-41e4-add1-c8c3c2dd0a1e",
+              "leftValue": "={{ $json.data.created_by.id }}",
+              "rightValue": "859bac79-dcca-4dbe-9b8c-14dfaaf49f84",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "593f32bc-dc62-4f80-9ba5-1827fcdacd37",
+      "name": "member Filter",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        540
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "IF6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF6": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "member Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search task facebook": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search task exist1": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "member Filter": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search task exist1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "95b44eac-5577-4e99-b673-8ffd0eadc182",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "fDqKK4mUL5Am20Rw",
+  "tags": []
+}

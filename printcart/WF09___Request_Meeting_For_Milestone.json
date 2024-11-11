@@ -1,0 +1,285 @@
+{
+  "name": "WF09 - Request Meeting For Milestone",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0499a75b-f42a-4ff9-a422-7e7f9d939b7e",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        560,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT pm.id AS milestoneID, pm.uuid AS milestoneUUID, pm.title AS milestoneTitle, u.name AS agentName, u.uuid AS agentUUID, pm.cost AS cost, pm.due_date AS dueDate, p.uuid AS projectUUID FROM project_milestones pm\nJOIN users u ON u.id = pm.added_by\nJOIN projects p ON p.id = pm.project_id\nWHERE DATE(pm.due_date) = DATE(CURDATE() + 1)\nAND pm.company_id = 2;",
+        "options": {}
+      },
+      "id": "ca48dff7-64eb-4a09-b005-2f66edcee3ac",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        780,
+        300
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "search": "={{ $('If').item.json.agentName }} ah, please request a meeting for milestone {{ $('If').item.json.milestoneTitle }}, ID: {{ $('If').item.json.milestoneID }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "7412e602-19ad-4abe-9d1c-7e35bb58ffaf",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        280
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "5f08726e-8bf1-4363-b9bf-807faef2a04e",
+              "leftValue": "={{ $json.cost }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "7ed553fd-834b-4b21-8936-d5caec95bfda",
+              "leftValue": "={{ $json.agentName }}",
+              "rightValue": " PrintCart",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a87c0079-7b43-4818-ac14-11ec6638319c",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "d223cea9-73ea-42d7-bb72-a598ebb5a7c7",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "81b569f4-9b21-4855-b525-601899fd2403",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1400,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "={{ $('If').item.json.agentName }} ah, please request a meeting for milestone {{ $('If').item.json.milestoneTitle }}, ID: {{ $('If').item.json.milestoneID }}",
+        "taskPriority": "high",
+        "start_date": "={{ $now.format('yyyy-MM-dd') }}",
+        "due_date": "={{ $now.plus({day:3}).format('yyyy-MM-dd') }}",
+        "users": "={{ $('If').item.json.agentUUID }}",
+        "additionalFields": {
+          "ProjectID": "={{ $('If').item.json.projectUUID }}",
+          "taskDescription": "=The milestone name {{ $('If').item.json.milestoneTitle }} is coming to due date at <br>\nLink Milestone: <a href=\"https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('If').item.json.milestoneUUID }}\">Click here</a><br>\nLink Project: <a href=\"https://worksuite.cloodo.com/apps/work/projects/edit-project/{{ $('If').item.json.projectUUID }}\">Click here</a><br>\nThen you have to request a meeting with client for\u000b <br>\n- final confirmation on the milestone work loads\u000b- provide project training  <br>\n- deliver any  milestone documentation sent to client team <br>\n",
+          "taskCategoryId": "8d784778-bdc0-4077-95e8-ceb2d7bd5881"
+        },
+        "requestOptions": {}
+      },
+      "id": "f6e4e39b-7728-4365-b877-68e27c091eb6",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        260
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM task_categories\nWHERE company_id = 2",
+        "options": {}
+      },
+      "id": "03b968c5-a5e5-4d40-b14d-66d781da3deb",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1020,
+        120
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 1
+            }
+          ]
+        }
+      },
+      "id": "a9822689-425b-4064-a16c-3e4a715c813a",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        100
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "520e3acd-6c89-4d2e-a0e2-cde9ad2dc64a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "9TsfGsynpILcToSO",
+  "tags": []
+}

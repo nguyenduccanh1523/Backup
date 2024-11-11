@@ -1,0 +1,465 @@
+{
+  "name": "QCM33 - Minus",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "31008378-3efa-4300-9774-51ee603c7a04",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1380,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "additionalFields": {
+          "search": "=KPI Thang ",
+          "fromDate": "= {{ $today.set({ day: -59 }).format('dd-MM-yyyy') }} ",
+          "toDate": "={{ $today.set({ day: -60 }).plus({ months: 1 }).minus({days: 1}).format('dd-MM-yyyy') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "822088d8-28d9-4c3d-8ad0-12cd372730e2",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        340
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtDayOfMonth": "={{ $today.set({ day: 1 }).plus({ months: 1 }).minus({days: 1}).format('dd') }}",
+              "triggerAtHour": 22,
+              "triggerAtMinute": 45
+            },
+            {
+              "field": "months",
+              "triggerAtDayOfMonth": "={{ $today.set({ day: 1 }).plus({ months: 1 }).minus({days: 1}).format('dd') }}",
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "id": "f6dbf5e2-8371-4078-a864-741707949b21",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1380,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "db9dd25f-ff62-4250-ae9c-238d3413284d",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        -660,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json['data.task'].heading }}",
+              "operation": "contains",
+              "value2": "Engagement"
+            }
+          ]
+        }
+      },
+      "id": "0ee8d7ca-e9a9-4e24-aeb9-06100765fcac",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        20,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json['data.task'].id }}",
+        "requestOptions": {}
+      },
+      "id": "71263c70-b0ec-4ded-b631-d98643a35689",
+      "name": "Get a task",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        280,
+        320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "number": [
+            {
+              "name": "KPI Target",
+              "value": "={{ $json.targetValue }}"
+            },
+            {
+              "name": "KPI Bonus-Fined",
+              "value": "={{ $json.bonusValue }} "
+            },
+            {
+              "name": "KPI Actual",
+              "value": "={{ $json.actualValue }}"
+            }
+          ],
+          "string": [
+            {
+              "name": "=Name assigned_to",
+              "value": "={{ $('Get a task').item.json.data.assigned_to[0].name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0f5ffef8-88bb-43a0-9ad5-9e091a484703",
+      "name": "Input data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        700,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "Phat",
+              "value": "={{ ($json['KPI Target'] - $json['KPI Actual'] )* 5 + ($json['KPI Bonus-Fined']/60000)*10 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ffe9e51c-67b4-41df-b58c-b63f077496b1",
+      "name": "Results",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        940,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05FYKF1SJU",
+          "mode": "id"
+        },
+        "text": "=QCM33: {{ $json['Name assigned_to'] }} -{{ $json.Phat }} due to AM Not meeting KPI targets for creating new Engagement in the month from project source and with type Consountant request ",
+        "otherOptions": {}
+      },
+      "id": "ab9f074e-1a61-4347-b8ab-bf29ddd68c60",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1420,
+        360
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Code').item.json.data.assigned_by.id }}",
+        "points": "={{ $json.Phat }}",
+        "note": "=QCM33: {{ $json['Name assigned_to'] }} {{ $json.Phat }} due to AM Not meeting KPI targets for creating new Engagement in the month from project source and with type Consountant request "
+      },
+      "id": "2e002b6d-950a-4975-a328-4486289757b2",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        320
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "=// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  for (const item of $input.all()) {\n  for(let i=0;i<5;i++) {\n    if(item.json.data.custom_fields_data[i]?.label == 'KPI Target')\n    {   item.json.targetValue = item.json.data.custom_fields_data[i].value}\n  \n\n   if(item.json.data.custom_fields_data[i]?.label == 'KPI Weight')\n    {  \n     let weight= Number(item.json.data.custom_fields_data[i].value) + 1\n      item.json.weightValue = weight}\n    if(item.json.data.custom_fields_data[i]?.label == 'KPI Actual')\n    {   item.json.actualValue = item.json.data.custom_fields_data[i].value}\n    if(item.json.data.custom_fields_data[i]?.label == 'KPI Bonus-Fined')\n    {   item.json.bonusValue = item.json.data.custom_fields_data[i].value}\n  }\n  }\n \n  \n}\n\nreturn $input.all(); "
+      },
+      "id": "f5aa1466-a342-4e65-aa42-783298f65f3e",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "60a81db7-7040-4859-80b5-30d983d4e410",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        340
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.task",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "task[0], task[1],task[2], task[3],.task[4], task[5],task[6], task[7],task[8], task[9],task[10], task[11],task[12], task[13],",
+        "options": {}
+      },
+      "id": "3e661ebc-fb4f-4115-a961-76f93ec73429",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "14840ac4-3e5e-4dc3-aeaa-112447cb6b2e",
+              "leftValue": "={{ $json.data[0].status }}",
+              "rightValue": "complete",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9d88a8d5-ac10-40e9-bc3d-7863d1b80bc6",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -900,
+        340
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Get a task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a task": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input data": {
+      "main": [
+        [
+          {
+            "node": "Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Results": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Input data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "75894a95-4fe2-4a27-ac60-f765b64774cb",
+  "meta": {
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "BTQdcYrw6d6BA4nA",
+  "tags": []
+}

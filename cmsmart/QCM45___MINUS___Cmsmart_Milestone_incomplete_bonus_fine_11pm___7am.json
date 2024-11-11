@@ -1,0 +1,831 @@
+{
+  "name": "QCM45 - MINUS - Cmsmart Milestone incomplete bonus fine 11pm & 7am",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "617dae2e-92d5-4d7d-b19f-570c6b61321d",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        220,
+        1440
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "taskStatus": "incomplete",
+          "fromDate": "={{ $today.set({ day: 1 }).minus({month :0}).format('dd-MM-yyyy') }} ",
+          "toDate": "= {{ $today.set({ day: 1 }).plus({month :1}).minus({day : 1}).format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "25aff7bd-4518-4ca7-9e99-838116ebe392",
+      "name": "Get Milestone Incomplete",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        1460
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "c242e20e-929a-409a-9f4f-bc6b76b1ff98",
+      "name": "Split out",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        2060,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1aaNaXPs0xeLNC0z7uHdQs9VlVdAlMlqiWjcmhqIaWBA",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Fine reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aaNaXPs0xeLNC0z7uHdQs9VlVdAlMlqiWjcmhqIaWBA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Milestone",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aaNaXPs0xeLNC0z7uHdQs9VlVdAlMlqiWjcmhqIaWBA/edit#gid=0"
+        },
+        "keepFirstRow": true
+      },
+      "id": "8077da29-9513-433f-b622-0e78b9447d4f",
+      "name": "Clear sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1340,
+        1460
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "AqIgenjvZ5DQXBHg",
+          "name": "Cmsmart Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1aaNaXPs0xeLNC0z7uHdQs9VlVdAlMlqiWjcmhqIaWBA",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Fine reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aaNaXPs0xeLNC0z7uHdQs9VlVdAlMlqiWjcmhqIaWBA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Milestone",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aaNaXPs0xeLNC0z7uHdQs9VlVdAlMlqiWjcmhqIaWBA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "milestone_title",
+              "displayName": "milestone_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "start_date",
+              "displayName": "start_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "due_date",
+              "displayName": "due_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "update_at",
+              "displayName": "update_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "punished_person",
+              "displayName": "punished_person",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "penalty_points",
+              "displayName": "penalty_points",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reason_for_the_penalty",
+              "displayName": "reason_for_the_penalty",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "workflows_updated_at",
+              "displayName": "workflows_updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "id": "bfe5aa01-9057-4ed1-8088-3155702c3357",
+      "name": "Update sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        3680,
+        1140
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "AqIgenjvZ5DQXBHg",
+          "name": "Cmsmart Google Sheets account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.current_page }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "24ba4e6f-71a3-4794-8e21-45392b24b047",
+      "name": "Loop page",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        1660
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Add a new field called 'myNewField' to the JSON of the item\nlet milestone_link = '=HYPERLINK(\"https://worksuite.cloodo.com/apps/work/milestones/edit/' + $input.item.json.id + '\",\"' + $input.item.json.title?.replaceAll('\"','\"\"') + '\")';\n\n\n\nlet obj = {\n  id: $input.item.json.id,\n  milestone_title: $input.item.json.tile,\n  start_date: $input.item.json.start_date,\n  due_date: $input.item.json.due_date,\n  update_at: $input.item.json.updated_at,\n  punished_person: $input.item.json.agent,\n  penalty_points: '-5',\n  reason_for_the_penalty: 'Milestone over due date',\n  workflows_updated_at: $now.setLocale('vi').toLocaleString(DateTime.DATETIME_SHORT),\n}\n\n$('Concat to One').item.json.data.forEach(function(item){\n  if (item.id == $input.item.json.project_id){\n    obj = {};\n  }\n});\n\nconsole.log($('Concat to One').item.json);\nreturn obj;"
+      },
+      "id": "a0e2ea98-fd34-41a0-8f21-7e065220fa1f",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3240,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1x4-oLZIfodXTkk1AE5UNbcBxxL_wybEHo_eOwvBGAFQ",
+          "mode": "list",
+          "cachedResultName": "List Projects reviews",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1x4-oLZIfodXTkk1AE5UNbcBxxL_wybEHo_eOwvBGAFQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Cmsmart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1x4-oLZIfodXTkk1AE5UNbcBxxL_wybEHo_eOwvBGAFQ/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "47b189e3-43d0-426a-ac8c-b45e5ccf4414",
+      "name": "Get reviews project",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        780,
+        1460
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "AqIgenjvZ5DQXBHg",
+          "name": "Cmsmart Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.id }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "b4279844-5f6e-48bc-a1b2-b3c140f9bedc",
+      "name": "IF not empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        1360
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "dd5e0fa3-800a-4d4f-97d3-6660dcf0a797",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3700,
+        1540
+      ]
+    },
+    {
+      "parameters": {
+        "path": "1ae40b01-e62a-4c32-baa8-2b0eab08447f",
+        "options": {}
+      },
+      "id": "fdd54fc4-afe6-4e91-a213-642eec805a49",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        560,
+        1660
+      ],
+      "webhookId": "1ae40b01-e62a-4c32-baa8-2b0eab08447f",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C06054MU77S",
+          "mode": "list",
+          "cachedResultName": "cmsmart-point"
+        },
+        "text": "=QCM45 {{ $('Split out').item.json.agent.name }} is penalized -5 points when Milestones are late due date on {{ $today.format('dd-MM-yyyy') }}: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('Split out').item.json.id }}p{{ $('Split out').item.json.project_id }}   ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "84808dec-794b-473c-8862-a779f51cf883",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        4580,
+        1300
+      ],
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "rkwu69eQauIE6nxW",
+          "name": "Slack account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Split out').item.json.agent }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "6aec34c5-b442-4466-b194-2d2f8a0e48f7",
+      "name": "IF agent not empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3680,
+        1340
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "concatenateItems",
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "6dc42dfc-9c78-46d3-8c9d-849a82886313",
+      "name": "Concat to One",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1020,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM45 {{ $('Split out').item.json.agent.name }} is penalized -5 points when Milestones are late due date on {{ $('IF agent not empty').item.json.due_date }}: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('Split out').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "43c94dd6-5690-4502-906e-07d46021d30f",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3920,
+        1320
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "0e31b721-ff0e-42cf-9627-8a11badfddce",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        4120,
+        1320
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23
+            },
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "id": "22fe9a47-a101-42e3-b0c8-186980f703f2",
+      "name": "Schedule Trigger 11pm & 7am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        1280
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Split out').item.json.agent.id }}",
+        "points": 5,
+        "note": "=QCM45 {{ $('Split out').item.json.agent.name }} is penalized -5 points when Milestones are late due date on {{ $('IF agent not empty').item.json.due_date }}: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('Split out').item.json.id }}"
+      },
+      "id": "4573fce2-a4c2-475c-8ad6-a31f0a315386",
+      "name": "QCM45",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4360,
+        1300
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "operation": "get",
+        "ID": "d6869745-5c17-4a01-b9cc-ce474ad919e8",
+        "requestOptions": {}
+      },
+      "id": "d6cd1426-1c44-49b3-bfb2-9467cb3a0bc2",
+      "name": "Get Milestone Incomplete1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1960,
+        1220
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ new Date(new DateTime($json.due_date)).format('yyyy-MM-dd')}} ",
+              "operation": "before",
+              "value2": "={{ $today.format('yyyy-MM-dd') }}"
+            }
+          ]
+        }
+      },
+      "id": "3989f02d-1126-46c8-bc44-da6ddc922ae1",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2380,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.cost }}",
+              "operation": "larger"
+            }
+          ]
+        }
+      },
+      "id": "2cac4519-4f37-4612-87b2-7b6f85adcb2a",
+      "name": "IF over due date1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2280,
+        1660
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.due_date }}",
+              "operation": "smallerEqual",
+              "value2": "={{ $today.format('yyyy-MM-dd') }}"
+            }
+          ]
+        }
+      },
+      "id": "9925c09a-6a6b-4f17-94d8-ae1a6b14f8a2",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2860,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Add a new field called 'myNewField' to the JSON of the item\n\n const inputDate =  $('Split out').item.json.due_date \n\n  // Kiểm tra xem giá trị inputDate có tồn tại không\n  if (inputDate) {\n    // Chia tách chuỗi ngày theo dấu gạch ngang\n    const parts = inputDate.split('-');\n\n    // Đảo ngược các phần của ngày để có định dạng YYYY-MM-DD\n    const newDate = `${parts[2]}-${parts[1]}-${parts[0]}`;\n\n    // Thêm trường mới với ngày đã chuyển đổi\n    item.json.due_date = newDate;\n  }\nreturn $input.item;"
+      },
+      "id": "dc46b461-be1a-40f5-ac97-b38d75f175b7",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2520,
+        1540
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Deactived\n30/09/2024\nnot found CMS fine report"
+      },
+      "id": "ba7601ff-fdbe-41da-894b-07100873046b",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3620,
+        1020
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Milestone Incomplete": {
+      "main": [
+        [
+          {
+            "node": "Split out",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split out": {
+      "main": [
+        [
+          {
+            "node": "IF over due date1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear sheet": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone Incomplete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop page": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone Incomplete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "IF not empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get reviews project": {
+      "main": [
+        [
+          {
+            "node": "Concat to One",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not empty": {
+      "main": [
+        [
+          {
+            "node": "Update sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF agent not empty",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get reviews project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF agent not empty": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Concat to One": {
+      "main": [
+        [
+          {
+            "node": "Clear sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "QCM45",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger 11pm & 7am": {
+      "main": [
+        [
+          {
+            "node": "Get reviews project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get reviews project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM45": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF over due date1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cdf3779b-a581-4b64-82bc-282503681659",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "OjCtJ4XJRG2m0tVV",
+  "tags": []
+}

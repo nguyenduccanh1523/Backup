@@ -1,0 +1,290 @@
+{
+  "name": "QCM14",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "73826ee4-3db4-46d0-a3b5-4a2e8522c81b",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "payments",
+        "page": "={{ $runIndex + 1}}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "6eaf4127-7657-4ee6-923d-fd0b4015a95e",
+      "name": "Cloodo Finance",
+      "type": "@cloodo/n8n-nodes-cloodo-finance.CloodoFinance",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        300
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.added_by }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "08a1d632-0fd2-4cb4-b2a0-cc2a0bc631c2",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=https://worksuite.cloodo.com/finance/payments/edit/{{ $('Split out').item.json.added_by.id }} ",
+        "max_limit_record": 50
+      },
+      "id": "ff29447a-d631-4c28-8cd2-ad337bd9e7a4",
+      "name": "Check exists",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        80,
+        280
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "32f2e9e2-9f3c-4a88-9e8e-fd4ea87e0331",
+      "name": "IF not exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        300,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "ab57e84d-6dc5-4f73-898a-504391d9c4d7",
+      "name": "Split out",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ $json.data[9].created_at }}",
+              "value2": "={{ $today.minus({day:1}) }}"
+            }
+          ]
+        }
+      },
+      "id": "22683803-e06b-4b29-8f2b-d076c3e123cd",
+      "name": "IF create yesterday",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "triggerAtHour": 8,
+              "triggerAtMinute": 5
+            }
+          ]
+        }
+      },
+      "id": "0b013a9c-7395-467f-b0b3-7634c9d3bd89",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -900,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Split out').item.json.added_by.id }}",
+        "points": "=2",
+        "note": "=QCM14 {{ $('Split out').item.json.added_by.name }} is rewarded with +2 points for creating a new payment https://worksuite.cloodo.com/apps/finance/payments/edit/{{ $('Split out').item.json.id }}"
+      },
+      "id": "e9d312ff-d9d8-465b-a2a8-90013734c4de",
+      "name": "QCM14",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        540,
+        260
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Finance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Finance": {
+      "main": [
+        [
+          {
+            "node": "Split out",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF create yesterday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Check exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check exists": {
+      "main": [
+        [
+          {
+            "node": "IF not exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists": {
+      "main": [
+        [
+          {
+            "node": "QCM14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split out": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF create yesterday": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Finance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Finance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5b16d198-8a9e-4234-be8f-6273030672be",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "hqu7o2K0dqt4VzZZ",
+  "tags": []
+}

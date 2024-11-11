@@ -1,0 +1,1017 @@
+{
+  "name": "QCM01-28-29",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f1cf2832-6933-4e48-98db-c6648200bcf9",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1500,
+        1280
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "0688b9e7-fdea-4b5b-83b3-88838f32fc72",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -840,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.website }}",
+              "operation": "regex",
+              "value2": "/https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,4}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)/"
+            }
+          ]
+        }
+      },
+      "id": "41a28e1b-5bfb-4529-928b-b98d5e5189f3",
+      "name": "is not empty website",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.skype }}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{ $json.data.skype }}",
+              "operation": "notEqual",
+              "value2": "NA"
+            }
+          ]
+        }
+      },
+      "id": "b8bd2b1b-8dd9-4334-b430-9555ecf08102",
+      "name": "is not empty skype",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.social_details[0].facebook }}",
+              "operation": "regex",
+              "value2": "https://www.facebook.com/"
+            }
+          ]
+        }
+      },
+      "id": "094ac18c-7734-468a-99d5-adb68500f871",
+      "name": "is not empty facebook",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05PR7A8DKN",
+          "mode": "list",
+          "cachedResultName": "worksuite-point"
+        },
+        "text": "={{ $json.message }} ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "0a2e8302-ace5-49fa-a291-3966326c6a5e",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        780
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data[0].note }}",
+              "operation": "notContains",
+              "value2": "={{ $('is not empty website').item.json.data.added_by.name }} is awarded +2 points when add the client website: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty website').item.json.data.user.id }}"
+            }
+          ]
+        }
+      },
+      "id": "e957f84e-6cb3-43c9-b91b-f559b8defe2a",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        440,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data[0].note }}",
+              "operation": "notContains",
+              "value2": "={{ $('is not empty skype').item.json.data.added_by.name }} is awarded +2 points when add the client skype: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty skype').item.json.data.id }}"
+            }
+          ]
+        }
+      },
+      "id": "26c86366-97cf-4620-a113-adabf86ee79e",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        440,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data[0].note }}",
+              "operation": "notContains",
+              "value2": "={{ $('is not empty facebook').item.json.data.added_by.name }} is awarded +2 points when add the client facebook: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty facebook').item.json.data.user.id }}"
+            }
+          ]
+        }
+      },
+      "id": "c2fdcc1b-ef6a-45a3-abfb-000e4f51ec1e",
+      "name": "IF2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        460,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=client website: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty website').item.json.data.id }} ",
+        "max_limit_record": 50
+      },
+      "id": "dbe78a9b-dddd-44a8-817c-cc148d4dd6dc",
+      "name": "search website",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        200,
+        580
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=client skype: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty skype').item.json.data.id }} ",
+        "max_limit_record": 50
+      },
+      "id": "c9c777c6-cd7e-4d50-ac2a-a3f7c0e2eea3",
+      "name": "search skype",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        200,
+        800
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=client facebook: https://worksuite.cloodo.com/apps/clients/detail/{{ $json.data.user.id }}",
+        "max_limit_record": 50
+      },
+      "id": "d61ff058-5d9d-47f0-8a38-ff12b41bb190",
+      "name": "search facebook",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        200,
+        1020
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex + 1 }}",
+              "value2": 2
+            }
+          ]
+        }
+      },
+      "id": "0ae8f4ac-7910-477b-9dfa-2308ef30758f",
+      "name": "IF4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -840,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "getmany",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "be0563cc-4cb0-4d9a-9bb9-974f6e790d93",
+      "name": "get many client",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -1140,
+        660
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $json.uuid }}",
+        "requestOptions": {}
+      },
+      "id": "b55d277d-7fdf-41b7-aa4c-a4fc226f2898",
+      "name": "get a client",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        1040
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "triggerAtHour": 23,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "id": "06f42990-acdb-4455-8909-ada4c474e483",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1460,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM `client_details`  \nWHERE \n(\n    `client_details`.`facebook` IS NOT NULL\n\tOR `client_details`.`skype` IS NOT NULL\n    OR `client_details`.`website` IS NOT NULL\n)\nAND `client_details`.`company_id` = 675\nORDER BY `client_details`.`updated_at` DESC \nLIMIT 50;",
+        "options": {}
+      },
+      "id": "37990ab7-eebf-4f81-8e96-7312f9764c21",
+      "name": "Select all clients",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -800,
+        1300
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $json.user.id }}",
+        "requestOptions": {}
+      },
+      "id": "26feab50-1926-4964-9aa4-6a0856378e6b",
+      "name": "get a client1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        660
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT `clients`.`id`,`clients`.`added_by`,`users`.`uuid` FROM `clients`  \njoin users\non clients.user_id=users.id\nWHERE \n(\n    `clients`.`facebook` IS NOT NULL\n\tOR `clients`.`skype` IS NOT NULL\n    OR `clients`.`website` IS NOT NULL\n)\n\nAND `clients`.`company_id` = 2\nAND `clients`.`updated_at` >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND `clients`.`updated_at` <= CURDATE()\nORDER BY `clients`.`updated_at` DESC\nlimit 50",
+        "options": {}
+      },
+      "id": "0f126019-be08-448f-b38b-ed4f1a7be57b",
+      "name": "Select all clients update Yesterday",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -1140,
+        1040
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.added_by }}",
+              "operation": "isNotEmpty"
+            }
+          ],
+          "number": [
+            {
+              "value1": "={{ $json.data.added_by.id }}",
+              "operation": "notEqual"
+            }
+          ]
+        }
+      },
+      "id": "a523ed4f-5da5-43e8-9856-bb8650b810e3",
+      "name": "is not empty added_by and not by admin",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.category }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "5e875395-ffda-4f5b-b852-69a9ebd5d8d3",
+      "name": "is not empty category",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=client did not attach a category: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty category').item.json.data.id }} ",
+        "max_limit_record": 50
+      },
+      "id": "79ffe347-a0aa-4f07-89af-96b2bfe80033",
+      "name": "search cateogory point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        200,
+        1220
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=client did not attach a sub category: https://worksuite.cloodo.com/apps/clients/detail/{{ $json.data.user.id }}",
+        "max_limit_record": 50
+      },
+      "id": "53d05908-f1f0-4372-ba50-92fa9bb075c8",
+      "name": "search cateogory point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        200,
+        1420
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.sub_category.id }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "c682a082-d720-4345-8c1b-50e842daa0d5",
+      "name": "is not empty sub category1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        1440
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "d226c626-df79-447e-aeae-8e2aacfdd93c",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        460,
+        1420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "61dd0039-761f-440b-8716-e4d65b1cafd0",
+      "name": "IF not found1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        460,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('is not empty website').item.json.data.added_by.id }}",
+        "points": 2,
+        "note": "=QCM01 {{ $('is not empty website').item.json.data.added_by.name }} is awarded +2 points when add the client website: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty website').item.json.data.user.id }}\nWebsite:  {{ $('is not empty added_by and not by admin').item.json.data.website }} "
+      },
+      "id": "f423dafe-4474-40ab-a4e1-f447d6e734cc",
+      "name": "QCM01-Point website",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        680,
+        560
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('is not empty skype').item.json.data.added_by.id }}",
+        "points": 2,
+        "note": "=QCM01 {{ $('is not empty skype').item.json.data.added_by.name }} is awarded +2 points when add the client skype: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty skype').item.json.data.user.id }} \nSkype:  {{ $('is not empty added_by and not by admin').item.json.data.skype }}"
+      },
+      "id": "9b7dd73c-5930-4d62-a106-5e80b71166d2",
+      "name": "QCM01-Cloodo skype",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        700,
+        780
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('is not empty facebook').item.json.data.added_by.id }}",
+        "points": 2,
+        "note": "=QCM01 {{ $('is not empty facebook').item.json.data.added_by.name }} is awarded +2 points when add the client facebook: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty facebook').item.json.data.user.id }} \nFacebook: {{ $('is not empty added_by and not by admin').item.json.data.facebook }} "
+      },
+      "id": "691ec10e-d443-48c1-9b94-01a2f4c6becb",
+      "name": "QCM01-Cloodo facebook",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        720,
+        1000
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('is not empty category').item.json.data.added_by.id }}",
+        "points": 1,
+        "note": "=QCM28 {{ $('is not empty category').item.json.data.added_by.name }} was penalized -1 point for the reason that the client did not attach a category: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty category').item.json.data.user.id }}"
+      },
+      "id": "91618549-6c54-4ac5-92dd-ef6f70f0c89a",
+      "name": "QCM28",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        720,
+        1200
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('is not empty sub category1').item.json.data.added_by.id }}",
+        "points": 1,
+        "note": "=QCM29 {{ $('is not empty sub category1').item.json.data.added_by.name }} was penalized -1 point for the reason that the client did not attach a sub category: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty sub category1').item.json.data.user.id }}"
+      },
+      "id": "d27b86da-e072-40fb-8ab4-7af2092426d0",
+      "name": "QCM29",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        740,
+        1400
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "get a client1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "is not empty website": {
+      "main": [
+        [
+          {
+            "node": "search website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "is not empty skype": {
+      "main": [
+        [
+          {
+            "node": "search skype",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "is not empty facebook": {
+      "main": [
+        [
+          {
+            "node": "search facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search website": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search skype": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search facebook": {
+      "main": [
+        [
+          {
+            "node": "IF2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF4": {
+      "main": [
+        [
+          {
+            "node": "get many client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get many client": {
+      "main": [
+        [
+          {
+            "node": "IF4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "get many client",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Select all clients update Yesterday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select all clients update Yesterday": {
+      "main": [
+        [
+          {
+            "node": "get a client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "is not empty added_by and not by admin": {
+      "main": [
+        [
+          {
+            "node": "is not empty skype",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "is not empty website",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "is not empty facebook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "is not empty category",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "is not empty sub category1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "is not empty category": {
+      "main": [
+        [
+          {
+            "node": "search cateogory point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search cateogory point": {
+      "main": [
+        [
+          {
+            "node": "IF not found1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search cateogory point1": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "is not empty sub category1": {
+      "main": [
+        [
+          {
+            "node": "search cateogory point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM01-Point website": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM01-Cloodo skype": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM01-Cloodo facebook": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM28": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM29": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get a client1": {
+      "main": [
+        [
+          {
+            "node": "is not empty added_by and not by admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get a client": {
+      "main": [
+        [
+          {
+            "node": "is not empty added_by and not by admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "QCM01-Point website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "QCM01-Cloodo skype",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF2": {
+      "main": [
+        [
+          {
+            "node": "QCM01-Cloodo facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "QCM28",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "QCM29",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ba753161-b4f6-4ad8-a77b-48a878880305",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "XV8AzLUd5RWQGGxM",
+  "tags": []
+}

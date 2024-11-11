@@ -1,0 +1,508 @@
+{
+  "name": "QCM 56 - Minus",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "9b4877ba-e31f-4686-a0b6-d75d827beb9c",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        560
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "b539faf5-83a2-4fb2-9fa9-99371d3c0a19",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -600,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "statusId": "808f256d-9914-42cd-b830-8bd1763cec8d",
+          "fromDate": "= {{ $today.set({ day: 1 }).minus({month : 0}).format('dd-MM-yyyy') }} ",
+          "toDate": "= {{ $today.set({ day: 1 }).plus({month :1}).format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "5066b27a-25f0-4734-957d-433a4c5d4b74",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -840,
+        560
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "c74ad1a4-dcd3-443c-a785-edbfda9ca4f5",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "timelogs",
+        "additionalFields": {
+          "taskID": "={{ $json.data.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "436b0b49-4507-41e4-b779-54e42c740762",
+      "name": "Cloodo Project2",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        220,
+        540
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.total }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "1c4ef535-f137-4638-a113-2a1f07da2141",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        460,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05FYKF1SJU",
+          "mode": "id"
+        },
+        "text": "=QCM56: {{ $('IF status not equal completed').item.json.data.assigned_to[0].name }} gets -1 because the Task does not logtime when executed Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF status not equal completed').item.json.data.id }}",
+        "otherOptions": {}
+      },
+      "id": "e54a2a7d-8ce2-4b93-bcc2-4907c4000628",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1780,
+        500
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.board_column.slug }}",
+              "operation": "notEqual",
+              "value2": "completed"
+            },
+            {
+              "value1": "={{ $json.data.assigned_by.id }}",
+              "operation": "notEqual",
+              "value2": "2c991f1a-6665-4533-bfca-ac969f431eb2"
+            },
+            {
+              "value1": "={{ $json.data.category.id }}",
+              "operation": "notEqual",
+              "value2": "=7608c26a-5c91-4446-8f56-ba958d139ab6"
+            }
+          ]
+        }
+      },
+      "id": "7000e0c6-e416-4683-a493-1d2bdb1bdd56",
+      "name": "IF status not equal completed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 22
+            }
+          ]
+        }
+      },
+      "id": "13bf2db9-fce3-42ec-9c54-c5890a44aa18",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1120,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('IF status not equal completed').item.json.data.assigned_to[0].id }}",
+        "points": 1,
+        "note": "=QCM56: {{ $('IF status not equal completed').item.json.data.assigned_to[0].name }} gets -1 because the Task does not logtime when executed Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF status not equal completed').item.json.data.id }}"
+      },
+      "id": "baa0b897-b31b-4c76-9d68-63acbbc97a66",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        480
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM56: {{ $('IF status not equal completed').item.json.data.assigned_to[0].name }} gets -1 because the Task does not logtime when executed Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF status not equal completed').item.json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "f39ad755-a7d1-4586-8714-18a03d494c13",
+      "name": "Cloodo Point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        500
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "7129ad90-1bfc-42e4-901d-7c60d6b72b95",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.current_page }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "dfc5f37b-98da-44b2-8359-c54ac6868465",
+      "name": "Loop page",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $('IF status not equal completed').item.json.data.project.id }}",
+        "requestOptions": {}
+      },
+      "id": "2f43e01d-fab3-4f59-9820-e1040bb3cd6b",
+      "name": "Cloodo Project3",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        700,
+        520
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "3d2a37c1-8b55-4bc3-8986-fee2649e5210",
+              "leftValue": "={{ $json.data.id }}",
+              "rightValue": "=7dba3063-3ffa-448e-9379-2e62ad3838b6",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8ea9268f-1041-41b8-8762-8962d23d559f",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        920,
+        520
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "IF status not equal completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project2": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF status not equal completed": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point1": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop page": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project3": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a279bf21-9b48-4b3a-b21f-4c7763c3b37f",
+  "meta": {
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "dnUL4IGp2GWYNTfq",
+  "tags": []
+}

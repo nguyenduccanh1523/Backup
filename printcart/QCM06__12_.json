@@ -1,0 +1,585 @@
+{
+  "name": "QCM06-(12)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f15a13af-51aa-40dd-99e1-3fb3be8ed52d",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -900,
+        720
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "760db174-50db-4194-b7c5-ada2c7c67f97",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -340,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $json.lead.id }}",
+        "requestOptions": {}
+      },
+      "id": "732273a7-3413-4b35-ba6c-7e60d5f89ef8",
+      "name": "Get Client",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        20,
+        700
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23,
+              "triggerAtMinute": 15
+            }
+          ]
+        }
+      },
+      "id": "971575c8-3fc7-4e74-872d-c25a5523a872",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -900,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "fromDate": "={{ $today.minus({day: 55}).toFormat('dd-MM-yyyy') }}",
+          "toDate": "={{ $today.minus({day: 26}).toFormat('dd-MM-yyyy') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "81a6fc1c-389a-448a-9d98-305d89d5f7eb",
+      "name": "Get Proposals yesterday",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=Proposal: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Item Lists').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "81fbf0bc-328b-49bc-ba47-386bf493a2bd",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        420,
+        680
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "ec5cd61e-2d9b-425c-9abe-695c526ce196",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        620,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data }}",
+              "operation": "isEmpty"
+            }
+          ],
+          "number": [
+            {
+              "value1": "={{ $('Item Lists').item.json.created_by.id }}",
+              "operation": "notEqual",
+              "value2": 1271
+            }
+          ]
+        }
+      },
+      "id": "42075f35-27e9-464b-86a7-547d2ae800ca",
+      "name": "IF not is Client and not create by admin",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        220,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.current_page }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "d0bc6618-79f8-476a-a653-1f31c4967ff1",
+      "name": "Loop page",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT `id`,`status`,uuid FROM `proposals`\nWHERE `company_id`=2 \nAND MONTH(`updated_at`) = MONTH(NOW() - INTERVAL 1 MONTH)\nAND YEAR(`updated_at`) = YEAR(NOW())  \nAND `status`='accepted'\nORDER BY `proposals`.`updated_at` DESC;",
+        "options": {}
+      },
+      "id": "8d29e4b4-8fc5-4306-8a99-8458f0cf0be5",
+      "name": "Select proposals accepted this month",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -580,
+        400
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "ID": "={{ $json.uuid }}",
+        "requestOptions": {}
+      },
+      "id": "cabd0988-8818-4579-a2c8-49d9c554035a",
+      "name": "Get Proposal Details",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=(close won): https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "6c429281-b4a3-43b6-8411-c5c77ed78449",
+      "name": "search point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        400
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05PR7A8DKN",
+          "mode": "list",
+          "cachedResultName": "worksuite-point"
+        },
+        "text": "={{$json.message}}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "a63077e8-7788-40f8-ac35-6cdf12d6bf3e",
+      "name": "Slack1",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        520,
+        920
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "f7f5ac7b-47ae-48e0-a3e1-e1ba05d83e86",
+      "name": "IF not found1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        100,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "id": "={{ $('Get Proposal Details').item.json.data.agent.id }}",
+        "requestOptions": {}
+      },
+      "id": "a5bfc290-6c90-431c-a38c-479eade13a60",
+      "name": "Get Employee",
+      "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
+      "typeVersion": 1,
+      "position": [
+        340,
+        380
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Get Proposal Details').item.json.data.proposal.agent_id }}",
+        "points": 4,
+        "note": "=QCM12 {{ $json.data.name }} is rewarded with +4 points for Proposal/Estimate transitioning to the Contract Signed/Accepted status (close won): https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Get Proposal Details').item.json.data.id }}"
+      },
+      "id": "15e1fe91-2df5-4d14-b891-43f1a10fd26d",
+      "name": "QCM12",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        540,
+        380
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Item Lists').item.json.agent.id }}",
+        "points": 2,
+        "note": "=QCM06 {{ $('Item Lists').item.json.agent.name }} is rewarded with +2 points for creating new Proposal: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Item Lists').item.json.id }} "
+      },
+      "id": "d008e215-eb42-419d-a5d1-a686d5fc3613",
+      "name": "QCM06",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        840,
+        660
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "84979b7d-8921-4256-a246-9096dd393893",
+              "leftValue": "={{ $json.valid_till }}",
+              "rightValue": "={{ $('Schedule Trigger').item.json.timestamp }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4888b216-0b99-42d1-a997-ac6cf38eaea9",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        720
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get Proposals yesterday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client": {
+      "main": [
+        [
+          {
+            "node": "IF not is Client and not create by admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Proposals yesterday",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Select proposals accepted this month",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Proposals yesterday": {
+      "main": [
+        [
+          {
+            "node": "Loop page",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not is Client and not create by admin": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop page": {
+      "main": [
+        [
+          {
+            "node": "Get Proposals yesterday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select proposals accepted this month": {
+      "main": [
+        [
+          {
+            "node": "Get Proposal Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Proposal Details": {
+      "main": [
+        [
+          {
+            "node": "search point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search point": {
+      "main": [
+        [
+          {
+            "node": "IF not found1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "Get Employee",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get Client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Employee": {
+      "main": [
+        [
+          {
+            "node": "QCM12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "QCM06",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "23a6df8b-af11-44ca-98e5-01c5fc67a97d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "mzUjd47D1XSsdX99",
+  "tags": []
+}

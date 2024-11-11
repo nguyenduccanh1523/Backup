@@ -1,0 +1,416 @@
+{
+  "name": "QCM50",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "661934a2-7fa9-419f-8eaf-ad36c8aaefa1",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "taskStatus": "complete",
+          "fromDate": "= {{ $today.minus({days: 8}).format('dd-MM-yyyy') }} ",
+          "toDate": "= {{ $today.minus({days: 1}).format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "99845fbd-f6c2-4cae-9ffe-56cefcb93ed0",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -780,
+        660
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "80a73e22-71b5-4163-bfd1-b181d387019e",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        -540,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.data.cost }}",
+              "operation": "largerEqual",
+              "value2": 1000
+            }
+          ]
+        }
+      },
+      "id": "b2159e53-4303-49e5-9440-10e60b8de8a8",
+      "name": "IF cost > 1000",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "  const textToCheck = $input.item.json.data.summary; \n\nlet obj = $input.item;\n\n  if (textToCheck.toLowerCase().includes('https://gitlab.com/') || textToCheck.toLowerCase().includes('https://github.com/')) {\n     obj.json.resust = 1;\n  }\n  else{\n    obj.json.resust = 0;\n  }\nreturn obj;"
+      },
+      "id": "436b28b2-7f61-44fb-ab7f-0af8d4435b9a",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.resust }}",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "f2665da9-d4de-4f4b-9167-7393f2fc6725",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        360,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('IF').item.json.data.task[0].assigned_by.id }}",
+        "points": 3,
+        "note": "=QCM50: {{ $('IF').item.json.data.task[0].assigned_by.name }} - 3 points because Milestone involved a custom project costing more than 1000 that was closed without a git link.\nlink: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('IF').item.json.data.id }}"
+      },
+      "id": "2a324108-6e5e-4d30-b7b2-4369cd9f77a8",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        620
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05FYKF1SJU",
+          "mode": "id"
+        },
+        "text": "=QCM50: {{ $('IF').item.json.data.task[0].assigned_by.name }} - 3 points because Milestone involved a custom project costing more than 1000 that was closed without a git link.\nlink: https://worksuite.cloodo.com/work/milestones/detail/{{ $('IF').item.json.data.id }}p{{ $('IF').item.json.data.project.id }}",
+        "otherOptions": {}
+      },
+      "id": "a20d56a7-2124-41c4-b379-405ae6c6081e",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1320,
+        620
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=https://worksuite.cloodo.com/work/milestones/detail/{{ $('IF').item.json.data.id }}p{{ $('IF').item.json.data.project.id }}",
+        "max_limit_record": 50
+      },
+      "id": "40959b4e-06e9-4428-bc8b-1880088678e3",
+      "name": "Cloodo Point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        600,
+        620
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data[0].note }}",
+              "operation": "notContains",
+              "value2": "=QCM50: {{ $('IF').item.json.data.task[0].assigned_by.name }} - 3 points because Milestone involved a custom project costing more than 1000 that was closed without a git link.\nlink: https://worksuite.cloodo.com/apps/work/milestones/edit/{{ $('IF').item.json.data.id }}"
+            }
+          ]
+        }
+      },
+      "id": "04e63cf0-c5ea-4af2-9f66-c0d136f95bab",
+      "name": "IF4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        820,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": 70
+            }
+          ]
+        }
+      },
+      "id": "1509048a-21ca-44f6-9a02-e55b6909405b",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "81515441-ab34-4ffe-a1b0-b06f4a108892",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        660
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 22,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "18ba0566-7c87-460d-b425-6ad5b8e82c95",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1040,
+        940
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF cost > 1000": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point1": {
+      "main": [
+        [
+          {
+            "node": "IF4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF4": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "IF cost > 1000",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ad81b061-014b-41cf-8768-2140f49eb440",
+  "meta": {
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "nRpAjxUuYOS7fIxg",
+  "tags": []
+}

@@ -1,0 +1,996 @@
+{
+  "name": "Chat and Email Order Wix",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0feeda70-7111-4965-a080-f2699010d53e",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a5646e93-98d6-4ca1-b489-e30cece704a7",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0c7db00a-0877-4a33-98cd-4c1f548e0e40",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        820,
+        -120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "4b07a7f2-7ee9-46f2-a007-65ad4e38e57a",
+      "name": "No Operation, do nothing1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "messageImport": "=You have a new order in\nShop: {{ $json.storeName }},\nFrom: Wix,\nAt: {{ $json.created_at }},\nOrder name: {{ $json.projectName }}",
+        "userId": "={{ $json.id }}"
+      },
+      "id": "95bc1533-92a8-43bc-af4c-fcbee5199cd5",
+      "name": "Workchat",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        -400
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "vmWmvYNeiMEbsF91",
+          "name": "Workchat Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = items[0].json;\nreturn item;"
+      },
+      "id": "4e5d782f-35e3-419b-abf3-489f0cf42f65",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.id = null;\n}\n\nreturn $input.all();"
+      },
+      "id": "ee2174d8-1b33-46f0-9baf-701e6b709e39",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter out items with id = null\nconst itemsWithId = items.filter(item => item.json.id !== null);\n\n// Extract id from the first item with id\nconst idToCombine = itemsWithId.length > 0 ? itemsWithId[0].json.id : null;\n\n// Combine id with other items\nconst combinedItems = items.map(item => {\n    if (item.json.id === null) {\n        item.json.id = idToCombine;\n    }\n  \n    return item;\n});\n// Filter out items with only id\nconst filteredItems = combinedItems.filter(item => Object.keys(item.json).length > 1);\nreturn filteredItems;"
+      },
+      "id": "5ce88dfb-04bf-43a0-b210-6ce024c66eb1",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "8573684c-a741-49d2-af1a-9a897954abe6",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        1420,
+        -140
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "ee98bba1-49bd-47fe-a356-67469fdacc46",
+      "name": "No Operation, do nothing2",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2600,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 560785744,
+          "mode": "list",
+          "cachedResultName": "Order From Wix",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=560785744"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ee864980-1b3a-42b2-add4-000614d2f4c4",
+      "name": "Check exist",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        -120
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.email, p.created_at, s.store_name as storeName, p.uuid, p.name as projectName\nFROM projects p\nJOIN stores s ON p.store_id = s.id\nJOIN users u ON s.user_id = u.id\nWHERE p.uuid = '{{ $json.id }}';",
+        "options": {}
+      },
+      "id": "84259322-f50b-4924-9488-27bdee13bdec",
+      "name": "Get project information",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        -300
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.id , u.name AS userName\nFROM users u \nWHERE u.email = '{{ $json.email }}';",
+        "options": {}
+      },
+      "id": "0cecd8fd-7f8d-4bb2-adbb-02be11f0763c",
+      "name": "Get user workchat Id",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        -40
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "xb8mMTZBhISimPeO",
+          "name": "Cloodo Workchat Admin"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 560785744,
+          "mode": "list",
+          "cachedResultName": "Order From Wix",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=560785744"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.uuid }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "OrderName",
+              "displayName": "OrderName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "UserName",
+              "displayName": "UserName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "StoreName",
+              "displayName": "StoreName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "588476d4-16c3-4186-bf54-bf9e3e176b9e",
+      "name": "Get project today",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        -120
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "id": "d90bb360-4382-4d87-bc82-340cc41565aa",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -40,
+        -280
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 560785744,
+          "mode": "list",
+          "cachedResultName": "Order From Wix",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=560785744"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.uuid }}",
+            "OrderName": "={{ $json.projectName }}",
+            "date": "={{ $json.created_at }}",
+            "status": "send",
+            "StoreName": "={{ $json.storeName }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "OrderName",
+              "displayName": "OrderName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "StoreName",
+              "displayName": "StoreName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b9688793-cdb9-4079-bb27-abcd29d7e35c",
+      "name": "Save to google sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1920,
+        -140
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT projects.*\nFROM projects\nINNER JOIN stores ON projects.store_id = stores.id\nWHERE stores.integration = 'wix' AND DATE(projects.created_at) = CURDATE() ;\n",
+        "options": {}
+      },
+      "id": "01616249-fad3-4d32-a555-e0c702bf39db",
+      "name": "Get Project",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        -120
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@printcart.com",
+        "toEmail": "={{ $json.email }}",
+        "subject": "You have a new order in Wix through Printcart",
+        "html": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>New Order Notification</title>\n<style>\n    body {\n        font-family: Arial, sans-serif;\n        line-height: 1.6;\n        background-color: #f4f4f4;\n        margin: 30;\n        padding: 10;\n        margin-top: 50px;\n    }\n\n    .container {\n        max-width: 600px;\n        margin: 0 auto;\n        padding: 30px;\n        background-color: #fff;\n    }\n\n    .header {\n        color: #007bff;\n        font-size: 24px;\n        margin-bottom: 20px;\n    }\n\n    .content {\n        color: #333;\n        font-size: 16px;\n        margin-bottom: 20px;\n    }\n\n    .button {\n        display: inline-block;\n        padding: 10px 20px;\n        text-decoration: none;\n        border-radius: 5px;\n        border: 2px solid #007bff;\n        background-color: #2f79c9;\n        color: #fff;\n        font-size: 20px;\n        transition: background-color 0.3s, box-shadow 0.3s;\n    }\n\n    .button:hover {\n        background-color: #4ca1e6;\n        color: #fff;\n        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n    }\n\n    .center-container {\n        text-align: center;\n    }\n\n    img {\n        width: 80%;\n    }\n</style>\n</head>\n<body>\n<div class=\"container\">\n <div class=\"content\">\n  Dear {{ $json.UserName }},<br><br>\n  Congratulations! You have a new order through Printcart waiting to be fulfilled. Here are the details:<br><br>\n  Store Name: {{ $json.storeName }}<br>\n  Order Number:  {{ $json.id }}<br>\n  Order Date: {{ $json.created_at }}<br><br>\n  To fulfill the order, please log in to your Printcart dashboard and navigate to the Orders section. From there, you can view the order details, check the custom design, and download it for printing production.<br><br>\n  <div class=\"center-container\" >\n  <a href=\"https://dashboard.printcart.com/orders\" style=\"color: #fff\" class=\"button\">Process Order Fulfilment</a><br><br>\n</div>\n  If you have any questions or need assistance with fulfilling the order, don't hesitate to reach out to our support team at <a href=\"mailto:support@printcart.com\">support@printcart.com</a>. We're here to help ensure a smooth printing process and a satisfied customer experience.<br><br>\n  Thank you for using Printcart, and best wishes for a successful order fulfillment!<br><br>\n  Warm regards,<br><br>\n\n  Ryan D.G. (Mr.)<br>\n  Business & Project Consultant<br><br>\n  Website: <a href=\"https://www.printcart.com\" style=\"color: #007bff;\">www.printcart.com</a><br>\n  Skype: live:.cid.e5694f64b5c806f6<br>\n  WhatsApp: <a href=\"https://wa.me/84967319788\" style=\"color: #007bff;\">https://wa.me/84967319788</a><br>\n  Facebook: <a href=\"https://www.facebook.com/printcart.webtoprint\"\n      style=\"color: #007bff;\">https://www.facebook.com/printcart.webtoprint</a><br>\n</div>\n<div class=\"center-container\">\n    <img src=\"https://www.printcart.com/_next/static/media/printcart-logo.8ca73bdc.png\" alt=\"logo\">\n</div>\n<footer style=\"background-color: #140c0c; padding: 20px; text-align: center; font-size: 14px; color: #eee7e7;\">\n    &copy; Printcart is Web2Print and POD Platform backed by Netbase JSC. We are trusted by thousands of\n    worldwide web-to-print partners since 2012\n</footer>.\n</div>\n</body>\n</html>\n",
+        "options": {
+          "ccEmail": "sales@printcart.com"
+        }
+      },
+      "id": "630a6941-c94e-486a-86c3-692a33408303",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        520,
+        220
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "jL633h5uTtTsmeIc",
+          "name": "Printcart Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@printcart.com",
+        "toEmail": "=hieuwork.com@gmail.com",
+        "subject": "You have a new order in Wix through Printcart",
+        "html": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>New Order Notification</title>\n<style>\n    body {\n        font-family: Arial, sans-serif;\n        line-height: 1.6;\n        background-color: #f4f4f4;\n        margin: 30;\n        padding: 10;\n        margin-top: 50px;\n    }\n\n    .container {\n        max-width: 600px;\n        margin: 0 auto;\n        padding: 30px;\n        background-color: #fff;\n    }\n\n    .header {\n        color: #007bff;\n        font-size: 24px;\n        margin-bottom: 20px;\n    }\n\n    .content {\n        color: #333;\n        font-size: 16px;\n        margin-bottom: 20px;\n    }\n\n    .button {\n        display: inline-block;\n        padding: 10px 20px;\n        text-decoration: none;\n        border-radius: 5px;\n        border: 2px solid #007bff;\n        background-color: #2f79c9;\n        color: #fff;\n        font-size: 20px;\n        transition: background-color 0.3s, box-shadow 0.3s;\n    }\n\n    .button:hover {\n        background-color: #4ca1e6;\n        color: #fff;\n        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n    }\n\n    .center-container {\n        text-align: center;\n    }\n\n    img {\n        width: 80%;\n    }\n</style>\n</head>\n<body>\n<div class=\"container\">\n <div class=\"content\">\n  Dear {{ $json.UserName }},<br><br>\n  Congratulations! You have a new order through Printcart waiting to be fulfilled. Here are the details:<br><br>\n  Store Name: {{ $json.storeName }}<br>\n  Order Number:  {{ $json.id }}<br>\n  Order Date: {{ $json.created_at }}<br><br>\n  To fulfill the order, please log in to your Printcart dashboard and navigate to the Orders section. From there, you can view the order details, check the custom design, and download it for printing production.<br><br>\n  <div class=\"center-container\" >\n  <a href=\"https://dashboard.printcart.com/orders\" style=\"color: #fff\" class=\"button\">Process Order Fulfilment</a><br><br>\n</div>\n  If you have any questions or need assistance with fulfilling the order, don't hesitate to reach out to our support team at <a href=\"mailto:support@printcart.com\">support@printcart.com</a>. We're here to help ensure a smooth printing process and a satisfied customer experience.<br><br>\n  Thank you for using Printcart, and best wishes for a successful order fulfillment!<br><br>\n  Warm regards,<br><br>\n\n  Ryan D.G. (Mr.)<br>\n  Business & Project Consultant<br><br>\n  Website: <a href=\"https://www.printcart.com\" style=\"color: #007bff;\">www.printcart.com</a><br>\n  Skype: live:.cid.e5694f64b5c806f6<br>\n  WhatsApp: <a href=\"https://wa.me/84967319788\" style=\"color: #007bff;\">https://wa.me/84967319788</a><br>\n  Facebook: <a href=\"https://www.facebook.com/printcart.webtoprint\"\n      style=\"color: #007bff;\">https://www.facebook.com/printcart.webtoprint</a><br>\n</div>\n<div class=\"center-container\">\n    <img src=\"https://www.printcart.com/_next/static/media/printcart-logo.8ca73bdc.png\" alt=\"logo\">\n</div>\n<footer style=\"background-color: #140c0c; padding: 20px; text-align: center; font-size: 14px; color: #eee7e7;\">\n    &copy; Printcart is Web2Print and POD Platform backed by Netbase JSC. We are trusted by thousands of\n    worldwide web-to-print partners since 2012\n</footer>.\n</div>\n</body>\n</html>\n",
+        "options": {}
+      },
+      "id": "19b9c37e-8831-4ab6-89ef-703e3bb15d32",
+      "name": "Send Email1",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        520,
+        380
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "jL633h5uTtTsmeIc",
+          "name": "Printcart Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://erp-amz.cloodo.com/v4/project-notes",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json, text/plain, */*"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_179928fdaa0b8079dca0a2d5c99c965c7c9b22a673e27e3977f0c6a06e799c4e"
+            },
+            {
+              "name": "authorization",
+              "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3MTU4NTQ0MTgsImV4cCI6MTcxODQ0NjQxOCwibmJmIjoxNzE1ODU0NDE4LCJqdGkiOiJaY0FreG42Q1pabVdreW1rIiwic3ViIjoiNSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.qJFHsQz4Edy4qClNd-0v5kC_VmE6U1S_GpYmgaPy3_s"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"project_id\": \"{{ $json.projectUUID }}\",\n    \"title\": \"New ordrer from Wix\",\n    \"type\": false,\n    \"details\": \"<p>Date: {{ $json.created_at }}, Store: {{ $json.storeName }}, Product: {{ $json.productName }}</p>\",\n    \"category\": \"other\"\n}",
+        "options": {}
+      },
+      "id": "d3cab319-a8df-4cba-8365-a0d85d8cc920",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2440,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * \nFROM users \nWHERE email = '{{ $json.email }}';",
+        "options": {}
+      },
+      "id": "408e61d2-6740-44ad-a6d8-4870ead202b2",
+      "name": "Get Store",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1700,
+        360
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * , projects.uuid AS projectUUID\nFROM projects \nWHERE user_client_id = '{{ $json.id }}';",
+        "options": {}
+      },
+      "id": "deddf6d1-8149-4668-8889-cf96c106cdaa",
+      "name": "Get Store2",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1880,
+        380
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "6bbb32ab-1c01-407b-a65b-bcd532b8c0a2",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        2240,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=support@printcart.com"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.userName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.userName }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n <div class=\"content\">\n            Dear {{ $json.userName }},<br><br>\n<div>\n         Congratulations! You have a new order through Printcart waiting to be fulfilled. Here are the details:<br><br>\n  Store Name: {{ $json.storeName }}<br>\n  Order Number:  {{ $json.id }}<br>\n  Order Date: {{ $json.created_at }}<br><br>\n  To fulfill the order, please log in to your Printcart dashboard and navigate to the Orders section. From there, you can view the order details, check the custom design, and download it for printing production.<br><br>\n  <div class=\"center-container\" >\n  <a href=\"https://dashboard.printcart.com/orders\" style=\"color: #fff\" class=\"button\">Process Order Fulfilment</a><br><br>\n</div>\n</div>\n</body>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "80"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4ece31ef-fde0-41b5-b85e-d36f11ce3da3",
+      "name": "HTTP Request2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1920,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "createProject",
+        "note": "Test order",
+        "name": "Test order",
+        "status": {
+          "type": "processing"
+        }
+      },
+      "id": "d04805ab-4267-41a1-b0d0-87a7b4ad5f9c",
+      "name": "Printcart",
+      "type": "@printcart/n8n-nodes-printcart.printcart",
+      "typeVersion": 1,
+      "position": [
+        260,
+        120
+      ],
+      "credentials": {
+        "printcartTokenApi": {
+          "id": "9tAXNRa6NHfZl32N",
+          "name": "Lance Wix Store"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.userName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.userName }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n <div class=\"content\">\n            Dear {{ $json.userName }},<br><br>\n<div>\n         Congratulations! You have a new order through Printcart waiting to be fulfilled. Here are the details:<br><br>\n  Store Name: {{ $json.storeName }}<br>\n  Order Number:  {{ $json.id }}<br>\n  Order Date: {{ $json.created_at }}<br><br>\n  To fulfill the order, please log in to your Printcart dashboard and navigate to the Orders section. From there, you can view the order details, check the custom design, and download it for printing production.<br><br>\n  <div class=\"center-container\" >\n  <a href=\"https://dashboard.printcart.com/orders\" style=\"color: #fff\" class=\"button\">Process Order Fulfilment</a><br><br>\n</div>\n</div>\n</body>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "80"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2297bccc-5556-4c89-812f-198ed8ee1f67",
+      "name": "HTTP Request3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1920,
+        200
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Get project information",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workchat": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check exist": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get project information": {
+      "main": [
+        [
+          {
+            "node": "Get user workchat Id",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get user workchat Id": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get project today": {
+      "main": [
+        [
+          {
+            "node": "Check exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to google sheet": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project": {
+      "main": [
+        [
+          {
+            "node": "Get project today",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save to google sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Workchat",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Store": {
+      "main": [
+        [
+          {
+            "node": "Get Store2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Store2": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "edfcf589-ea55-4638-9a1a-9423bd4495b9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "QbFxH4dLxKYMr6S9",
+  "tags": []
+}

@@ -1,0 +1,479 @@
+{
+  "name": "Worldpress Google Sheet Detail",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "ad327ba9-3877-48c5-97f6-908d6c9ef8ed",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1060,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM stores s\nWHERE s.integration = 'woocommerce';",
+        "options": {}
+      },
+      "id": "144ddd78-a0a7-4fa6-b562-59f4c103a7cf",
+      "name": "Take stores",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -540,
+        320
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT stores.id, COUNT(p.id) AS total_products\nFROM stores \nLEFT JOIN products p ON stores.id = p.store_id\nWHERE stores.integration = 'woocommerce'\n  AND DATE(stores.updated_at) = CURDATE()\nGROUP BY stores.id;",
+        "options": {}
+      },
+      "id": "4af602b1-482b-46db-be82-a0f8bebe637c",
+      "name": "Count Product",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -540,
+        500
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT stores.id, COUNT(p.id) AS total_order\nFROM stores \nLEFT JOIN projects p ON stores.id = p.store_id\nWHERE stores.integration = 'woocommerce'\nAND DATE(stores.updated_at) = CURDATE()\nGROUP BY stores.id;",
+        "options": {}
+      },
+      "id": "5992a924-1c44-43e9-a57d-d1993f7b682e",
+      "name": "Count Order",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -540,
+        160
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT stores.id, stores.store_name, COUNT(designs.id) AS number_of_designs\nFROM stores\nLEFT JOIN projects ON stores.id = projects.store_id\nLEFT JOIN designs ON projects.id = designs.project_item_id\nWHERE stores.integration = 'woocommerce'\n    AND DATE(stores.updated_at) = CURDATE()\nGROUP BY stores.id, stores.store_name;",
+        "options": {}
+      },
+      "id": "1dbb5bea-0df2-4a5f-a2e6-3600a7a0a613",
+      "name": "Count Designs",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -540,
+        660
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "id",
+              "field2": "id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fb32a62b-36a0-4246-a75e-31a743dffff4",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        -180,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "id",
+              "field2": "id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "17b3d8a3-06d9-4e86-9238-52cd1cf32a8f",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        -220,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "id",
+              "field2": "id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ac93992c-f6fa-4b03-92ce-bedc88c06d81",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        40,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "id",
+              "field2": "id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9d8e58d8-f927-42e5-9656-da7b8589205c",
+      "name": "Merge3",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE",
+          "mode": "list",
+          "cachedResultName": "List Printcart Stores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1829667617,
+          "mode": "list",
+          "cachedResultName": "Worldpress",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y9cS6DQdjKdIfrtl-l640qS_piFK4rdbdmSZqxOPWxE/edit#gid=1829667617"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.uuid }}",
+            "Name": "={{ $json.store_name }}",
+            "Shop Url": "={{ $json.shop_url }}",
+            "Created-at": "={{ $json.created_at }}",
+            "Product": "={{ $json.total_products }}",
+            "Design": "={{ $json.number_of_designs }}",
+            "Order": "={{ $json.total_order }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Shop Url",
+              "displayName": "Shop Url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Created-at",
+              "displayName": "Created-at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Product",
+              "displayName": "Product",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Order",
+              "displayName": "Order",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Design",
+              "displayName": "Design",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5361120f-aa4c-4180-b7fe-b9337211d6b5",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        400
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "80789029-5105-4a03-acf6-ca7235e22a53",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1080,
+        160
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Take stores",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Count Product",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Count Order",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Count Designs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Count Designs": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Count Product": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Take stores": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Count Order": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Count Order",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Take stores",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Count Product",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Count Designs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ea3b38c4-2bd1-4e11-92cb-0ef914deac02",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "soZzddYVVbbQWTgd",
+  "tags": []
+}

@@ -1,0 +1,752 @@
+{
+  "name": "FB - Outsourcing Vietnam",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "18ea56f2-de5e-4772-b3e0-4f5f55f20d8e",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        500,
+        920
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2,
+                1,
+                3,
+                5,
+                4,
+                6
+              ],
+              "triggerAtHour": 8,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "cd44be29-04f7-44be-9c84-010d74a02520",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        520,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Netbase Software is located in Vietnam and I want to write Linkedin post to promote its Custom Software Development services\n\nPlease create a LinkedIn post using the following content in this page link :\n\n{{ $('Get Outsourcing Link').item.json['Top pages'] }}\n\n\nThe post should be like a mind-share, not anouncement, also reflect my daily work in Netbase, where I am working as a tech investor and innovation consultancy, engage in various technology ventures, providing investment and advisory support\n\nEnsure it has a clear call to action, uses a professional tone, and incorporates relevant hashtags. Additionally, make it suitable for an audience of entrepreneurs, tech professionals, and investors.\n\nUse below contact for CTA:\n\nDavid Nguyen, Netbase CEO (Email to project@netbasejsc.com or WhatsApp me at https://wa.me/+84937869689\n\nThe post should start with a client problem which then lead to highlight our technology consultancy services, and engage my audience in a easy-going, smart, friendly but courteously foster partnerships and collaborations to our partner workwide.\n\nThe post should brief, not too much word"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "7940d31e-a657-4ff6-a561-358c90e6d998",
+      "name": "OpenAI",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2880,
+        780
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 271080997,
+          "mode": "list",
+          "cachedResultName": "FB - Outsourcing Vietnam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=271080997"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "STT": "={{ $('Get Outsourcing Link').item.json.STT }}",
+            "PostedAtOutsourcing ": "={{ $now.format('yyyy/MM/dd HH:mm') }}"
+          },
+          "matchingColumns": [
+            "STT"
+          ],
+          "schema": [
+            {
+              "id": "STT",
+              "displayName": "STT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Top pages",
+              "displayName": "Top pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PostedAtOutsourcing ",
+              "displayName": "PostedAtOutsourcing ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PostedLinkedin",
+              "displayName": "PostedLinkedin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "38afa619-4093-4773-92b6-4e9eadb6f6e5",
+      "name": "Mark Link Posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        3580,
+        780
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Lấy HTML từ node trước\nconst htmlContent = $json[\"data\"];\n\n// Sử dụng Regex để tìm các thẻ <img> và lấy thuộc tính src\nconst imageLinks = [];\nconst regex = /<img[^>]+src=\"([^\">]+)\"/g;\nlet match;\n\n// Các từ khóa không mong muốn\nconst excludedWords = ['brand', 'banner', 'whouse', 'default', 'logo', 'button', 'cong_fb', 'rating', 'imgur', 'thank-you', 'screenshot', '{{', 'view', 'start', 'favicon','men', 'twimg', 'odoo-', 'netbase-2', 'testimonial-05-100x100', 'team-01'];\n\nconst startLink = 'https://'\n\nwhile ((match = regex.exec(htmlContent)) !== null) {\n  const src = match[1];\n  if(!excludedWords.some(word=> src.includes(word))){\n    if(src.startsWith(startLink))\n     imageLinks.push(src);\n  }\n   \n}\n\nconsole.log('imageLinks:: ', imageLinks)\n// Trả về random 1 link ảnh từ những link ảnh lấy được\nif(imageLinks.length > 0){\n  const randomImg = imageLinks[Math.floor(Math.random() * imageLinks.length)];\n  return {\n  imageLinks: randomImg\n};\n}\n\n\n// Trả về một đối tượng chứa all danh sách các link ảnh\nreturn {\n  imageLinks: imageLinks\n};\n"
+      },
+      "id": "5af4642a-4961-4ed2-ad0a-d992f716aa78",
+      "name": "Get random link image (Code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json[\"Top pages\"] }}",
+        "options": {}
+      },
+      "id": "fa9b73d3-b5ab-469c-aca1-e444ec14052e",
+      "name": "Get HTML code from link promotion  (HTTP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1320,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get All Link \nGet all link need to promotion",
+        "height": 273.24288866625744,
+        "width": 221.30942614246254,
+        "color": 4
+      },
+      "id": "f2dd401d-4822-4e39-8ff6-348bd7335c81",
+      "name": "Sticky Note14",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        860,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get HTML Code\nGet html code from link selected",
+        "height": 273.24288866625744,
+        "width": 229.00554478968388,
+        "color": 5
+      },
+      "id": "bab3f0be-19ef-489e-8141-3be73c6779df",
+      "name": "Sticky Note17",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Random Img\nGet random one img link to promote",
+        "height": 273.24288866625744,
+        "width": 229.00554478968388,
+        "color": 2
+      },
+      "id": "2a96d4dc-b24a-415f-a7c2-1ffe56220cdc",
+      "name": "Sticky Note18",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Create Content\nWrite Content for post",
+        "height": 273.24288866625744,
+        "width": 229.00554478968388,
+        "color": 7
+      },
+      "id": "8f7d5abf-b126-4df3-8ced-e0346e2350f0",
+      "name": "Sticky Note19",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2820,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Post On Fackebook\nPost on facebook with content and img",
+        "height": 273.24288866625744,
+        "width": 267.7188374816057,
+        "color": 5
+      },
+      "id": "10a3c719-68b4-4c4f-bdad-da95f79119b6",
+      "name": "Sticky Note20",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3160,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Mark\nSet Time Posted of the link selected to post",
+        "height": 277.40344403557816,
+        "width": 307.2441134901525,
+        "color": 4
+      },
+      "id": "b07d4e4d-57f8-41b5-b791-e5ea19addffe",
+      "name": "Sticky Note21",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3480,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Set Time Post Mon - Sat\n1. 8AM30\n",
+        "height": 273.24288866625744,
+        "width": 221.30942614246254,
+        "color": 4
+      },
+      "id": "e5d58fbe-5e56-471a-9115-b25da67b4af3",
+      "name": "Sticky Note22",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        460,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Valid Link \nCheck the image link selected in previous node is enable to post",
+        "height": 263.91906665078557,
+        "width": 215.54603652481288,
+        "color": 4
+      },
+      "id": "ad0004af-bcb7-417d-9fc1-cf3720229cf9",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1960,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Link Posted Faile\nSave time the link is selected and note reason it can't posted and rerun flow",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 4
+      },
+      "id": "c00fee72-9546-4f62-a97e-4cc81981c7ec",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2540,
+        1060
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 271080997,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Outsourcing Vietnam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=271080997"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "STT": "={{ $('Get Outsourcing Link').item.json.STT }}",
+            "PostedAtOutsourcing ": "={{ $now.format('yyyy/MM/dd HH:mm') }} - Image Notfound"
+          },
+          "matchingColumns": [
+            "STT"
+          ],
+          "schema": [
+            {
+              "id": "STT",
+              "displayName": "STT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Top pages",
+              "displayName": "Top pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PostedAtOutsourcing ",
+              "displayName": "PostedAtOutsourcing ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PostedLinkedin",
+              "displayName": "PostedLinkedin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fc0d7e20-8517-4916-8ede-ed70dc487132",
+      "name": "Mark Link Posted Failed",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2580,
+        1180
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "0f64d8fe-cf44-4de2-8a67-e5bd9dcdb337",
+              "leftValue": "={{ $json.imageLinks && typeof $json.imageLinks === 'string' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false,
+          "looseTypeValidation": true
+        }
+      },
+      "id": "179177b5-7bca-4f4f-a57f-671833680796",
+      "name": "Check Valid Link",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2020,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.imageLinks }}",
+        "options": {}
+      },
+      "id": "9f749e8c-d147-47be-80ca-a0a1c95e4535",
+      "name": "Check Valid Image Link",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2300,
+        780
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "96287d34-596c-4736-8082-d658e68d6199",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_UNKNOWN_ENCODING",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "8ceedb14-a807-4574-9966-e886416edb21",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_INVALID_URL",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "05989516-8931-44fe-9581-e927a230e6be",
+      "name": "Loop when image link is not valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2560,
+        780
+      ],
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "=me/photos",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.message.content }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('Loop when image link is not valid').item.json.imageLinks }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "a11b4852-6b16-4f5d-a8e1-11f2c1283191",
+      "name": "Facebook  Outsourcing Vietnam",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        3240,
+        780
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "bVAFpm4Pjxt9Colv",
+          "name": "Post On Netbase Outsourcing"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 271080997,
+          "mode": "list",
+          "cachedResultName": "FB - Outsourcing Vietnam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=271080997"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "PostedAtOutsourcing ",
+              "lookupValue": "="
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1371167f-4548-4eb1-96ba-a8e7be384d1d",
+      "name": "Get Outsourcing Link",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        920,
+        800
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Outsourcing Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Facebook  Outsourcing Vietnam",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get random link image (Code)": {
+      "main": [
+        [
+          {
+            "node": "Check Valid Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get HTML code from link promotion  (HTTP)": {
+      "main": [
+        [
+          {
+            "node": "Get random link image (Code)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Link Posted Failed": {
+      "main": [
+        [
+          {
+            "node": "Get Outsourcing Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Valid Link": {
+      "main": [
+        [
+          {
+            "node": "Check Valid Image Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Valid Image Link": {
+      "main": [
+        [
+          {
+            "node": "Loop when image link is not valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop when image link is not valid": {
+      "main": [
+        [
+          {
+            "node": "Mark Link Posted Failed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Outsourcing Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Outsourcing Link": {
+      "main": [
+        [
+          {
+            "node": "Get HTML code from link promotion  (HTTP)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook  Outsourcing Vietnam": {
+      "main": [
+        [
+          {
+            "node": "Mark Link Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "51dc2fc2-984f-422c-9c6f-c71d55007628",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "ZXwiYpf5ktHAVixc",
+  "tags": []
+}

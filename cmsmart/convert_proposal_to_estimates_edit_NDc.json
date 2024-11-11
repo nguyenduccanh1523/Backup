@@ -1,0 +1,2067 @@
+{
+  "name": "convert proposal to estimates edit NDc",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b635d0c2-1424-4bbb-a0f5-9eac035f4281",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1420,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "={{ 1 }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "6b2ed958-949c-44de-887c-d318d6317966",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        2560
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "a2faefd5-5270-4cd2-a8f5-704f1f2abfbd",
+      "name": "IF7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        2760
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "e4811508-b84d-4298-b3c2-4f521809c073",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -160,
+        2560
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "ae9699d6-0d38-4fe8-a91e-2015d635da8c",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        120,
+        2560
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c2da22cc-afbc-4f96-91e0-e8c21e1822a2",
+              "leftValue": "={{ $json.data.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3c273dee-17b3-4dc7-8845-0e432ea09d11",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        300,
+        2560
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e905286c-f7b8-434b-9869-d428b53b8141",
+              "leftValue": "={{ $json.data.lead }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "864deab4-5790-43fc-acb8-f4b9e4833c40",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        580,
+        2540
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "4bc69420-ba84-46ef-ae74-860a630755db",
+              "leftValue": "={{ $('Cloodo Project').item.json.data.client.user.email }}",
+              "rightValue": "={{ $('If1').item.json.data.lead.client_email }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e7706afa-bbe9-42f9-ad0e-22dd33327c65",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1400,
+        2840
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "estimates",
+        "operation": "Create",
+        "clientID": "={{ $('Cloodo Project').item.json.data.client.user.id }}",
+        "agentID": "={{ $json.data.agent.id }}",
+        "projectID": "={{ $json.data.project.id }}",
+        "valid_till": "={{ $('If1').item.json.data.valid_till.toDateTime().plus({days: 1}).format('yyyy-MM-dd') }}",
+        "subTotal": "={{ $json.data.sub_total }}",
+        "total": "={{ $json.data.total }}",
+        "currencyID": "={{ $json.data.currency.id }}",
+        "discount": "={{ $json.data.discount }}",
+        "status": "={{ $json.es_status_id }}",
+        "calculateTax": "={{ $json.data.calculate_tax }}",
+        "estimateItemsJson": "={{ JSON.stringify($json.data.item) }}",
+        "requestOptions": {}
+      },
+      "id": "30a16972-ad3b-4992-a837-9d73cc92a474",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        2420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $('If1').all()) {\n  switch(item.json.data.status.name){\n    case \"draft\":\n      item.json.es_status_id = \"d67fdc5f-786c-403b-96a0-0f3fc0fe645f\"\n      break;\n    case \"accepted\":\n      item.json.es_status_id = \"e453218e-b247-41e2-92e7-2fe210f13a41\"\n      break;\n    case \"waiting\":\n      item.json.es_status_id = \"90f1bdd1-99e0-4dd9-8b27-d6e03bd1c85b\"\n      break;\n    case \"declined\":\n      item.json.es_status_id = \"63cf6cdd-7999-4885-a244-e27d726992a5\"\n      break;\n  }\n}\n\nreturn $('If1').all();"
+      },
+      "id": "8f9d0573-9858-4b29-bcdd-5743638abaf8",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        2520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.data.project.id }}",
+        "requestOptions": {}
+      },
+      "id": "655ac64b-ce25-44fa-a2d1-763ed62bb7ed",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        860,
+        2520
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  item.json.data.item.forEach((data) => {\n    delete data.id\n    delete data.type\n    delete data.taxes\n    delete data.created_at\n    delete data.updated_at\n  })\n}\n\nreturn $input.all();"
+      },
+      "id": "d6bb2843-e0ba-4da7-8320-94f33bc7b1bc",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        2420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/estimates",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "authorization",
+              "value": "=Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3MjgyOTIxNzYsImV4cCI6MTcyOTE1NjE3NiwibmJmIjoxNzI4MjkyMTc2LCJqdGkiOiJmbEpvMkFiWHpUOE5jNE9CIiwic3ViIjoiMTI3MSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.mxjKSKJ3PshvEE8gsvBD07UfmaTGfVu95hfMLMAmbUo"
+            },
+            {
+              "name": "origin",
+              "value": "https://worksuite.cloodo.com"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_6b13bba250af9cdc690d4e07e2fe66b05bdc56e5ef1632de55264a7d175cff87"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "client_id",
+              "value": "{{ $('Cloodo Project').item.json.data.client.user.id }}"
+            },
+            {
+              "name": "discount",
+              "value": "={{ $json.data.discount }}"
+            },
+            {
+              "name": "agent_id",
+              "value": "={{ $json.data.agent.id }}"
+            },
+            {
+              "name": "project_id",
+              "value": "={{ $json.data.project.id }}"
+            },
+            {
+              "name": "sub_total",
+              "value": "={{ $json.data.sub_total }}"
+            },
+            {
+              "name": "valid_till",
+              "value": "={{ $('If1').item.json.data.valid_till.toDateTime().plus({days: 1}).format('yyyy-MM-dd') }}"
+            },
+            {
+              "name": "total",
+              "value": "={{ $json.data.total }}"
+            },
+            {
+              "name": "currency_id",
+              "value": "={{ $json.data.currency.id }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.es_status_id }}"
+            },
+            {
+              "name": "calculate_tax",
+              "value": "={{ $json.data.calculate_tax }}"
+            },
+            {
+              "name": "=estimate_items",
+              "value": "={{ $json.data.item }}"
+            },
+            {
+              "name": "author_id",
+              "value": "={{ $json.data.created_by.id }}"
+            },
+            {
+              "name": "send_status",
+              "value": "0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "75a62514-463b-4bdb-9098-514454f81c54",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2160,
+        2420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/estimates",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json, text/plain, */*"
+            },
+            {
+              "name": "accept-language",
+              "value": "en-US,en;q=0.9,vi;q=0.8,vi-VN;q=0.7,fr-FR;q=0.6,fr;q=0.5"
+            },
+            {
+              "name": "authorization",
+              "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3Mjg0NDE5MTAsImV4cCI6MTcyOTMwNTkxMCwibmJmIjoxNzI4NDQxOTEwLCJqdGkiOiJBZkVtRlZIUXhEM1ozdDdFIiwic3ViIjoiMTI3MSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.kMqm8toYKL8l_YpRfmhXvzFL5DsftuavkeKtss7aiPI"
+            },
+            {
+              "name": "dnt",
+              "value": "1"
+            },
+            {
+              "name": "origin",
+              "value": "https://worksuite.cloodo.com"
+            },
+            {
+              "name": "priority",
+              "value": "u=1, i"
+            },
+            {
+              "name": "referer",
+              "value": "https://worksuite.cloodo.com/"
+            },
+            {
+              "name": "sec-ch-ua",
+              "value": "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\""
+            },
+            {
+              "name": "sec-ch-ua-mobile",
+              "value": "?0"
+            },
+            {
+              "name": "sec-ch-ua-platform",
+              "value": "\"Windows\""
+            },
+            {
+              "name": "sec-fetch-dest",
+              "value": "empty"
+            },
+            {
+              "name": "sec-fetch-mode",
+              "value": "cors"
+            },
+            {
+              "name": "sec-fetch-site",
+              "value": "same-site"
+            },
+            {
+              "name": "user-agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_6b13bba250af9cdc690d4e07e2fe66b05bdc56e5ef1632de55264a7d175cff87"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"currency_id\": \"b4174bab-7b84-4228-a3e2-3ae35865e670\",\n    \"client_id\": \"2c991f1a-6665-4533-bfca-ac969f431eb2\",\n    \"discount\": \"0\",\n    \"discount_type\": \"percent\",\n    \"valid_till\": \"2024-10-09\",\n    \"sub_total\": 0,\n    \"total\": 0,\n    \"note\": \"\",\n    \"estimate_items\": [],\n    \"send_status\": 0,\n    \"calculate_tax\": \"before_discount\",\n    \"custom_fields_data\": {\n        \"workflow_234\": 6\n    },\n    \"agent_id\": \"5b731bad-fc3a-4abd-b768-4a69da1df5ad\",\n    \"project_id\": \"65948f20-2184-4694-bcdd-dc417f76b9ee\",\n    \"milestone_items\": [],\n    \"status\": \"d67fdc5f-786c-403b-96a0-0f3fc0fe645f\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "fff34098-9740-42d4-82ea-ffe9ecef662f",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2240,
+        2660
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "fromDate": "={{ $today.set({ hour: 0, minute: 1 }).format('dd-MM-yyyy HH:mm') }}",
+          "toDate": "={{ $today.set({ hour: 23, minute: 59 }).format('dd-MM-yyyy HH:mm') }}",
+          "sort": "desc"
+        },
+        "requestOptions": {}
+      },
+      "id": "ad2d6601-7883-4361-bfa9-6e56b02ed98b",
+      "name": "Cloodo CRM3",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        600
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex+1 }}",
+              "operation": "smallerEqual",
+              "value2": 4
+            }
+          ]
+        }
+      },
+      "id": "c4a359db-c511-40ba-b129-65d4fe10b1f7",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "4330edf0-c3ec-43c0-b9c9-d730b48a6a04",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -320,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "6e763b68-b3b1-4c1f-a6ea-f24a5fcac452",
+      "name": "Cloodo CRM4",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        620
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "c2da22cc-afbc-4f96-91e0-e8c21e1822a2",
+              "leftValue": "={{ $json.data.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "73d89b94-798e-4060-8f85-18bf7d8a50be",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        260,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "e905286c-f7b8-434b-9869-d428b53b8141",
+              "leftValue": "={{ $json.data.lead }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8d12f36d-3359-43fa-9d78-652bd22265a3",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        540,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "4bc69420-ba84-46ef-ae74-860a630755db",
+              "leftValue": "={{ $('Cloodo Project1').item.json.data.client.user.email }}",
+              "rightValue": "={{ $('If4').item.json.data.lead.client_email }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "fbb6b9d5-7506-4ce3-a989-8cdd03811b14",
+      "name": "If5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $('If4').all()) {\n  switch(item.json.data.status.name){\n    case \"draft\":\n      item.json.es_status_id = \"d67fdc5f-786c-403b-96a0-0f3fc0fe645f\"\n      break;\n    case \"accepted\":\n      item.json.es_status_id = \"e453218e-b247-41e2-92e7-2fe210f13a41\"\n      break;\n    case \"waiting\":\n      item.json.es_status_id = \"90f1bdd1-99e0-4dd9-8b27-d6e03bd1c85b\"\n      break;\n    case \"declined\":\n      item.json.es_status_id = \"63cf6cdd-7999-4885-a244-e27d726992a5\"\n      break;\n  }\n}\n\nreturn $('If4').all();"
+      },
+      "id": "5fa856ff-98c8-4ca6-85f5-48d4ffc86168",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1260,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.data.project.id }}",
+        "requestOptions": {}
+      },
+      "id": "72e69657-cdf6-4eea-82bd-63890fff16de",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        560
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  item.json.data.item.forEach((data) => {\n    delete data.id\n    delete data.type\n    delete data.taxes\n    delete data.created_at\n    delete data.updated_at\n  })\n}\n\nreturn $input.all();"
+      },
+      "id": "ca03d92a-bd85-4b3e-a7e3-e4614d1dc8ec",
+      "name": "Code3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1560,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "estimates",
+        "operation": "Create",
+        "clientID": "={{ $('Cloodo Project1').item.json.data.client.user.id }}",
+        "agentID": "={{ $json.data.agent.id }}",
+        "projectID": "={{ $json.data.project.id }}",
+        "valid_till": "={{ $json.data.valid_till.toDateTime().plus(1, 'days').format('yyyy-MM-dd') }}",
+        "subTotal": "={{ $json.data.sub_total }}",
+        "total": "={{ $json.data.total }}",
+        "currencyID": "={{ $json.data.currency.id }}",
+        "discount": "={{ $json.data.discount }}",
+        "status": "={{ $json.es_status_id }}",
+        "calculateTax": "={{ $json.data.calculate_tax }}",
+        "estimateItemsJson": "={{ JSON.stringify($json.data.item) }}",
+        "requestOptions": {}
+      },
+      "id": "860e15f0-b398-43d3-ae5e-5cc6336ced40",
+      "name": "Create Estimate",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "41f8b0d8-5759-40d1-92dc-9f27691e9949",
+              "leftValue": "={{ $('Cloodo Project1').item.json.data.client.user.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "eec85729-4f84-4ec5-8ba9-c5cb55bd0c05",
+      "name": "If6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2100,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "estimates",
+        "operation": "Create",
+        "clientID": "={{ $('Cloodo Project1').item.json.data.client.user.id }}",
+        "agentID": "={{ $json.data.agent.id }}",
+        "projectID": "={{ $json.data.project.id }}",
+        "valid_till": "={{ $json.data.valid_till.toDateTime().plus(1, 'days').format('yyyy-MM-dd') }}",
+        "subTotal": "={{ $json.data.sub_total }}",
+        "total": "={{ $json.data.total }}",
+        "currencyID": "={{ $json.data.currency.id }}",
+        "discount": "={{ $json.data.discount }}",
+        "status": "={{ $json.es_status_id }}",
+        "calculateTax": "={{ $json.data.calculate_tax }}",
+        "estimateItemsJson": "={{ JSON.stringify($json.data.item) }}",
+        "requestOptions": {}
+      },
+      "id": "0382c317-0f5d-4ba5-8618-6b7b61581882",
+      "name": "Create Estimate Not equal",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2880,
+        740
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "estimates",
+        "operation": "Create",
+        "clientID": "={{ $('Cloodo CRM5').item.json.data[0].user.id }}",
+        "agentID": "={{ $('If6').item.json.data.agent.id }}",
+        "projectID": "={{ $json.data[0].id }}",
+        "valid_till": "={{ $('If6').item.json.data.valid_till.toDateTime().plus(1, 'days').format('yyyy-MM-dd') }}",
+        "subTotal": "={{ $('If6').item.json.data.sub_total }}",
+        "total": "={{ $('If6').item.json.data.total }}",
+        "currencyID": "=b4174bab-7b84-4228-a3e2-3ae35865e670",
+        "discount": "={{ $('Code2').item.json.data.discount }}",
+        "status": "={{ $('Code2').item.json.es_status_id }}",
+        "calculateTax": "={{ $('Code2').item.json.data.calculate_tax }}",
+        "estimateItemsJson": "={{ JSON.stringify($('If6').item.json.data.item) }}",
+        "requestOptions": {}
+      },
+      "id": "8c44bf08-6813-4e45-9d17-0e9b9478e1d3",
+      "name": "Create Estimate No project",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3800,
+        1460
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "getmany",
+        "additionalFields": {
+          "searchLead": "={{ $json.data.lead.client_email }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "3981d061-bc7a-4cff-8382-25e102efdac5",
+      "name": "Cloodo CRM5",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2520,
+        1260
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "clientDetails",
+        "ID": "={{ $json.data[0].user.id }}",
+        "requestOptions": {}
+      },
+      "id": "f3b0c950-ee37-453d-adc4-267c0e7d1dcb",
+      "name": "Cloodo CRM6",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2940,
+        1240
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## lấy dữ liệu trên pro\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 324.05690427023967,
+        "width": 275.9866757754074
+      },
+      "id": "e013f8d7-c756-40b0-9b6b-71c2eb31cf77",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Duyệt các page\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 346.283968719756
+      },
+      "id": "3a0281cf-1efd-45c3-982e-948ae9621421",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## if yêu cầu total > 0\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 471.73374392009646
+      },
+      "id": "d9bf655b-27b2-4672-affe-f8d86c54c55f",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        180,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Phải có lead\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 369.471880835197,
+        "width": 226.80492089227113
+      },
+      "id": "557d3902-25cc-4af1-be4e-5e3c519cf8a3",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        460,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Email của lead phải giống với Email user của project\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 304.9060854773454,
+        "width": 314.22231998097527
+      },
+      "id": "d43b2783-f37c-4dcf-b15b-e75ee711dc63",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1720,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## check xem có email của client trong project đó k\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 353.83406451132345,
+        "width": 239.99999999999994
+      },
+      "id": "73946a20-17ea-497f-acd7-7f447642dc54",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2020,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## dùng mail của lead check xem có client chưa\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 418.99299355276344,
+        "width": 252.35386525901362
+      },
+      "id": "9cad76d0-1a26-436b-8a12-27c77f17edfe",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2420,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Lấy id của client tìm project tương ứng\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 419.4505776243673
+      },
+      "id": "c74d1ce3-083c-4eec-af13-70db79c0e085",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2860,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 3TH\n\nth1: ko có project thì tạo project\n\nth2: nếu có 1 project thì tạo luôn\n\nth3: nếu có trên 1 project ",
+        "height": 421.9942107383316
+      },
+      "id": "1589177d-d9a6-4a19-998f-b74f2900d411",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "projectName": "={{ $('Cloodo CRM5').item.json.data[0].user.name }} Project",
+        "start_date": "=2024-10-10T17:37:49",
+        "user_id": "=[\"{{ $('If6').item.json.data.agent.id }}\"]",
+        "additionalFields": {
+          "client_id": "=\"{{ $('Cloodo CRM5').item.json.data[0].user.id }}\""
+        },
+        "requestOptions": {}
+      },
+      "id": "3275bac8-a0a7-4c62-92e2-7fee6830f980",
+      "name": "Cloodo Project2",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3800,
+        720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/projects",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json, text/plain, */*"
+            },
+            {
+              "name": "accept-language",
+              "value": "en-US,en;q=0.9,vi;q=0.8,vi-VN;q=0.7,fr-FR;q=0.6,fr;q=0.5"
+            },
+            {
+              "name": "authorization",
+              "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3Mjg1NTUyNjMsImV4cCI6MTcyOTQxOTI2MywibmJmIjoxNzI4NTU1MjYzLCJqdGkiOiJYVU4wQWF3N0hBcTlVYkhtIiwic3ViIjoiMTI3MSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.8bh6cu8tg-JLnojxGri5YKxsdqsdEINn-KHPi5lL8DM"
+            },
+            {
+              "name": "dnt",
+              "value": "1"
+            },
+            {
+              "name": "origin",
+              "value": "https://worksuite.cloodo.com"
+            },
+            {
+              "name": "priority",
+              "value": "u=1, i"
+            },
+            {
+              "name": "referer",
+              "value": "https://worksuite.cloodo.com/"
+            },
+            {
+              "name": "sec-ch-ua",
+              "value": "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\""
+            },
+            {
+              "name": "sec-ch-ua-mobile",
+              "value": "?0"
+            },
+            {
+              "name": "sec-ch-ua-platform",
+              "value": "\"Windows\""
+            },
+            {
+              "name": "sec-fetch-dest",
+              "value": "empty"
+            },
+            {
+              "name": "sec-fetch-mode",
+              "value": "cors"
+            },
+            {
+              "name": "sec-fetch-site",
+              "value": "same-site"
+            },
+            {
+              "name": "user-agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_6b13bba250af9cdc690d4e07e2fe66b05bdc56e5ef1632de55264a7d175cff87"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"project_short_code\": \"abc\",\n  \"completion_percent\": 0,\n  \"project_name\": \"ssssssssssssssssssss\",\n  \"start_date\": \"2024-10-10\",\n  \"deadline\": \"2024-10-10\",\n  \"status\": \"in progress\",\n  \"project_summary\": \"\",\n  \"notes\": \"\",\n  \"currency_id\": null,\n  \"hours_allocated\": \"\",\n  \"project_budget\": \"\",\n  \"client_id\": \"2c3fe32d-58e9-4358-b0a0-9e3008605e6e\",\n  \"category_id\": \"a48b7717-4535-464f-869c-48f1267ff696\",\n  \"team_id\": null,\n  \"user_id\": [\n    \"5b731bad-fc3a-4abd-b768-4a69da1df5ad\"\n  ],\n  \"manual_timelog\": \"disable\",\n  \"client_view_task\": \"disable\",\n  \"allow_client_notification\": \"disable\",\n  \"read_only\": \"disable\",\n  \"custom_fields_data\": {}\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "5f3b956a-01b3-430f-9a1f-6537b808b128",
+      "name": "HTTP Request2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3420,
+        2400
+      ]
+    },
+    {
+      "parameters": {
+        "page": {},
+        "additionalFields": {
+          "search": "={{ $json.data.name }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "0614598e-97e4-4f28-a3da-0cd09e56d1a0",
+      "name": "Cloodo Project3",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        4040,
+        720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Create Project\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 331.8748992107853,
+        "width": 193.54617952225175
+      },
+      "id": "8866b3af-b3b8-4b89-bc4c-9088f8bfb948",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3767,
+        554
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Lấy id của project\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 314.17529350466776,
+        "width": 204.52664633941475
+      },
+      "id": "7373734c-1062-4c43-b698-38d5556b0591",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4000,
+        586
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "estimates",
+        "operation": "Create",
+        "clientID": "={{ $json.data[0].client.id }}",
+        "agentID": "={{ $('If6').item.json.data.agent.id }}",
+        "projectID": "={{ $json.data[0].id }}",
+        "valid_till": "={{ $('If6').item.json.data.valid_till.toDateTime().plus(1, 'days').format('yyyy-MM-dd') }}",
+        "subTotal": "={{ $('If6').item.json.data.sub_total }}",
+        "total": "={{ $('If6').item.json.data.total }}",
+        "currencyID": "=b4174bab-7b84-4228-a3e2-3ae35865e670",
+        "discount": "={{ $('Code2').item.json.data.discount }}",
+        "status": "={{ $('Code2').item.json.es_status_id }}",
+        "calculateTax": "={{ $('Code2').item.json.data.calculate_tax }}",
+        "estimateItemsJson": "={{ JSON.stringify($('If6').item.json.data.item) }}",
+        "requestOptions": {}
+      },
+      "id": "95565ec6-557b-455b-8622-d63b8f398ceb",
+      "name": "Create Estimate with project New",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4320,
+        720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "estimates",
+        "operation": "getmany",
+        "pageEstimates": {},
+        "additionalFields": {
+          "fromDate": "={{ $today.set({ hour: 0, minute: 1 }).format('dd-MM-yyyy HH:mm') }}",
+          "toDate": "={{ $today.set({ hour: 23, minute: 59 }).format('dd-MM-yyyy HH:mm') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "eadcbd35-72b8-4c69-8cfa-8e5200bda79c",
+      "name": "Cloodo CRM7",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        -400
+      ],
+      "executeOnce": true,
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b3deb131-2cd4-464c-8909-608042c52d42",
+              "leftValue": "={{ $json.project.id }}",
+              "rightValue": "={{ $json.data.project.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "7f00c9da-a7c7-45e8-9921-e52211e6d67f",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "75ee4609-83f0-4973-a882-64c39b0e023d",
+      "name": "If7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2380,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "ce860d96-8c9a-4e6f-a3be-986d7f1de967",
+      "name": "Item Lists2",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        2140,
+        -380
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "estimates",
+        "operation": "getmany",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "9a0b9b29-b602-4d32-af33-b3ace6d00a15",
+      "name": "Cloodo CRM8",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2220,
+        -120
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const currentIndex = $json[\"runIndex\"];\nreturn {\n  runIndex: currentIndex + 1,\n};\n"
+      },
+      "id": "5e24d2fe-30b9-4dfe-b6ee-c7088b09d6e2",
+      "name": "Code4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1020,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "id": "379dceea-ee95-4682-a95e-65e8d0af2c07",
+      "name": "Code5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5160,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "66c485da-fda0-4e60-bcdd-4dbe7d52f68a",
+              "leftValue": "={{ $('If6').item.json.data.agent }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "23ef7d00-142a-4528-bfc4-6d9d619582c1",
+      "name": "If8",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3520,
+        1160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "66c485da-fda0-4e60-bcdd-4dbe7d52f68a",
+              "leftValue": "={{ $json.data.status.id }}",
+              "rightValue": "aca8bead-453f-41ab-9f29-69690c63f496",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "565f798a-08a3-4acc-bbb0-2647aa52f95b",
+      "name": "If9",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2340,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "04f4bb90-f187-405e-80f3-91a901c6ac07",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "dc4383df-3794-472e-a065-bf30323158cd",
+      "name": "If10",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2740,
+        1260
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "projectName": "={{ $('Cloodo CRM5').item.json.data[0].user.name }} Project",
+        "start_date": "=2024-10-10T17:37:49",
+        "user_id": "=[\"afd3f239-57cb-44be-80dc-b4d0b488aab3\"]",
+        "additionalFields": {
+          "client_id": "=\"{{ $('Cloodo CRM5').item.json.data[0].user.id }}\""
+        },
+        "requestOptions": {}
+      },
+      "id": "50bc4b5c-18fd-444b-a44f-875737c937e9",
+      "name": "Cloodo Project4",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3860,
+        1140
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "page": {},
+        "additionalFields": {
+          "search": "={{ $json.data.name }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "071e91f0-abba-4128-90b7-608568b06f32",
+      "name": "Cloodo Project5",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        4100,
+        1140
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Create Project\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 331.8748992107853,
+        "width": 193.54617952225175
+      },
+      "id": "4dbafcad-2697-42ca-b1d7-993404ae3882",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3827,
+        974
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Lấy id của project\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 314.17529350466776,
+        "width": 162.69048165381082
+      },
+      "id": "48d5687a-c122-4c7d-aa5a-78223af79d64",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4080,
+        986
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "estimates",
+        "operation": "Create",
+        "clientID": "={{ $json.data[0].client.id }}",
+        "agentID": "={{ $('If6').item.json.data.agent.id }}",
+        "projectID": "={{ $json.data[0].id }}",
+        "valid_till": "={{ $('If6').item.json.data.valid_till.toDateTime().plus(1, 'days').format('yyyy-MM-dd') }}",
+        "subTotal": "={{ $('If6').item.json.data.sub_total }}",
+        "total": "={{ $('If6').item.json.data.total }}",
+        "currencyID": "=b4174bab-7b84-4228-a3e2-3ae35865e670",
+        "discount": "={{ $('Code2').item.json.data.discount }}",
+        "status": "={{ $('Code2').item.json.es_status_id }}",
+        "calculateTax": "={{ $('Code2').item.json.data.calculate_tax }}",
+        "estimateItemsJson": "={{ JSON.stringify($('If6').item.json.data.item) }}",
+        "requestOptions": {}
+      },
+      "id": "8317736f-b1fe-4373-a547-d6ad9a725ecc",
+      "name": "Create Estimate with project New1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4380,
+        1140
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data[0].id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "6d448c83-5899-4c64-afc4-2cd1b0c79e0c",
+                    "leftValue": "={{ $json.data[1].id }}",
+                    "rightValue": "1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "3291b6cd-e9b7-49b6-aec3-a86f7bd5589a",
+                    "leftValue": "={{ $json.data[1].id }}",
+                    "rightValue": 1,
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1f1248ae-6694-4dad-a00b-af4ccc4f9310",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        3260,
+        1280
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d25ac7d4-83bf-4f9d-ae8c-d997e0c15241",
+              "leftValue": "={{ $json.data.total }}",
+              "rightValue": 279.85,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9017f849-0ae3-46d0-a999-28f180b2bb68",
+      "name": "If11",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23
+            }
+          ]
+        }
+      },
+      "id": "debc7df5-447a-40e2-b85b-016c6d47aff6",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1200,
+        340
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM3": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "If9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Create Estimate Not equal",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cloodo CRM5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM5": {
+      "main": [
+        [
+          {
+            "node": "If10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM6": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project3": {
+      "main": [
+        [
+          {
+            "node": "Create Estimate with project New",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM4": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM7": {
+      "main": [
+        [
+          {
+            "node": "Item Lists2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists2": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If8": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cloodo Project4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If10": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project4": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project5": {
+      "main": [
+        [
+          {
+            "node": "Create Estimate with project New1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "If8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Estimate No project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If9": {
+      "main": [
+        [
+          {
+            "node": "Create Estimate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fa50e850-c01c-4ce9-9f0c-b528b78358c1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "KYMvmcRSuVteyaAm",
+  "tags": []
+}

@@ -1,0 +1,301 @@
+{
+  "name": "Trigger princart",
+  "nodes": [
+    {
+      "parameters": {
+        "event": [
+          "taskAdded",
+          "projectAdded",
+          "milestoneAdded"
+        ]
+      },
+      "id": "41fbd4f9-4a22-4ecc-be96-51715d23077b",
+      "name": "Cloodo Trigger",
+      "type": "@cloodo/n8n-nodes-cloodo-trigger.cloodoTrigger",
+      "typeVersion": 1,
+      "position": [
+        700,
+        360
+      ],
+      "webhookId": "bfb4a3b4-f84f-4890-90f6-310203ca6867",
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": "q1sROECSgPLI8Vs8",
+        "options": {}
+      },
+      "id": "93f0503f-a8c3-4040-93fc-3e9ba8b87df4",
+      "name": "trigger asign workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.event }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "New Lead Event",
+              "output": 1
+            },
+            {
+              "value2": "New Proposal Event",
+              "output": 2
+            },
+            {
+              "value2": "New Task Event",
+              "output": 3
+            }
+          ]
+        },
+        "fallbackOutput": 0
+      },
+      "id": "21d9b6ca-30f4-44fe-9000-b4dbe5260eb9",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "JwwMVjOeprRg22cX",
+        "options": {}
+      },
+      "id": "2d8b69dd-d776-4cea-ba64-31b6f861fa66",
+      "name": "Execute Workflow Sync Lead to Mautic",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#printcart-trigger",
+          "mode": "name"
+        },
+        "text": "=Printcart trigger: {{ $json.event }} : {{ $json.data.id }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "04cccc88-575a-46f1-b577-f04a8abfd4f5",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1160,
+        540
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": "6YcDgbHjzYsyGcMI",
+        "options": {}
+      },
+      "id": "359bda31-fb47-4bca-80f8-7b237ff9a76e",
+      "name": "13/15/17 Lead Warn creat task assign Agent",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "goZyExeUOErdVoi3",
+        "options": {}
+      },
+      "id": "a0b451eb-61bd-44fe-8338-93470c2fb2d0",
+      "name": "14/16/18 Agent +5",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.event }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "New Clients Event",
+              "output": 1
+            },
+            {
+              "value2": "New Ticket Event",
+              "output": 2
+            }
+          ]
+        },
+        "fallbackOutput": 0
+      },
+      "id": "22ebc6f9-8082-4d90-968b-8d9e66060c0b",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "dJMRN0FxgMUx97Rd",
+        "options": {}
+      },
+      "id": "aa69d05d-7718-4b2f-bee5-a2a94bb9d640",
+      "name": "9/10 Point Status Lead",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "ksFFZZSrJbItGNke",
+        "options": {}
+      },
+      "id": "5e4e8fab-c9d2-4dae-9861-78d075cbb2c5",
+      "name": "Ticket Engagement  cearte point +3",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "QZ0HXvWEZ5VzQB4x ",
+        "options": {}
+      },
+      "id": "f143e449-6f6d-479a-b301-72dc32d9ea5a",
+      "name": "Proposal cearte point +3",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        680
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cloodo Trigger": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Execute Workflow Sync Lead to Mautic",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "trigger asign workflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "13/15/17 Lead Warn creat task assign Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "9/10 Point Status Lead",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Proposal cearte point +3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "14/16/18 Agent +5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ticket Engagement  cearte point +3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9fb0aaad-9d99-4482-9210-4cc76c809dec",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "aipWNJstcR49sZkv",
+  "tags": []
+}

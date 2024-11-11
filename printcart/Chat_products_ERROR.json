@@ -1,0 +1,731 @@
+{
+  "name": "Chat products ERROR",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "36b01e2b-4bfd-43ea-81e3-c9c6325729e3",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "2e3d5f99-9d67-4067-a8cd-b274a059ce9b",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -100,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM stores\nJOIN users u ON stores.user_id = u.id\nWHERE stores.integration IN ('shopify', 'wix', 'woocommerce')\nAND YEAR(stores.updated_at) = YEAR(NOW())\nAND MONTH(stores.updated_at) = MONTH(NOW())\nAND DAY(stores.updated_at) = DAY(NOW())-1\nAND stores.deleted_at IS NULL;",
+        "options": {}
+      },
+      "id": "1460c570-8220-4b37-aff7-aa7a7c124349",
+      "name": "Get Store1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        140,
+        -120
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "f429b905-dabb-4c88-b458-39a3ec6eeada",
+      "name": "Replace Me1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -720
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.id as userId\nFROM users u \nWHERE u.email = '{{ $json.email }}';",
+        "options": {}
+      },
+      "id": "760cfdd9-16ad-41f2-b2d8-8e0686c10879",
+      "name": "Get user workchat Id1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        840,
+        -720
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "product",
+        "operation": "getListOfImportProduct",
+        "sid": "={{ $json.sid }}",
+        "secret": "={{ $json.secret }}"
+      },
+      "id": "88f58de1-76f8-4d9a-8c15-c128a87c6191",
+      "name": "Printcart",
+      "type": "@printcart/n8n-nodes-printcart.printcart",
+      "typeVersion": 1,
+      "position": [
+        680,
+        -100
+      ],
+      "credentials": {
+        "printcartTokenApi": {
+          "id": "aOndDgnYoPbPBLS1",
+          "name": "Printcart Admin"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assume 'items' is an array containing the object with 5 data items\nconst data = items[0].json.data; // Assuming 'data' is the property containing the data items\n\nlet newItems = [];\n\n// Check if 'data' exists and is an array\nif (data && Array.isArray(data.products)) {\n    // Iterate over each product in the 'products' array\n    data.products.forEach((product) => {\n        // Create a new item for each product\n        newItems.push({\n            json: {\n                product: product\n            }\n        });\n    });\n} else {\n    // If 'data' or 'products' is not available, return an empty array\n    newItems = [];\n}\n\nreturn newItems;\n\n"
+      },
+      "id": "7ff36df1-e8df-4362-b3de-785a70975fad",
+      "name": "Code3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        -780
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "b6537a62-f5df-4eab-8cda-0fc59aa3f89b",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        520,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "messageImport": "=Your Store is currently having a bad connection with Printcart. Please double check your store setting to fix the connection",
+        "userId": "={{ $json.UserId }}"
+      },
+      "id": "c4595a2f-d578-4d38-93aa-728d27c0af56",
+      "name": "Workchat",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        380
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "vmWmvYNeiMEbsF91",
+          "name": "Workchat Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "fab8991b-6fb2-4105-9c7a-1bb9a864df61",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        380,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.email\nFROM users u \nWHERE u.id = {{ $json.user_id }}",
+        "options": {}
+      },
+      "id": "f82023a6-39a4-4926-9a79-a8cef357ebfe",
+      "name": "Get project information1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        -720
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0",
+          "mode": "list",
+          "cachedResultName": "Check project printcart ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1282570184,
+          "mode": "list",
+          "cachedResultName": "Error",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit#gid=1282570184"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Id": "={{ $json.uuid }}",
+            "UserId": "={{ $json.userId }}",
+            "storeName": "={{ $json.store_name }}"
+          },
+          "matchingColumns": [
+            "Id"
+          ],
+          "schema": [
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "UserId",
+              "displayName": "UserId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sendMessage",
+              "displayName": "sendMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "storeName",
+              "displayName": "storeName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "58e0ca81-7938-40d7-b64b-f40ce1ad9c61",
+      "name": "Get product today2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1160,
+        580
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a5646e93-98d6-4ca1-b489-e30cece704a7",
+              "leftValue": "={{ $json.sendMessage }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "0f042971-36fd-44ba-a5a3-a1f2bafeb00d",
+              "leftValue": "={{ $json.Id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "037e4e27-4dd2-49e0-8a2e-07912578abe3",
+      "name": "Check SendMessage1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Combine data from both items into a single object\nconst combinedData = {\n    userId: items[0]?.json?.userId,\n    id: items[1]?.json?.id,\n    uuid: items[1]?.json?.uuid,\n    store_name: items[1]?.json?.store_name,\n    user_id: items[1]?.json?.user_id,\n    sid: items[1]?.json?.sid,\n    secret: items[1]?.json?.secret,\n    unauth_access_token: items[1]?.json?.unauth_access_token,\n    google_font_api: items[1]?.json?.google_font_api,\n    shop_url: items[1]?.json.shop_url,\n    integration: items[1]?.json?.integration,\n    integration_details: items[1]?.json?.integration_details,\n    created_at: items[1]?.json?.created_at,\n    updated_at: items[1]?.json?.updated_at,\n    deleted_at: items[1]?.json?.deleted_at,\n    unsplash: items[1]?.json?.unsplash,\n    pixabay: items[1]?.json?.pixabay,\n    pexels: items[1]?.json?.pexels,\n    timezone: items[1]?.json?.timezone,\n    setting_defaults: items[1]?.json?.setting_defaults,\n    pod_setting: items[1]?.json?.pod_setting,\n    language: items[1]?.json?.language,\n    name: items[1]?.json?.name,\n    email: items[1]?.json?.email,\n    email_verified_at: items[1]?.json?.email_verified_at,\n    password: items[1]?.json?.password,\n    tier: items[1]?.json?.tier,\n    social_details: items[1]?.json?.social_details,\n    metadata: items[1]?.json?.metadata,\n    error: items[1]?.json?.error\n};\n\n// Create a new item containing the combined data\nconst newItem = {\n    json: combinedData\n};\n\n// Return the new item\nreturn [newItem];"
+      },
+      "id": "5033d26f-45d0-455f-a0d9-295599a74014",
+      "name": "Code6",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0",
+          "mode": "list",
+          "cachedResultName": "Check error account ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1282570184,
+          "mode": "list",
+          "cachedResultName": "Error",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit#gid=1282570184"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Id",
+              "lookupValue": "={{ $json.Id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "10e0b147-c0e3-4868-91da-c4ab2fcd9c4a",
+      "name": "Get product today3",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1560,
+        580
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0",
+          "mode": "list",
+          "cachedResultName": "Check error account ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1282570184,
+          "mode": "list",
+          "cachedResultName": "Error",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit#gid=1282570184"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Id": "={{ $json.Id }}",
+            "sendMessage": "send"
+          },
+          "matchingColumns": [
+            "Id"
+          ],
+          "schema": [
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "UserId",
+              "displayName": "UserId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sendMessage",
+              "displayName": "sendMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "storeName",
+              "displayName": "storeName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "609f0f97-d9ba-4341-a5fc-eca08cfe7683",
+      "name": "Get product today4",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2140,
+        560
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "e6f4933e-66db-44a9-ab21-fbef18d7f107",
+      "name": "Replace Me4",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        940,
+        580
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "ad7d3053-98ca-48db-8e8a-707796843fd6",
+      "name": "Replace Me5",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        580
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "46ed7723-fcec-4ffb-9b6a-5e9bfa0461e2",
+      "name": "Replace Me6",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1960,
+        560
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "2379f310-c1f4-4641-bba6-03e36c2fff23",
+      "name": "Replace Me9",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        960,
+        -120
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Store1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get user workchat Id1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Printcart": {
+      "main": [
+        [
+          {
+            "node": "Replace Me9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Replace Me1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Printcart",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get project information1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get project information1": {
+      "main": [
+        [
+          {
+            "node": "Get user workchat Id1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get product today2": {
+      "main": [
+        [
+          {
+            "node": "Replace Me5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Workchat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check SendMessage1": {
+      "main": [
+        [
+          {
+            "node": "Replace Me6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "Replace Me4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get product today3": {
+      "main": [
+        [
+          {
+            "node": "Check SendMessage1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get product today4": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me4": {
+      "main": [
+        [
+          {
+            "node": "Get product today2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me5": {
+      "main": [
+        [
+          {
+            "node": "Get product today3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me6": {
+      "main": [
+        [
+          {
+            "node": "Get product today4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me9": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6ccd48e6-4dfc-41df-ab51-7427c6237d18",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "y2YL4NiKmSXB0VVJ",
+  "tags": []
+}

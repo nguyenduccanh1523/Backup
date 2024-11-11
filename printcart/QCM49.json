@@ -1,0 +1,531 @@
+{
+  "name": "QCM49",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0d385f14-9e8b-4769-9bf0-cbd67b2c58c3",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2680,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.task",
+        "options": {}
+      },
+      "id": "c8e3328c-270c-4ed8-bcc7-e25138a74328",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        -1020,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "5f1e9c7f-c86b-45a2-a767-dce026659e47",
+      "name": "get a milestone",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        -2240,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.current_page }}",
+              "operation": "smallerEqual",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "3a254a84-5cbd-4311-8529-8b5907ff5ab4",
+      "name": "IF2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -2300,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "  const textToCheck = $input.item.json.title; \n\n  let obj = $input.item;\n\n  if (textToCheck.toLowerCase().includes('fixbug')) {\n   obj.json.fix = 1;\n    \n  }\n  else{\n    obj.json.fix = 0;\n  }\n\n\nreturn obj;"
+      },
+      "id": "b7205772-2109-4224-8304-3f355cd47574",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2020,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 22,
+              "triggerAtMinute": 40
+            }
+          ]
+        }
+      },
+      "id": "1c4b87b8-caa7-4912-a6f7-0df4900f9ab5",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2680,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.fix }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "b2c0d10d-7fde-4c17-b166-d91b552c7e20",
+      "name": "IF milestone_title not fixbug",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1780,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.cost }}",
+              "operation": "larger"
+            }
+          ]
+        }
+      },
+      "id": "ff63cf41-b5ca-4fe8-a5a6-b93b3c08651f",
+      "name": "IF1 có cost",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1560,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "4e9b2274-7964-426d-8b32-80037a3bcb44",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -780,
+        500
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "taskStatus": "complete",
+          "fromDate": "={{ $today.set({ day: 1 }).format('dd-MM-yyyy') }} ",
+          "toDate": "={{ $today.set({ day: 1 }).plus({ months: 1 }).minus({days: 1}).format('dd-MM-yyyy') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "c4d4d240-90ad-4f11-80d4-a9ca3e646e52",
+      "name": "Cloodo Project2",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -2460,
+        540
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "  const textToCheck =  $('Cloodo Project1').item.json.data.category.id \n    \n  let obj = $input.item;\n\n  if (textToCheck == 'e27af2a2-c08c-4c84-92c2-0d08b53c64ae') {\n   // category Acceptance Testing and Handover\n    return $input.item;\n  }\n  else{\n     return null;\n  }\n\n\nreturn obj;"
+      },
+      "id": "27941280-9fd0-4574-9aba-aa5c965bc381",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -500,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.description }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "2571cd12-1923-4df4-9c79-33961388ac48",
+      "name": "IF3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('get a milestone').item.json.task[0].assigned_by.id }}",
+        "points": 3,
+        "note": "=QCM49: {{ $('get a milestone').item.json.task[0].assigned_by.name }} - 3 points because Milestone involved a customized project that was closed without customer completion confirmation link: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('get a milestone').item.json.id }}"
+      },
+      "id": "deca0bc6-0975-49e1-85b7-3e026589dfa9",
+      "name": "Cloodo Point4",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        660,
+        460
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05FYKF1SJU",
+          "mode": "id"
+        },
+        "text": "=QCM49: {{ $('get a milestone').item.json.task[0].assigned_by.name }} - 3 points because Milestone involved a customized project that was closed without customer completion confirmation link: https://worksuite.cloodo.com/work/milestones/detail/{{ $('get a milestone').item.json.id }}p{{ $('get a milestone').item.json.project_id }} ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "638d19ab-d8b6-4628-a60e-469e4e028ea2",
+      "name": "Slack2",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        460,
+        460
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM49: {{ $('get a milestone').item.json.task[0].assigned_by.name }} - 3 points because Milestone involved a customized project that was closed without customer completion confirmation link: https://worksuite.cloodo.com/work/milestones/detail/{{ $('get a milestone').item.json.id }}p{{ $('get a milestone').item.json.project_id }} ",
+        "max_limit_record": 50
+      },
+      "id": "403a1bf0-a9ef-4055-9f12-e1ea93b23253",
+      "name": "Cloodo Point5",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        480
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "edcf47c3-fd38-4c8e-baed-84f4f1e4e7f4",
+      "name": "IF not found2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        200,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "427a69e8-f5b2-4fb7-ba59-c1f4f0b5a42d",
+      "name": "Get milestone details",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -1260,
+        500
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get a milestone": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "IF milestone_title not fixbug",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF milestone_title not fixbug": {
+      "main": [
+        [
+          {
+            "node": "IF1 có cost",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1 có cost": {
+      "main": [
+        [
+          {
+            "node": "Get milestone details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project2": {
+      "main": [
+        [
+          {
+            "node": "get a milestone",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "IF3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF3": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point5": {
+      "main": [
+        [
+          {
+            "node": "IF not found2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found2": {
+      "main": [
+        [
+          {
+            "node": "Slack2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get milestone details": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "690043b4-f62d-43d6-94e3-d67451f586a7",
+  "meta": {
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "bcx1TV5fVI8w8s4u",
+  "tags": []
+}

@@ -1,0 +1,937 @@
+{
+  "name": "FB - PrintCart",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "7ab105fe-cdb3-4b46-9063-4a475501296d",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        1440,
+        920
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Write a random daily different Facebook Post on Printcart Facebook Page as Mrs Michelle, Senior Consultant \n\nSummarize or introduce the content in the URL attached below as the main content of the post:\n\n{{ $('Get Cmsmart Link').item.json['Top pages'] }}\n\nPrintcart specializes in providing Web2Print and Print-on-Demand (POD) solutions, helping businesses streamline their online printing operations. With custom development services, API integrations, and scalable infrastructure, Printcart supports product personalization, order management, and seamless print fulfillment. As a technology partner, Printcart serves printers, designers, and POD sellers globally, enabling them to create custom products and manage print workflows efficiently.\n\n\nThe post has relates tags, keep the original URL inside the content if provided as links for CTA, keep the images or video inside content if have\n\nThe tone should be positive, friendly by professionalism, like a way that I post to share our updated business which is open, easy-going for most of potential partners, keep them connect and motivated with what we are doing for their ecommerce project\n\n\n\nInclude the contact below to used  for CTA:\n\nMichelle (Ms.)\nBusiness Consultant\n-----------------------------------------\nEmail :    sales@printcart.com\nWhatsapp: https://wa.me/84964345658\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "bdfcc57e-3676-42f1-a4d7-2e99ec7ff607",
+      "name": "OpenAI",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        3820,
+        760
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 696570583,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=696570583"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "FB PostedAt"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cb919a71-3108-4ea9-9ca0-272d99e4b193",
+      "name": "Get Cmsmart Link",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1860,
+        780
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 696570583,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=696570583"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "STT": "={{ $('Get Cmsmart Link').item.json.STT }}",
+            "FB PostedAt": "={{ $now.format('yyyy/MM/dd HH:mm') }}"
+          },
+          "matchingColumns": [
+            "STT"
+          ],
+          "schema": [
+            {
+              "id": "STT",
+              "displayName": "STT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Top pages",
+              "displayName": "Top pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "FB PostedAt",
+              "displayName": "FB PostedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LK PostedAt",
+              "displayName": "LK PostedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Store Service",
+              "displayName": "Store Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "01df7f5b-f915-4155-b1c6-da084fd53c1b",
+      "name": "Mark Link Posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        4580,
+        760
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "=me/photos",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.message.content }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('Item Lists').item.json.screenshots[0].src }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "50384e7f-d870-429a-8849-bc8a2f78b936",
+      "name": "Facebook Graph API WorkSpace DEV1 BACKUP",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        4180,
+        1040
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "4a0ES6XDu6OkOUac",
+          "name": "Facebook Graph account WorkSpace DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Lấy HTML từ node trước\nconst htmlContent = $json[\"data\"];\n\n// Sử dụng Regex để tìm các thẻ <img> và lấy thuộc tính src\nconst imageLinks = [];\nconst regex = /<img[^>]+src=\"([^\">]+)\"/g;\nlet match;\n\n// Các từ khóa không mong muốn\nconst excludedWords = ['brand', 'banner', 'whouse', 'default', 'logo', 'button', 'cong_fb', 'rating', 'imgur', 'thank-you', 'screenshot', '{{', 'view', 'start', 'favicon','men', 'twimg', 'mss Dao'];\n\nconst startLink = 'https://'\n\nwhile ((match = regex.exec(htmlContent)) !== null) {\n  const src = match[1];\n  if(!excludedWords.some(word=> src.includes(word))){\n    if(src.startsWith(startLink))\n     imageLinks.push(src);\n  }\n   \n}\n\nconsole.log('imageLinks:: ', imageLinks)\n// Trả về random 1 link ảnh từ những link ảnh lấy được\nif(imageLinks.length > 0){\n  const randomImg = imageLinks[Math.floor(Math.random() * imageLinks.length)];\n  return {\n  imageLinks: randomImg\n};\n}\n\n\n// Trả về một đối tượng chứa all danh sách các link ảnh\nreturn {\n  imageLinks: imageLinks\n};\n"
+      },
+      "id": "eeea1096-c0ca-43dd-ae7f-3f481da64880",
+      "name": "Get random link image (Code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2600,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get All Link \nGet all link need to promotion",
+        "height": 273.24288866625744,
+        "width": 254.4920556415001,
+        "color": 4
+      },
+      "id": "60071f72-f87c-40e9-b060-8fcf34c908b8",
+      "name": "Sticky Note14",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1766.8173705009624,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get HTML Code\nGet html code from link selected",
+        "height": 273.24288866625744,
+        "width": 229.00554478968388,
+        "color": 5
+      },
+      "id": "d59cdd62-10a2-4753-bf1e-1e496a4b0e9b",
+      "name": "Sticky Note17",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Random Img\nGet random one img link to promote",
+        "height": 273.24288866625744,
+        "width": 229.00554478968388,
+        "color": 2
+      },
+      "id": "3c0a2c0f-43b3-4f60-89fc-a6bec8b46e05",
+      "name": "Sticky Note18",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2540,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Create Content\nWrite Content for post",
+        "height": 273.24288866625744,
+        "width": 229.00554478968388,
+        "color": 7
+      },
+      "id": "9a36db9e-c640-415f-8f15-cdf6a2924986",
+      "name": "Sticky Note19",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3760,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Post On Fackebook\nPost on facebook with content and img",
+        "height": 273.24288866625744,
+        "width": 267.7188374816057,
+        "color": 5
+      },
+      "id": "321a4975-f702-45d6-a73f-84d01815d426",
+      "name": "Sticky Note20",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4100,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Mark\nSet Time Posted of the link selected to post",
+        "height": 277.40344403557816,
+        "width": 307.2441134901525,
+        "color": 4
+      },
+      "id": "e32cf3e2-0ed6-4e8e-a8f2-394e13f3202e",
+      "name": "Sticky Note21",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4480,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "=me/photos",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.message.content }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('Get random link image (Code)').item.json.imageLinks }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "109c5200-a340-487a-82b2-e154cf44c312",
+      "name": "Facebook  Cmsmart Ecommerce",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        4180,
+        760
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "BtsmqIaX5qJUFVhQ",
+          "name": "Facebook Graph PrintCart POD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Set Time Post Mon - Sat\n1. 8AM32\n",
+        "height": 273.24288866625744,
+        "width": 221.30942614246254,
+        "color": 4
+      },
+      "id": "5ed3910d-8d1c-448d-9dda-249d1466f38e",
+      "name": "Sticky Note22",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Valid Link \nCheck the image link selected in previous node is enable to post",
+        "height": 305.99395395245244,
+        "width": 215.54603652481288,
+        "color": 4
+      },
+      "id": "b80b83b4-868c-4348-80e2-7d77db22edb9",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2900,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "##Link Posted Faile\nSave time the link is selected and note reason it can't posted and rerun flow",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 4
+      },
+      "id": "54f628f1-fa80-4c43-8719-c014de5d199c",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3480,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "0f64d8fe-cf44-4de2-8a67-e5bd9dcdb337",
+              "leftValue": "={{ $json.imageLinks && typeof $json.imageLinks === 'string' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": false,
+          "looseTypeValidation": true
+        }
+      },
+      "id": "c7092f68-187c-4a28-9ab8-4a511b7da1e1",
+      "name": "Check Valid Link",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2960,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.imageLinks }}",
+        "options": {}
+      },
+      "id": "aa5c15d1-a8a8-46e5-a37b-d6bd5d78d294",
+      "name": "Check Valid Image Link",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3260,
+        780
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "96287d34-596c-4736-8082-d658e68d6199",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_UNKNOWN_ENCODING",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "d93837ce-2d91-49bc-8fa0-fa67b72bd174",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_INVALID_URL",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "91b4a7bd-22c4-4571-830c-cd6238fe961a",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_BAD_REQUEST",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "dd5c1934-86ab-440c-bddd-48dc06ef3e42",
+      "name": "Loop when image link is not valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        3500,
+        700
+      ],
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=\nHãy viết cho tôi một bài post facebook random daily nói về một hàm, một kiến thức trong javascript hoặc trong react, reactjs, mô tả các bước  nó hoạt động, ứng dụng và code demo. Có thể thực hiện so sánh với một hàm nào đó có chức năng gần tương tự và chỉ ra điểm giống, khác, ưu - nhược điểm của các thuật toán đó.\n\nLuôn nhấn mạnh vào đoạn code demo"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 1600
+        },
+        "requestOptions": {}
+      },
+      "id": "d94cb31f-af89-4605-918c-6e9c940cf9d3",
+      "name": "OpenAI1",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        280
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Create Content\nWrite Content for post",
+        "height": 273.24288866625744,
+        "width": 229.00554478968388,
+        "color": 7
+      },
+      "id": "f06fa0c6-b60b-4dac-a455-401fc2d57950",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Post On Fackebook\nPost on facebook with content and img",
+        "height": 273.24288866625744,
+        "width": 267.7188374816057,
+        "color": 5
+      },
+      "id": "ab5f7b85-ef41-42fb-86c7-95f92b8170d8",
+      "name": "Sticky Note23",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2120,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "=me",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.message.content }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "b1c65842-5db0-497e-8044-8a3f809510a3",
+      "name": "Facebook  Cmsmart Ecommerce1",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        280
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "N7xnrr9vSadr2tjv",
+          "name": "Facebook Graph Ocean Dev"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json[\"Top pages\"] }}",
+        "options": {}
+      },
+      "id": "250af41a-9861-4369-89ee-3f0a4092c668",
+      "name": "Get HTML code from link promotion  (HTTP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2260,
+        840
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 696570583,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=696570583"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "STT": "={{ $('Get Cmsmart Link').item.json.STT }}",
+            "FB PostedAt": "={{ $now.format('yyyy/MM/dd HH:mm') }} - Image Notfound"
+          },
+          "matchingColumns": [
+            "STT"
+          ],
+          "schema": [
+            {
+              "id": "STT",
+              "displayName": "STT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Top pages",
+              "displayName": "Top pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "FB PostedAt",
+              "displayName": "FB PostedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LK PostedAt",
+              "displayName": "LK PostedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Store Service",
+              "displayName": "Store Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ab8f7c50-8060-4f92-a5ef-0c25d44ede98",
+      "name": "Mark Link Posted Failed",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        3520,
+        1080
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2,
+                1,
+                3,
+                5,
+                4,
+                6
+              ],
+              "triggerAtHour": 8,
+              "triggerAtMinute": 32
+            }
+          ]
+        }
+      },
+      "id": "60fba545-5eed-40bc-aa8c-d845388c1270",
+      "name": "8AM32",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1460,
+        580
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get Cmsmart Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Facebook  Cmsmart Ecommerce",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Cmsmart Link": {
+      "main": [
+        [
+          {
+            "node": "Get HTML code from link promotion  (HTTP)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get random link image (Code)": {
+      "main": [
+        [
+          {
+            "node": "Check Valid Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook  Cmsmart Ecommerce": {
+      "main": [
+        [
+          {
+            "node": "Mark Link Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Valid Link": {
+      "main": [
+        [
+          {
+            "node": "Check Valid Image Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Valid Image Link": {
+      "main": [
+        [
+          {
+            "node": "Loop when image link is not valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop when image link is not valid": {
+      "main": [
+        [
+          {
+            "node": "Mark Link Posted Failed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Facebook  Cmsmart Ecommerce1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get HTML code from link promotion  (HTTP)": {
+      "main": [
+        [
+          {
+            "node": "Get random link image (Code)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mark Link Posted Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Link Posted Failed": {
+      "main": [
+        [
+          {
+            "node": "Get Cmsmart Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8AM32": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Cmsmart Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c7d3adbd-b5d3-43d1-9631-ee60fd02cd80",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "D4zFx50fs6ptL4R4",
+  "tags": []
+}

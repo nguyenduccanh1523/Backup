@@ -1,0 +1,2369 @@
+{
+  "name": "Set Actual KPI Sheet Report",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "6883b52b-ae30-4f11-be9c-eadfa5bfb239",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        500,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "db539426-b9c5-44c1-b7e3-9788716afd37",
+              "leftValue": "={{ $json.links.next }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a38a6d2f-9f00-46cd-8408-a308930366a8",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        940,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "27307579-19a8-47c6-b038-d69305360d01",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "cursor": "={{ $json.meta.next_cursor }}",
+        "additionalFields": {
+          "fromDate": "={{ $now.set({day:1}).format('yyyy-MM-dd') }}",
+          "toDate": "={{ $now.format('yyyy-MM-dd') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "dc3b8109-f48a-43f9-9426-e5873fe54601",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        700,
+        400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Name",
+              "lookupValue": "=KPI Tỷ lệ Client Meeting T{{ $now.format('M') }}/{{ $now.format('y') }} của {{ $json.agent.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3d6c1811-277d-4d2f-afbc-6311a5822411",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2060,
+        20
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Forward the input data after the delay\n    resolve($input.all());\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "4391d9c8-be8b-4fe6-a164-d6ae3df9d33f",
+      "name": "Wait 5s1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2260,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Name",
+              "lookupValue": "=KPI Tỷ lệ Client Meeting T{{ $now.format('M') }}/{{ $now.format('y') }} của {{ $json.agent.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1c2a7b19-dab6-4b5b-a99c-474094e9fb99",
+      "name": "Google Sheets2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2060,
+        240
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Forward the input data after the delay\n    resolve($input.all());\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "f1049d2c-2a2d-409b-81e9-4d28b1a62e8b",
+      "name": "Wait 5s3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2260,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.agent.name }}",
+                    "rightValue": "Nguyen Thi Minh Hang",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Hang"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "6fae2388-39dc-4621-a8a8-a7a3b8c00632",
+                    "leftValue": "={{ $json.agent.name }}",
+                    "rightValue": "Vu Thi My Linh",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Linh"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a57e3dc7-858c-4938-8f30-daab5cafedc4",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        1620,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Name",
+              "lookupValue": "=KPI Tỷ lệ Custom Development T{{ $now.format('M') }}/{{ $now.format('y') }} của {{ $json.agent.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f0f28eac-b16c-4c77-a9a7-0a69f88529c3",
+      "name": "Google Sheets4",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2080,
+        420
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Forward the input data after the delay\n    resolve($input.all());\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "e75df866-11bb-44b8-9ff9-4a0494284b10",
+      "name": "Wait 5s5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2280,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Name",
+              "lookupValue": "=KPI Tỷ lệ Custom Development T{{ $now.format('M') }}/{{ $now.format('y') }} của {{ $json.agent.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "469a645d-a8b3-4db6-b7b8-4d1e72f95a6e",
+      "name": "Google Sheets6",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2080,
+        640
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Id": "={{ $json.Id }}",
+            "Actual": "={{ $json.Actual + $('Wait 5s2').item.json.itemCount}} "
+          },
+          "matchingColumns": [
+            "Id"
+          ],
+          "schema": [
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Asigned",
+              "displayName": "Asigned",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "DueDate",
+              "displayName": "DueDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Day",
+              "displayName": "Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Actual",
+              "displayName": "Actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a79273ed-c16a-4e9f-b3b6-68f89f85789e",
+      "name": "Google Sheets7",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2480,
+        640
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Forward the input data after the delay\n    resolve($input.all());\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "fff8a23a-ce0e-4d1c-a95e-7ac0f914e7bd",
+      "name": "Wait 5s7",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2280,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Name",
+              "lookupValue": "=KPI Tỷ lệ Setup Assistant T{{ $now.format('M') }}/{{ $now.format('y') }} của {{ $json.agent.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ba820305-7b7b-44f0-8417-9e303bc8e3ac",
+      "name": "Google Sheets8",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2100,
+        800
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Forward the input data after the delay\n    resolve($input.all());\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "472971ed-e6ea-4991-8699-01e473682e37",
+      "name": "Wait 5s9",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2300,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Name",
+              "lookupValue": "=KPI Tỷ lệ Setup Assistant T{{ $now.format('M') }}/{{ $now.format('y') }} của {{ $json.agent.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7104cddd-089e-46e1-a93d-5edaae269aca",
+      "name": "Google Sheets10",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2100,
+        1020
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Forward the input data after the delay\n    resolve($input.all());\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "7c214fac-d20c-4307-bd79-9862762140ef",
+      "name": "Wait 5s11",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2300,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.agent.name }}",
+                    "rightValue": "Nguyen Thi Minh Hang",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Hang"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "6fae2388-39dc-4621-a8a8-a7a3b8c00632",
+                    "leftValue": "={{ $json.agent.name }}",
+                    "rightValue": "Vu Thi My Linh",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Linh"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b8b58aac-804f-4827-bb0f-81fd78d40c6b",
+      "name": "Switch3",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        1660,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Name",
+              "lookupValue": "=KPI Tỷ lệ Extra Services T{{ $now.format('M') }}/{{ $now.format('y') }} của {{ $json.agent.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "21355557-40e9-40af-8212-b79bc2e41a13",
+      "name": "Google Sheets12",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2100,
+        1220
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Forward the input data after the delay\n    resolve($input.all());\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "b420937b-3447-433f-bc4d-422d35e295ee",
+      "name": "Wait 5s13",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2300,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Name",
+              "lookupValue": "=KPI Tỷ lệ Extra Services T{{ $now.format('M') }}/{{ $now.format('y') }} của {{ $json.agent.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "02581dd8-215b-4345-8a3b-4f3893bf3221",
+      "name": "Google Sheets14",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2100,
+        1440
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Forward the input data after the delay\n    resolve($input.all());\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "746ccc0f-d224-4453-b723-e8a9cbc49652",
+      "name": "Wait 5s15",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2300,
+        1440
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.agent.name }}",
+                    "rightValue": "Nguyen Thi Minh Hang",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Hang"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "6fae2388-39dc-4621-a8a8-a7a3b8c00632",
+                    "leftValue": "={{ $json.agent.name }}",
+                    "rightValue": "Vu Thi My Linh",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Linh"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "386493f9-5c86-46f8-aae5-3fd51eeac052",
+      "name": "Switch4",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        1660,
+        1320
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.agent.name }}",
+                    "rightValue": "Nguyen Thi Minh Hang",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Hang"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "6fae2388-39dc-4621-a8a8-a7a3b8c00632",
+                    "leftValue": "={{ $json.agent.name }}",
+                    "rightValue": "Vu Thi My Linh",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Linh"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f05ac42d-276b-4190-9440-69b5e49a31ef",
+      "name": "Switch2",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        1640,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Id": "={{ $json.Id }}",
+            "Actual": "={{ $json.Actual + $('Wait 5s4').item.json.itemCount}} "
+          },
+          "matchingColumns": [
+            "Id"
+          ],
+          "schema": [
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Asigned",
+              "displayName": "Asigned",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "DueDate",
+              "displayName": "DueDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Day",
+              "displayName": "Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Actual",
+              "displayName": "Actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c634cf40-4ac2-48ff-bcba-8e5b91678f1f",
+      "name": "Google Sheets9",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2500,
+        800
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Id": "={{ $json.Id }}",
+            "Actual": "={{ $json.Actual + $('Wait 5s6').item.json.itemCount}} "
+          },
+          "matchingColumns": [
+            "Id"
+          ],
+          "schema": [
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Asigned",
+              "displayName": "Asigned",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "DueDate",
+              "displayName": "DueDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Day",
+              "displayName": "Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Actual",
+              "displayName": "Actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fa5b842b-d3c5-45f2-bfac-88b0d6d72d0e",
+      "name": "Google Sheets11",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2500,
+        1020
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Id": "={{ $json.Id }}",
+            "Actual": "={{ $json.Actual + $('Wait 5s12').item.json.itemCount}} "
+          },
+          "matchingColumns": [
+            "Id"
+          ],
+          "schema": [
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Asigned",
+              "displayName": "Asigned",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "DueDate",
+              "displayName": "DueDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Day",
+              "displayName": "Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Actual",
+              "displayName": "Actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b569f580-7d98-4136-bb78-1bb07e9a4c33",
+      "name": "Google Sheets13",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2500,
+        1220
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Id": "={{ $json.Id }}",
+            "Actual": "={{ $json.Actual + $('Wait 5s14').item.json.itemCount}} "
+          },
+          "matchingColumns": [
+            "Id"
+          ],
+          "schema": [
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Asigned",
+              "displayName": "Asigned",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "DueDate",
+              "displayName": "DueDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Day",
+              "displayName": "Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Actual",
+              "displayName": "Actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c341e530-b5a9-4f82-95e6-62a429b62fb9",
+      "name": "Google Sheets15",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2500,
+        1440
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Id": "={{ $json.Id }}",
+            "Actual": "={{ $json.Actual + $('Wait 5s8').item.json.itemCount}} "
+          },
+          "matchingColumns": [
+            "Id"
+          ],
+          "schema": [
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Asigned",
+              "displayName": "Asigned",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "DueDate",
+              "displayName": "DueDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Day",
+              "displayName": "Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Actual",
+              "displayName": "Actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0fff7263-3308-4bc2-934d-1dc8ad16ed14",
+      "name": "Google Sheets16",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2480,
+        20
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Id": "={{ $json.Id }}",
+            "Actual": "={{ $json.Actual + $('Wait 5s10').item.json.itemCount}} "
+          },
+          "matchingColumns": [
+            "Id"
+          ],
+          "schema": [
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Asigned",
+              "displayName": "Asigned",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "DueDate",
+              "displayName": "DueDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Day",
+              "displayName": "Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Actual",
+              "displayName": "Actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "25bd0a81-f28e-4183-a442-2296ff33c67b",
+      "name": "Google Sheets17",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2460,
+        240
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 741259388,
+          "mode": "list",
+          "cachedResultName": "KPI Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=741259388"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Id": "={{ $json.Id }}",
+            "Actual": "={{ $json.Actual + $('Wait 5s').item.json.itemCount}} "
+          },
+          "matchingColumns": [
+            "Id"
+          ],
+          "schema": [
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Asigned",
+              "displayName": "Asigned",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "DueDate",
+              "displayName": "DueDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Day",
+              "displayName": "Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Actual",
+              "displayName": "Actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "15ea6059-7da1-43db-86fc-d77af995a6e4",
+      "name": "Google Sheets18",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2460,
+        420
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Retrieve all input data\n    const items = $input.all();\n    \n    // Count the number of items\n    const itemCount = items.length;\n\n    // Forward the input data along with the item count\n    resolve([{ json: { itemCount, ...items[0].json } }]);\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "cb0aa0f3-af17-4d5b-8701-61750f4f57f8",
+      "name": "Wait 5s",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1880,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Retrieve all input data\n    const items = $input.all();\n    \n    // Count the number of items\n    const itemCount = items.length;\n\n    // Forward the input data along with the item count\n    resolve([{ json: { itemCount, ...items[0].json } }]);\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "ce2caa3f-a1a8-49ab-af68-87b3420b6f24",
+      "name": "Wait 5s8",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Retrieve all input data\n    const items = $input.all();\n    \n    // Count the number of items\n    const itemCount = items.length;\n\n    // Forward the input data along with the item count\n    resolve([{ json: { itemCount, ...items[0].json } }]);\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "32b140f1-7d1d-4d3d-85e3-833816356fb9",
+      "name": "Wait 5s10",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Retrieve all input data\n    const items = $input.all();\n    \n    // Count the number of items\n    const itemCount = items.length;\n\n    // Forward the input data along with the item count\n    resolve([{ json: { itemCount, ...items[0].json } }]);\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "41eaa51a-bdad-4db3-add4-990d1af04675",
+      "name": "Wait 5s2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1880,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Retrieve all input data\n    const items = $input.all();\n    \n    // Count the number of items\n    const itemCount = items.length;\n\n    // Forward the input data along with the item count\n    resolve([{ json: { itemCount, ...items[0].json } }]);\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "9f091d0a-ecde-4258-ab81-c6fe4b1eb90d",
+      "name": "Wait 5s4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1880,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Retrieve all input data\n    const items = $input.all();\n    \n    // Count the number of items\n    const itemCount = items.length;\n\n    // Forward the input data along with the item count\n    resolve([{ json: { itemCount, ...items[0].json } }]);\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "30e9f442-a5f2-4da2-bbd0-51b01941542b",
+      "name": "Wait 5s6",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Retrieve all input data\n    const items = $input.all();\n    \n    // Count the number of items\n    const itemCount = items.length;\n\n    // Forward the input data along with the item count\n    resolve([{ json: { itemCount, ...items[0].json } }]);\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "f7fd2564-2201-4f27-a836-20f99af0f2c4",
+      "name": "Wait 5s12",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return new Promise((resolve) => {\n  setTimeout(() => {\n    // Retrieve all input data\n    const items = $input.all();\n    \n    // Count the number of items\n    const itemCount = items.length;\n\n    // Forward the input data along with the item count\n    resolve([{ json: { itemCount, ...items[0].json } }]);\n  }, 5000); // 5000 milliseconds = 5 seconds\n});"
+      },
+      "id": "5e167370-8fbc-4c5e-b163-c6cfc78c48f8",
+      "name": "Wait 5s14",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        1440
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type.id }}",
+                    "rightValue": "95df9d5f-0d38-42b8-944b-30a3308df7bc",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Meeting"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "d3bd12e1-c881-48d6-94e6-b17744981bf9",
+                    "leftValue": "={{ $json.type.id }}",
+                    "rightValue": "876abef0-244e-41da-8b21-311ff67d8b78",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Custom Development"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "07a70168-c752-4350-aa99-f502b9467a8a",
+                    "leftValue": "={{ $json.type.id }}",
+                    "rightValue": "98170546-24fc-41b2-8741-70acbba38ef7",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Setup Assistance"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "cfb7d2dc-4344-4b92-a3e0-80315a948d0c",
+                    "leftValue": "={{ $json.type.id }}",
+                    "rightValue": "82944d6b-2241-4e2c-b615-d9017a2d8878",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Extra Service"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "45e91a6d-1863-4275-b628-2cac99fbe982",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        1240,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks"
+            }
+          ]
+        }
+      },
+      "id": "fa025b24-99f7-4a35-bcb1-9f48653507cc",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        180
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s3": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait 5s10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets4": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s5": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets6": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s7": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets8": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s9": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets10": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s11": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets12": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s13": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets14": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s15": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait 5s2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s8": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s10": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch3": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait 5s6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s4": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s6": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch4": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s12",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait 5s14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s14": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s12": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3b2ea44a-5aac-44e9-a82d-03247c758f0e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "1NY4rL9Zldq5G3yz",
+  "tags": []
+}

@@ -1,0 +1,888 @@
+{
+  "name": "Printcart sync Lead to Mautic",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "3cda66b6-c029-4469-a941-05598e8bd79c",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "listingleads",
+        "operation": "getmany",
+        "pageLead": "={{ $runIndex + 1 }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "aa4226a1-9c96-44a1-bc1a-6fad0f58b265",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        460
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "value1": "={{ $('Compare Datasets').item.json.source.id }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "equal",
+              "value2": 165,
+              "output": 1
+            },
+            {
+              "operation": "equal",
+              "value2": 10375,
+              "output": 2
+            },
+            {
+              "operation": "equal",
+              "value2": 164,
+              "output": 3
+            }
+          ]
+        },
+        "fallbackOutput": 0
+      },
+      "id": "66f3e5ad-432c-431f-b03d-761a6e204633",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        2880,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "ea7e7e0b-c148-4906-84ce-48509850597f",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1840,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "getAll",
+        "options": {
+          "search": "={{ $json.client_email }}"
+        }
+      },
+      "id": "1846fa61-f5df-4f39-aa4e-a26a8973ef73",
+      "name": "Mautic check contact exists",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        2220,
+        220
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "notesInFlow": false,
+      "credentials": {
+        "mauticOAuth2Api": {
+          "id": "PxoIIN21pCjgHQWo",
+          "name": "Printcart Mautic account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "contactSegment",
+        "contactId": "={{ $json.id }}",
+        "segmentId": 7
+      },
+      "id": "74e49e75-efb9-44a9-86f4-46c3a5e11500",
+      "name": "Mautic add to Woocommerce Segment",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        3100,
+        540
+      ],
+      "credentials": {
+        "mauticOAuth2Api": {
+          "id": "PxoIIN21pCjgHQWo",
+          "name": "Printcart Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "contactSegment",
+        "contactId": "={{ $json.id }}",
+        "segmentId": 18
+      },
+      "id": "ed082111-78bc-4d08-97b0-c99024c20198",
+      "name": "Mautic add to Wix Segment",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        3100,
+        720
+      ],
+      "credentials": {
+        "mauticOAuth2Api": {
+          "id": "PxoIIN21pCjgHQWo",
+          "name": "Printcart Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "contactSegment",
+        "contactId": "={{ $json.id }}",
+        "segmentId": 10
+      },
+      "id": "f3cabecf-f15a-4ab0-ae29-888263dae3f4",
+      "name": "Mautic add to API Segment",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        3100,
+        920
+      ],
+      "credentials": {
+        "mauticOAuth2Api": {
+          "id": "PxoIIN21pCjgHQWo",
+          "name": "Printcart Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "value1": "={{ $('Compare Datasets').item.json.source.id }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "equal",
+              "value2": 8817,
+              "output": 1
+            },
+            {
+              "operation": "equal",
+              "value2": 25,
+              "output": 2
+            },
+            {
+              "operation": "equal",
+              "value2": 19,
+              "output": 3
+            }
+          ]
+        },
+        "fallbackOutput": 0
+      },
+      "id": "eb7ebbb9-8b53-4e45-b571-763ba4d97b67",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        3100,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "contactSegment",
+        "contactId": "={{ $json.id }}",
+        "segmentId": 19
+      },
+      "id": "69fe6ab1-c6b2-4645-8ff8-c4229009a5fe",
+      "name": "Mautic add to Codecanyon Segment",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        3320,
+        -60
+      ],
+      "credentials": {
+        "mauticOAuth2Api": {
+          "id": "PxoIIN21pCjgHQWo",
+          "name": "Printcart Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "contactSegment",
+        "contactId": "={{ $json.id }}",
+        "segmentId": 8
+      },
+      "id": "18fbb79e-4ae2-4af7-bcfc-c5827e063c62",
+      "name": "Mautic add to Shopify Segment",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        3320,
+        140
+      ],
+      "credentials": {
+        "mauticOAuth2Api": {
+          "id": "PxoIIN21pCjgHQWo",
+          "name": "Printcart Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#mautic",
+          "mode": "name"
+        },
+        "text": "=Mautic Printcart added contact {{ $('Mautic create Contact').item.json.fields.core.firstname.value }} | {{ $('Mautic create Contact').item.json.fields.core.email.value }} to Segment {{ $('Compare Datasets').item.json.source.type }}  ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "df8c4e92-498a-472b-a105-c3cb92318327",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        3800,
+        240
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.success }}",
+              "operation": "equal",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "40d7e785-c203-44dd-9e83-7bf709b99877",
+      "name": "IF2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3580,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#mautic",
+          "mode": "name"
+        },
+        "text": "=Mautic Printcart added contact error on email: $('Mautic create Contact').item.json.fields.core.email.value }}",
+        "otherOptions": {}
+      },
+      "id": "1427dfe1-d7d8-4d7b-88fd-1132029b1ebd",
+      "name": "Slack1",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        3800,
+        460
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#mautic",
+          "mode": "name"
+        },
+        "text": "=xxxxxxxxxx : Mautic Printcart don't have segment for source type '{{ $('Compare Datasets').item.json.source.type }}' | email:  {{ $('Compare Datasets').item.json.client_email }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "b6208342-540c-4024-83df-05349908e7b1",
+      "name": "Slack2",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        3800,
+        660
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#mautic",
+          "mode": "name"
+        },
+        "text": "=xxxxxxxxxx : Email not valid:  {{ $json.client_email }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "5c40c82c-abed-4360-9ab3-7bd33a360bf2",
+      "name": "Slack Email invalid",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        2320,
+        660
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "47a26933-1250-4470-aa50-a536204bf37e",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "listingleads",
+        "ID": "={{ $json.data.id }}",
+        "requestOptions": {}
+      },
+      "id": "3b778be5-c5a4-421f-98ef-b06f8b73abd7",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        220
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "\nreturn $json.data;"
+      },
+      "id": "dbfd71ce-908f-4a72-86fa-8199d8195ca6",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "fields.core.email.value",
+              "field2": "client_email"
+            }
+          ]
+        },
+        "resolve": "preferInput2",
+        "options": {}
+      },
+      "id": "9d37fc1e-46d4-4c28-b80e-36d1957344da",
+      "name": "Compare Datasets",
+      "type": "n8n-nodes-base.compareDatasets",
+      "typeVersion": 2.3,
+      "position": [
+        2400,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "email": "={{ $json.client_email }}",
+        "firstName": "={{ $json.client_name }}",
+        "additionalFields": {},
+        "options": {}
+      },
+      "id": "7caddcf2-b369-410d-beaf-35e4cee97082",
+      "name": "Mautic create Contact",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        2700,
+        420
+      ],
+      "credentials": {
+        "mauticOAuth2Api": {
+          "id": "PxoIIN21pCjgHQWo",
+          "name": "Printcart Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.client_email }}",
+              "operation": "regex",
+              "value2": "/^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/"
+            }
+          ]
+        }
+      },
+      "id": "237926fb-1438-47e6-943f-c3703567bbe9",
+      "name": "IF Email valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2040,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 19
+            }
+          ]
+        }
+      },
+      "id": "7d2dfb0a-671c-4f13-b061-718142e5d69e",
+      "name": "Schedule Trigger 7pm daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1400,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": 5
+            }
+          ]
+        }
+      },
+      "id": "4574e441-1923-42c2-a0a2-95c47b890e84",
+      "name": "Loop",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "contactSegment",
+        "contactId": "={{ $json.id }}",
+        "segmentId": "23"
+      },
+      "id": "5614dad0-631a-4a0f-9481-d55600a662d3",
+      "name": "Mautic add to Printcart Segment",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        3320,
+        320
+      ],
+      "credentials": {
+        "mauticOAuth2Api": {
+          "id": "PxoIIN21pCjgHQWo",
+          "name": "Printcart Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Deactive Slack\n27/09/2024"
+      },
+      "id": "4c91eb07-926a-4238-a6f7-d81b0e66e937",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3740,
+        860
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "IF Email valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mautic check contact exists": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mautic add to Woocommerce Segment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mautic add to Wix Segment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mautic add to API Segment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Slack2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mautic add to Codecanyon Segment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mautic add to Shopify Segment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mautic add to Printcart Segment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mautic add to Woocommerce Segment": {
+      "main": [
+        [
+          {
+            "node": "IF2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF2": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mautic add to Shopify Segment": {
+      "main": [
+        [
+          {
+            "node": "IF2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mautic add to Codecanyon Segment": {
+      "main": [
+        [
+          {
+            "node": "IF2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mautic add to Wix Segment": {
+      "main": [
+        [
+          {
+            "node": "IF2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mautic add to API Segment": {
+      "main": [
+        [
+          {
+            "node": "IF2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "IF Email valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compare Datasets": {
+      "main": [
+        [],
+        [],
+        [],
+        [
+          {
+            "node": "Mautic create Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mautic create Contact": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Email valid": {
+      "main": [
+        [
+          {
+            "node": "Mautic check contact exists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Slack Email invalid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger 7pm daily": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mautic add to Printcart Segment": {
+      "main": [
+        [
+          {
+            "node": "IF2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c541ab4c-39be-4a2d-9721-6d2a51673a8e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "JwwMVjOeprRg22cX",
+  "tags": []
+}

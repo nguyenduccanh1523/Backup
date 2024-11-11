@@ -1,0 +1,160 @@
+{
+  "name": "Subscribed",
+  "nodes": [
+    {
+      "parameters": {
+        "event": [
+          "taskAdded"
+        ]
+      },
+      "id": "2b26a3d1-9908-4c64-a1a2-d5179a81a975",
+      "name": "Cloodo Trigger",
+      "type": "@cloodo/n8n-nodes-cloodo-trigger.cloodoTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        440
+      ],
+      "webhookId": "2c266641-dc85-4413-95b8-c6eb3a6cd49c",
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0",
+          "mode": "list",
+          "cachedResultName": "Check error account and subcribed/unsubscribed ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 572073265,
+          "mode": "list",
+          "cachedResultName": "Subcribed",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit#gid=572073265"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.id }}",
+            "email": "={{ $json.email }}",
+            "name": "={{ $json.name }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d7e51b7d-321b-4ef3-b695-231ee57637fa",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        740,
+        440
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.name, u.id, u.email FROM users u\nWHERE u.email = '{{ $json.email }}'",
+        "options": {}
+      },
+      "id": "44e1599b-44a3-4496-a4a6-a495be9ea9b5",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        500,
+        440
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "xb8mMTZBhISimPeO",
+          "name": "Cloodo Workchat Admin"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cloodo Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "af6a3ac1-a683-4ad0-a0c6-79a1e1483f93",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "BNo0lmEZBaeuIAeo",
+  "tags": []
+}

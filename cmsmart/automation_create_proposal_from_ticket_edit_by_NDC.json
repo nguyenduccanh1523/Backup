@@ -1,0 +1,949 @@
+{
+  "name": "automation create proposal from ticket edit by NDC",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "bc40508d-e6f4-4aab-832a-bcd37f63928d",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -520,
+        1140
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "cursor": "={{ $json.meta.next_cursor }}",
+        "additionalFields": {
+          "fromDate": "={{ $today.set({ hour: 0, minute: 1 }).format('dd-MM-yyyy HH:mm') }}",
+          "toDate": "={{ $today.set({ hour: 23, minute: 59 }).format('dd-MM-yyyy HH:mm') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "24c00a2f-6b89-4003-b252-ff2ca1aa4aab",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        1040
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.meta.next_cursor }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "afaac4d0-20a7-4375-9c63-506a555a0a8f",
+      "name": "IF6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        160,
+        1260
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "a4d9f335-f794-44d9-8222-a774f0dbc48c",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        320,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "59efac87-3460-47c5-8a1d-9ad56554c743",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        980
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "id": "0ba993b6-85b4-46f9-b2c9-ab6b50627e09",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -520,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "e668c040-3063-43a1-acc1-0b084a3db912",
+              "leftValue": "={{ $json.data.agent }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "467762e8-626f-4c4f-9889-397c843cb5f7",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1560,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "12e6a45c-6267-4f7c-bf1e-c4a87660c25d",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "=5c7315ad-a173-4c3e-b3ff-6af13ee6c217",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "05090738-e5ae-457a-8af8-c3f7b8cfa24a",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "89050de5-8c35-4947-92d2-2c108b32aaa4",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "3dd6faea-88d9-49e8-a8b3-fd96d89594cd",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "6dc7b7c5-a130-4357-9d83-03030a8a134f",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "ff62b857-e9f1-42a0-af7d-831c6f865c8a",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "a7449e63-6ce3-4840-ab67-27298faf086f",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "83d831bc-e429-4a5d-9e12-08419b5b4dca",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "0c8ba87a-f6ae-44c2-9c4d-404c49ec255b",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "5d65b9f3-3027-498b-bffb-517fee0e224d",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "28cab752-15e1-433e-8abf-609fde9b5b7f",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "868380de-4c0d-449e-989c-ce80be1e5fc6",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "9546d9cc-0b9f-4c16-967d-c47b100bd206",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "d6c38771-d554-4e18-9393-cb5d0289ce37",
+              "leftValue": "={{ $json.type.id }}",
+              "rightValue": "876abef0-244e-41da-8b21-311ff67d8b78",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "fa25d297-0515-4867-92c7-d1cf7ee8acf0",
+              "leftValue": "{{ $json.type.id }}",
+              "rightValue": "6dca6729-7610-4c8c-bc4a-b4d5399e7ce0",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "ea0ecc76-f60a-456c-87b7-4d574a142c4e",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        860,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "381b7d32-0268-49b9-acc8-b2333a663828",
+              "leftValue": "={{ $json.agent.id }}",
+              "rightValue": "={{ $json.create_by.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1b330cb7-6f07-42bb-a68d-5a76577d322a",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        1700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "93403279-6895-46b7-9f26-5a5e93493de9",
+              "leftValue": "={{ $json.meta.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "70268d8d-08f9-4cc4-a7a0-7fe2e475cd8a",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2740,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "Creat",
+        "lead_id": "={{ $('If5').item.json.data[0].id }}",
+        "valid_till": "={{$today}}",
+        "sub_total": 0,
+        "total": 0,
+        "discount": 0,
+        "calculate_tax": "before_discount",
+        "additionalFields": {
+          "project_id": "={{ $('Cloodo CRM1').item.json.data.projects.id }}",
+          "agent_id": "={{ $('Cloodo CRM1').item.json.data.agent.user.id }}",
+          "ticket_id": "={{ $('Cloodo CRM1').item.json.data.id }}",
+          "descriptionP": "={{ $('Cloodo CRM1').item.json.data.reply.message }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "4b50eebe-2abd-4f0f-8072-3e6417cbc1cc",
+      "name": "Cloodo CRM3",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3240,
+        920
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "278f5d46-4e4f-4da1-8c73-df5a82961490",
+              "leftValue": "={{ $('If1').item.json.data.requester.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0ad40da5-e904-420b-bf12-64bb6ac9df21",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "update",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "34ec4bac-3224-442e-bd3e-14933bbcde70",
+      "name": "Cloodo CRM5",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        1720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "=",
+        "additionalFields": {
+          "ticketID": "={{ $('Cloodo CRM1').item.json.data.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "f46fe6cd-944c-4904-9289-712180e0b1e0",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2260,
+        1620
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## lấy nhiều ticket client\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 335.747690298498
+      },
+      "id": "31d348e8-23d7-4526-baf3-eeb128b80749",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## check type\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 391.929329000477
+      },
+      "id": "57535f51-7376-4d0a-8bb8-2898b56d9856",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        800,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## lấy từng ticket 1\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 384.39939894222397
+      },
+      "id": "9ee1b444-a13c-4d9f-89d7-dec04f473e09",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        756
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## check người phụ trách (agent)\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 398.424361376113
+      },
+      "id": "21fe09d6-9e5d-4b31-8cba-29bd2d7166c1",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "listingleads",
+        "operation": "getmany",
+        "pageLead": null,
+        "additionalFields": {
+          "searchLead": "={{ $json.data.requester.email }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "8b6d4037-6a62-4336-b0ef-238260d019da",
+      "name": "Cloodo CRM6",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2180,
+        920
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "9e05457d-0b8b-46bb-a0d0-4ddb11725eb3",
+              "leftValue": "={{ $json.data[0].id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2ea81d77-b620-4898-a8bb-454301d9cd5a",
+      "name": "If5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2440,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "listingleads",
+        "operation": "Creat",
+        "email": "={{ $('If4').item.json.data.requester.email }}",
+        "name": "={{ $('If4').item.json.data.requester.name }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "99ddd3c0-555a-4a5e-8eb4-5a758a10f81c",
+      "name": "Cloodo CRM4",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2780,
+        1240
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Check email requester(client)\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 399.08405378328735
+      },
+      "id": "dac305e0-6535-40e4-80a4-1d2f82c2beb7",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1820,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check email client in lead\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 412.1627708781256
+      },
+      "id": "2b83194c-a916-47ab-a24d-d022f81c6c06",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2100,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## if true use else create\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 429.2559376304415
+      },
+      "id": "d9e83118-4947-4e81-bee1-a9012f6f1239",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2380,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": null,
+        "additionalFields": {
+          "ticketID": "={{ $('Cloodo CRM1').item.json.data.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "db2108e8-0ed0-4126-9040-665e1b11ac49",
+      "name": "Cloodo CRM7",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2740,
+        940
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Find data proposal theo ticketID thấy thì trả về total là 1 thì k phải tạo là 0 thi phải tạo\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 413.03217328822325,
+        "width": 421.59359333611206
+      },
+      "id": "50cfdbe9-201b-43e4-8838-4fd5301fa85a",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2700,
+        732.7979983768637
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "9c612088-30c7-4a7c-acaf-08a1135df5d0",
+              "leftValue": "={{ $json.meta.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "97684f21-d2f8-4293-8533-a092e121778a",
+      "name": "If6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2960,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "listingleads",
+        "operation": "Creat",
+        "email": "=\"{{ $('If4').item.json.data.requester.email }}\"",
+        "name": "={{ $('If4').item.json.data.requester.name }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "9f2a215e-be2d-44e4-8119-354db5847ad0",
+      "name": "Cloodo CRM8",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2620,
+        1660
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "381b7d32-0268-49b9-acc8-b2333a663828",
+              "leftValue": "={{ $json.agent.id }}",
+              "rightValue": "={{ $json.create_by.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4aa99ab1-9041-4bd1-8c9e-61b3f307f7b0",
+      "name": "If7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        620,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check BA tạo\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 408.00564524213587
+      },
+      "id": "b2fd896c-c5d3-481e-853b-79b219aa1655",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        540,
+        819.3824256693375
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "IF6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM6": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cloodo CRM4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM7": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF6": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If7": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "181afee8-5dac-401c-9a19-18494388250c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "8FfvpQYlvaQOBW3W",
+  "tags": []
+}

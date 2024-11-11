@@ -1,0 +1,544 @@
+{
+  "name": "WF03 - Sync Milestone and Point",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 1
+            }
+          ]
+        }
+      },
+      "id": "ed7f2bce-ae12-416c-b12c-ddf6f6679b7a",
+      "name": "Schedule Trigger Midnight",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1157798515,
+          "mode": "list",
+          "cachedResultName": "Point",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=1157798515"
+        },
+        "keepFirstRow": true
+      },
+      "id": "bf4e8036-6a9e-4540-b362-86c2262c6a62",
+      "name": "Clear sheet2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        980,
+        660
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    `points_history`.`id`,\n    `users`.`lastname`,\n    `points_history`.`point`,\n    `points_history`.`note`,\n    CONCAT(SUBSTRING_INDEX((SUBSTRING_INDEX(`points_history`.`created_at`,'-',2)),'-',-1),'/',SUBSTRING_INDEX((SUBSTRING_INDEX(`points_history`.`created_at`,' ',1)),'-',-1),'/',SUBSTRING_INDEX((SUBSTRING_INDEX(`points_history`.`created_at`,'-',1)),'-',-1)) AS `Create At`\nFROM\n    `points_history`\nLEFT JOIN `users` ON `points_history`.`user_id` = `users`.`id`\nWHERE\n    `points_history`.`company_id` = 2\nORDER BY `Create At`  DESC;",
+        "options": {}
+      },
+      "id": "95343728-4f6e-4463-997b-851b4e9d191a",
+      "name": "Query point1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        660
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "bA5T6U5DSXgWWOfz",
+          "name": "Point Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1157798515,
+          "mode": "list",
+          "cachedResultName": "Point",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=1157798515"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Points",
+              "displayName": "Points",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "id": "0ac9e17a-fe94-453a-ae0e-9c5837957c26",
+      "name": "update Point Printcart",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1440,
+        660
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2116571640,
+          "mode": "list",
+          "cachedResultName": "Report mileston theo contract",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=2116571640"
+        },
+        "keepFirstRow": true
+      },
+      "id": "28264c20-89c0-4d52-8f8c-611cd220266e",
+      "name": "Clear sheet3",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        980,
+        380
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE",
+          "mode": "list",
+          "cachedResultName": "Printcart reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2116571640,
+          "mode": "list",
+          "cachedResultName": "Report mileston theo contract",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yAWV-yLEs-uhVGM8g_dxQXXeGu7ZRIT1FKIWXUKDOeE/edit#gid=2116571640"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "Invoice ID"
+          ],
+          "schema": [
+            {
+              "id": "No.",
+              "displayName": "No.",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Customer Email",
+              "displayName": "Customer Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Seller",
+              "displayName": "Seller",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contract ID",
+              "displayName": "Contract ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contract amount",
+              "displayName": "Contract amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Invoice ID",
+              "displayName": "Invoice ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Invoice Number",
+              "displayName": "Invoice Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Invoice amount",
+              "displayName": "Invoice amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Invoice status",
+              "displayName": "Invoice status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Payment amount",
+              "displayName": "Payment amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Paid on",
+              "displayName": "Paid on",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Project Name",
+              "displayName": "Project Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Milestone name",
+              "displayName": "Milestone name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Milestone value",
+              "displayName": "Milestone value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Account manager( AM)",
+              "displayName": "Account manager( AM)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Person Incharge",
+              "displayName": "Person Incharge",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Due date (Milstone)",
+              "displayName": "Due date (Milstone)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Close date (milestone)",
+              "displayName": "Close date (milestone)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Update date (milestone)",
+              "displayName": "Update date (milestone)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Milestone status",
+              "displayName": "Milestone status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Workflows data updated at",
+              "displayName": "Workflows data updated at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "id": "ff1e9a53-2ef8-41f1-b469-b66ef7f19f93",
+      "name": "update content1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1440,
+        380
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EhTdi4ifxZKO2CSF",
+          "name": "Google Sheets printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n\t'=ROW()-1' AS `No.`,\n    CONCAT('=HYPERLINK(\"https://worksuite.cloodo.com/apps/finance/all-invoices/detail/',`invoices`.`uuid`,'\",\"',`invoices`.`id`,'\")') AS `Invoice ID`,\n    CONCAT('=HYPERLINK(\"https://worksuite.cloodo.com/apps/finance/all-invoices/detail/',`invoices`.`uuid`,'\",\"INV#',`invoices`.`invoice_number`,'\")') AS `Invoice Number`,\n    `invoices`.`total` AS `Invoice amount`,\n    `invoices`.`status` AS `Invoice status`,\n    DATE_FORMAT(`payments`.`paid_on`,'%e/%m/%Y') AS `Paid on`,\n    `payments`.`amount` AS `Payment amount`,\n    CONCAT('=HYPERLINK(\"https://worksuite.cloodo.com/apps/work/milestones/detail/',`project_milestones`.`uuid`,'p',`project_milestones`.`project_id`,'\",\"',REPLACE(`project_milestones`.`title`,'\"','\"\"'),'\")') AS `Milestone name`,\n    CONCAT('=HYPERLINK(\"https://worksuite.cloodo.com/apps/work/project/',`projects`.`uuid`,'\",\"',REPLACE(`projects`.`name`,'\"','\"\"'),'\")') AS `Project Name`,\n    `project_milestones`.`cost` AS `Milestone value`,\n\t`users`.`name` AS `Person Incharge`,\n    CONCAT(SUBSTRING_INDEX((SUBSTRING_INDEX(`project_milestones`.`due_date`,'-',2)),'-',-1),'/',SUBSTRING_INDEX((SUBSTRING_INDEX(`project_milestones`.`due_date`,'-',3)),'-',-1),'/',SUBSTRING_INDEX((SUBSTRING_INDEX(`project_milestones`.`due_date`,'-',1)),'-',-1)) AS `Due date (Milstone)`,\n    CONCAT(SUBSTRING_INDEX((SUBSTRING_INDEX(`project_milestones`.`close_date`,'-',2)),'-',-1),'/',SUBSTRING_INDEX((SUBSTRING_INDEX(`project_milestones`.`close_date`,' ',1)),'-',-1),'/',SUBSTRING_INDEX((SUBSTRING_INDEX(`project_milestones`.`close_date`,'-',1)),'-',-1)) AS `Close date (milestone)`,\n    CONCAT(SUBSTRING_INDEX((SUBSTRING_INDEX(`project_milestones`.`updated_at`,'-',2)),'-',-1),'/',SUBSTRING_INDEX((SUBSTRING_INDEX(`project_milestones`.`updated_at`,' ',1)),'-',-1),'/',SUBSTRING_INDEX((SUBSTRING_INDEX(`project_milestones`.`updated_at`,'-',1)),'-',-1)) AS `Update date (milestone)`,\n    `project_milestones`.`status` AS `Milestone status`,\n    `projects`.`am_name` AS `Account manager( AM)`,\n    `invoices`.`client_email` AS `Customer Email`,\n    CURRENT_TIMESTAMP() AS `Workflows data updated at`\nFROM\n    `invoice_project_milestones`\nLEFT JOIN \n(\n    SELECT `invoices`.*,`users`.`email` AS `client_email` FROM `invoices`\n \tLEFT JOIN `users` ON `users`.`id` = `invoices`.`user_client_id`\n) AS `invoices`\nON `invoices`.`id` = `invoice_project_milestones`.`invoice_id`\nLEFT JOIN `payments` ON `invoices`.`id` = `payments`.`invoice_id`\nLEFT JOIN `project_milestones` ON `invoice_project_milestones`.`project_milestone_id` = `project_milestones`.`id`\nLEFT JOIN \n(\n\tSELECT `projects`.*,`users`.`name` AS `am_name` FROM `projects`\n    LEFT JOIN `users` ON `users`.`id` = `projects`.`project_admin`\n) AS `projects` \nON `projects`.`id` = `project_milestones`.`project_id`\nLEFT JOIN `users` ON `users`.`id` = `project_milestones`.`agent_id`\n\nWHERE\n    `invoices`.`company_id` = 2 \nORDER BY `Close date (milestone)`  DESC;",
+        "options": {}
+      },
+      "id": "45bd060a-3b9f-4669-bc4c-2d0db2ffdfdc",
+      "name": "Printcart Query milestones reports",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        380
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger Midnight": {
+      "main": [
+        [
+          {
+            "node": "Clear sheet3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Clear sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear sheet2": {
+      "main": [
+        [
+          {
+            "node": "Query point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query point1": {
+      "main": [
+        [
+          {
+            "node": "update Point Printcart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear sheet3": {
+      "main": [
+        [
+          {
+            "node": "Printcart Query milestones reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Printcart Query milestones reports": {
+      "main": [
+        [
+          {
+            "node": "update content1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dcbfbf1e-3487-4f22-be83-cd98fbd51026",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "s8tEG1kGWfnQXnTV",
+  "tags": []
+}

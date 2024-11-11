@@ -1,0 +1,346 @@
+{
+  "name": "QCM80",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "01e9190c-794a-46db-819b-2c1a81529285",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        320,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones/b99a505b-73c2-4227-a575-9032773c3e90",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "options": {}
+      },
+      "id": "d93f8c1e-ddf1-4ca5-8c65-54100677ace5",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        600,
+        320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.task",
+        "options": {}
+      },
+      "id": "a6e1c7a5-bfa9-4879-8c0f-1a75441c67d6",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        840,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months"
+            }
+          ]
+        }
+      },
+      "id": "d64c34de-a96c-474d-836c-9314e3eb56d1",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        340,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "979578c8-4323-4e2f-8bb1-ca860f37a48b",
+              "leftValue": "={{ $json.heading }}",
+              "rightValue": "Testimonials",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e9310761-6de3-4e88-adbf-8a7e935b8d13",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1060,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "4e2f41ef-a7d5-4d3e-8810-c404024a8aef",
+              "leftValue": "={{ Number($json.data.custom_fields_data[1].value) }}",
+              "rightValue": "={{ Number($json.data.custom_fields_data[0].value) }}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "da262d1e-3dc5-470a-a0d7-9ae3d18ff6f7",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "6cd840d2-fdab-436f-ad0f-25c0c0cbb78c",
+      "name": "Cloodo Project2",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        300
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM80: {{ $('Cloodo Project2').item.json.data.assigned_to[0].name }} - {{ (Number($('Cloodo Project2').item.json.data.custom_fields_data[0].value) - Number($('Cloodo Project2').item.json.data.custom_fields_data[1].value))*10}} point for {{ Number($('Cloodo Project2').item.json.data.custom_fields_data[0].value) - Number($('Cloodo Project2').item.json.data.custom_fields_data[1].value)}} ticket is missing from task kpi : https://worksuite.cloodo.com/apps/work/tasks/{{ $('Cloodo Project2').item.json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "c6d494e4-48ec-443e-be92-e4bd676f7c6a",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1720,
+        280
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "ecbd1c34-f977-41e2-b01f-5ac8df700ae8",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4dd6b4ec-ef20-4dd9-9613-2037b4ebf40c",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1940,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Cloodo Project2').item.json.data.assigned_to[0].id }}",
+        "points": "={{ (Number($('Cloodo Project2').item.json.data.custom_fields_data[0].value) - Number($('Cloodo Project2').item.json.data.custom_fields_data[1].value))*10}}",
+        "note": "=QCM80: {{ $('Cloodo Project2').item.json.data.assigned_to[0].name }} - {{ (Number($('Cloodo Project2').item.json.data.custom_fields_data[0].value) - Number($('Cloodo Project2').item.json.data.custom_fields_data[1].value))*10}} point for {{ Number($('Cloodo Project2').item.json.data.custom_fields_data[0].value) - Number($('Cloodo Project2').item.json.data.custom_fields_data[1].value)}} ticket is missing from task kpi : https://worksuite.cloodo.com/apps/work/tasks/{{ $('Cloodo Project2').item.json.data.id }}"
+      },
+      "id": "e58c16a7-f95f-45fe-8c2b-cde4f30c9e56",
+      "name": "Cloodo Point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2160,
+        260
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project2": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3b031a87-7f7d-4851-8114-dfe2c2344397",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "pBg3CT3zy5qVafOH",
+  "tags": []
+}

@@ -1,0 +1,698 @@
+{
+  "name": "WF 29 - UDLE - Assign Agent Workflow Leads",
+  "nodes": [
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.source.type }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "contains",
+              "value2": "Woocommerce",
+              "output": 1
+            },
+            {
+              "operation": "contains",
+              "value2": "API",
+              "output": 2
+            },
+            {
+              "operation": "contains",
+              "value2": "Codecanyon",
+              "output": 1
+            },
+            {
+              "operation": "contains",
+              "value2": "Shopify",
+              "output": 2
+            },
+            {
+              "operation": "contains",
+              "value2": "Wix",
+              "output": 2
+            }
+          ]
+        },
+        "fallbackOutput": 0
+      },
+      "id": "607e04f6-04ec-4765-b67d-9d7c85ee54ec",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        620,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "listingleads",
+        "operation": "getmany",
+        "pageLead": "={{ $runIndex + 1}}",
+        "additionalFields": {
+          "fromDate": "={{ $now.minus({day:7}).format('yyyy-MM-dd') }}",
+          "toDate": "={{ $now.format('yyyy-MM-dd') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "ae9f5a6c-1f5e-46b9-a858-bf6c09c5ee90",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        140
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "3838e5e7-6c2d-4698-93d9-78e6dee95faa",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 2.2,
+      "position": [
+        120,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": 5
+            }
+          ]
+        }
+      },
+      "id": "93d732ed-aaf0-43d1-92c4-e86f57a40c73",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status.type }}",
+              "operation": "notEqual",
+              "value2": "qualified"
+            },
+            {
+              "value1": "={{ $json.agent }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "b975c17b-64af-4411-a961-af61815e9b55",
+      "name": "IF1 category2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        -420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.agent.user.id }}",
+              "operation": "notEqual",
+              "value2": "859bac79-dcca-4dbe-9b8c-14dfaaf49f84"
+            },
+            {
+              "value1": "={{ $json.agent.user.id }}",
+              "operation": "notEqual",
+              "value2": "3bd12f78-7a91-4420-8de3-5c9cd64a936c"
+            },
+            {
+              "value1": "={{ $json.status.type }}",
+              "operation": "notEqual",
+              "value2": "Qualified"
+            }
+          ]
+        }
+      },
+      "id": "051f47c8-9cab-4b71-bc7e-61a2bfd395f5",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        340,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "listingleads",
+        "operation": "update",
+        "ID": "={{ $json.id }}",
+        "additionalFields": {
+          "chooseAgents": "=67b97f6c-f9cd-4c90-b14d-9ee8e0d817aa"
+        },
+        "requestOptions": {}
+      },
+      "id": "1d3e6c33-eef1-4c16-9427-e5799d7440dc",
+      "name": "Assign Linh",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        440,
+        -500
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "listingleads",
+        "operation": "update",
+        "ID": "={{ $json.id }}",
+        "additionalFields": {
+          "chooseAgents": "=d98f3a24-b86b-441b-a094-b9161c25b658"
+        },
+        "requestOptions": {}
+      },
+      "id": "1e4c6522-2dc9-4a96-b95a-e580d9cad646",
+      "name": "Assign Hang",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        740,
+        -520
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "listingleads",
+        "operation": "update",
+        "ID": "={{ $json.id }}",
+        "additionalFields": {
+          "chooseAgents": 48009
+        },
+        "requestOptions": {}
+      },
+      "id": "2c66ed27-910a-44a3-9b65-0ec4475c530c",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        900,
+        -580
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM lead_agents la\nWHERE la.uuid = \"e3b40a8e-f0fc-423e-afed-f9009f98b797\"",
+        "options": {}
+      },
+      "id": "66c4bd7f-6f4e-45e0-abe3-90275d3eb97b",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        -580
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM users\nWHERE name LIKE '%Linh%';",
+        "options": {}
+      },
+      "id": "b52a7415-48f4-4d22-af40-86ac9bbb5339",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        -140
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status.type }}",
+              "operation": "notEqual",
+              "value2": "qualified"
+            },
+            {
+              "value1": "={{ $json.agent }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "a90a9fbd-7f35-48bf-a20f-1f05975a411d",
+      "name": "IF1 category3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "d223cea9-73ea-42d7-bb72-a598ebb5a7c7",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "fde7fc52-c0d4-4441-9667-254cb66c89dd",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status.type }}",
+              "operation": "notEqual",
+              "value2": "qualified"
+            },
+            {
+              "value1": "={{ $json.agent }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "3337912f-a0f1-46c1-9e99-5debfcaa645a",
+      "name": "IF1 category",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "d223cea9-73ea-42d7-bb72-a598ebb5a7c7",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2d253a95-7c05-4432-9ab1-c1ae96709588",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1640,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "id": "a96d26dd-6acd-470f-8c11-fb4e6a79ad1c",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -600,
+        160
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "04fcf900-c21a-4f56-87a3-baf9746d2de4",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -580,
+        -120
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "page": {},
+        "additionalFields": {
+          "search": "=[UDLE] Dung, Please Update Lead In For: {{ $json.client_name }}({{ $json.client_email }})"
+        },
+        "requestOptions": {}
+      },
+      "id": "96c43de5-f064-491d-a125-658089fe1a6a",
+      "name": "Check Dung",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        120
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "page": null,
+        "additionalFields": {
+          "search": "=[UDLE] Manh, Please Update Lead In For: {{ $json.client_name }}({{ $json.client_email }})"
+        },
+        "requestOptions": {}
+      },
+      "id": "527346a1-9e79-4df8-9c49-7f5e54e35600",
+      "name": "Check Manh",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        440
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=[UDLE] Dung, Please Update Lead In For: {{ $('Switch').item.json.client_name }}({{ $('Switch').item.json.client_email }})",
+        "start_date": "={{$today}}",
+        "due_date": "={{$today.plus({days:3})}}",
+        "users": "e669712f-22a2-4109-bc2c-92f947b85f58",
+        "additionalFields": {
+          "taskDescription": "=<p>Link Lead: <a href=\"https://worksuite.cloodo.com/apps/leads/{{ $('IF1 category3').item.json.id }}\">Click here</a></p>\n\n<p>- Facebook link is required</p>\n<p>- Category is required</p>\n<p>- Status is required</p>\n<p>- Search for additional information about the Leads</p>"
+        },
+        "requestOptions": {}
+      },
+      "id": "bdaba513-b609-4c39-b16d-fb61939e6514",
+      "name": "task Dung",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        2020,
+        100
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=[UDLE] Manh, Please Update Lead In For: {{ $('Switch').item.json.client_name }}({{ $('Switch').item.json.client_email }})",
+        "start_date": "={{$today}}",
+        "due_date": "={{$today.plus({days:3})}}",
+        "users": "dc34148e-903f-4db9-9903-ff35178cc862",
+        "additionalFields": {
+          "taskDescription": "=<p>Link Lead: <a href=\"https://worksuite.cloodo.com/apps/leads/{{ $('IF1 category').item.json.id }}\">Click here</a></p>\n\n<p>- Facebook link is required</p>\n<p>- Category is required</p>\n<p>- Status is required</p>\n<p>- Search for additional information about the Leads</p>"
+        },
+        "requestOptions": {}
+      },
+      "id": "93bef256-2d6b-4cab-b64d-b95ada656465",
+      "name": "task Manh",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1960,
+        420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Switch": {
+      "main": [
+        [],
+        [
+          {
+            "node": "IF1 category",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IF1 category3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1 category3": {
+      "main": [
+        [
+          {
+            "node": "Check Dung",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1 category": {
+      "main": [
+        [
+          {
+            "node": "Check Manh",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Dung": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Manh": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "task Dung",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "task Manh",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ace6e6c5-b72b-4f24-a975-c07e5af56906",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "pMxqXC8zRQV86Bgd",
+  "tags": []
+}

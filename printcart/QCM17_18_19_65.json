@@ -1,0 +1,648 @@
+{
+  "name": "QCM17-18-19-65",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "4c68e3b6-fa27-4371-9409-2bd550dcebcd",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1180,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23,
+              "triggerAtMinute": 5
+            }
+          ]
+        }
+      },
+      "id": "e851e7af-eecc-4245-9a60-afce4b591034",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1180,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "b3920602-9a2a-44d9-afc9-bba21ad1c320",
+      "name": "IF not exists1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        500,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM17: {{ $('Switch Project Reviews1').item.json.data.agent.user.name }} + 25 Ticket request review from Facebook, Themeforest, Agencyvista, Google, Crowdreviewa closed. Link: https://worksuite.cloodo.com/apps/tickets/add-tickets/{{ $('Switch Project Reviews1').item.json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "ed667a57-691a-4aae-97fb-bf8477c94e49",
+      "name": "Search review1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        280,
+        320
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.data.tags[0].name }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "facebook"
+            },
+            {
+              "value2": "google"
+            },
+            {
+              "value2": "themeforest"
+            },
+            {
+              "value2": " agencyvista"
+            },
+            {
+              "value2": "crowdreviews"
+            },
+            {
+              "value2": "goodfirms",
+              "output": 1
+            },
+            {
+              "value2": "clutch",
+              "output": 1
+            },
+            {
+              "value2": "trustpilus",
+              "output": 2
+            }
+          ]
+        },
+        "fallbackOutput": 3
+      },
+      "id": "460cff8b-4cc0-4651-8c76-7ce8b34f0235",
+      "name": "Switch Project Reviews1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "additionalFields": {
+          "fromDate": "={{ $now.minus({day:5}).format('yyyy-MM-dd') }}",
+          "toDate": "={{ $now.format('yyyy-MM-dd') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "5fbf8012-9cad-43d4-b9aa-0e2fb8dc5b8d",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -900,
+        720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "9b294d8a-618b-460f-9522-d067c987a6dd",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "66b8fa10-2949-4890-9739-a64270e66f4b",
+              "leftValue": "={{ $json.type.type }}",
+              "rightValue": "Testimonials",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "d4e2eaea-882e-4832-99cd-7a6b29545dba",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "closed",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2c9116ce-a490-4633-9a58-08e89b6196f7",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/tickets/{{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json, text/plain, */*"
+            },
+            {
+              "name": "authorization",
+              "value": "=Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3MjE5NjQ4NzMsImV4cCI6MTcyNDU1Njg3MywibmJmIjoxNzIxOTY0ODczLCJqdGkiOiJFcHQ1TnlLc0pTYTJHYmJLIiwic3ViIjoiNSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.uRygazXhIKHidXZ9J7YaFjFwt7-6eGZRa9jWSl20YSI"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_179928fdaa0b8079dca0a2d5c99c965c7c9b22a673e27e3977f0c6a06e799c4e"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "df06fdde-a969-4e5a-a3c5-3ee2660884f6",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -220,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "7541db62-d4ee-4312-ac64-86edd4ed6e64",
+      "name": "IF not exists2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        500,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM19: {{ $('Switch Project Reviews1').item.json.data.agent.user.name }}  + 75 Ticket request review from Goodfirms, Clutch closed. Link: https://worksuite.cloodo.com/apps/tickets/add-tickets/{{ $('Switch Project Reviews1').item.json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "d8cd3787-d72d-4714-bfe1-d00010b6272f",
+      "name": "Search review5",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        280,
+        540
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "df7ce7a3-6950-4761-b9a8-53297a6380fa",
+      "name": "IF not exists4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        520,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM18: {{ $('Switch Project Reviews1').item.json.data.agent.user.name }} + 35 Ticket request review from new chanel closed. Link: https://worksuite.cloodo.com/apps/tickets/add-tickets/{{ $('Switch Project Reviews1').item.json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "bc3c172d-cd84-4649-b2bc-407adc17740e",
+      "name": "Search review7",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        300,
+        960
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Switch Project Reviews1').item.json.data.agent.user.id }}",
+        "points": 25,
+        "note": "=QCM17: {{ $('Switch Project Reviews1').item.json.data.agent.user.name }} + 25 Ticket request review from Facebook, Themeforest, Agencyvista, Google, Crowdreviewa closed. Link: https://worksuite.cloodo.com/apps/tickets/add-tickets/{{ $('Switch Project Reviews1').item.json.data.id }}"
+      },
+      "id": "e5183539-bee3-475b-87b3-19a842ca982e",
+      "name": "QCM17",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        740,
+        300
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Switch Project Reviews1').item.json.data.agent.user.id }}",
+        "points": 75,
+        "note": "=QCM19: {{ $('Switch Project Reviews1').item.json.data.agent.user.name }}  + 75 Ticket request review from Goodfirms, Clutch closed. Link: https://worksuite.cloodo.com/apps/tickets/add-tickets/{{ $('Switch Project Reviews1').item.json.data.id }}"
+      },
+      "id": "5bbb1bdc-a767-41ee-8437-60267aa81331",
+      "name": "QCM19",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        740,
+        520
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Switch Project Reviews1').item.json.data.agent.user.id }}",
+        "points": 35,
+        "note": "=QCM18: {{ $('Switch Project Reviews1').item.json.data.agent.user.name }} + 35 Ticket request review from new chanel closed. Link: https://worksuite.cloodo.com/apps/tickets/add-tickets/{{ $('Switch Project Reviews1').item.json.data.id }}"
+      },
+      "id": "c8017417-afcb-4657-ad89-b289472a9e86",
+      "name": "QCM18",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        760,
+        940
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "dcd35b1f-4dfe-4d68-8ae8-847a1412dbbe",
+      "name": "IF not exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        500,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM65:{{ $('Switch Project Reviews1').item.json.data.agent.user.name }} + 10 Ticket request review from Trustpilus closed. Link: https://worksuite.cloodo.com/apps/tickets/add-tickets/{{ $('Switch Project Reviews1').item.json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "f7cbb748-d100-4a05-a588-51db62681fd9",
+      "name": "Search review",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        280,
+        760
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Switch Project Reviews1').item.json.data.agent.user.id }}",
+        "points": 10,
+        "note": "=QCM65:{{ $('Switch Project Reviews1').item.json.data.agent.user.name }} + 10 Ticket request review from Trustpilus closed. Link: https://worksuite.cloodo.com/apps/tickets/add-tickets/{{ $('Switch Project Reviews1').item.json.data.id }}"
+      },
+      "id": "e9cebba4-fd3a-4057-88cb-5640a9576f17",
+      "name": "QCM65",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        740,
+        740
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists1": {
+      "main": [
+        [
+          {
+            "node": "QCM17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search review1": {
+      "main": [
+        [
+          {
+            "node": "IF not exists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Project Reviews1": {
+      "main": [
+        [
+          {
+            "node": "Search review1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search review5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search review",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search review7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Switch Project Reviews1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists2": {
+      "main": [
+        [
+          {
+            "node": "QCM19",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search review5": {
+      "main": [
+        [
+          {
+            "node": "IF not exists2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists4": {
+      "main": [
+        [
+          {
+            "node": "QCM18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search review7": {
+      "main": [
+        [
+          {
+            "node": "IF not exists4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists": {
+      "main": [
+        [
+          {
+            "node": "QCM65",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search review": {
+      "main": [
+        [
+          {
+            "node": "IF not exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f68b8218-1789-44a9-a50c-b9fff550daf4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "arcRlwkp4IY5t1si",
+  "tags": []
+}

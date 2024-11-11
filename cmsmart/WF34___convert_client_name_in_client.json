@@ -1,0 +1,386 @@
+{
+  "name": "WF34 - convert client name in client",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "564ad06d-f928-4e87-90b2-5a4248b92391",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -140,
+        540
+      ],
+      "typeVersion": 1,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "a75b6d9d-f9f4-494a-ae78-38bd8375e4ee",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        400,
+        100
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "3aae2b7a-8aaa-41b2-b667-f3e574b9c6aa",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        660,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex + 1 }}",
+              "operation": "smallerEqual",
+              "value2": 3
+            }
+          ]
+        }
+      },
+      "id": "c4d87c4e-3421-441c-9582-06c1b9717ead",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        600,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const currentIndex = $json[\"runIndex\"];\nreturn {\n  runIndex: currentIndex + 1,\n};\n"
+      },
+      "id": "c3b69176-d33f-4e3d-9958-e7695347b71a",
+      "name": "Code4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "getmany",
+        "page": "={{ $runIndex+ 1 }}",
+        "additionalFields": {
+          "sort": "=desc",
+          "fromDate": "={{ $today.set({ hour: 0, minute: 1 }).format('dd-MM-yyyy HH:mm') }}",
+          "toDate": "={{ $today.set({ hour: 23, minute: 59 }).format('dd-MM-yyyy HH:mm') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "194f5ee5-2e57-4ba9-83f5-ba798c52bd3b",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        400,
+        540
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let obj = [];\nfor (const item of $input.all()) {\n  const foundName = item?.json?.user?.name;\n\n  // Kiểm tra nếu tên bắt đầu bằng chữ thường hoặc có ký tự \"@\"\n  if (foundName && (foundName[0] === foundName[0].toLowerCase() || foundName.includes('@'))) {\n    obj.push(item); // Thêm đối tượng vào mảng nếu thỏa mãn điều kiện\n  }\n}\n\nreturn obj"
+      },
+      "id": "de869d00-a03f-479b-b990-f9f656ca7989",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        940,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  // Lấy ra name từ đối tượng\n  let foundName = item?.json?.user?.name;\n\n  if (foundName) {\n    // Thay chữ cái đầu tiên của name thành viết hoa\n    foundName = foundName.charAt(0).toUpperCase() + foundName.slice(1);\n\n    // Kiểm tra nếu có ký tự @ trong name\n    if (foundName.includes('@')) {\n      const parts = foundName.split('@'); // Tách name thành 2 phần dựa trên @\n      const beforeAt = parts[0].trim(); // Phần trước dấu @\n      \n      // Kiểm tra xem phần trước @ đã có trong name hay chưa\n      if (foundName.includes(beforeAt)) {\n        // Nếu phần trước @ đã có trong name, chỉ giữ lại phần trước @\n        foundName = beforeAt;\n      } else {\n        // Nếu chưa, xóa @ và tất cả các ký tự phía sau\n        foundName = beforeAt;\n      }\n    }\n\n    // Gán name đã thay đổi vào newName\n    item.json.newName = foundName;\n  }\n}\n\n// Trả về mảng đã được thay đổi\nreturn $input.all();"
+      },
+      "id": "7a04b5c5-ca21-49f6-9281-c4a1cc5ea947",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1260,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "update",
+        "ID": "={{ $json.user.id }}",
+        "additionalFields": {
+          "name": "={{ $json.newName }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "7fc52ea2-ff99-4c24-8412-c96cc0f873fb",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        140
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const currentIndex = $json[\"runIndex\"];\nreturn {\n  runIndex: currentIndex + 1,\n};\n"
+      },
+      "id": "4986f64b-1e8a-4efa-aa0a-cd642bcbdbb1",
+      "name": "Code5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://erp-amz.cloodo.com/v4/clients/{{ $json.user.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json, text/plain, */*"
+            },
+            {
+              "name": "accept-language",
+              "value": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5"
+            },
+            {
+              "name": "authorization",
+              "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3Mjk3Mzc1OTYsImV4cCI6MTczMDYwMTU5NiwibmJmIjoxNzI5NzM3NTk2LCJqdGkiOiJXTmRRWVE5WFJBd2ZYVG11Iiwic3ViIjoiMTI3MSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.zBvUt2LBSJqMXJ6112tM2wmxTK9iNMDSDmmV2SY2v14"
+            },
+            {
+              "name": "origin",
+              "value": "https://worksuite.cloodo.com"
+            },
+            {
+              "name": "priority",
+              "value": "u=1, i"
+            },
+            {
+              "name": "referer",
+              "value": "https://worksuite.cloodo.com/"
+            },
+            {
+              "name": "sec-ch-ua",
+              "value": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\""
+            },
+            {
+              "name": "sec-ch-ua-mobile",
+              "value": "?0"
+            },
+            {
+              "name": "sec-ch-ua-platform",
+              "value": "\"Windows\""
+            },
+            {
+              "name": "sec-fetch-dest",
+              "value": "empty"
+            },
+            {
+              "name": "sec-fetch-mode",
+              "value": "cors"
+            },
+            {
+              "name": "sec-fetch-site",
+              "value": "same-site"
+            },
+            {
+              "name": "user-agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_6b13bba250af9cdc690d4e07e2fe66b05bdc56e5ef1632de55264a7d175cff87"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{ $json.user.id }}"
+            },
+            {
+              "name": "name",
+              "value": "={{ $json.newName }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $json.user.email }}"
+            },
+            {
+              "name": "status",
+              "value": "active"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "6d4b950d-7ace-45f1-9ddc-020231fc2466",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1480,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23
+            }
+          ]
+        }
+      },
+      "id": "d51970ef-9afd-42c8-9f39-47c641c0314f",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        40,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a519f159-aae5-4f98-aca4-cf994e832dba",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "IHO5TwVE5TGJBd0d",
+  "tags": []
+}

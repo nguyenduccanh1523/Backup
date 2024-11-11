@@ -1,0 +1,375 @@
+{
+  "name": "QCM47 - Milestones -midnight",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "d14b71d7-150a-4865-97ba-dc7d3949a3fe",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "taskStatus": "incomplete",
+          "fromDate": "= {{ $today.minus({day : 1}).format('dd-MM-yyyy') }} ",
+          "toDate": "= {{ $today.format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "eaa82d78-8a88-4571-aea9-8f9ec70619cd",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1800,
+        760
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "96e22b6c-46c3-448f-9c15-46229cf58fb0",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2060,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "7eca9a1b-fb90-44dd-8fdb-65365b0fb542",
+              "leftValue": "={{ $json.meta.current_page }}",
+              "rightValue": "={{ $json.meta.last_page }}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "80479dce-4623-4320-8e0a-e2d8f851436f",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2060,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT pm.uuid, t.uuid AS taskUUID, u.uuid AS agentUUID \nFROM project_milestones pm\nJOIN tasks t ON t.milestone_id = pm.id\nJOIN users u ON u.id = pm.agent_id\nWHERE pm.uuid = '{{ $('Split Out').item.json.id }}'\nUNION ALL\nSELECT '{{ $('Split Out').item.json.id }}' AS uuid, '' AS taskUUID, u.uuid AS agentUUID\nFROM users u\nJOIN project_milestones pm ON u.id = pm.agent_id\nWHERE pm.uuid = '{{ $('Split Out').item.json.id }}'\nAND NOT EXISTS (\n    SELECT 1\n    FROM project_milestones pm\n    JOIN tasks t ON t.milestone_id = pm.id\n    JOIN users u ON pm.agent_id = u.id\n    WHERE pm.uuid = '{{ $('Split Out').item.json.id }}'\n);\n",
+        "options": {}
+      },
+      "id": "154c9068-d0f8-4c0c-adbd-5f5fcf957280",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        2280,
+        760
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "SJei6ksLjiCIXFRS",
+          "name": "Worksuite database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "a75dc872-0c28-4516-a8f8-ea7799460cbd",
+              "leftValue": "={{ $json.taskUUID }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0b587673-0c05-41fb-810e-14236263869d",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2500,
+        760
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM47:{{ $('CloodoHRM').item.json.data.name }} There are no tasks in the Milestone on 24h, Link Milestone: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('If2').item.json.uuid }}",
+        "max_limit_record": 50
+      },
+      "id": "3f00668b-44a4-4e0d-bada-209c00bc556d",
+      "name": "QCM1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3000,
+        720
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.total }}",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "a663702b-4fd6-49e3-b8a3-d72a9183c42e",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3140,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If2').item.json.agentUUID }}",
+        "points": 3,
+        "note": "=QCM47:{{ $('CloodoHRM').item.json.data.name }} There are no tasks in the Milestone on 24h, Link Milestone: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('If2').item.json.uuid }}"
+      },
+      "id": "242ec57d-201a-4337-b802-b991fd8a961e",
+      "name": "QCM46",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3340,
+        740
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "2daf876c-2571-43e2-83a3-76d7de6b86e8",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1580,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "id": "={{ $json.agentUUID }}",
+        "requestOptions": {}
+      },
+      "id": "d8c89497-66f8-454e-bb70-a5ac3c29cbff",
+      "name": "CloodoHRM",
+      "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
+      "typeVersion": 1,
+      "position": [
+        2720,
+        660
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "CloodoHRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM1": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "QCM46",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CloodoHRM": {
+      "main": [
+        [
+          {
+            "node": "QCM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3087156a-515b-4c8d-b768-ef6cd0b49c41",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "Ef4WkE5T35CzvOvG",
+  "tags": []
+}

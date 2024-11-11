@@ -1,0 +1,549 @@
+{
+  "name": "QCM28 29 - MINUS - Client ko gắn category 5pm",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "9ad30a0f-0d80-43f8-97dc-a269685a3186",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -900,
+        380
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.category }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "83bb73f1-5b80-47e0-82a8-5b093d95573e",
+      "name": "is not empty category",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3020,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM28 {{ $('is not empty category').item.json.data.added_by.name }} was penalized -1 point for the reason that the client did not attach a category: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty category').item.json.data.user.id }}",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "b132a88b-5a22-4281-917a-9896daead771",
+      "name": "search cateogory point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3300,
+        680
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM29 {{ $('is not empty sub category1').item.json.data.added_by.name }} was penalized -1 point for the reason that the client did not attach a sub category: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty sub category1').item.json.data.user.id }}",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "606aafa6-ae6b-4f25-a8b9-bac7a2bc34e0",
+      "name": "search cateogory point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3300,
+        880
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.category }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "9de875ca-ff55-4701-bffe-c7fdd40d2098",
+      "name": "is not empty sub category1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3020,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "114b1100-a90d-4f7e-8459-18d814038e56",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3560,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "0f2372bd-eeb3-4b2a-b3dd-501e3bd14b25",
+      "name": "IF not found1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3560,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('is not empty category').item.json.data.added_by.id }}",
+        "points": 1,
+        "note": "=QCM28 {{ $('is not empty category').item.json.data.added_by.name }} was penalized -1 point for the reason that the client did not attach a category: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty category').item.json.data.user.id }}"
+      },
+      "id": "ba1e4563-38e8-4685-abc4-d67189cfeb84",
+      "name": "QCM28",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3820,
+        660
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('is not empty sub category1').item.json.data.added_by.id }}",
+        "points": 1,
+        "note": "=QCM29 {{ $('is not empty sub category1').item.json.data.added_by.name }} was penalized -1 point for the reason that the client did not attach a sub category: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty sub category1').item.json.data.user.id }}"
+      },
+      "id": "32673dd5-9619-44d8-970f-4091ffb99397",
+      "name": "QCM29",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3820,
+        860
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "page": "={{ $runIndex+1 }}",
+        "additionalFields": {
+          "search": "Please Take Care ",
+          "fromDate": "= {{ $today.set({ day: 1 }).plus({month :0}).format('yyyy-MM-dd') }} ",
+          "toDate": "={{ $today.set({ day: 1 }).plus({month :1}).format('yyyy-MM-dd') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "698e2b8d-886c-4c25-90e7-181d7b6c9546",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        480
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex+1 }}",
+              "operation": "smallerEqual",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "3315a6f1-d1fe-49ec-aaa0-9776413c6828",
+      "name": "IF7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "9af9b2a5-e5c1-4d8b-8d1c-68df1f2752d8",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -60,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "ae448821-3748-406c-b888-3e021f535e0f",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        420,
+        580
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Biểu thức chính quy để tìm UUID\nconst uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;\n\n// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  const text = item.json.data.description;\n  // Tìm UUID trong đoạn text\n  const uuidMatch = text.match(uuidRegex);\n  // Kiểm tra và lấy UUID nếu tìm thấy\n  item.json.myNewField = uuidMatch ? uuidMatch[0] : null;\n}\n\nreturn $input.all();\n"
+      },
+      "id": "0acc0ed2-8887-4bb4-830f-f6c3e84a6890",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        820,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $('Code').item.json.myNewField }}",
+        "requestOptions": {}
+      },
+      "id": "e45e9490-9942-4035-9f14-1f4c6382522b",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2500,
+        820
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "d26f9395-dadd-4c7e-9e78-e783bf934304",
+              "leftValue": "={{new Date( $json.data.due_date).toDateTime() }}",
+              "rightValue": "={{$today}}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f929aec9-6b51-47c1-a691-4d6cf74a927e",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 17
+            }
+          ]
+        }
+      },
+      "id": "cddab117-f5e6-438d-b899-6f11d265276a",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1200,
+        740
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "is not empty category": {
+      "main": [
+        [
+          {
+            "node": "search cateogory point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search cateogory point": {
+      "main": [
+        [
+          {
+            "node": "IF not found1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search cateogory point1": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "is not empty sub category1": {
+      "main": [
+        [
+          {
+            "node": "search cateogory point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "QCM29",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "QCM28",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "IF7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF7": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "is not empty category",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "is not empty sub category1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "72922b60-26e2-4b45-97c9-2882deebdeb6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "4659I2dozv114xqp",
+  "tags": []
+}

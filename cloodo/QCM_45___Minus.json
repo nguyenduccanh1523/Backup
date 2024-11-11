@@ -1,0 +1,462 @@
+{
+  "name": "QCM 45 - Minus",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "d02f2ce3-f2de-4795-ba73-f46b2f7a89a9",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "sort_by": "due_date",
+          "sort_order": "desc",
+          "taskStatus": "incomplete",
+          "fromDate": "= {{ $today.set({ day: 1 }).minus({month : 0}).format('dd-MM-yyyy') }} ",
+          "toDate": "= {{ $today.set({ day: 1 }).minus({month : -1}).format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "e6e1058c-de32-4231-9935-1bf7f6e0ae2e",
+      "name": "Get Milestone Incomplete",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        760
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "710daa8f-3b9f-4923-84af-15abba6d6511",
+      "name": "Split out",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -180,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.due_date }}",
+              "operation": "smallerEqual",
+              "value2": "={{ $today.toString() }}"
+            }
+          ],
+          "string": [
+            {
+              "value1": "={{ $json.allow_cost }}",
+              "value2": "=no "
+            }
+          ]
+        }
+      },
+      "id": "4db7379c-bb8b-4dd1-a1fd-d95ab5fd3720",
+      "name": "IF over due date",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        60,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.current_page }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "04a30f0d-c271-4b5b-857f-61d4ddaf67cb",
+      "name": "Loop page",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.id }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "159902ef-6b2e-4a7a-bb30-9fae429f9d05",
+      "name": "IF not empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        760,
+        760
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "06ce7972-d740-4ff7-8f63-785d73f1467a",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C06054MU77S",
+          "mode": "list",
+          "cachedResultName": "cmsmart-point"
+        },
+        "text": "=QCM45 {{ $('Split out').item.json.agent.name }} is penalized -5 points when Milestones are late due date on {{ $today.format('dd-MM-yyyy') }}: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('Split out').item.json.id }}p{{ $('Split out').item.json.project_id }}   ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "13dfdaa6-37e5-49de-b0aa-717fa138a77d",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        2220,
+        640
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Split out').item.json.agent }}",
+              "operation": "isNotEmpty"
+            }
+          ],
+          "dateTime": [
+            {
+              "value1": "={{ $json.due_date }}",
+              "value2": "="
+            }
+          ]
+        }
+      },
+      "id": "0f593f76-e2bf-4055-8110-4f42fd0831fb",
+      "name": "IF agent not empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM45 {{ $('Split out').item.json.agent.name }} is penalized -5 points when Milestones are late due date on {{ $today.format('dd-MM-yyyy') }}: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('Split out').item.json.id }}  ",
+        "max_limit_record": 50
+      },
+      "id": "80c73603-a232-4aa8-b466-ee4695b1b239",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        620
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "7d41fa52-558b-4643-91e3-9a43b472e6c6",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23
+            },
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "id": "99cd25d2-fe1d-4c7a-a00b-b9fefe31faea",
+      "name": "Schedule Trigger 11pm & 7am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -800,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Split out').item.json.agent.id }}",
+        "points": 5,
+        "note": "=QCM45 {{ $('Split out').item.json.agent.name }} is penalized -5 points when Milestones are late due date on {{ $today.format('dd-MM-yyyy') }}: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('Split out').item.json.id }}"
+      },
+      "id": "0a0cf7a3-be73-4660-b47e-17b3e63792d0",
+      "name": "QCM45",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        640
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "560b43fc-dd89-4429-9c3d-9d9cb25c70f7",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "KPI thang",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a85c323c-68e3-490d-80b5-a26297bac227",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        380,
+        740
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Milestone Incomplete": {
+      "main": [
+        [
+          {
+            "node": "Split out",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split out": {
+      "main": [
+        [
+          {
+            "node": "IF over due date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF over due date": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop page": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone Incomplete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not empty": {
+      "main": [
+        [
+          {
+            "node": "IF agent not empty",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF agent not empty": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "QCM45",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger 11pm & 7am": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone Incomplete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM45": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "IF not empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone Incomplete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "efd3602e-8755-43cb-8731-573ce0ca3561",
+  "meta": {
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "6ZI445h6NqIK1fzL",
+  "tags": []
+}

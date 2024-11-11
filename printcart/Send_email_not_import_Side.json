@@ -1,0 +1,211 @@
+{
+  "name": "Send email not import Side",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1509fb93-40d0-49cd-a3cc-3c79588cbdac",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT p.uuid, p.store_id, p.name, st.store_name AS storeName, u.name AS userName, u.email AS userEmail \nFROM products p\nLEFT JOIN sides s ON p.id = s.product_id\nJOIN stores st ON st.id = p.store_id\nJOIN users u ON u.id = st.user_id\nWHERE s.product_id IS NULL\nAND DATE(p.created_at) = CURDATE()\n",
+        "options": {}
+      },
+      "id": "6e9a896d-5b2c-4c4d-82f4-975347348089",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1280,
+        580
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.userEmail }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.userName }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification for New Unsynchronized Product in Printcart</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin-top: 50px;\n        }\n\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n        }\n\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n\n        .center-container {\n            text-align: center;\n        }\n\n        img {\n            width: 80%;\n        }\n\n        .instructions {\n            margin: 0;\n            padding-left: 20px;\n            margin-bottom: 20px;\n        }\n\n        .instructions li {\n            margin-bottom: 10px;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n<div class=\"container\">\n        <div class=\"content\">\n            Dear {{ $json.name }},<br>\n            <div>\n                <p class=\"intro\">I hope this message finds you well.</p>\n            </div>\n            We noticed that you recently updated a new product but haven't configured the custom design zones yet. Our\n            <strong>Side Templates</strong>\n            feature allows you to define design zones on different sides of a product and reuse them across multiple\n            products with the same printing options.</p>\n            <div>\n                <h2 class=\"title\">Set Up Custom Product</h2>\n        <h3 class=\"subtitle\">How to Set Up Your Side Template:</h3>\n        <ol class=\"instructions\">\n            <li>Name the template.</li>\n            <li>Specify product size (width and height).</li>\n            <li>Set design area size (width and height) and margins (top and left).</li>\n            <li>Choose background (image, color, or transparent).</li>\n            <li>Select design area shape (rectangle or circle/ellipse).</li>\n            <li>Show cut lines and safe zones if needed.</li>\n        </ol>\n        <p class=\"conclusion\">Please log in to your Printcart Dashboard and set up your Side Template for your latest product to ensure consistency and save time on future updates.</p>\n            </div>\n        </div>\n        <div class=\"center-container\">\n            \n            <a href=\"https://dashboard.printcart.com/product/{{ $json.uuid}}\" style=\"color: #fff\" class=\"button\">Go to\n                Product Detail</a>\n        </div><br>\n    </div>\n</body>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "93"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "976aa417-7073-49d0-b6a9-5bd7b3d2c2f2",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1560,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 22,
+              "triggerAtMinute": 50
+            }
+          ]
+        }
+      },
+      "id": "608cc954-8770-42d6-b856-043222911e98",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1060,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=support@printcart.com"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.userName }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification for New Unsynchronized Product in Printcart</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin-top: 50px;\n        }\n\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n        }\n\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n\n        .center-container {\n            text-align: center;\n        }\n\n        img {\n            width: 80%;\n        }\n\n        .instructions {\n            margin: 0;\n            padding-left: 20px;\n            margin-bottom: 20px;\n        }\n\n        .instructions li {\n            margin-bottom: 10px;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n<div class=\"container\">\n        <div class=\"content\">\n            Dear {{ $json.name }},<br>\n            <div>\n                <p class=\"intro\">I hope this message finds you well.</p>\n            </div>\n            We noticed that you recently updated a new product but haven't configured the custom design zones yet. Our\n            <strong>Side Templates</strong>\n            feature allows you to define design zones on different sides of a product and reuse them across multiple\n            products with the same printing options.</p>\n            <div>\n                <h2 class=\"title\">Set Up Custom Product</h2>\n        <h3 class=\"subtitle\">How to Set Up Your Side Template:</h3>\n        <ol class=\"instructions\">\n            <li>Name the template.</li>\n            <li>Specify product size (width and height).</li>\n            <li>Set design area size (width and height) and margins (top and left).</li>\n            <li>Choose background (image, color, or transparent).</li>\n            <li>Select design area shape (rectangle or circle/ellipse).</li>\n            <li>Show cut lines and safe zones if needed.</li>\n        </ol>\n        <p class=\"conclusion\">Please log in to your Printcart Dashboard and set up your Side Template for your latest product to ensure consistency and save time on future updates.</p>\n            </div>\n        </div>\n        <div class=\"center-container\">\n            \n            <a href=\"https://dashboard.printcart.com/product/{{ $json.uuid}}\" style=\"color: #fff\" class=\"button\">Go to\n                Product Detail</a>\n        </div><br>\n    </div>\n</body>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "93"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "adf3d769-6255-48e7-9ef9-52dbece8064c",
+      "name": "Send Email1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1560,
+        660
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e5b8f439-7a0a-40a6-88a3-0a17dc36dfb9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "bkhZnSZlFv86yPvf",
+  "tags": []
+}

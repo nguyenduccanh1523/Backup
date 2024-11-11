@@ -1,0 +1,1083 @@
+{
+  "name": "LK - WorkPlace",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "094cb2fb-86c0-4ac0-847f-08deeeef5c37",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -1260,
+        700
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "include": "selected",
+        "includeFields": "attributes.description",
+        "options": {}
+      },
+      "id": "0d01ad31-f379-4dbf-9d40-413657debece",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        2580,
+        1680
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=I am Mr David, working as Managing Partner for Cloodo\n\nBase on the content & data below, write a Facebook Post on  Facebook Page which:\n\nThe post format in as a story-teller format, has relates tags, keep the original URL inside the content if provided as links for CTA, keep the images or video inside content if have\n\nThe begin of the post should be story-teller, like a way that I post to share our updated business which is open, easy-going for most of Cloodo potential partners, keep them connect and motivated with what we are doing for their digital workplace project\n\n\nInclude the contact below to used  for CTA:\n\n\nMr David Nguyen - Managing Partner\nCloodo Workplace\nEmail:  huy.nq@cloodo.com\nWhatsapp: +84937869689\n\n\nCloodo: Empowering Businesses in the Digital Workplace\nCloodo is a revolutionary digital workplace designed to enhance productivity, foster innovation, and facilitate collaboration for businesses of all sizes. Key features include enhanced professional profiles, community engagement, promotion of professional services, agency portfolio showcases, innovative project showcases, and a collaborative feedback environment.\n\nBenefits and Features:\nProfessional Profiles: Showcase skills and awards effectively.\nCommunity Engagement: Share and discuss business news and ideas.\nService Promotion: Promote services globally and receive partner deals.\nPortfolio Showcase: Highlight past projects and attract clients.\nProject Showcase: Demonstrate creativity and problem-solving skills.\nFeedback Environment: Provide and receive constructive feedback.\n\nEffective Digital Workplace Strategies:\nUpdate company profiles for transparency.\nOffer seamless HR tools for operations and employee experience.\nCommunicate project updates regularly.\nImplement simple, efficient workflows with automation and AI.\nEnhance client and partner engagement.\nEnsure transparency in business metrics.\nUse online meeting tools for remote collaboration.\nIntegrate with diverse working apps.\nEmbrace data-driven decision making.\nBy focusing on these strategies, companies can create productive, engaged, and efficient digital workplaces with Cloodo. Join Cloodo today to experience a new era of digital workplaces tailored to your business needs.\n\n>>This is a descriptive paragraph about my company agency.\n\n{{ $json.attributes.description }}<br>\n\n\nPlease write Linkedin post to Cloodo Workplace page company page in Linkedin from the content I provide below.  The post should be as a storytelling format to be attractive to my friends, business partners as I am a Senior Account Manager of Cloodo Inc. The post should be attractive to its reader, keep the link inside the provided contents and reuse the attached photo if it has to be included as a part of facebook post. , and don't give me a place to put a link like [Insert link here] or something like that. Because your article will be used for posting without any additions or subtractions. But also  keep the link inside the provided, remove brackets '[' and ']'. line break at the start of the list of tags\n\nContent start.....\n{{ $('Random Project To Post').item.json.attributes.short_intro }}\n.....End\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 1600
+        },
+        "requestOptions": {}
+      },
+      "id": "16932d4a-ad84-470e-9314-dfb997b64a27",
+      "name": "OpenAI1",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        620,
+        540
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "1377cf01-9d49-411f-8a81-cf738d1cb1a5",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        2300,
+        1700
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "c55fcf1a-216f-45a0-9c91-c1c22e2a9bcd",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2020,
+        1700
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer AQVoSobmrOv4ikccXh2BaVd22MJv_AI6jo3wlHAxD98LNZ-AchKQDAhn4FYFYPvR6mMSeTFSe4x99eT0kCVtS8ulPK_RpHqNpkOqAZggofoWqegmQGDPn5RMaJHSblKHB4stFow3qG8hWfBm3CNZbfOusUH3Cww5pydbSpkgeCCrUP3_8LY1Ii3AsmiY1v8eQrunQq1bCCI5_vpUjrXF8z6yyQocTWN3HszJI4cZS4U1Gj60Amq72Mjv6KLOAKKM_f2N4BvbV007smOL6bwpGwIRc6HJ6Pyuw9x_yj3NXBEVvs9qeuwABAUPy0-CEREFhkz-xvR2yi_2noBA5Q7AdcpB0-pdFQ"
+            },
+            {
+              "name": "cookie",
+              "value": "lidc=b=OB33:s=O:r=O:a=O:p=O:g=4317:u=30:x=1:i=1728890950:t=1728976253:v=2:sig=AQF2XzAMSbUFhOp42V7Oad-NDD0D1R0d;bcookie=v=2&24fa8d40-44aa-4efb-8779-ce2b1c5ea65d;"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"author\": \"urn:li:organization:103734325\",\n     \"lifecycleState\": \"PUBLISHED\",\n    \"specificContent\": {\n        \"com.linkedin.ugc.ShareContent\": {\n            \"shareCommentary\": {\n                \"text\": {{ $('Convert Content').item.json.html }}\n            },\n            \"shareMediaCategory\": \"IMAGE\",\n            \"media\": [\n                {\n                    \"status\": \"READY\",\n                    \"media\": \"{{ $('registerUpload1').item.json.value.asset }}\",\n                    \"description\": {\n                        \"text\": \"Cloodo Project\"\n                    },\n                    \"title\": {\n                        \"text\": \"We are Cloodo\"\n                    }\n                }\n            ]\n        }\n    },\n    \"visibility\": {\n        \"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\"\n    }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "e5031771-7a3a-42cc-8e76-ffc635c76206",
+      "name": "HTTP Request Post To Cloodo Workspace1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2160,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/assets?action=registerUpload",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer AQVoSobmrOv4ikccXh2BaVd22MJv_AI6jo3wlHAxD98LNZ-AchKQDAhn4FYFYPvR6mMSeTFSe4x99eT0kCVtS8ulPK_RpHqNpkOqAZggofoWqegmQGDPn5RMaJHSblKHB4stFow3qG8hWfBm3CNZbfOusUH3Cww5pydbSpkgeCCrUP3_8LY1Ii3AsmiY1v8eQrunQq1bCCI5_vpUjrXF8z6yyQocTWN3HszJI4cZS4U1Gj60Amq72Mjv6KLOAKKM_f2N4BvbV007smOL6bwpGwIRc6HJ6Pyuw9x_yj3NXBEVvs9qeuwABAUPy0-CEREFhkz-xvR2yi_2noBA5Q7AdcpB0-pdFQ"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"registerUploadRequest\": {\n    \"recipes\": [\n      \"urn:li:digitalmediaRecipe:feedshare-image\"\n    ],\n    \"owner\": \"urn:li:organization:103734325\",\n    \"serviceRelationships\": [\n      {\n        \"identifier\": \"urn:li:userGeneratedContent\",\n        \"relationshipType\": \"OWNER\"\n      }\n    ]\n  }\n}\n",
+        "options": {}
+      },
+      "id": "1f3bd8de-d9a8-4929-9a67-2109e40049a7",
+      "name": "registerUpload1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1220,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $json.value.uploadMechanism['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'].uploadUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "image/png"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "01e3447a-097d-47b5-a04f-fe832e6eef45",
+      "name": "PUT Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1860,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Random Project To Post').item.json.attributes.screenshots[0].src }}",
+        "options": {}
+      },
+      "id": "73b40127-11c6-459f-838f-1408e10e4930",
+      "name": "HTTP GET img2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1560,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.linkedin.com/v2/ugcPosts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "linkedInOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "=Authorization",
+              "value": "=Bearer AQX3Ned501mSbWECrEi6SKJxfA5XPBMIkD9Z6xpJvMGGCdNnCmbjwof3aBMq3245Yc0J4Sa0i7OFOd7Vy3G5XM9Mx0W1IXbNjqEqntVp77lBPU9ppJwzuFPkLatsSNKbxJPddDuyGerN6HN4i6TvqrFV0htpt2mIpRu8MuPG8QKPek24d8vmgCnv1g3h_57mlgjhao8StbCMnpKCyUWZ5a14P82ThR4Bx8U8YEbBufBmcXnAj0HOIgQJOA9BkkKPdp2Peq9kvmpCk3hJTy0GEY0AtO-aOnaI1LGi1i-EwHBYSqsSHPA3dwyAyOjXiTQ_n4TQpkHKMRZpanixEVjNSCPqGe4u2g"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"author\": \"urn:li:organization:103734325\",\n    \"lifecycleState\": \"PUBLISHED\",\n    \"specificContent\": {\n        \"com.linkedin.ugc.ShareContent\": {\n            \"shareCommentary\": {\n                \"text\": \"This is the content of my LinkedIn post\"\n            },\n            \"shareMediaCategory\": \"IMAGE\",\n            \"media\": [\n                {\n                    \"status\": \"READY\",\n                    \"media\": \"urn:li:digitalmediaAsset:D5622AQG28qh-V4TRFg\",\n                    \"description\": {\n                        \"text\": \"This is the image description\"\n                    },\n                    \"title\": {\n                        \"text\": \"LinkedIn Post with Image\"\n                    }\n                }\n            ]\n        }\n    },\n    \"visibility\": {\n        \"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\"\n    }\n}\n",
+        "options": {}
+      },
+      "id": "4b1644e9-db78-4b35-9413-c61f10dee799",
+      "name": "HTTP Request Post To Cloodo Workspace2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2260,
+        1280
+      ],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "pruiPUs3AdcQBOcz",
+          "name": "LinkedIn account"
+        },
+        "httpHeaderAuth": {
+          "id": "DC9IpkXMAqsxyULh",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/assets?action=registerUpload",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "linkedInOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer AQXfQKW37if5kkVeU9hdkwI3j2Y-KlxpUIq9n_Z_txUPyW6jesmOm15zCESgmGJuqMGujKQai4a4YwujRQ_RtsYlnKxjErXPvy9mbt9sezgrX6iYW0O_Q9aDdWPF1OCAsG13xdUMitVALj1j2lKC3ScfNH5oyEiPjJEUzuccuatUOqPZjKP1A_4gVAdAftaYUchNAThoKlVwAKnzzt6THbQEnv-lAtJJy-WZ0_ersXHVl4CtGCOuV8aDoOTKTIxCXNvZyb6vdZLqp2jSHn2Stsxh59rJJqYU16SmHbAVghwJuv0_3pBqbJg07HMq90B47aPbvhnWTDhvmPVGkkN_Q63UGysYzQ"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"registerUploadRequest\": {\n    \"recipes\": [\n      \"urn:li:digitalmediaRecipe:feedshare-image\"\n    ],\n    \"owner\": \"urn:li:organization:103734325\",\n    \"serviceRelationships\": [\n      {\n        \"identifier\": \"urn:li:userGeneratedContent\",\n        \"relationshipType\": \"OWNER\"\n      }\n    ]\n  }\n}\n",
+        "options": {}
+      },
+      "id": "9d7b7f14-22d8-40c7-aef9-38baeed61183",
+      "name": "registerUpload2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1340,
+        1280
+      ],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "pruiPUs3AdcQBOcz",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $json.value.uploadMechanism['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'].uploadUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "image/png"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "db45ab47-ae43-46f4-b71b-4debf6a01fad",
+      "name": "PUT Image1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1980,
+        1280
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://media-cloodo.s3.amazonaws.com/Report_Leads_3e8360a930.png?updated_at=2023-06-16T03:54:08.447Z",
+        "options": {}
+      },
+      "id": "83274897-2af9-489a-8169-dd7551a0a471",
+      "name": "HTTP GET img3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1640,
+        1280
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Fetch Projects\nGet all projects of user (Cloodo Official)",
+        "height": 296.8121833646138,
+        "width": 219.6561390424718,
+        "color": 6
+      },
+      "id": "0506ee52-c945-4ce3-8d64-2678859a2dc5",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Screenshort \nCheck screenshort is not empty\n",
+        "height": 296.8121833646138,
+        "width": 206.45569031916608,
+        "color": 4
+      },
+      "id": "7a54d30f-24a6-46f6-8119-154dc2ac6405",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "token",
+        "operation": "getAll",
+        "contentType": "projects?filters[$and][0][user_profile][id][$eq]=296003&populate=user_profile&sort=updatedAt:DESC",
+        "options": {}
+      },
+      "id": "ea0700d2-2dc9-432a-9a9e-6eb2260a0d03",
+      "name": "Strapi get Projects",
+      "type": "n8n-nodes-base.strapi",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        520
+      ],
+      "executeOnce": true,
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "Cm4uH9F0K2CASK8a",
+          "name": "Strapi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Random \nget random project to post",
+        "height": 283.33375455618045,
+        "width": 207.361628266317
+      },
+      "id": "48e5f4cf-669a-4860-9f25-64ed184abb69",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get project posted\n",
+        "height": 306.7687985680648,
+        "color": 4
+      },
+      "id": "29f478c7-1d3d-40ef-9142-e1d39655b42c",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1828053017,
+          "mode": "list",
+          "cachedResultName": "LK - WorkSpace",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=1828053017"
+        },
+        "options": {}
+      },
+      "id": "1cbc5288-8168-4282-b524-056c5a443c20",
+      "name": "Get project posted before",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        -880,
+        520
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1828053017,
+          "mode": "list",
+          "cachedResultName": "LK - WorkSpace",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=1828053017"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "selectedAt": "={{ $now.format('yyyy/MM/dd HH:mm') }}",
+            "id": "={{ $('Random Project To Post').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "selectedAt",
+              "displayName": "selectedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a8195196-6632-4b58-b13b-673124d07a18",
+      "name": "Save ID project posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2480,
+        540
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Set Time Post: Mon - Sat\n- 8AM30\n",
+        "height": 306.7687985680648,
+        "color": 4
+      },
+      "id": "206b5c82-6bc4-46bb-800f-d1537d93aa3a",
+      "name": "Sticky Note14",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1320,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "b3b82f9a-94ab-4a62-9e16-7893592e963e",
+              "leftValue": "={{ $('Strapi get Projects').item.json.attributes.screenshots[0]}}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "669270ef-c35c-4787-8d0d-77e2015a1557",
+      "name": "Check project has screenshort",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $items(); // Get all items from the current input\nconst selectedItems = $node[\"Get project posted before\"].json; // Get previously selected items\n\n// If selectedItems is not an array, wrap it in an array\nconst selectedItemsArray = Array.isArray(selectedItems) ? selectedItems : [selectedItems];\n\n// Filter out already selected items\nconst remainingItems = items.filter(item => \n    !selectedItemsArray.some(selected => selected.id === item.json.id)\n);\n\n// If no remaining items, throw an error\nif (remainingItems.length === 0) {\n    throw new Error('All items have already been selected.');\n}\n\n// Select a random item from the remaining ones\nconst randomIndex = Math.floor(Math.random() * remainingItems.length);\nconst selectedItem = remainingItems[randomIndex];\n\n// Return the randomly selected item\nreturn [selectedItem];\n"
+      },
+      "id": "b753e99e-3dc7-4532-9724-c7f4a15386e0",
+      "name": "Random Project To Post",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        60,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "74a122d9-6a09-4f04-a59a-741adca6ec8f",
+              "leftValue": "={{ $json.attributes.description }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f62e8bcb-3ce0-4ffd-a828-656f2d03dc24",
+      "name": "Check Description Project",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        1720
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Valid description\nCheck if the selected project has a description",
+        "height": 296.8121833646138,
+        "width": 206.45569031916608,
+        "color": 4
+      },
+      "id": "8f20d6e7-b36f-4115-a866-4ebcc4a37408",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        1580
+      ]
+    },
+    {
+      "parameters": {
+        "include": "selected",
+        "includeFields": "attributes.short_intro,attributes.user_profile.data.attributes.user_id,attributes.screenshots",
+        "options": {}
+      },
+      "id": "c9c6d3f9-7632-4a42-8a41-f7537226f2b6",
+      "name": "Get Short Intro",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        1740,
+        1560
+      ]
+    },
+    {
+      "parameters": {
+        "include": "selected",
+        "includeFields": " attributes.description, attributes.user_profile.data.attributes.user_id,attributes.screenshots,",
+        "options": {}
+      },
+      "id": "bec8fc6d-5e80-4566-a3b7-21f41b8de90b",
+      "name": "Get description",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        1740,
+        1840
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Agency\nGet info of Agency Cloodo Support and Integrations\n",
+        "height": 296.8121833646138,
+        "width": 219.6561390424718,
+        "color": 6
+      },
+      "id": "2f8b8f8d-a63c-49bf-b956-b6d04900a239",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        280,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "token",
+        "operation": "getAll",
+        "contentType": "=agencies?filters[user_profile][user_id][$eq]=46305&populate=agency_categories   ",
+        "options": {}
+      },
+      "id": "df63daf5-3642-42a0-aa1e-47c896e477ad",
+      "name": "Get Agency",
+      "type": "n8n-nodes-base.strapi",
+      "typeVersion": 1,
+      "position": [
+        340,
+        540
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "Cm4uH9F0K2CASK8a",
+          "name": "Strapi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Write Content\nWrite content base on description of agency and short intro of peoject\n",
+        "height": 296.8121833646138,
+        "width": 219.6561390424718,
+        "color": 7
+      },
+      "id": "baa0b148-08b9-447e-8538-993952582718",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        560,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Convert Content\nConvert content to JSON\n",
+        "height": 296.8121833646138,
+        "width": 219.6561390424718,
+        "color": 2
+      },
+      "id": "cfa06f39-9024-446f-9f70-4361a267aad6",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        840,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputText = $('OpenAI1').item.json.message.content;\nconst jsonObject = JSON.stringify(inputText);\nreturn {\n  html: jsonObject\n};"
+      },
+      "id": "61e450ea-148b-4202-a81b-cfea806f5087",
+      "name": "Convert Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Image\nUse uploadUrl returned at Register node previous to PUT image binary file we just got at previous node",
+        "height": 325.94767532408196,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "d19a0ef6-ad3d-4259-928c-7b07e96356d6",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1800,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Image\nUse image link we got before, use it to get an image and export it as a Binary image file",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "fdee6b79-8f7d-4be9-98c4-1b9371afb420",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Register Post Image\nWe need to use ID of linkedin page, where we need to post. Get its ID and register post image with linkedin",
+        "height": 305.99395395245244,
+        "width": 290.54603652481285,
+        "color": 5
+      },
+      "id": "29f07eab-3854-4d4f-b062-8ceb2c68c10e",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Execute Post\nuse image file and content we got before, execute post these on linkedin page",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "d10da9b3-1a69-466d-8e9e-ee8ffcc7f263",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2100,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Mark Link Posted\nSave time the link is posted",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 4
+      },
+      "id": "487a95f5-b2e1-4670-b13c-12e408328f3e",
+      "name": "Sticky Note15",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2420,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2,
+                1,
+                3,
+                5,
+                4,
+                6
+              ],
+              "triggerAtHour": 8,
+              "triggerAtMinute": 36
+            }
+          ]
+        }
+      },
+      "id": "f363f69e-a09d-4f50-b846-fd61935bfb67",
+      "name": "8AM38",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1260,
+        340
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get project posted before",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Convert Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP GET img2": {
+      "main": [
+        [
+          {
+            "node": "PUT Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Image": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Post To Cloodo Workspace1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "registerUpload2": {
+      "main": [
+        [
+          {
+            "node": "HTTP GET img3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Image1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Post To Cloodo Workspace2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP GET img3": {
+      "main": [
+        [
+          {
+            "node": "PUT Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Strapi get Projects": {
+      "main": [
+        [
+          {
+            "node": "Check project has screenshort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get project posted before": {
+      "main": [
+        [
+          {
+            "node": "Strapi get Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "registerUpload1": {
+      "main": [
+        [
+          {
+            "node": "HTTP GET img2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check project has screenshort": {
+      "main": [
+        [
+          {
+            "node": "Random Project To Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random Project To Post": {
+      "main": [
+        [
+          {
+            "node": "Get Agency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Description Project": {
+      "main": [
+        [
+          {
+            "node": "Get Short Intro",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Short Intro": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get description": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Agency": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Content": {
+      "main": [
+        [
+          {
+            "node": "registerUpload1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Post To Cloodo Workspace1": {
+      "main": [
+        [
+          {
+            "node": "Save ID project posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8AM38": {
+      "main": [
+        [
+          {
+            "node": "Get project posted before",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ffd5e887-9b60-4b1e-bdc2-774ae1cba3c7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "PYAjAkwdlzpGiLuO",
+  "tags": []
+}

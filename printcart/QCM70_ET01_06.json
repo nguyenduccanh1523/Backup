@@ -1,0 +1,1848 @@
+{
+  "name": "QCM70 ET01-06",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "2100b427-850e-44f6-a724-022f01ad821a",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "df7c77ba-b2cc-46d6-8e81-2f21c1d8d2a8",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -680,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM70: {{ $json.userName }} - 1 point because set estimate time wrong. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $json.taskId }}",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "6e611ac6-fecf-4623-8dca-36335da2663f",
+      "name": "Check Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        180
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "ca6a4bcc-4168-4c17-9520-6d106de892df",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.current_page }}",
+              "value2": "=5"
+            }
+          ]
+        }
+      },
+      "id": "f86c9b95-fdfe-47ff-bc76-ac316aa64028",
+      "name": "Loop page",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "fromDate": "={{ $now.minus({day:1}).format(\"yyyy-MM-dd\") }}",
+          "toDate": "={{ $now.format(\"yyyy-MM-dd\") }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "4cecf248-901d-48af-a8c6-9574449e3bd5",
+      "name": "get task",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        760
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *, p.department_id AS departmentId, t.uuid AS taskId, u.uuid AS agentId, u.name AS userName, t.id AS taskSmallID  FROM tasks t \nJOIN projects p ON p.id = t.project_id\nJOIn users u ON u.id = t.added_by\nWHERE t.uuid = '{{$json.id }}';",
+        "options": {}
+      },
+      "id": "0fead3d0-c0ac-4aed-a9b6-ef5bfa87627b",
+      "name": "get Task and Project",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        120,
+        760
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM task_label_lists tll \nWHERE tll.task_id = '{{$json.taskSmallID }}';",
+        "options": {}
+      },
+      "id": "ad62a295-632c-44f3-a614-ea8729516cac",
+      "name": "get Label",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        740,
+        220
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *, p.department_id AS departmentId, t.uuid AS taskId, u.uuid AS agentId, u.name AS userName, t.id AS taskSmallID  FROM tasks t \nJOIN projects p ON p.id = t.project_id\nJOIn users u ON u.id = t.added_by\nWHERE t.id = '{{$json.task_id }}';",
+        "options": {}
+      },
+      "id": "137fe004-fe49-4b9f-8b9e-ed2a065d3ba9",
+      "name": "get Task and Project1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1180,
+        200
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e8c5f764-2c9a-492d-9090-3d53756633cb",
+              "leftValue": "={{ $json.estimate_hours }}",
+              "rightValue": 24,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "fb413c92-70b1-4c0b-a1f1-7b232ddc91bd",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e8c5f764-2c9a-492d-9090-3d53756633cb",
+              "leftValue": "={{ $json.estimate_hours }}",
+              "rightValue": 4,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "247bb8ed-1298-4135-b59b-4166211bea09",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e8c5f764-2c9a-492d-9090-3d53756633cb",
+              "leftValue": "={{ $json.label_id }}",
+              "rightValue": 28,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e7b4cc16-e460-42ce-a1e7-7a0f9ff69879",
+      "name": "Outsourcing Coding",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        960,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e8c5f764-2c9a-492d-9090-3d53756633cb",
+              "leftValue": "={{ $json.label_id }}",
+              "rightValue": 67,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "80afe1ad-e22e-4a01-aa66-e92fce607d79",
+      "name": "Bug Fixing",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        960,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e8c5f764-2c9a-492d-9090-3d53756633cb",
+              "leftValue": "={{ $json.label_id }}",
+              "rightValue": 27,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1c2ff56e-c30a-4f5a-99a1-fb9e7df9fa30",
+      "name": "Product Coding",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        960,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e8c5f764-2c9a-492d-9090-3d53756633cb",
+              "leftValue": "={{ $json.estimate_hours }}",
+              "rightValue": 8,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "a59c1ae7-bdcb-4986-b144-330d120a5081",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e8c5f764-2c9a-492d-9090-3d53756633cb",
+              "leftValue": "={{ $json.label_id }}",
+              "rightValue": 28,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6fd79257-98a8-4c4a-aa85-91483a28d7b6",
+      "name": "Outsourcing Coding1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        960,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e8c5f764-2c9a-492d-9090-3d53756633cb",
+              "leftValue": "={{ $json.estimate_hours }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cedfb403-8690-409a-9b56-85a9675afd9d",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e8c5f764-2c9a-492d-9090-3d53756633cb",
+              "leftValue": "={{ $json.label_id }}",
+              "rightValue": 65,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b50141f0-21c5-41eb-972b-4b334a5ecb9f",
+      "name": "Milestone Roadmap",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        960,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e8c5f764-2c9a-492d-9090-3d53756633cb",
+              "leftValue": "={{ $json.estimate_hours }}",
+              "rightValue": 4,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "02ceed63-cc79-4dec-b9d6-6d3238d336d5",
+      "name": "If5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e8c5f764-2c9a-492d-9090-3d53756633cb",
+              "leftValue": "={{ $json.label_id }}",
+              "rightValue": 67,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "178b513d-b6ed-494d-847a-f2db287dacb0",
+      "name": "Bug Fixing1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        960,
+        1300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e8c5f764-2c9a-492d-9090-3d53756633cb",
+              "leftValue": "={{ $json.estimate_hours }}",
+              "rightValue": 2,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "60ada234-761c-48da-bd0f-e52edd0e43e3",
+      "name": "If6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        1280
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If').item.json.agentId }}",
+        "points": 1,
+        "note": "=QCM70: {{ $('If').item.json.userName }} - 1 point because set estimate time wrong. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('If').item.json.taskId }}"
+      },
+      "id": "6a8a1826-365c-4298-b54f-c7e94e0f0041",
+      "name": "Wrong Category",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        160
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "3833f3b3-47b6-43ae-b1c7-276f0d8e42e4",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2ac6646b-0e86-4e61-9732-0f38094745dc",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM task_label_lists tll \nWHERE tll.task_id = '{{$json.taskSmallID }}';",
+        "options": {}
+      },
+      "id": "c1aa5f7c-b655-47a1-9dc8-79cc7f73e990",
+      "name": "get Label1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        740,
+        420
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *, p.department_id AS departmentId, t.uuid AS taskId, u.uuid AS agentId, u.name AS userName, t.id AS taskSmallID  FROM tasks t \nJOIN projects p ON p.id = t.project_id\nJOIn users u ON u.id = t.added_by\nWHERE t.id = '{{$json.task_id }}';",
+        "options": {}
+      },
+      "id": "b2a98879-706b-4466-8873-e5c80e0c41d4",
+      "name": "get Task and Project2",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1180,
+        400
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If').item.json.agentId }}",
+        "points": 1,
+        "note": "=QCM70: {{ $('If').item.json.userName }} - 1 point because set estimate time wrong. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('If').item.json.taskId }}"
+      },
+      "id": "87fdebc8-4e5e-4adf-8830-f5b3dff9f9de",
+      "name": "Wrong Category1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        360
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "3833f3b3-47b6-43ae-b1c7-276f0d8e42e4",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2b90946a-bceb-4c52-a3e8-fee756de2c60",
+      "name": "If7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM70: {{ $json.userName }} - 1 point because set estimate time wrong. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $json.taskId }}",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "b4520b7d-02cd-4c7c-88b2-ba07bbf8a0dd",
+      "name": "Check Point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        380
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM task_label_lists tll \nWHERE tll.task_id = '{{$json.taskSmallID }}';",
+        "options": {}
+      },
+      "id": "cad1f0a4-9dd1-42a5-a516-03da8e7d66c2",
+      "name": "get Label2",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        820
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM task_label_lists tll \nWHERE tll.task_id = '{{$json.taskSmallID }}';",
+        "options": {}
+      },
+      "id": "6dadf242-7b28-40a2-985e-8f20faa3c11e",
+      "name": "get Label3",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        740,
+        640
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *, p.department_id AS departmentId, t.uuid AS taskId, u.uuid AS agentId, u.name AS userName, t.id AS taskSmallID  FROM tasks t \nJOIN projects p ON p.id = t.project_id\nJOIn users u ON u.id = t.added_by\nWHERE t.id = '{{$json.task_id }}';",
+        "options": {}
+      },
+      "id": "374f6720-a343-4ff7-9fbe-df27e5ba397e",
+      "name": "get Task and Project3",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1180,
+        620
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "3833f3b3-47b6-43ae-b1c7-276f0d8e42e4",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7f1df51a-6495-4c09-9728-27f8ca0f90a5",
+      "name": "If8",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM70: {{ $json.userName }} - 1 point because set estimate time wrong. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $json.taskId }}",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "889034d6-8b44-4580-bcda-927846175ffc",
+      "name": "Check Point2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        600
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If').item.json.agentId }}",
+        "points": 1,
+        "note": "=QCM70: {{ $('If').item.json.userName }} - 1 point because set estimate time wrong. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('If').item.json.taskId }}"
+      },
+      "id": "ea8c2676-9c60-413e-87e1-f072a85c24df",
+      "name": "Wrong Category2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        580
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *, p.department_id AS departmentId, t.uuid AS taskId, u.uuid AS agentId, u.name AS userName, t.id AS taskSmallID  FROM tasks t \nJOIN projects p ON p.id = t.project_id\nJOIn users u ON u.id = t.added_by\nWHERE t.id = '{{$json.task_id }}';",
+        "options": {}
+      },
+      "id": "407b41b6-e982-4ef3-b3a4-92f471dbe509",
+      "name": "get Task and Project4",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1180,
+        820
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "3833f3b3-47b6-43ae-b1c7-276f0d8e42e4",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5b94cfc6-e187-4875-a50f-3479056388ba",
+      "name": "If9",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM70: {{ $json.userName }} - 1 point because set estimate time wrong. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $json.taskId }}",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "a90fddc0-1a7f-4585-b087-788c42d0b228",
+      "name": "Check Point3",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        800
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If').item.json.agentId }}",
+        "points": 1,
+        "note": "=QCM70: {{ $('If').item.json.userName }} - 1 point because set estimate time wrong. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('If').item.json.taskId }}"
+      },
+      "id": "37507792-459f-431b-b613-16b494fcbb5c",
+      "name": "Wrong Category3",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        780
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM task_label_lists tll \nWHERE tll.task_id = '{{$json.taskSmallID }}';",
+        "options": {}
+      },
+      "id": "1a407094-4401-413a-b8ba-ced07962e103",
+      "name": "get Label4",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        1040
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *, p.department_id AS departmentId, t.uuid AS taskId, u.uuid AS agentId, u.name AS userName, t.id AS taskSmallID  FROM tasks t \nJOIN projects p ON p.id = t.project_id\nJOIn users u ON u.id = t.added_by\nWHERE t.id = '{{$json.task_id }}';",
+        "options": {}
+      },
+      "id": "c7aebb75-aa2b-42b1-b344-4ceef9c4e00e",
+      "name": "get Task and Project5",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1180,
+        1020
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "3833f3b3-47b6-43ae-b1c7-276f0d8e42e4",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "478d6d52-e339-41db-841b-64a83e2d8759",
+      "name": "If10",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM70: {{ $json.userName }} - 1 point because set estimate time wrong. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $json.taskId }}",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "815e0edb-1c85-4179-bd8f-98a2416de495",
+      "name": "Check Point4",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        1000
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If').item.json.agentId }}",
+        "points": 1,
+        "note": "=QCM70: {{ $('If').item.json.userName }} - 1 point because set estimate time wrong. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('If').item.json.taskId }}"
+      },
+      "id": "8c0837d5-54cc-4380-9802-5c9cced3c0e0",
+      "name": "Wrong Category4",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        980
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM task_label_lists tll \nWHERE tll.task_id = '{{$json.taskSmallID }}';",
+        "options": {}
+      },
+      "id": "417c0d77-a6f1-423d-9f59-96cac63b7ac5",
+      "name": "get Label5",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        1300
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *, p.department_id AS departmentId, t.uuid AS taskId, u.uuid AS agentId, u.name AS userName, t.id AS taskSmallID  FROM tasks t \nJOIN projects p ON p.id = t.project_id\nJOIn users u ON u.id = t.added_by\nWHERE t.id = '{{$json.task_id }}';",
+        "options": {}
+      },
+      "id": "9b2709ec-fccd-4535-a1ef-cfc4f8c5eefe",
+      "name": "get Task and Project6",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1180,
+        1280
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "3833f3b3-47b6-43ae-b1c7-276f0d8e42e4",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0c60b9ed-f50a-44ab-99c5-4cdf2afb4b24",
+      "name": "If11",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        1260
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM70: {{ $json.userName }} - 1 point because set estimate time wrong. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $json.taskId }}",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "ab923c94-15e1-491b-8ce1-7f29a54c59db",
+      "name": "Check Point5",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        1260
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If').item.json.agentId }}",
+        "points": 1,
+        "note": "=QCM70: {{ $('If').item.json.userName }} - 1 point because set estimate time wrong. Link: https://worksuite.cloodo.com/apps/work/tasks/{{ $('If').item.json.taskId }}"
+      },
+      "id": "674be0b6-b292-414f-ac01-e4b3d0cca77e",
+      "name": "Wrong Category5",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        1240
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.task_category_id }}",
+                    "rightValue": 48,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Client  Projects"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "db7f1ad5-d01b-4572-b0e9-b8ff5fe611dd",
+                    "leftValue": "={{ $json.task_category_id }}",
+                    "rightValue": 47,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Research and Development"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "5555e2bc-3e35-4eb6-ab79-f5c0fe8e149b",
+                    "leftValue": "={{ $json.task_category_id }}",
+                    "rightValue": 93,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Testing and Handover"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "663b8725-c5e2-4153-ba50-3815fe48c668",
+                    "leftValue": "={{ $json.task_category_id }}",
+                    "rightValue": 46,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Information Technology (IT)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7012bbfc-3432-40f6-afc2-2c32c4b362f3",
+      "name": "Category",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        340,
+        760
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "get task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "get task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "get Task and Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get task": {
+      "main": [
+        [
+          {
+            "node": "Loop page",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop page": {
+      "main": [
+        [
+          {
+            "node": "get task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Task and Project": {
+      "main": [
+        [
+          {
+            "node": "Category",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Label": {
+      "main": [
+        [
+          {
+            "node": "Outsourcing Coding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outsourcing Coding": {
+      "main": [
+        [
+          {
+            "node": "get Task and Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bug Fixing": {
+      "main": [
+        [
+          {
+            "node": "get Task and Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product Coding": {
+      "main": [
+        [
+          {
+            "node": "get Task and Project3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outsourcing Coding1": {
+      "main": [
+        [
+          {
+            "node": "get Task and Project5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Milestone Roadmap": {
+      "main": [
+        [
+          {
+            "node": "get Task and Project4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bug Fixing1": {
+      "main": [
+        [
+          {
+            "node": "get Task and Project6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Task and Project1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Check Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Wrong Category",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Point": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Task and Project2": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If7": {
+      "main": [
+        [
+          {
+            "node": "Wrong Category1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Check Point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Point1": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Label1": {
+      "main": [
+        [
+          {
+            "node": "Bug Fixing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Label3": {
+      "main": [
+        [
+          {
+            "node": "Product Coding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Task and Project3": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Point2": {
+      "main": [
+        [
+          {
+            "node": "If8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Check Point2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If8": {
+      "main": [
+        [
+          {
+            "node": "Wrong Category2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Label2": {
+      "main": [
+        [
+          {
+            "node": "Milestone Roadmap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Task and Project4": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Check Point3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Point3": {
+      "main": [
+        [
+          {
+            "node": "If9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If9": {
+      "main": [
+        [
+          {
+            "node": "Wrong Category3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Label4": {
+      "main": [
+        [
+          {
+            "node": "Outsourcing Coding1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Task and Project5": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If10": {
+      "main": [
+        [
+          {
+            "node": "Wrong Category4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Point4": {
+      "main": [
+        [
+          {
+            "node": "If10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Check Point4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Label5": {
+      "main": [
+        [
+          {
+            "node": "Bug Fixing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Task and Project6": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If11": {
+      "main": [
+        [
+          {
+            "node": "Wrong Category5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Point5": {
+      "main": [
+        [
+          {
+            "node": "If11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Check Point5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Category": {
+      "main": [
+        [
+          {
+            "node": "get Label",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Label1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get Label3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get Label2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Label4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Label5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6c72119d-e7e8-4f1e-a960-123d890fad79",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "VlMclk2jx8WhvrUf",
+  "tags": []
+}

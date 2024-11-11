@@ -1,0 +1,811 @@
+{
+  "name": "FB - WorkSpace",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "febaecb2-dfba-4d80-adeb-aea4032474ac",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -220,
+        920
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "me",
+        "edge": "=feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=post news",
+                "value": "=Wellcome to us!"
+              }
+            ]
+          }
+        }
+      },
+      "id": "a2fea4da-cd5c-4ab5-9c7a-414d6d78f026",
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        4140,
+        1360
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "X3uXrrjxMcjmPb3m",
+          "name": "Facebook Graph account WACRM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "include": "selected",
+        "includeFields": "attributes.description",
+        "options": {}
+      },
+      "id": "2aba2da7-5b6c-4e87-a2d9-9fd59952fbc3",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        2140,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=I am Mr David, working as Managing Partner for Cloodo\n\nBase on the content & data below, write a Facebook Post on  Facebook Page which:\n\nThe post format in as a story-teller format, has relates tags, keep the original URL inside the content if provided as links for CTA, keep the images or video inside content if have\n\nThe begin of the post should be story-teller, like a way that I post to share our updated business which is open, easy-going for most of Cloodo potential partners, keep them connect and motivated with what we are doing for their digital workplace project\n\n\nInclude the contact below to used  for CTA:\n\n\nMr David Nguyen - Managing Partner\nCloodo Workplace\nEmail:  huy.nq@cloodo.com\nWhatsapp: +84937869689\n\n\nCloodo: Empowering Businesses in the Digital Workplace\nCloodo is a revolutionary digital workplace designed to enhance productivity, foster innovation, and facilitate collaboration for businesses of all sizes. Key features include enhanced professional profiles, community engagement, promotion of professional services, agency portfolio showcases, innovative project showcases, and a collaborative feedback environment.\n\nBenefits and Features:\nProfessional Profiles: Showcase skills and awards effectively.\nCommunity Engagement: Share and discuss business news and ideas.\nService Promotion: Promote services globally and receive partner deals.\nPortfolio Showcase: Highlight past projects and attract clients.\nProject Showcase: Demonstrate creativity and problem-solving skills.\nFeedback Environment: Provide and receive constructive feedback.\n\nEffective Digital Workplace Strategies:\nUpdate company profiles for transparency.\nOffer seamless HR tools for operations and employee experience.\nCommunicate project updates regularly.\nImplement simple, efficient workflows with automation and AI.\nEnhance client and partner engagement.\nEnsure transparency in business metrics.\nUse online meeting tools for remote collaboration.\nIntegrate with diverse working apps.\nEmbrace data-driven decision making.\nBy focusing on these strategies, companies can create productive, engaged, and efficient digital workplaces with Cloodo. Join Cloodo today to experience a new era of digital workplaces tailored to your business needs.\n\n>>This is a descriptive paragraph about my company project.\n{{ $('Edit Fields').item.json.description }}<br>\n\n\nPlease write Facebook post to Cloodo Workplace page facebook profile from the content I provide below.  The post should be as a storytelling format to be attractive to my friends, business partners as I am a Senior Account Manager of Cloodo Inc. The post should be attractive to its reader, keep the link inside the provided contents and reuse the attached photo if it has to be included as a part of facebook post. Don't show image links this post, and don't give me a place to put a link like [Insert link here] or something like that. Because your article will be used for posting without any additions or subtractions. But also  keep the link inside the provided, remove brackets '[' and ']'. line break at the start of the list of tags\nContent start.....\n{{ $('Random Project To Post').item.json.attributes.short_intro }}\n.....End"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "bd45b768-a9a9-4916-8d51-1200e08adb8c",
+      "name": "OpenAI1",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2520,
+        740
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "={{ $json.id }}/photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message",
+                "value": "={{ $('OpenAI1').item.json.message.content }}"
+              },
+              {
+                "name": "published",
+                "value": "true"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('Item Lists').item.json.screenshots[0].src }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "fda671ea-73f2-4882-bbf3-5d67d2f79f30",
+      "name": "Facebook Graph API Old",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        3560,
+        1360
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "4a0ES6XDu6OkOUac",
+          "name": "Facebook Graph account WorkSpace DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "={{ $json.id }}/photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message",
+                "value": "={{ $('OpenAI1').item.json.message.content }}"
+              },
+              {
+                "name": "published",
+                "value": "true"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('Item Lists').item.json.screenshots[0].src }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "73bea31e-563c-48b4-840b-3145a36569d9",
+      "name": "Facebook Graph API Old1",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        3880,
+        1360
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "4a0ES6XDu6OkOUac",
+          "name": "Facebook Graph account WorkSpace DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Fetch Projects\nGet all projects of user (Cloodo Official)",
+        "height": 296.8121833646138,
+        "width": 219.6561390424718,
+        "color": 6
+      },
+      "id": "25afaa80-629d-42cf-933c-901a3dd11a40",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        480,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Agency\nget info agency of user (Cloodo Official)\n",
+        "height": 296.8121833646138,
+        "width": 235.8226858445222,
+        "color": 6
+      },
+      "id": "a4d67b69-b620-4f6d-bbfe-1ddf191c0c4a",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Agency Description\nget description of agency \n",
+        "height": 296.8121833646138,
+        "width": 235.8226858445222,
+        "color": 5
+      },
+      "id": "19a82789-363d-4cbf-9f8c-e7752229ab31",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2060,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Screenshort \nCheck screenshort is not empty\n",
+        "height": 296.8121833646138,
+        "width": 235.8226858445222,
+        "color": 4
+      },
+      "id": "690b7829-7c27-4e17-a73c-865fb7271e5f",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        860,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Rewrite content\n\n",
+        "height": 307.06879706132077,
+        "width": 235.8226858445222,
+        "color": 7
+      },
+      "id": "a18235c9-5bab-4b98-a8ab-d6b4ad3db6b1",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2460,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Post on facebook\n",
+        "height": 309.12011980066205,
+        "width": 235.8226858445222,
+        "color": 5
+      },
+      "id": "57d47dfc-8422-4d20-9027-73f8eb39c803",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2760,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "=me/photos",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.message.content }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('Item Lists').item.json.screenshots[0] }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "7c64cf2f-7182-4306-89ea-ea51d17ddc56",
+      "name": "Facebook Graph API Cloodo WorkSpace BACKUP",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        3320,
+        1380
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "jFpIGmU852nDCbC6",
+          "name": "Facebook Graph account Cloodo Workspace"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "=me/photos",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.message.content }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('Random Project To Post').item.json.attributes.screenshots[0].src }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "91abc189-896d-4487-9547-d65688fd057a",
+      "name": "Facebook Graph API Cloodo WorkSpace",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2820,
+        740
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "jFpIGmU852nDCbC6",
+          "name": "Facebook Graph account Cloodo Workspace"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "token",
+        "operation": "getAll",
+        "contentType": "projects?filters[$and][0][user_profile][id][$eq]=296003&populate=user_profile&sort=updatedAt:DESC",
+        "options": {}
+      },
+      "id": "015bbc2f-2004-44c2-aa17-48b5f89bb077",
+      "name": "Strapi get Projects",
+      "type": "n8n-nodes-base.strapi",
+      "typeVersion": 1,
+      "position": [
+        540,
+        740
+      ],
+      "executeOnce": true,
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "Cm4uH9F0K2CASK8a",
+          "name": "Strapi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Random Project\nget random project to post",
+        "height": 282.43194225265955,
+        "width": 247.09344574179877
+      },
+      "id": "bd38de48-177d-482c-a8ef-2101def3c523",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        631.4449509964668
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get project posted\n",
+        "height": 306.7687985680648,
+        "color": 4
+      },
+      "id": "f4e1cd16-d728-4d38-a8d3-25204c35d077",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        100,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "FB - WorkSpace",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "9084791b-bcae-47c8-9c66-b4c6b10cb337",
+      "name": "Get project posted before",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        160,
+        740
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "=me/photos",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.message.content }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('Item Lists').item.json.screenshots[0].src }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "aa383627-3a98-49f5-aedd-6f3142ece99b",
+      "name": "Facebook Graph API Cloodo WorkSpace1",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        4420,
+        1380
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "jFpIGmU852nDCbC6",
+          "name": "Facebook Graph account Cloodo Workspace"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "FB - WorkSpace",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "selectedAt": "={{ $now }}",
+            "id": "={{ $('Random Project To Post').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "selectedAt",
+              "displayName": "selectedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a6afd73d-fe5c-4cd9-98f8-e12d5cf1b5f8",
+      "name": "Save ID project posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        3140,
+        760
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Save ID Project Posted\n",
+        "height": 314.4973067509752,
+        "color": 4
+      },
+      "id": "c539208a-460a-4c33-828d-e17654a27068",
+      "name": "Sticky Note13",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3060,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "=me/photos",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.message.content }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('Item Lists').item.json.screenshots[0].src }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "8c12df10-5235-4966-9e77-59bc8ab5ed1d",
+      "name": "Facebook Graph API WorkSpace DEV",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2820,
+        980
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "4a0ES6XDu6OkOUac",
+          "name": "Facebook Graph account WorkSpace DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "b3b82f9a-94ab-4a62-9e16-7893592e963e",
+              "leftValue": "={{ $('Strapi get Projects').item.json.attributes.screenshots[0]}}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "88ecb762-a155-46b6-93a1-fe9331ecb41d",
+      "name": "check valid screenshort",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        920,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $items(); // Get all items from the current input\nconst selectedItems = $node[\"Get project posted before\"].json; // Get previously selected items\n\n// If selectedItems is not an array, wrap it in an array\nconst selectedItemsArray = Array.isArray(selectedItems) ? selectedItems : [selectedItems];\n\n// Filter out already selected items\nconst remainingItems = items.filter(item => \n    !selectedItemsArray.some(selected => selected.id === item.json.id)\n);\n\n// If no remaining items, throw an error\nif (remainingItems.length === 0) {\n    throw new Error('All items have already been selected.');\n}\n\n// Select a random item from the remaining ones\nconst randomIndex = Math.floor(Math.random() * remainingItems.length);\nconst selectedItem = remainingItems[randomIndex];\n\n// Return the randomly selected item\nreturn [selectedItem];\n"
+      },
+      "id": "2f93c394-8d4f-4c08-bf0d-fe8dc1ae0d9f",
+      "name": "Random Project To Post",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "token",
+        "operation": "getAll",
+        "contentType": "=agencies?filters[user_profile][user_id][$eq]=46305&populate=agency_categories",
+        "options": {}
+      },
+      "id": "c125824b-e429-4ec1-8309-fb54ae9cffc6",
+      "name": "Get Agency Info",
+      "type": "n8n-nodes-base.strapi",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        740
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "Cm4uH9F0K2CASK8a",
+          "name": "Strapi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 8AM30 Mon - Sat\n\n",
+        "height": 306.7687985680648,
+        "color": 4
+      },
+      "id": "81f3872e-f497-406d-975f-29e0f0c97f84",
+      "name": "Sticky Note14",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2,
+                1,
+                3,
+                5,
+                6,
+                4
+              ],
+              "triggerAtHour": 8,
+              "triggerAtMinute": 34
+            }
+          ]
+        }
+      },
+      "id": "f66aab65-6329-4934-9b5c-7d2ac0fc430d",
+      "name": "8AM34",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -240,
+        560
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get project posted before",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API Cloodo WorkSpace",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Strapi get Projects": {
+      "main": [
+        [
+          {
+            "node": "check valid screenshort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get project posted before": {
+      "main": [
+        [
+          {
+            "node": "Strapi get Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check valid screenshort": {
+      "main": [
+        [
+          {
+            "node": "Random Project To Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random Project To Post": {
+      "main": [
+        [
+          {
+            "node": "Get Agency Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API Cloodo WorkSpace": {
+      "main": [
+        [
+          {
+            "node": "Save ID project posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Agency Info": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8AM34": {
+      "main": [
+        [
+          {
+            "node": "Get project posted before",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ff56b0f9-e76e-4b28-a4ec-84ddeca33907",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "03Fc9flMpPIfeAdf",
+  "tags": []
+}

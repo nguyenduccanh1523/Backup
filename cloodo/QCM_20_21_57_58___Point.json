@@ -1,0 +1,997 @@
+{
+  "name": "QCM 20 21 57 58 - Point",
+  "nodes": [
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "0876fea7-a5f4-4558-bcf7-f25e38c334df",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -3340,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "triggerAtHour": 20,
+              "triggerAtMinute": 10
+            },
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "bee7eaa5-e270-4cce-b371-be5cd1719fac",
+      "name": "Schedule Trigger1",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -4040,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ $json.due_date }}",
+              "operation": "before",
+              "value2": "={{new Date().format('yyyy-MM-dd')}}"
+            }
+          ]
+        }
+      },
+      "id": "a8de2537-3b9a-4602-a4a8-d9dedd40aa9e",
+      "name": "IF over Due Date",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -3100,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.board_column.slug }}",
+              "operation": "notEqual",
+              "value2": "completed"
+            },
+            {
+              "value1": "={{ $json.assigned_by.id }}",
+              "operation": "notEqual",
+              "value2": "2c991f1a-6665-4533-bfca-ac969f431eb2"
+            }
+          ]
+        }
+      },
+      "id": "b4e313c8-82e9-413e-ba98-86b5f0bd1869",
+      "name": "IF not Completed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -2820,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.current_page }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "886b2228-a0d8-48b5-8412-9d919eb1ba58",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -3400,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "statusId": "94ff7869-3667-44eb-83c8-39367740d3ba",
+          "fromDate": "= {{ $today.minus({day: 16}).format('dd-MM-yyyy') }} ",
+          "toDate": "={{ $today.minus({day: 1}).format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "c1f2da49-46b6-4d2a-a9fb-f4808e3b0ee8",
+      "name": "Get all task imcomplete",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -3580,
+        720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ],
+          "string": [
+            {
+              "value1": "={{ $('Get Task Details').item.json.data.assigned_to }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "8df5c828-5a6d-45c2-9442-35de5ce1431b",
+      "name": "IF not exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1680,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "5cc6eba5-f128-4c16-9d6d-3389006c4125",
+      "name": "Get Task Details",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -2460,
+        960
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM20 {{ $('Get Task Details').item.json.data.assigned_to[0].name }} is rewarded +2 points for completing the assigned task normal on the correct due date: https://worksuite.cloodo.com/apps/work/tasks/{{ $('Get Task Details').item.json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "afde2857-d9ae-485e-b7c0-425bc109d6c0",
+      "name": "Search point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -1920,
+        900
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C06054MU77S",
+          "mode": "list",
+          "cachedResultName": "cmsmart-point"
+        },
+        "text": "=QCM20 {{ $('Get Task Details').item.json.data.assigned_to[0].name }} is rewarded +2 points for completing the assigned task normal on the correct due date: https://worksuite.cloodo.com/apps/work/tasks/{{ $('Get Task Details').item.json.data.id }} ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "a162f297-04d7-440b-93e4-23eba4b62d4a",
+      "name": "Slack3",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        -1140,
+        900
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C06054MU77S",
+          "mode": "list",
+          "cachedResultName": "cmsmart-point"
+        },
+        "text": "=QCM21 {{ $('Get Task Details').item.json.data.assigned_to[0].name }} is rewarded +4 points for completing the assigned task important on the correct due date: https://worksuite.cloodo.com/apps/work/tasks/{{ $('Get Task Details').item.json.data.id }} ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "ab6cc8e2-f5a4-42b8-a03f-614147de3a74",
+      "name": "Slack4",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        -1140,
+        1160
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Get Task Details').item.json.data.assigned_to[0].id }}",
+        "points": 2,
+        "note": "=QCM20 {{ $('Get Task Details').item.json.data.assigned_to[0].name }} is rewarded +2 points for completing the assigned task normal on the correct due date: https://worksuite.cloodo.com/apps/work/tasks/{{ $('Get Task Details').item.json.data.id }}"
+      },
+      "id": "24f6f244-3c38-458c-8ddb-2781793a0b94",
+      "name": "QCM20",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -1380,
+        900
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Get Task Details').item.json.data.assigned_to[0].id }}",
+        "points": 4,
+        "note": "=QCM21 {{ $('Get Task Details').item.json.data.assigned_to[0].name }} is rewarded +4 points for completing the assigned task important on the correct due date: https://worksuite.cloodo.com/apps/work/tasks/{{ $('Get Task Details').item.json.data.id }}"
+      },
+      "id": "43989460-dc40-458f-b2c8-e42e23a5dd2b",
+      "name": "QCM21",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -1380,
+        1140
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=https://worksuite.cloodo.com/apps/work/tasks/{{ $json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "4824b411-9bfe-430f-afdc-8603fe914784",
+      "name": "Search point2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -1780,
+        600
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM57 {{ $json.assigned_to[0].name }} have been -1 point for being late: https://worksuite.cloodo.com/apps/work/tasks/{{ $json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "2073731d-70d3-4556-8306-a86b80e5c410",
+      "name": "Search point3",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -1760,
+        280
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "a292aad6-3317-48d3-8f26-e6fd698dc35a",
+      "name": "IF not exists1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1540,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "8eb55a39-f314-43a2-9b06-20e865043ff2",
+      "name": "IF not exists2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1520,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C06054MU77S",
+          "mode": "list",
+          "cachedResultName": "cmsmart-point"
+        },
+        "text": "=QCM57 {{ $('Switch1').item.json.assigned_to[0].name }} have been -1 point for being late: https://worksuite.cloodo.com/apps/work/tasks/{{ $('Switch1').item.json.id }} ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "c23291ce-18f8-4d48-97ad-49fad4c96b28",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        -980,
+        260
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C06054MU77S",
+          "mode": "list",
+          "cachedResultName": "cmsmart-point"
+        },
+        "text": "=QCM58 {{ $('Switch1').item.json.assigned_to[0].name }} have been -3 point for being late: https://worksuite.cloodo.com/apps/work/tasks/{{ $('Switch1').item.json.id }}  ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "45ea8c87-d2a7-4b89-8eb7-811e2cf17e99",
+      "name": "Slack5",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        -1000,
+        580
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.board_column.slug }}",
+              "value2": "completed"
+            }
+          ]
+        }
+      },
+      "id": "263b1111-7498-4d60-9431-c953b74e2c5a",
+      "name": "IF not Completed1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -3080,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ],
+          "string": [
+            {
+              "value1": "={{ $('Get Task Details').item.json.data.assigned_to }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "e609d4d7-a888-4984-884d-b4102c487036",
+      "name": "IF not exists3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1680,
+        1140
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM21 {{ $('Get Task Details').item.json.data.assigned_to[0].name }} is rewarded +4 points for completing the assigned task important on the correct due date: https://worksuite.cloodo.com/apps/work/tasks/{{ $('Get Task Details').item.json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "91dc931b-d45e-47b0-9597-50c5cd74a3ae",
+      "name": "Search point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -1920,
+        1140
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $('Get Task Details').item.json.data.priority }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "medium",
+              "outputKey": "0"
+            },
+            {
+              "value2": "high",
+              "outputKey": "1"
+            }
+          ]
+        }
+      },
+      "id": "d2880082-9c5f-48fa-88c7-f3b2f9142167",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 2,
+      "position": [
+        -2180,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.assigned_by.id }}",
+              "operation": "notEqual",
+              "value2": "2c991f1a-6665-4533-bfca-ac969f431eb2"
+            }
+          ]
+        }
+      },
+      "id": "8fac9895-eb9f-4649-82c3-38e6a251182c",
+      "name": "IF not Completed2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -2760,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "31e523f1-8a49-4435-9c89-faddfe212a32",
+              "leftValue": "={{ $json.project.id }}",
+              "rightValue": "50508bb2-c120-4bbc-8336-11938a90c6e8",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "07b550af-06fa-4a13-9e24-e33fa458fdd2",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -2540,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "dbbf391f-d15e-4301-b4e6-32a8a75760fa",
+              "leftValue": "={{ $json.data.milestone.id }}",
+              "rightValue": "=22a4c05f-b9bd-4d9a-8f21-b3c25c334213",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "501d3056-fcee-426a-84ab-abe84d9e7614",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -800,
+        1300
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $('Item Lists1').item.json.priority }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "medium",
+              "outputKey": "0"
+            },
+            {
+              "value2": "high",
+              "outputKey": "1"
+            }
+          ]
+        }
+      },
+      "id": "324326d2-033d-46a9-b231-152e2b4f061f",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 2,
+      "position": [
+        -2160,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $json.assigned_to[0].id }}",
+        "points": 3,
+        "note": "=QCM58 {{ $json.assigned_to[0].name }} have been -3 point for being late: https://worksuite.cloodo.com/apps/work/tasks/{{ $json.id }}"
+      },
+      "id": "7aca2218-e2b2-4850-b199-accea95cea0e",
+      "name": "QCM58",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -1260,
+        580
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('IF not Completed').item.json.assigned_to[0].id }}",
+        "points": 1,
+        "note": "=QCM57 {{ $('IF not Completed').item.json.assigned_to[0].name }} have been -1 point for being late: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF not Completed').item.json.id }}"
+      },
+      "id": "a119a922-0669-4d77-b888-49dc19561bc4",
+      "name": "QCM57",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -1220,
+        260
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "IF not Completed1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF over Due Date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Get all task imcomplete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF over Due Date": {
+      "main": [
+        [
+          {
+            "node": "IF not Completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not Completed": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Get all task imcomplete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get all task imcomplete": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists": {
+      "main": [
+        [
+          {
+            "node": "QCM20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Task Details": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point": {
+      "main": [
+        [
+          {
+            "node": "IF not exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM20": {
+      "main": [
+        [
+          {
+            "node": "Slack3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM21": {
+      "main": [
+        [
+          {
+            "node": "Slack4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point2": {
+      "main": [
+        [
+          {
+            "node": "IF not exists2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point3": {
+      "main": [
+        [
+          {
+            "node": "IF not exists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists1": {
+      "main": [
+        [
+          {
+            "node": "QCM57",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists2": {
+      "main": [
+        [
+          {
+            "node": "QCM58",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not Completed1": {
+      "main": [
+        [
+          {
+            "node": "IF not Completed2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists3": {
+      "main": [
+        [
+          {
+            "node": "QCM21",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point1": {
+      "main": [
+        [
+          {
+            "node": "IF not exists3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Search point",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not Completed2": {
+      "main": [
+        [
+          {
+            "node": "Get Task Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Search point3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search point2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM58": {
+      "main": [
+        [
+          {
+            "node": "Slack5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM57": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3cc82dda-b340-4a47-8b5d-53060d7b6801",
+  "meta": {
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "mWwRvhLQkEspQEMo",
+  "tags": []
+}

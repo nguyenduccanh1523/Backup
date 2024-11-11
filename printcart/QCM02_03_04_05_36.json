@@ -1,0 +1,1782 @@
+{
+  "name": "QCM02-03-04-05-36",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "cursor": "={{ $json.links.next }}",
+        "additionalFields": {
+          "fromDate": "={{ $now.set({day:1}).format('yyyy-MM-dd') }}",
+          "toDate": "={{ $now.format('yyyy-MM-dd') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "a480dbf6-b7cd-4190-b619-8368b5dbd09d",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        1380
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "1b93faae-c096-4e3b-ad07-7668ddbacf68",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -340,
+        1380
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.created_at }}",
+              "value2": "={{ $today.toString() }}"
+            },
+            {
+              "value1": "={{ $json.created_at }}",
+              "operation": "largerEqual",
+              "value2": "={{ $today.minus({day:1}) }}"
+            }
+          ]
+        }
+      },
+      "id": "06f12844-8285-46bc-8edb-406f78516e57",
+      "name": "IF create Yesterday",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -140,
+        1380
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $json.create_by.id }}",
+        "requestOptions": {}
+      },
+      "id": "434fa9bb-4160-4a0c-8e7c-64cd1c2a9208",
+      "name": "Get Client",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        300,
+        1340
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "d3532e10-383d-4382-bd56-2292259842c8",
+      "name": "IF not is Client",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        540,
+        1340
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05PR7A8DKN",
+          "mode": "list",
+          "cachedResultName": "worksuite-point"
+        },
+        "text": "={{ $('Item Lists').item.json.create_by.name }} is rewarded with +2 points for creating new Engagement: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Item Lists').item.json.id }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "7aa7720c-19ee-4b8c-a969-e372431aab93",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1500,
+        1280
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "triggerAtHour": 23
+            }
+          ]
+        }
+      },
+      "id": "edfc94b0-3205-4525-acf5-d7f8c3cdfd43",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1020,
+        1020
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "2d4da7fc-5bb3-477e-83b0-045786254641",
+      "name": "End",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.links.next }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "826abde6-521b-402c-9971-76f1c2717efb",
+      "name": "IF loop",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -380,
+        1600
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "3c874914-7dd7-4ef1-969d-8b6a160ae360",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        1320
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "additionalFields": {
+          "type": "c57614f7-0763-489b-a132-b8f513bf65cf\t"
+        },
+        "requestOptions": {}
+      },
+      "id": "e1ec10a4-2b60-4d68-a469-85e364e03003",
+      "name": "Engament Consultation",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        1120
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "7a5ee97d-3d3c-413c-b4c1-ceb2649f3b7d",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -280,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "additionalFields": {
+          "type": "b4b18706-94bb-45d7-a7ab-6cca5e117a48"
+        },
+        "requestOptions": {}
+      },
+      "id": "5bb55080-8ac4-41f8-aaa1-4e2d15d5dbb3",
+      "name": "Engament renewal & upsale",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        820
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "80e4ce50-e776-4c56-a1ed-e73b75d0777a",
+      "name": "Split Out1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -220,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=https://worksuite.cloodo.com/apps/tickets/add-tickets/{{ $('Split Out1').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "d8f2dc54-d645-4d44-969d-da40bf1d0206",
+      "name": "search",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        420,
+        780
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "74c3a3ba-7373-4a1e-a92a-1c8f4e78cd30",
+      "name": "IF not found1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        640,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ $json.created_at }}",
+              "value2": "={{ DateTime.fromObject({month:$now.month})  }}"
+            }
+          ]
+        }
+      },
+      "id": "a11bfbb6-00a0-40b6-963d-fe4656e74940",
+      "name": "IF create this month",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        0,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=https://worksuite.cloodo.com/apps/tickets/add-tickets/{{ $('Split Out').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "5b720c4b-b0e7-4dae-a9ad-63120f066e1d",
+      "name": "search1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        420,
+        1080
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "47acd8fc-dd00-4eba-9956-417577811560",
+      "name": "IF not found2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        640,
+        1080
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Split Out').item.json.create_by.id }}",
+        "points": 10,
+        "note": "=QCM03 {{ $('Split Out').item.json.create_by.name }} are awarded +10 points for the newly created ticket from the project source managed, consulted, and exploited by the Account Manager, categorized as Consultant Request.: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Split Out').item.json.id }}"
+      },
+      "id": "4d6b6618-0178-477f-aaec-5e99e08d52ed",
+      "name": "QCM03 +10 point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        880,
+        1060
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ $json.created_at }}",
+              "value2": "={{ DateTime.fromObject({month:$now.month})  }}"
+            }
+          ]
+        }
+      },
+      "id": "63c8d6d1-89b0-40db-a505-1920c61445ff",
+      "name": "IF create this month1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "6245aff5-00b9-4986-b0bc-3acdd32e5024",
+      "name": "Split Out2",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -300,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=https://worksuite.cloodo.com/apps/tickets/add-tickets/{{ $('Split Out2').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "7163a718-ada8-448f-8f8e-7e2d2a3bc360",
+      "name": "search2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        140,
+        580
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "c3e95b6f-4859-4651-ab88-4f8ac070e0d3",
+      "name": "IF not found3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        360,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ $json.created_at }}",
+              "value2": "={{ DateTime.fromObject({month:$now.month})  }}"
+            }
+          ]
+        }
+      },
+      "id": "8cb63953-9581-4f5b-8d37-9ad0c1ff8f9f",
+      "name": "IF create this month2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "additionalFields": {
+          "type": "b4b18706-94bb-45d7-a7ab-6cca5e117a48",
+          "channel": "eef0f66a-ec1a-43e1-a70f-24275d6dbd59"
+        },
+        "requestOptions": {}
+      },
+      "id": "12ffb4de-69d9-4249-8753-70b2a02684db",
+      "name": "Engament  support ticket renewal",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        620
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Split Out2').item.json.create_by.id }}",
+        "points": 10,
+        "note": "=QCM05 {{ $('Split Out2').item.json.create_by.name }} are rewarded with +10 points for The new Engagement generated from the Channel Name is a ticket support with the Type being renewal & upsell. (This is a request identified by the Supporter during the process of providing support and exploring opportunities for the customer): https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Split Out2').item.json.id }} "
+      },
+      "id": "7db314e9-fedf-4667-9b89-8ebfc639603e",
+      "name": "QCM05 +10 point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        580,
+        560
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Item Lists').item.json.create_by.id }}",
+        "points": 2,
+        "note": "=QCM02 {{ $('Item Lists').item.json.create_by.name }} is rewarded with +2 points for creating new Ticket: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Item Lists').item.json.id }}"
+      },
+      "id": "50fe03d2-2c1d-4726-9b30-d7603d25eeea",
+      "name": "QCM02 +2 Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        1300
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05PR7A8DKN",
+          "mode": "list",
+          "cachedResultName": "worksuite-point"
+        },
+        "text": "=QCM36 {{ $('Items').item.json.agent.name }} have been penalized with a deduction of -3 points for not closing the engagement within over 30 days: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Items').item.json.id }} ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "714d0ea1-96d4-4638-9900-cb70f849856b",
+      "name": "Slack1",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        620,
+        1760
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "75c6f96e-7e5a-4172-941a-6abb6d0e1ea4",
+      "name": "IF not found4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        160,
+        1780
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Items').item.json.agent.id }}",
+        "points": 3,
+        "note": "=QCM36 {{ $('Items').item.json.agent.name }} have been penalized with a deduction of -3 points for not closing the engagement within over 30 days: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Items').item.json.id }} "
+      },
+      "id": "e99834af-0df0-42d7-ae03-9e021496c1dc",
+      "name": "QCM36 -3 Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        400,
+        1760
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "9c005b80-befe-4509-b9a0-af6926f096dd",
+      "name": "Items",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        1780
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=not closing the engagement within over 30 days: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Items').item.json.id }} ",
+        "max_limit_record": 50
+      },
+      "id": "43c95b8c-8c1d-41d7-8ab7-426e08f6492d",
+      "name": "Search point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        1780
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "additionalFields": {
+          "sort": "desc",
+          "status": "open",
+          "fromDate": "={{ $today.minus({day:30}).toFormat(\"dd-MM-yyyy\") }}",
+          "toDate": "={{ $today.minus({day:0}).toFormat(\"dd-MM-yyyy\") }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "89a728e7-d8e8-482f-add6-4d724a974fd7",
+      "name": "Get Engagement open over 30 days",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        1780
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "additionalFields": {
+          "search": "KPI tháng",
+          "fromDate": "= {{ $today.set({ day: 1 }).format('dd-MM-yyyy') }} ",
+          "toDate": "={{ $today.set({ day: 1 }).plus({ months: 1 }).minus({days: 1}).format('dd-MM-yyyy') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "c512fc71-1dfc-49ea-b5ff-955d3b338aba",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        340
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "14840ac4-3e5e-4dc3-aeaa-112447cb6b2e",
+              "leftValue": "={{ $json.data[0].status }}",
+              "rightValue": "complete",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9b241f23-35b8-4798-a6bf-721c92ad2d9c",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "db2981ac-21fb-4526-830c-bec8bda60eb6",
+      "name": "Split Out3",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -80,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.task",
+        "options": {}
+      },
+      "id": "4050e2f2-3040-4807-8d9e-0832396f320a",
+      "name": "Split Out4",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        360,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "bed0eff8-a10d-4650-992b-1336bad213da",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        140,
+        320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "f9382891-7384-435e-a8c1-afa52166c91c",
+              "leftValue": "={{ $json.heading }}",
+              "rightValue": "Ticket",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "bb173ec4-612f-4e1f-8d13-dc69b483ed27",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        580,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "c1e27dc8-3a6f-4ab2-8748-9700f44427fe",
+      "name": "Cloodo Project2",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        840,
+        320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "=// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  for (const item of $input.all()) {\n  for(let i=0;i<5;i++) {\n    if(item.json.data.custom_fields_data[i]?.label == 'KPI Target')\n    {   item.json.targetValue = item.json.data.custom_fields_data[i].value}\n  \n\n   if(item.json.data.custom_fields_data[i]?.label == 'KPI Weight')\n    {  \n     let weight= Number(item.json.data.custom_fields_data[i].value) + 1\n      item.json.weightValue = weight}\n    if(item.json.data.custom_fields_data[i]?.label == 'KPI Actual')\n    {   item.json.actualValue = item.json.data.custom_fields_data[i].value}\n    if(item.json.data.custom_fields_data[i]?.label == 'KPI Bonus-Fined')\n    {   item.json.bonusValue = item.json.data.custom_fields_data[i].value}\n  }\n  }\n \n  \n}\n\nreturn $input.all(); "
+      },
+      "id": "5151efa9-b48c-4e89-aafd-6e334407927b",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "number": [
+            {
+              "name": "KPI Target",
+              "value": "={{ $json.targetValue }}"
+            },
+            {
+              "name": "KPI Bonus-Fined",
+              "value": "={{ $json.bonusValue }} "
+            },
+            {
+              "name": "KPI Actual",
+              "value": "={{ $json.actualValue }}"
+            }
+          ],
+          "string": [
+            {
+              "name": "=Name assigned_to",
+              "value": "={{ $('Cloodo Project2').item.json.data.assigned_to[0].name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f31b4abf-3c35-47eb-b8a0-3ed98a902e67",
+      "name": "Input data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "9374bbef-4679-49d2-8e3c-1fbd228994da",
+              "leftValue": "={{ parseInt($json['KPI Target']) }}",
+              "rightValue": "={{ parseInt($json['KPI Actual']) }}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "622641fa-21c7-4034-9a8c-207d74eafe11",
+      "name": "If5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "Thuong",
+              "value": "={{ ($json['KPI Actual']- ($json['KPI Target']   ))* 10 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1586ec74-e520-45aa-b257-6b6c711f2623",
+      "name": "Results1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $json['ID assigned_to'] }}",
+        "points": "={{ $json.Phat }}",
+        "note": "=QCM33: {{ $json['Name assigned_to'] }} -{{ $json.Phat }} Failure to meet KPI Ticket targets has type Ticket support closed during the month"
+      },
+      "id": "ff8e4312-0ff9-4bd2-b7ea-5783e25a408e",
+      "name": "QCM66",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        120
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $json['ID assigned_to'] }}",
+        "points": "={{ $json.Phat }}",
+        "note": "=QCM33: {{ $json['Name assigned_to'] }} -{{ $json.Phat }} Failure to meet KPI Ticket targets has type Ticket support closed during the month"
+      },
+      "id": "8410927c-2dc8-4f44-94f8-59bed08b628a",
+      "name": "QCM67",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1960,
+        360
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "Phat",
+              "value": "={{ ($json['KPI Target'] - $json['KPI Actual'] )* 5 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9b220d36-cd8d-45a1-b4b6-0dd27c410b15",
+      "name": "Results",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "9374bbef-4679-49d2-8e3c-1fbd228994da",
+              "leftValue": "={{ parseInt($json['KPI Target']) }}",
+              "rightValue": "={{ parseInt($json['KPI Actual']) }}",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "de0eada3-d28b-4e83-b793-7d4a55190f0c",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1460,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Split Out1').item.json.create_by.id }}",
+        "points": 4,
+        "note": "=QCM04 {{ $('Split Out1').item.json.create_by.name }} are rewarded with +10 points for the newly created ticket by sales through customer care, consultation, and exploitation, categorized as renewal & upsell: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Split Out1').item.json.id }} "
+      },
+      "id": "31fd6979-61f8-4c36-8039-276efd67767f",
+      "name": "QCM04 +4 point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        860,
+        760
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM02 {{ $('Item Lists').item.json.create_by.name }} is rewarded with +2 points for creating new Ticket: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Item Lists').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "210d9760-3c05-47bd-9c17-5750a5e60232",
+      "name": "Search",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        780,
+        1320
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "508af3c4-f787-4d85-ab1c-4b74cd2aabd2",
+              "leftValue": "={{ $json.type.type }}",
+              "rightValue": "Feature Request",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "67f680ff-c0aa-498d-bdc5-e013506fcce7",
+              "leftValue": "={{ $json.type.type }}",
+              "rightValue": "Product Inquiry",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "5612040a-1060-46c1-970b-3eda538e147b",
+              "leftValue": "={{ $json.type.type }}",
+              "rightValue": "Extra Service",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "b1630ce2-6391-4f90-9b9a-bdd695fe4b9b",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        60,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "508af3c4-f787-4d85-ab1c-4b74cd2aabd2",
+              "leftValue": "={{ $json.type.type }}",
+              "rightValue": "Consultation Requests",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "b7c0752c-9275-4b10-a342-9d1cb2b6ec3a",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        160,
+        1100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "508af3c4-f787-4d85-ab1c-4b74cd2aabd2",
+              "leftValue": "={{ $json.type.type }}",
+              "rightValue": "Renewal and Upsell",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "24b4fab6-1918-4aa0-83dd-68f23e143f82",
+      "name": "If6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        200,
+        800
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "IF create Yesterday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF create Yesterday": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client": {
+      "main": [
+        [
+          {
+            "node": "IF not is Client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not is Client": {
+      "main": [
+        [
+          {
+            "node": "Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Engament renewal & upsale",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Engament Consultation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Engagement open over 30 days",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF loop": {
+      "main": [
+        [],
+        [
+          {
+            "node": "End",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "QCM02 +2 Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Engament Consultation": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "IF create this month1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Engament renewal & upsale": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "IF create this month",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search": {
+      "main": [
+        [
+          {
+            "node": "IF not found1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "QCM04 +4 point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF create this month": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search1": {
+      "main": [
+        [
+          {
+            "node": "IF not found2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found2": {
+      "main": [
+        [
+          {
+            "node": "QCM03 +10 point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF create this month1": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "IF create this month2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search2": {
+      "main": [
+        [
+          {
+            "node": "IF not found3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found3": {
+      "main": [
+        [
+          {
+            "node": "QCM05 +10 point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF create this month2": {
+      "main": [
+        [
+          {
+            "node": "search2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Engament  support ticket renewal": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM02 +2 Point": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found4": {
+      "main": [
+        [
+          {
+            "node": "QCM36 -3 Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM36 -3 Point": {
+      "main": [
+        [
+          {
+            "node": "Slack1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Items": {
+      "main": [
+        [
+          {
+            "node": "Search point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point": {
+      "main": [
+        [
+          {
+            "node": "IF not found4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Engagement open over 30 days": {
+      "main": [
+        [
+          {
+            "node": "Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out4": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "Split Out4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project2": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Input data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input data": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Results1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Results1": {
+      "main": [
+        [
+          {
+            "node": "QCM66",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Results": {
+      "main": [
+        [
+          {
+            "node": "QCM67",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Get Client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "search1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "16b25a47-95f6-4531-a741-96352a5710f7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "oPWsJpJtvFyWJ0cK",
+  "tags": []
+}

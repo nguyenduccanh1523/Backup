@@ -1,0 +1,481 @@
+{
+  "name": "QCM37",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "834f353d-da62-443e-b77c-3e75fd3a3629",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1700,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "cursor": "={{ $runIndex+1 }}",
+        "additionalFields": {
+          "fromDate": "={{ $today.minus({day:3}).format('dd-MM-yyyy') }}",
+          "toDate": "={{ $today.format('dd-MM-yyyy') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "c569d9a7-8845-4b32-8126-e08558d04955",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -1440,
+        520
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data ",
+        "options": {}
+      },
+      "id": "def21489-67a4-4c58-b2f7-f69a521add47",
+      "name": "data engagement",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -1200,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 23,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "faae8faf-37b3-452f-8258-a38b45199863",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1700,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.meta.current_page }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "86f17bc6-74be-42a5-915d-4c3d8d405704",
+      "name": "Loop page",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1200,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "additionalFields": {
+          "ticketID": "={{ $json.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "02e18b27-013e-4565-9506-9cac9df5df10",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        480
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.projects }}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{ $json.type.type }}",
+              "operation": "notEqual",
+              "value2": "Ticket Support"
+            },
+            {
+              "value1": "={{ $json.type.type }}",
+              "operation": "notEqual",
+              "value2": "Support Ticket "
+            },
+            {
+              "value1": "={{ $json.type.id }}",
+              "operation": "notEqual",
+              "value2": "95df9d5f-0d38-42b8-944b-30a3308df7bc"
+            },
+            {
+              "value1": "={{ $json.type.id }}",
+              "operation": "notEqual",
+              "value2": "98170546-24fc-41b2-8741-70acbba38ef7"
+            },
+            {
+              "value1": "={{ $json.type.id }}",
+              "operation": "notEqual",
+              "value2": "7aa8f99c-4260-483d-8cde-cf167a5b3525"
+            },
+            {
+              "value1": "={{ $json.type.id }}",
+              "operation": "notEqual",
+              "value2": "6f204891-71b9-4b73-a4f7-04603dcad0fa\t"
+            },
+            {
+              "value1": "={{ $json.type.id }}",
+              "operation": "notEqual",
+              "value2": "2c38965a-cf1f-4213-aeaa-eed19c075647"
+            },
+            {
+              "value1": "={{ $json.type.id }}",
+              "operation": "notEqual",
+              "value2": "b392cc95-6b61-403a-af5d-90c274b17385\t"
+            }
+          ]
+        }
+      },
+      "id": "167a1b44-3dbe-4453-887f-96e95156b63e",
+      "name": "IF12",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "354cb974-6f72-4e6b-818d-3a81df33ab59",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05FYKF1SJU",
+          "mode": "id"
+        },
+        "text": "=QCM37: {{ $('IF12').item.json.agent.name }} get -5 because Engagement does not have a proposal Link: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('IF12').item.json.id }}",
+        "otherOptions": {}
+      },
+      "id": "b370278f-60a0-4432-a9d2-bfea07caa239",
+      "name": "Slack1",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        840,
+        460
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('IF12').item.json.agent.id }}",
+        "points": 5,
+        "note": "=QCM37: {{ $('IF12').item.json.agent.name }} get -5 because Engagement does not have a proposal Link: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('IF12').item.json.id }}"
+      },
+      "id": "23716e4b-604a-44b4-adce-1d605882dac3",
+      "name": "Cloodo Point2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        640,
+        460
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM37: {{ $('IF12').item.json.agent.name }} get -5 because Engagement does not have a proposal Link: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('IF12').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "2f380862-5194-4832-aad4-2bcb61ae5980",
+      "name": "Cloodo Point3",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        100,
+        480
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "4d88532f-1451-417e-9880-877b1fb136f8",
+      "name": "IF not found1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        380,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "ded9295a-d82a-449f-b671-e6fa2aa3caab",
+              "leftValue": "={{ $json.created_at }}",
+              "rightValue": "={{ $now.minus({day:7}).format('yyyy-MM-dd') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "90ba74b3-3f4a-4b1c-a7da-7c389e3bc91a",
+      "name": "Check Date",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -780,
+        500
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "data engagement",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "data engagement": {
+      "main": [
+        [
+          {
+            "node": "IF12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop page": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM2": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF12": {
+      "main": [
+        [
+          {
+            "node": "Check Date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point2": {
+      "main": [
+        [
+          {
+            "node": "Slack1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point3": {
+      "main": [
+        [
+          {
+            "node": "IF not found1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Date": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c2b83a08-2453-4f5d-8433-aad0885014ab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "YvLBcsQYxfDRKh65",
+  "tags": []
+}

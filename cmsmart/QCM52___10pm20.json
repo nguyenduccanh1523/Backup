@@ -1,0 +1,459 @@
+{
+  "name": "QCM52 - 10pm20",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "625a0dcf-721e-4396-a33b-4d59866a6d0f",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        380,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "7c2215e6-20a1-4b31-8ec8-8594959989ba",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        980,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.agent }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "bd20aa7e-efc6-4d87-b727-26c7681fadab",
+      "name": "IF is not empty agent",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "search": "Bad",
+          "taskStatus": "complete"
+        },
+        "requestOptions": {}
+      },
+      "id": "4185412f-bb87-4610-91eb-66414ee20103",
+      "name": "get many Milestone",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        680,
+        320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": "=50"
+            }
+          ]
+        }
+      },
+      "id": "460a9930-d0c8-4701-89b7-d5c89eb12ea5",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        880,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.start_date }}",
+              "operation": "larger",
+              "value2": "={{ $today.set({ day: -100 }).plus({ months: 0 }).minus({days: 1}).format('yyyy-MM-dd') }}"
+            }
+          ]
+        }
+      },
+      "id": "3365d3b2-7319-4562-afa6-095dc3683e2b",
+      "name": "Take a month",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.data.task.project.name }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "Cmsmart Bad Reviews"
+            }
+          ]
+        },
+        "fallbackOutput": 0
+      },
+      "id": "66de7062-0b21-456f-beb6-826bfd9e2df7",
+      "name": "Check out project reviews",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "4c26e7ca-c345-4215-8350-54104711c2ea",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        280
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "={{ $('Take a month').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "35b32c1e-2a64-40ca-8dff-e3fe75a4c12b",
+      "name": "Search riview1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2680,
+        240
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.summary }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "65735fc1-f51c-41bc-899c-acdd79bb04dc",
+      "name": "IF is not empty summary",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2120,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05FYKF1SJU",
+          "mode": "id"
+        },
+        "text": "=QCM52: {{ $('IF is not empty summary').item.json.data.agent.name }} -150 points for having {{ $('IF is not empty summary').item.json.data.project.name }}:https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('IF is not empty summary').item.json.data.id }}",
+        "otherOptions": {}
+      },
+      "id": "4ab1c990-8038-4b73-afc8-1ecde4b0668c",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        3420,
+        220
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "9edT91TZDnZRRppY",
+          "name": "DEV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Take a month').item.json.agent.id }}",
+        "points": 150,
+        "note": "={{ $('IF is not empty summary').item.json.data.agent.name }} -150 points for having {{ $('IF is not empty summary').item.json.data.project.name }}:https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('IF is not empty summary').item.json.data.id }} "
+      },
+      "id": "6f6444b4-998f-44fc-a963-2dd43c85784f",
+      "name": "-150 point riview",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        220
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 22,
+              "triggerAtMinute": 20
+            }
+          ]
+        }
+      },
+      "id": "d375d75f-4677-4604-ba8d-993235ec67bc",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        360,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "89764db8-afb0-4762-b53e-c7750633d34b",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2920,
+        240
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "get many Milestone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "IF is not empty agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF is not empty agent": {
+      "main": [
+        [
+          {
+            "node": "Take a month",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get many Milestone": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "get many Milestone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take a month": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check out project reviews": {
+      "main": [
+        [
+          {
+            "node": "Search riview1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "IF is not empty summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search riview1": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF is not empty summary": {
+      "main": [
+        [
+          {
+            "node": "Check out project reviews",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "-150 point riview": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "get many Milestone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "-150 point riview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c1e90cfb-ee62-459e-ad06-41ec96768619",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "Zeaxh6wGYeiHiPdr",
+  "tags": []
+}

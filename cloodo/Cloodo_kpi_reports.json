@@ -1,0 +1,442 @@
+{
+  "name": "Cloodo kpi reports",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1mMWtbcaATi2ZX4_pDP6-OABi6GYTOpLRAWJI92zhrfI",
+          "mode": "list",
+          "cachedResultName": "Cloodo reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mMWtbcaATi2ZX4_pDP6-OABi6GYTOpLRAWJI92zhrfI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1473177913,
+          "mode": "list",
+          "cachedResultName": "KPI report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mMWtbcaATi2ZX4_pDP6-OABi6GYTOpLRAWJI92zhrfI/edit#gid=1473177913"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "No.": "={{ $json.data.id }}",
+            "KPI Name": "={{ $json.data.link }}",
+            "Task Category": "={{ $json.data.category.name }}",
+            "Target": "={{ $json.targetValue }}",
+            "Actual": "={{ $json.actualValue }}",
+            "Weight": "={{ $json.weightValue }}",
+            "Ranking": "={{ $json.data.rankText }}",
+            "Status": "={{ $json.data.board_column.name }}",
+            "Bonus/Fined": "={{ $json.bonusValue }}",
+            "Assigned": "={{ $json.data.assigned_by.name }}",
+            "Due Date": "={{ $json.data.datetime }}"
+          },
+          "matchingColumns": [
+            "KPI Name"
+          ],
+          "schema": [
+            {
+              "id": "No.",
+              "displayName": "No.",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "KPI Name",
+              "displayName": "KPI Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Task Category",
+              "displayName": "Task Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Actual",
+              "displayName": "Actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Weight",
+              "displayName": "Weight",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ranking",
+              "displayName": "Ranking",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Bonus/Fined",
+              "displayName": "Bonus/Fined",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Assigned",
+              "displayName": "Assigned",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d96e2227-6ac9-4ba2-bd39-35c56605d622",
+      "name": "Google Sheets1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.1,
+      "position": [
+        2100,
+        340
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "y0Ekl1ubINhfxcOh",
+          "name": "Cloodo Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "5c8cc3b3-6b0a-4baa-bc1f-5265d442e2a9",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1400,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": "={{ $json.meta.last_page }}"
+            }
+          ]
+        }
+      },
+      "id": "73bce89c-ea68-47f0-864e-a23f9cdc1e4e",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 1
+            }
+          ]
+        }
+      },
+      "id": "3efc94c3-6c30-493c-b7f3-1856b152f446",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        520,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "131ad1ee-534e-4ddc-b210-8178b5fb37e3",
+              "leftValue": "= {{ new Date($today.set({ day: 1 }).minus({month : 0})) }} ",
+              "rightValue": "={{ $json.data.created_at }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            },
+            {
+              "id": "e35df960-75a2-4ecb-8601-66f2bb42ac2c",
+              "leftValue": "={{ new Date($today.set({ day: 1 }).plus({month :1}).minus({day : 1})) }} ",
+              "rightValue": "={{ $json.data.created_at }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5c5d65f9-55d9-4efa-b2e8-3600beda0bd0",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1mMWtbcaATi2ZX4_pDP6-OABi6GYTOpLRAWJI92zhrfI",
+          "mode": "list",
+          "cachedResultName": "Cloodo reports chuẩn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mMWtbcaATi2ZX4_pDP6-OABi6GYTOpLRAWJI92zhrfI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1473177913,
+          "mode": "list",
+          "cachedResultName": "KPI report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mMWtbcaATi2ZX4_pDP6-OABi6GYTOpLRAWJI92zhrfI/edit#gid=1473177913"
+        },
+        "keepFirstRow": true
+      },
+      "id": "98b1cc0f-bc14-4a15-85dd-17b0d0b534a9",
+      "name": "Clear Cloodo Reports",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.1,
+      "position": [
+        760,
+        340
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "y0Ekl1ubINhfxcOh",
+          "name": "Cloodo Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "getTaskByProject",
+        "page": "={{ $runIndex +1 }}",
+        "project_id": "7dba3063-3ffa-448e-9379-2e62ad3838b6",
+        "requestOptions": {}
+      },
+      "id": "91358f03-cc44-4c3f-bda5-9cfe6d2e99b7",
+      "name": "Get All Task Of KPI Module Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        340
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "ecb5e6ab-d28d-4128-9783-579f9680687f",
+      "name": "Get Detail Task",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1640,
+        340
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "=// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  for (const item of $input.all()) {\n  for(let i=0; i < item.json.data.custom_fields_data.length;i++) {\n    if(item.json.data.custom_fields_data[i].label == 'KPI Target')\n    {   item.json.targetValue = item.json.data.custom_fields_data[i].value}\n  \n\n   if(item.json.data.custom_fields_data[i].label == 'KPI Weight')\n    {  \n     let weight= Number(item.json.data.custom_fields_data[i].value) + 1\n      item.json.weightValue = weight}\n    if(item.json.data.custom_fields_data[i].label == 'KPI Actual')\n    {   item.json.actualValue = item.json.data.custom_fields_data[i].value}\n    if(item.json.data.custom_fields_data[i].label == 'KPI Bonus-Fined')\n    {   item.json.bonusValue = item.json.data.custom_fields_data[i].value}\n  }\n}\n   if(item.json.data.custom_fields_data[5] !== undefined && item.json.data.custom_fields_data[5].value !== null)\n  {\n\n     let rank = Number(item.json.data.custom_fields_data[5].value)\n    if(rank ==0) {\n         item.json.data.rankText = \"Không đạt(1.0)\"\n    }\n      if(rank ==1) {\n        item.json.data.rankText = \"Cần cố gắng(2.0)\"\n    }\n      if(rank ==2) {\n         item.json.data.rankText = \"Đạt yêu cầu(3.0)\"\n    }\n      if(rank ==3) {\n         item.json.data.rankText = \"Vượt yêu cầu(4.0)\"\n    }\n  }\n \n  let dateType = new Date(item.json.data.due_on)\n  var parts = item.json.data.due_on.split('-');\n\n   item.json.data.datetime = `${parts[1]}/${parts[0]}/${parts[2]}` \n   item.json.data.link = `=HYPERLINK(\"https://worksuite.cloodo.com/apps/work/tasks/${item.json.data.id}\", \"${item.json.data.heading}\")`;\n   console.log(item.json.data.id + \" - due on:\" +  item.json.data.datetime, typeof( item.json.data.datetime))\n\n  if(item.json.data.completed_on ==null) {\n    item.json.data.completed = \"Incomplete\"\n  }\n  else {\n     item.json.data.completed = \"Completed\"\n  }\n \n}\n\nreturn $input.all(); "
+      },
+      "id": "69d73103-76f3-48dd-a30c-9ef4ad33ef10",
+      "name": "Reformat Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1860,
+        340
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Get Detail Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Get All Task Of KPI Module Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Clear Cloodo Reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Cloodo Reports": {
+      "main": [
+        [
+          {
+            "node": "Get All Task Of KPI Module Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Task Of KPI Module Project": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Detail Task": {
+      "main": [
+        [
+          {
+            "node": "Reformat Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reformat Output": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bc0d17e2-6ac1-4e0a-adad-5c4b0d4eeafb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "SGmusKRldmYJb8UQ",
+  "tags": []
+}

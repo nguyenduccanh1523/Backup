@@ -1,0 +1,238 @@
+{
+  "name": "QCM45",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "2c4ca391-bdd0-4357-99fc-7208daadeba8",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1580,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "path": "1ae40b01-e62a-4c32-baa8-2b0eab08447f",
+        "options": {}
+      },
+      "id": "0fb90537-fbb0-4652-8809-282dd2315a0d",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -1580,
+        980
+      ],
+      "webhookId": "1ae40b01-e62a-4c32-baa8-2b0eab08447f",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C06054MU77S",
+          "mode": "list",
+          "cachedResultName": "cmsmart-point"
+        },
+        "text": "=QCM45 {{ $('Split out').item.json.agent.name }} is penalized -5 points when Milestones are late due date on {{ $today.format('dd-MM-yyyy') }}: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('Split out').item.json.id }}p{{ $('Split out').item.json.project_id }}   ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "45deee91-63d4-4664-a26f-312ee9a5d640",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        -340,
+        760
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "13",
+          "name": "worksuite cloodo"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM45: {{ $('MySQL').item.json.agentName }} is penalized -5 points when Milestones are late due date on {{ $('MySQL').item.json.dueDate }}: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('MySQL').item.json.milestonesUUID }} ",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "41066e39-d731-4b57-adae-f96737340ff0",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -1100,
+        780
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "88fd48ae-9627-4132-b8de-028e6d998948",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -860,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23
+            },
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "id": "3a399461-d25b-46e1-806e-f7e6f046bc73",
+      "name": "Schedule Trigger 11pm & 7am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1580,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('MySQL').item.json.agentUUID }}",
+        "points": 5,
+        "note": "=QCM45: {{ $('MySQL').item.json.agentName }} is penalized -5 points when Milestones are late due date on {{ $('MySQL').item.json.dueDate }}: https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('MySQL').item.json.milestonesUUID }} "
+      },
+      "id": "f42c6103-5fd6-4205-b43a-f1642151c8bf",
+      "name": "QCM45",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        760
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT pm.id AS milestonesID, pm.uuid AS milestonesUUID, pm.title AS milestonesName, u.uuid AS userUUID, u.name as agentName, pm.due_date AS dueDate, u.uuid AS agentUUID\nFROM project_milestones pm\nJOIN projects p ON pm.project_id = p.id\nJOIN departments d ON d.id = p.department_id \nJOIN users u ON u.id = pm.agent_id\nWHERE pm.close_date > pm.due_date\nAND pm.company_id = 2\nAND MONTH(pm.created_at) = MONTH(CURDATE())\nAND YEAR(pm.created_at) = YEAR(CURDATE());",
+        "options": {}
+      },
+      "id": "17ea8200-0772-4ef8-84ce-0070c70ed07c",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -1340,
+        780
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger 11pm & 7am": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "QCM45",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "af010b9a-801e-4412-b045-5e8efb1c9b02",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "MMjceqiSSfZ0df7u",
+  "tags": []
+}

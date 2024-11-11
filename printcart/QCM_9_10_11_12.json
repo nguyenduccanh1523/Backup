@@ -1,0 +1,1128 @@
+{
+  "name": "QCM 9,10,11,12",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "735da0f4-b243-4080-a365-a18925a110cc",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        360,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": {
+          "__rl": true,
+          "value": "projects",
+          "mode": "list",
+          "cachedResultName": "projects"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $json.project_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ecd32138-d0f6-4720-a0bb-8b8c6f14e2eb",
+      "name": "Get Project",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1220,
+        620
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": {
+          "__rl": true,
+          "value": "users",
+          "mode": "list",
+          "cachedResultName": "users"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $('Switch').first().json.agent_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f518be6f-b844-42a7-91dc-e63c16da0b34",
+      "name": "Get Agent",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1780,
+        600
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM proposals\nWHERE company_id = 2\nAND deleted_at IS NULL\nAND created_at >= CURDATE() - INTERVAL 1 MONTH\nLIMIT 50;",
+        "options": {}
+      },
+      "id": "65ec0ba5-5fa0-45cc-b372-9f112a2b9518",
+      "name": "Get Proposal",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        380
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * \nFROM projects\nWHERE id = '{{ $('Switch').item.json.project_id }}'",
+        "options": {}
+      },
+      "id": "0a280fb6-7e42-4f3c-81a2-201471e02784",
+      "name": "Get Project1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        -40
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT name AS userName, uuid as usersId\nFROM users \nWHERE uuid = '{{ $json.data.agent.id }}'",
+        "options": {}
+      },
+      "id": "70d2d2c5-afd0-4b06-bf28-ce7b5b1edd8c",
+      "name": "Get Agent1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        -240
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": {
+          "__rl": true,
+          "value": "projects",
+          "mode": "list",
+          "cachedResultName": "projects"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $json.project_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1f6bc12a-d399-44e0-bb16-161056870183",
+      "name": "Get Project2",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        180
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": {
+          "__rl": true,
+          "value": "users",
+          "mode": "list",
+          "cachedResultName": "users"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $('Switch').item.json.agent_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1bb5b8b9-1de1-4e45-a83f-594eaa4966c5",
+      "name": "Get Agent2",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1360,
+        160
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "bd81af35-3b76-497f-b306-8b1fa700f760",
+              "leftValue": "={{ $json.values().length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "25c1ff0c-1aa0-4b5e-9c78-ee83dc8a58a2",
+      "name": "Check Note Null",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1580,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=Hey {{ $json.name }}, Please note the reason - failed proposal id: {{ $('Switch').first().json.id }}",
+        "taskPriority": "high",
+        "start_date": "={{ $now.format(\"yyyy-MM-dd\") }}",
+        "due_date": "={{ $now.plus({DAY:3}).format(\"yyyy-MM-dd\") }}",
+        "users": "={{ $json.uuid }}",
+        "additionalFields": {
+          "ProjectID": "={{ $('Get Project').first().json.uuid }}",
+          "taskStatus": "incomplete",
+          "taskDescription": "=Proposal: <a href=\"https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Switch').first().json.uuid }}\">Click here to check Proposal</a><br>\nAdd note in Project include Proposal Id in Note detail : <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Get Project').first().json.uuid }}\">Click here to go to Project and add Note</a><br>\nPlease note the reason why the client does not agree on this proposal to the Proposal Note and close this task<br>\nNote: This is just a reminder task, you can close. The QC will check if the note is there or not and will give a minus point at -3 point for each 24h of unavailable note ",
+          "taskCategoryId": "8d784778-bdc0-4077-95e8-ceb2d7bd5881\t"
+        },
+        "requestOptions": {}
+      },
+      "id": "96b72367-4fe3-4256-b57e-8ca9f0a648a2",
+      "name": "QCM 11",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        600
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=Hey {{ $json.name }},Project analysis need,  proposal id:{{ $('Switch').item.json.id }}",
+        "taskPriority": "high",
+        "start_date": "={{ $now.format(\"yyyy-MM-dd\") }}",
+        "due_date": "={{ $now.plus({DAY:3}).format(\"yyyy-MM-dd\") }}",
+        "users": "={{ $json.uuid }}",
+        "additionalFields": {
+          "ProjectID": "={{ $('Get Project2').item.json.uuid }}",
+          "taskStatus": "incomplete",
+          "taskDescription": "=Link: <a href=\"https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Switch').item.json.uuid }}\">Click here to see Proposal</a><br>\nPlease assign this task to BA to request an official project analysis documentation before sending to client.<br>\nPlease create a milestone to upload the BA documentation - SRS, SRD, Test Case...<br>\nNote:<br>\nIf you don't assign to other person, then you are the BA of this proposal <br>",
+          "taskCategoryId": "7211f74c-0512-4031-bab2-8480c86d4ac8"
+        },
+        "requestOptions": {}
+      },
+      "id": "d3a5094b-3000-4fd6-981b-8e997ef3f0c4",
+      "name": "QCM 10 Task",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1640,
+        80
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $json.uuid }}",
+        "points": 2,
+        "note": "=QCM10 {{ $json.name }}: +2 point for proposal have Analyzing status. \nLink: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Switch').item.json.uuid }}"
+      },
+      "id": "613aa011-4430-4ef2-9531-4aba21b76726",
+      "name": "QCM 10 Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        240
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Merge').item.json.usersId }}",
+        "points": 6,
+        "note": "=QCM09 {{ $('Merge').item.json.userName }}: +6 point for proposal have Waiting status. \nLink: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Merge').item.json.uuid }}"
+      },
+      "id": "53b67984-2ece-498b-924f-f6f775ed1675",
+      "name": "QCM 09",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2380,
+        -140
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "triggerAtHour": 8,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "e8a6808d-a681-4039-8f34-304dc603cb8a",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        360,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT IFNULL(id, 'null') AS noteId\nFROM project_notes\nWHERE project_id = {{ $json.id }};",
+        "options": {}
+      },
+      "id": "501d959e-789b-42a4-aff6-4695d6ec0d4d",
+      "name": "Get Note",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1400,
+        620
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "4f0bfafb-df72-4e46-b287-2055f958af98",
+              "leftValue": "={{ $json.data.files }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8a32014e-153a-4084-92fd-4c450c3adb44",
+      "name": "Check file",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1260,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "ID": "={{ $json.uuid }}",
+        "requestOptions": {}
+      },
+      "id": "ed0686f9-b85f-4843-8d50-ea219621108e",
+      "name": "get Proposal Detail",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        -100
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "2e2f261f-70bd-4d3c-882d-3e194e2d0cd4",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        1760,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM09 {{ $('Merge').item.json.userName }}: +6 point for proposal have Waiting status. \nLink: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Merge').item.json.uuid }}",
+        "max_limit_record": 50
+      },
+      "id": "a49496bf-867c-4f71-b1cf-53e9b87bec3e",
+      "name": "QCM ",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1960,
+        -120
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "34653586-f693-49e6-844e-a5fc52a70916",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "abbe21eb-2104-4ba7-a99b-a6e5ba0d01e5",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * \nFROM projects\nWHERE id = '{{ $('Switch').item.json.project_id }}'",
+        "options": {}
+      },
+      "id": "f4e0129a-be30-4a37-920f-b195d8424fb9",
+      "name": "Get Project3",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1840,
+        440
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT name AS userName, uuid as usersId\nFROM users \nWHERE uuid = '{{ $json.data.agent.id }}'",
+        "options": {}
+      },
+      "id": "c90319c1-8be8-4a77-aadd-44f71ca360a3",
+      "name": "Get Agent3",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1840,
+        220
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yas8kVkbrNEoFJep",
+          "name": "Cloodo Worksuit Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "4f0bfafb-df72-4e46-b287-2055f958af98",
+              "leftValue": "={{ $json.data.files }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "36ffe593-bd99-41a8-a59c-b13b55792dc5",
+      "name": "Check file1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        860,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "ID": "={{ $json.uuid }}",
+        "requestOptions": {}
+      },
+      "id": "6f2fa736-33a4-4e07-96b1-a65a47af9639",
+      "name": "get Proposal Detail1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        380
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "e0fc0a4b-e1c2-4d90-8685-716815154d15",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        2080,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "34653586-f693-49e6-844e-a5fc52a70916",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "53ed52b3-c4b0-4753-a744-ab19ebd1384f",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Merge1').item.json.usersId }}",
+        "points": 6,
+        "note": "=QCM12 {{ $('Merge1').item.json.userName }}: +4 point for proposal have Waiting status. \nLink: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Merge1').item.json.uuid }}"
+      },
+      "id": "824cfdcf-3c66-435b-bcd5-ff2f5aeb11a5",
+      "name": "QCM 12",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2700,
+        340
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM12 {{ $('Merge1').item.json.userName }}: +4 point for proposal have Waiting status. \nLink: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Merge1').item.json.uuid }}",
+        "max_limit_record": 50
+      },
+      "id": "1fb04e46-b82d-407c-8522-dd5c2899716e",
+      "name": "Check QCM 12",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2280,
+        360
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.status_id }}",
+                    "rightValue": 5,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Waiting"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "4af4b72b-66b7-495d-8e4f-63a38a4ad482",
+                    "leftValue": "={{ $json.status_id }}",
+                    "rightValue": 12898,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Analyzing"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "40da31bd-35a8-4aef-b924-e8d02524859d",
+                    "leftValue": "={{ $json.status_id }}",
+                    "rightValue": 6,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Accepted"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "13f415b9-f647-481b-81d7-81b486316e03",
+                    "leftValue": "={{ $json.status_id }}",
+                    "rightValue": 8,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Declined"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2133bbf2-accb-496d-98bc-ae3240d1b710",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        920,
+        380
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get Proposal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project": {
+      "main": [
+        [
+          {
+            "node": "Get Note",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Proposal": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project2": {
+      "main": [
+        [
+          {
+            "node": "Get Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Proposal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Note Null": {
+      "main": [
+        [
+          {
+            "node": "Get Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Note": {
+      "main": [
+        [
+          {
+            "node": "Check Note Null",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check file": {
+      "main": [
+        [
+          {
+            "node": "Get Agent1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Proposal Detail": {
+      "main": [
+        [
+          {
+            "node": "Check file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Agent1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "QCM ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QCM ": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Agent2": {
+      "main": [
+        [
+          {
+            "node": "QCM 10 Task",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "QCM 10 Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Agent": {
+      "main": [
+        [
+          {
+            "node": "QCM 11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project3": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get Agent3": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Proposal Detail1": {
+      "main": [
+        [
+          {
+            "node": "Get Agent3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Project3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Check QCM 12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "QCM 12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "QCM 09",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check QCM 12": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "get Proposal Detail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Project2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Proposal Detail1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9563c4f6-860b-4e63-a044-71bfc00f6181",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "iEFSHXrR1JUHbvqX",
+  "tags": []
+}

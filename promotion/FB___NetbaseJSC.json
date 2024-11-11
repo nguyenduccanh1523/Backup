@@ -1,0 +1,782 @@
+{
+  "name": "FB - NetbaseJSC",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1802a493-690c-4f04-b827-cc83a13a4b4e",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        520,
+        940
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2,
+                1,
+                3,
+                5,
+                4,
+                6
+              ],
+              "triggerAtHour": 8,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "b90391b7-6138-4907-a5bf-f81febb6f227",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        520,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=NetbaseJSC Software is located in Vietnam and I want to write Facebook post to promote its Custom Software Development services\n\nPlease create a Facebook post using the following content in this page link :\n\n{{ $('Get NetbaseJSC Link').item.json['Top pages'] }}\n\n\nThe post should be like a mind-share, not anouncement, also reflect my daily work in Netbase, where I am working as a tech investor and innovation consultancy, engage in various technology ventures, providing investment and advisory support\n\nEnsure it has a clear call to action, uses a professional tone, and incorporates relevant hashtags. Additionally, make it suitable for an audience of entrepreneurs, tech professionals, and investors.\n\nUse below contact for CTA:\n\nDavid Nguyen, Netbase CEO (Email to project@netbasejsc.com or WhatsApp me at https://wa.me/+84937869689\n\nThe post should start with a client problem which then lead to highlight our technology consultancy services, and engage my audience in a easy-going, smart, friendly but courteously foster partnerships and collaborations to our partner workwide.\n\nThe post should brief, not too much word"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "65ef1e4c-3fa5-4a24-8604-f58ee851d1a3",
+      "name": "OpenAI",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2880,
+        780
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 271080997,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Outsourcing Vietnam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=271080997"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "STT": "={{ $('Get NetbaseJSC Link').item.json.STT }}",
+            "PostedNetbaseJSC": "={{ $now.format('yyyy/MM/dd HH:mm') }}"
+          },
+          "matchingColumns": [
+            "STT"
+          ],
+          "schema": [
+            {
+              "id": "STT",
+              "displayName": "STT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Top pages",
+              "displayName": "Top pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PostedAtOutsourcing ",
+              "displayName": "PostedAtOutsourcing ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PostedLinkedin",
+              "displayName": "PostedLinkedin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PostedNetbaseJSC",
+              "displayName": "PostedNetbaseJSC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a049bfb7-88d2-4d8d-99c7-0a11df0c6585",
+      "name": "Mark Link Posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        3580,
+        780
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Lấy HTML từ node trước\nconst htmlContent = $json[\"data\"];\n\n// Sử dụng Regex để tìm các thẻ <img> và lấy thuộc tính src\nconst imageLinks = [];\nconst regex = /<img[^>]+src=\"([^\">]+)\"/g;\nlet match;\n\n// Các từ khóa không mong muốn\nconst excludedWords = ['brand', 'banner', 'whouse', 'default', 'logo', 'button', 'cong_fb', 'rating', 'imgur', 'thank-you', 'screenshot', '{{', 'view', 'start', 'favicon','men', 'twimg','odoo-', 'netbase-2'];\n\nconst startLink = 'https://'\n\nwhile ((match = regex.exec(htmlContent)) !== null) {\n  const src = match[1];\n  if(!excludedWords.some(word=> src.includes(word))){\n    if(src.startsWith(startLink))\n     imageLinks.push(src);\n  }\n   \n}\n\nconsole.log('imageLinks:: ', imageLinks)\n// Trả về random 1 link ảnh từ những link ảnh lấy được\nif(imageLinks.length > 0){\n  const randomImg = imageLinks[Math.floor(Math.random() * imageLinks.length)];\n  return {\n  imageLinks: randomImg\n};\n}\n\n\n// Trả về một đối tượng chứa all danh sách các link ảnh\nreturn {\n  imageLinks: imageLinks\n};\n"
+      },
+      "id": "49ccfac6-d98d-4dfb-9560-6e69f461a66a",
+      "name": "Get random link image (Code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json[\"Top pages\"] }}",
+        "options": {}
+      },
+      "id": "0dac2e77-7b9e-4e10-8553-f6d1c960217a",
+      "name": "Get HTML code from link promotion  (HTTP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1320,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get All Link \nGet all link need to promotion",
+        "height": 273.24288866625744,
+        "width": 221.30942614246254,
+        "color": 4
+      },
+      "id": "b953a859-1585-4ca3-846d-9ed9907a39b5",
+      "name": "Sticky Note14",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        860,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get HTML Code\nGet html code from link selected",
+        "height": 273.24288866625744,
+        "width": 229.00554478968388,
+        "color": 5
+      },
+      "id": "be2ccf28-0422-4cf9-8f9b-5d82e44f0b66",
+      "name": "Sticky Note17",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Random Img\nGet random one img link to promote",
+        "height": 273.24288866625744,
+        "width": 229.00554478968388,
+        "color": 2
+      },
+      "id": "cea86470-9589-488c-a5cb-ab2a702034ea",
+      "name": "Sticky Note18",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Create Content\nWrite Content for post",
+        "height": 273.24288866625744,
+        "width": 229.00554478968388,
+        "color": 7
+      },
+      "id": "770f91a3-f356-4b40-b0ef-22c8ea3d433c",
+      "name": "Sticky Note19",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2820,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Post On Fackebook\nPost on facebook with content and img",
+        "height": 273.24288866625744,
+        "width": 267.7188374816057,
+        "color": 5
+      },
+      "id": "146601c5-1261-4334-a38c-481a04e0b7ed",
+      "name": "Sticky Note20",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3160,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Mark\nSet Time Posted of the link selected to post",
+        "height": 277.40344403557816,
+        "width": 307.2441134901525,
+        "color": 4
+      },
+      "id": "da080be5-8445-40b1-9733-9a97fea5709f",
+      "name": "Sticky Note21",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3480,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Set Time Post Mon - Sat\n1. 8AM30\n",
+        "height": 273.24288866625744,
+        "width": 221.30942614246254,
+        "color": 4
+      },
+      "id": "6e62beaa-ac03-49d8-b820-a132668bbc47",
+      "name": "Sticky Note22",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        460,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Valid Link \nCheck the image link selected in previous node is enable to post",
+        "height": 263.91906665078557,
+        "width": 215.54603652481288,
+        "color": 4
+      },
+      "id": "6ecac65c-a90d-4ac9-8f06-82d0e34b6832",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1960,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Link Posted Faile\nSave time the link is selected and note reason it can't posted and rerun flow",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 4
+      },
+      "id": "a600018c-f22d-47c1-aaa0-133fcc14a0f8",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2540,
+        1060
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 271080997,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Outsourcing Vietnam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=271080997"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "STT": "={{ $('Get NetbaseJSC Link').item.json.STT }}",
+            "PostedNetbaseJSC": "={{ $now.format('yyyy/MM/dd HH:mm') }} - Image Notfound"
+          },
+          "matchingColumns": [
+            "STT"
+          ],
+          "schema": [
+            {
+              "id": "STT",
+              "displayName": "STT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Top pages",
+              "displayName": "Top pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PostedAtOutsourcing ",
+              "displayName": "PostedAtOutsourcing ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PostedLinkedin",
+              "displayName": "PostedLinkedin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PostedNetbaseJSC",
+              "displayName": "PostedNetbaseJSC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bd86ecc6-9400-432d-a06d-95c086b40c3c",
+      "name": "Mark Link Posted Failed",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2580,
+        1180
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "0f64d8fe-cf44-4de2-8a67-e5bd9dcdb337",
+              "leftValue": "={{ $json.imageLinks && typeof $json.imageLinks === 'string' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false,
+          "looseTypeValidation": true
+        }
+      },
+      "id": "45a6cb24-85d4-48c4-acdc-b281010713f8",
+      "name": "Check Valid Link",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2020,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.imageLinks }}",
+        "options": {}
+      },
+      "id": "6ec03a04-84d9-44ec-971b-80e2a3686e6a",
+      "name": "Check Valid Image Link",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2300,
+        780
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "96287d34-596c-4736-8082-d658e68d6199",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_UNKNOWN_ENCODING",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "8ceedb14-a807-4574-9966-e886416edb21",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_INVALID_URL",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "55526360-cd8b-461c-bf58-1b787cac8a07",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_BAD_REQUEST",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "34ea53de-4db6-48e0-b198-1739a46d487b",
+      "name": "Loop when image link is not valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2560,
+        780
+      ],
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "=me/photos",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.message.content }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('Loop when image link is not valid').item.json.imageLinks }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "97820de1-6ad4-4346-8a0c-a416b351ce78",
+      "name": "Facebook  Outsourcing Vietnam",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        3240,
+        780
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "iCp5Kqrx06ww2W2x",
+          "name": "Facebook NetbaseJSC"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 271080997,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Outsourcing Vietnam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=271080997"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "PostedNetbaseJSC",
+              "lookupValue": "="
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "583d530e-9034-4c04-a2b1-943067704506",
+      "name": "Get NetbaseJSC Link",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        920,
+        800
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get NetbaseJSC Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Facebook  Outsourcing Vietnam",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get random link image (Code)": {
+      "main": [
+        [
+          {
+            "node": "Check Valid Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get HTML code from link promotion  (HTTP)": {
+      "main": [
+        [
+          {
+            "node": "Get random link image (Code)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Link Posted Failed": {
+      "main": [
+        [
+          {
+            "node": "Get NetbaseJSC Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Valid Link": {
+      "main": [
+        [
+          {
+            "node": "Check Valid Image Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Valid Image Link": {
+      "main": [
+        [
+          {
+            "node": "Loop when image link is not valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop when image link is not valid": {
+      "main": [
+        [
+          {
+            "node": "Mark Link Posted Failed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook  Outsourcing Vietnam": {
+      "main": [
+        [
+          {
+            "node": "Mark Link Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get NetbaseJSC Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get NetbaseJSC Link": {
+      "main": [
+        [
+          {
+            "node": "Get HTML code from link promotion  (HTTP)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "717d4e21-3d0a-4343-8c6f-41856eeff564",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "Lw04NKkw1yRRhCKR",
+  "tags": []
+}

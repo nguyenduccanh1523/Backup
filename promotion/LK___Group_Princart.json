@@ -1,0 +1,1207 @@
+{
+  "name": "LK - Group Princart",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "c884d99a-c5b0-475e-80d8-849cebed5058",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        420,
+        760
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "d6d9521b-2b6d-47b8-9a71-3ce5cf312573",
+              "leftValue": "={{ $json.PostedAt }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "26115c3e-f085-473b-8e99-aff3f9060611",
+      "name": "Check what posted before",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        4240,
+        1820
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $items(); \n\nif (!items) {\n    throw new Error('All items have already been selected.');\n}\nconst randomIndex = 0;\nconst selectedItem = items[randomIndex];\n\n// Return the randomly selected item\nreturn [selectedItem];\n"
+      },
+      "id": "17a54320-f566-456d-b68c-f488409e1c8f",
+      "name": "Get First Link to promotion (Code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4560,
+        1800
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "content": "## Get First Link \nGet the first link that has not been posted before (first record with empty PostedAt field)",
+        "height": 299.6330468817152,
+        "width": 215.07610950517855,
+        "color": 4
+      },
+      "id": "b93fd4e4-d68f-4ef2-a2d1-1000521234a7",
+      "name": "Sticky Note23",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        720,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Store",
+        "height": 661.6970185725644,
+        "width": 982.7291252979473,
+        "color": 4
+      },
+      "id": "a8f5e393-9f6f-4f62-be95-445e7a9528a4",
+      "name": "Sticky Note24",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4177.609497628777,
+        1540.1260213650912
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $json.value.uploadMechanism['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'].uploadUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "image/png"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "8a55a8aa-b57e-4cfd-beb7-cf5b1b5a0e4c",
+      "name": "PUT Image3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        4660,
+        1640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get HTML Code \nBase on the link is selected in previous node. We need convert it to Html code to get all image link",
+        "height": 295.8613928526909,
+        "width": 215.07610950517855,
+        "color": 5
+      },
+      "id": "d00bedf4-0024-4b1a-9b77-efa580285e8b",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        497
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Random Img Link \nBase on the link is selected in previous node. We need convert it to Html code to get all image link",
+        "height": 318.99395395245244,
+        "width": 250.54603652481288,
+        "color": 2
+      },
+      "id": "9b74584b-5b4c-4ec4-96ba-54728235065c",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1365,
+        477
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Valid Link \nCheck the image link selected in previous node is enable to post",
+        "height": 305.99395395245244,
+        "width": 215.54603652481288,
+        "color": 4
+      },
+      "id": "21eaf8c5-0d38-4e2b-aa2e-8abc21a3ad85",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Write Content\nUse prompt is provided, we will use AI to write content to post",
+        "height": 305.99395395245244,
+        "width": 215.54603652481288,
+        "color": 7
+      },
+      "id": "b35aca0c-75c5-4a2f-92b2-46bba37b1376",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2720,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Convert Content\nConvert content to JSON before we use it to Post",
+        "height": 305.99395395245244,
+        "width": 215.54603652481288,
+        "color": 2
+      },
+      "id": "35ee4c74-89b2-4fc0-97b4-1361026ee8f2",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3060,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputText = $('OpenAI2').item.json.message.content;\nconst jsonObject = JSON.stringify(inputText);\nreturn {\n  html: jsonObject\n};"
+      },
+      "id": "1bbf5bb6-61a4-4d24-976d-91bdf2dc49b6",
+      "name": "Convert Content To JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3120,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/assets?action=registerUpload",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer AQVnK7Y8gsc5j8Bw_gnPEcKWJPmzbHgUGCmMZSlkofFTFmQ0vhGIxGpcRnmvMXsuYIBsHaNl89PkDw_37CYl0WBBQhCYu45BYB35ITFCXgkEi5htyrg2eFBkQr3JOHOwauA3Z98IDMiSTrelsXnoHey1SIUKXH7sQ_djGrTHc0RAtrHxjD1hS43ezQsfRr1bqb923cIL7GH_1eKh78RkMQi-O8FkrdbxXzfcYi47V-JV2Hc4udQxgFSuG9LKC5zb0YDs2rOkViKk2ZS4TnwJMlkZystcO67-p4f4yJQ_yyhetcYnHkCnec8uHgNlG8fBesOXZQ8htKmujI1Pwd42Qesr8LITRA"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"registerUploadRequest\": {\n    \"recipes\": [\n      \"urn:li:digitalmediaRecipe:feedshare-image\"\n    ],\n    \"owner\": \"urn:li:organization:20459490\",\n    \"serviceRelationships\": [\n      {\n        \"identifier\": \"urn:li:userGeneratedContent\",\n        \"relationshipType\": \"OWNER\"\n      }\n    ]\n  }\n}\n",
+        "options": {}
+      },
+      "id": "4d25ce3c-f79f-4a30-898c-b24081728c46",
+      "name": "registerUpload",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        4260,
+        1640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Register Post Image\nWe need to use ID of linkedin page, where we need to post. Get its ID and register post image with linkedin",
+        "height": 305.99395395245244,
+        "width": 290.54603652481285,
+        "color": 5
+      },
+      "id": "be8ca2b6-842e-492d-a590-2b3f0cbf0e2e",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3380,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Image\nUse image link we got before, use it to get an image and export it as a Binary image file",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "27a553b2-6461-4f93-9365-8d635cc98a8a",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3800,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Get random link image (Code)').item.json['imageLinks'] }}",
+        "options": {}
+      },
+      "id": "4cfcabde-3aaa-49d9-b1bd-155d3d77626d",
+      "name": "HTTP GET img",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        4480,
+        1640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Image\nUse uploadUrl returned at Register node previous to PUT image binary file we just got at previous node",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "ab62306c-522f-4676-9b6d-0181bac10345",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4160,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Execute Post\nuse image file and content we got before, execute post these on linkedin page",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "bbefe848-1b46-457c-a8d9-35e42b6b713e",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4480,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.linkedin.com/v2/ugcPosts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "linkedInOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "=Authorization",
+              "value": "=Bearer AQX3Ned501mSbWECrEi6SKJxfA5XPBMIkD9Z6xpJvMGGCdNnCmbjwof3aBMq3245Yc0J4Sa0i7OFOd7Vy3G5XM9Mx0W1IXbNjqEqntVp77lBPU9ppJwzuFPkLatsSNKbxJPddDuyGerN6HN4i6TvqrFV0htpt2mIpRu8MuPG8QKPek24d8vmgCnv1g3h_57mlgjhao8StbCMnpKCyUWZ5a14P82ThR4Bx8U8YEbBufBmcXnAj0HOIgQJOA9BkkKPdp2Peq9kvmpCk3hJTy0GEY0AtO-aOnaI1LGi1i-EwHBYSqsSHPA3dwyAyOjXiTQ_n4TQpkHKMRZpanixEVjNSCPqGe4u2g"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"author\": \"urn:li:organization:20459490\",\n    \"lifecycleState\": \"PUBLISHED\",\n    \"specificContent\": {\n        \"com.linkedin.ugc.ShareContent\": {\n            \"shareCommentary\": {\n                \"text\": {{  $('Convert Content To JSON').item.json.html }}\n            },\n            \"shareMediaCategory\": \"IMAGE\",\n            \"media\": [\n                {\n                    \"status\": \"READY\",\n                    \"media\": \"{{ $('registerUpload').item.json.value.asset }}\",\n                    \"description\": {\n                        \"text\": \"Cloodo Project\"\n                    },\n                    \"title\": {\n                        \"text\": \"We are Cloodo\"\n                    }\n                }\n            ]\n        }\n    },\n    \"visibility\": {\n        \"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\"\n    }\n}\n",
+        "options": {}
+      },
+      "id": "ad68083e-c448-43dc-9b91-a861087fcb82",
+      "name": "HTTP Request Post To PRINTCART",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        4820,
+        1220
+      ],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "FkKd9N1fJ0qU7JVI",
+          "name": "CMSMART POST ( CMS )"
+        },
+        "httpHeaderAuth": {
+          "id": "DC9IpkXMAqsxyULh",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Mark Link Posted\nSave time the link is posted",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 4
+      },
+      "id": "66523c0d-83c2-40c6-b056-af03c0f5a213",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4760,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "##Link Posted Faile\nSave time the link is selected and note reason it can't posted and rerun flow",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 4
+      },
+      "id": "63ffe654-d233-4ab2-adc7-533e195545bb",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2340,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 696570583,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=696570583"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "STT": "={{ $('Get First PrintCart Link').item.json.STT }}",
+            "LK Group PostedAt": "={{ $now.format('yyyy/MM/dd HH:mm') }} - Dont have image"
+          },
+          "matchingColumns": [
+            "STT"
+          ],
+          "schema": [
+            {
+              "id": "STT",
+              "displayName": "STT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Top pages",
+              "displayName": "Top pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "FB PostedAt",
+              "displayName": "FB PostedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LK PostedAt",
+              "displayName": "LK PostedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LK Group PostedAt",
+              "displayName": "LK Group PostedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Store Service",
+              "displayName": "Store Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "516f3665-622d-4819-8595-30ba2502e823",
+      "name": "Mark Link Posted Failed",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2360,
+        920
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2,
+                1,
+                3,
+                5,
+                4,
+                6
+              ],
+              "triggerAtHour": 8,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "be3264ed-a658-419c-90d7-026105dc70b7",
+      "name": "8AM30 Mon - Sat",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=1654770389#gid=1654770389",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 696570583,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=696570583"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "LK Group PostedAt",
+              "lookupValue": "="
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f03276a9-61ba-4af9-895c-8b08e64080a3",
+      "name": "Get First PrintCart Link",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        640
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json[\"Top pages\"] }}",
+        "options": {}
+      },
+      "id": "2c5b59fd-2709-40dd-869c-8bdd0e3799e5",
+      "name": "Get HTML code from link promotion  (HTTP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1100,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "0f64d8fe-cf44-4de2-8a67-e5bd9dcdb337",
+              "leftValue": "={{ $json.imageLinks && typeof $json.imageLinks === 'string' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false,
+          "looseTypeValidation": true
+        }
+      },
+      "id": "33ab867e-a031-41e5-9321-f099dc74c0c5",
+      "name": "Check Valid Link",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1820,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 696570583,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=696570583"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "STT": "={{ $('Get First PrintCart Link').item.json.STT }}",
+            "LK Group PostedAt": "={{ $now.format('yyyy/MM/dd HH:mm') }}"
+          },
+          "matchingColumns": [
+            "STT"
+          ],
+          "schema": [
+            {
+              "id": "STT",
+              "displayName": "STT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Top pages",
+              "displayName": "Top pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "FB PostedAt",
+              "displayName": "FB PostedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LK PostedAt",
+              "displayName": "LK PostedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LK Group PostedAt",
+              "displayName": "LK Group PostedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Store Service",
+              "displayName": "Store Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9b673548-fa32-48bb-b192-89997fc7140b",
+      "name": "Mark Link Posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        4820,
+        620
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.imageLinks }}",
+        "options": {}
+      },
+      "id": "c0c2d2e8-f1b2-4088-a6d7-f032500ec3e1",
+      "name": "Check Valid Image Link",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2120,
+        620
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "96287d34-596c-4736-8082-d658e68d6199",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_UNKNOWN_ENCODING",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "51448f64-272a-4a2d-ac22-8f180deaf333",
+      "name": "Loop when image link is not valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        620
+      ],
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const htmlContent = $json[\"data\"];\n\n// Sử dụng Regex để tìm các thẻ <img> và lấy thuộc tính src\nconst imageLinks = [];\nconst regex = /<img[^>]+src=\"([^\">]+)\"/g;\nlet match;\n\n// Các từ khóa không mong muốn\nconst excludedWords = ['brand', 'banner', 'whouse', 'default', 'logo', 'button', 'cong_fb', 'rating', 'imgur', 'thank-you', 'screenshot', 'alisia', 'DSCF3789', '{{','men'];\n\nconst startLink = 'https://'\n\nwhile ((match = regex.exec(htmlContent)) !== null) {\n  const src = match[1];\n  if(!excludedWords.some(word=> src.includes(word))){\n    if(src.startsWith(startLink))\n     imageLinks.push(src);\n  }\n   \n}\n\n// Trả về random 1 link ảnh từ những link ảnh lấy được\nif(imageLinks.length > 0){\n  const randomImg = imageLinks[Math.floor(Math.random() * imageLinks.length)];\n  return {\n  imageLinks: randomImg\n};\n}\n\nconsole.log('imageLinks: ', imageLinks)\n\n\n// Trả về một đối tượng chứa all danh sách các link ảnh\nreturn {\n  json: {\n    isString: typeof $json.imageLinks === 'string',\n    imageLinks: $json.imageLinks,\n  },\n};\n"
+      },
+      "id": "b48ed3bb-d634-438f-96e1-3c0fb9ba4f56",
+      "name": "Get random link image (Code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=\nWrite a random daily different Linkedin Post on Print Commerce Linkedin Group as Mrs Michelle, Senior Consultant \n\nSummarize or introduce the content in the URL attached below as the main content of the post:\n{{ $('Get First PrintCart Link').item.json['Top pages'] }}\n\n\nPrintcart specializes in providing Web2Print and Print-on-Demand (POD) solutions, helping businesses streamline their online printing operations. With custom development services, API integrations, and scalable infrastructure, Printcart supports product personalization, order management, and seamless print fulfillment. As a technology partner, Printcart serves printers, designers, and POD sellers globally, enabling them to create custom products and manage print workflows efficiently.\n\nThe post has relates tags, keep the original URL inside the content if provided as links for CTA, keep the images or video inside content if have\n\nThe tone should be positive, friendly by professionalism, like a way that I post to share our updated business which is open, easy-going for most of potential partners, keep them connect and motivated with what we are doing for their ecommerce project\n\nInclude the contact below to used  for CTA:\n\nMichelle (Ms.)\nBusiness Consultant\n-----------------------------------------\nEmail :    sales@printcart.com\nWhatsapp:https://wa.me/84964345658"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "5b78970a-7ac3-40e0-9ce5-bcb89d0865fb",
+      "name": "OpenAI2",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2780,
+        620
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer AQVnK7Y8gsc5j8Bw_gnPEcKWJPmzbHgUGCmMZSlkofFTFmQ0vhGIxGpcRnmvMXsuYIBsHaNl89PkDw_37CYl0WBBQhCYu45BYB35ITFCXgkEi5htyrg2eFBkQr3JOHOwauA3Z98IDMiSTrelsXnoHey1SIUKXH7sQ_djGrTHc0RAtrHxjD1hS43ezQsfRr1bqb923cIL7GH_1eKh78RkMQi-O8FkrdbxXzfcYi47V-JV2Hc4udQxgFSuG9LKC5zb0YDs2rOkViKk2ZS4TnwJMlkZystcO67-p4f4yJQ_yyhetcYnHkCnec8uHgNlG8fBesOXZQ8htKmujI1Pwd42Qesr8LITRA"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"author\": \"urn:li:person:EFrUw9vKhR\",\n  \"containerEntity\": \"urn:li:group:13913621\", \n  \"lifecycleState\": \"PUBLISHED\",\n  \"specificContent\": {\n    \"com.linkedin.ugc.ShareContent\": {\n      \"shareCommentary\": {\n         \"text\": {{ $('Convert Content To JSON').item.json.html }}\n      },\n      \"shareMediaCategory\": \"IMAGE\",\n      \"media\": [\n        {\n          \"status\": \"READY\",\n          \"media\": \"{{ $('registerUpload').item.json.value.asset }}\",\n          \"description\": { \"text\": \"\" },\n          \"title\": { \"text\": \"\" }\n        }\n      ]\n    }\n  },\n  \"visibility\": {\n    \"com.linkedin.ugc.MemberNetworkVisibility\": \"CONTAINER\"\n  }\n}\n",
+        "options": {}
+      },
+      "id": "678f717e-fa9f-4845-b9c5-acf3888fdbce",
+      "name": "Print Commerce Group",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4840,
+        1640
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $json.value.uploadMechanism['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'].uploadUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "image/png"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "507c9c5f-8a68-49f5-b4af-4f277f061ef7",
+      "name": "PUT Image1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        4240,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/assets?action=registerUpload",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer AQVnK7Y8gsc5j8Bw_gnPEcKWJPmzbHgUGCmMZSlkofFTFmQ0vhGIxGpcRnmvMXsuYIBsHaNl89PkDw_37CYl0WBBQhCYu45BYB35ITFCXgkEi5htyrg2eFBkQr3JOHOwauA3Z98IDMiSTrelsXnoHey1SIUKXH7sQ_djGrTHc0RAtrHxjD1hS43ezQsfRr1bqb923cIL7GH_1eKh78RkMQi-O8FkrdbxXzfcYi47V-JV2Hc4udQxgFSuG9LKC5zb0YDs2rOkViKk2ZS4TnwJMlkZystcO67-p4f4yJQ_yyhetcYnHkCnec8uHgNlG8fBesOXZQ8htKmujI1Pwd42Qesr8LITRA"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"registerUploadRequest\": {\n    \"recipes\": [\n      \"urn:li:digitalmediaRecipe:feedshare-image\"\n    ],\n    \"owner\": \"urn:li:person:EFrUw9vKhR\",\n    \"serviceRelationships\": [\n      {\n        \"identifier\": \"urn:li:userGeneratedContent\",\n        \"relationshipType\": \"OWNER\"\n      }\n    ]\n  }\n}\n",
+        "options": {}
+      },
+      "id": "02bae4e9-c37e-4cca-ba92-a2bc593c24b7",
+      "name": "registerUpload1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3480,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Loop when image link is not valid').item.json.imageLinks }}",
+        "options": {}
+      },
+      "id": "68ef47b0-10b8-4dc3-a8ff-56d7a4c7cb51",
+      "name": "HTTP GET img1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3860,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer AQVnK7Y8gsc5j8Bw_gnPEcKWJPmzbHgUGCmMZSlkofFTFmQ0vhGIxGpcRnmvMXsuYIBsHaNl89PkDw_37CYl0WBBQhCYu45BYB35ITFCXgkEi5htyrg2eFBkQr3JOHOwauA3Z98IDMiSTrelsXnoHey1SIUKXH7sQ_djGrTHc0RAtrHxjD1hS43ezQsfRr1bqb923cIL7GH_1eKh78RkMQi-O8FkrdbxXzfcYi47V-JV2Hc4udQxgFSuG9LKC5zb0YDs2rOkViKk2ZS4TnwJMlkZystcO67-p4f4yJQ_yyhetcYnHkCnec8uHgNlG8fBesOXZQ8htKmujI1Pwd42Qesr8LITRA"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"author\": \"urn:li:person:EFrUw9vKhR\",\n  \"containerEntity\": \"urn:li:group:13913621\", \n  \"lifecycleState\": \"PUBLISHED\",\n  \"specificContent\": {\n    \"com.linkedin.ugc.ShareContent\": {\n      \"shareCommentary\": {\n         \"text\": {{ $('Convert Content To JSON').item.json.html }}\n      },\n      \"shareMediaCategory\": \"IMAGE\",\n      \"media\": [\n        {\n          \"status\": \"READY\",\n          \"media\": \"{{ $('registerUpload1').item.json.value.asset }}\",\n          \"description\": { \"text\": \"\" },\n          \"title\": { \"text\": \"\" }\n        }\n      ]\n    }\n  },\n  \"visibility\": {\n    \"com.linkedin.ugc.MemberNetworkVisibility\": \"CONTAINER\"\n  }\n}\n",
+        "options": {}
+      },
+      "id": "f9d26710-f444-4ff3-835b-a829b582d509",
+      "name": "Print Commerce Group1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4560,
+        620
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Check what posted before": {
+      "main": [
+        [
+          {
+            "node": "Get First Link to promotion (Code)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Image3": {
+      "main": [
+        [
+          {
+            "node": "Print Commerce Group",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Content To JSON": {
+      "main": [
+        [
+          {
+            "node": "registerUpload1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "registerUpload": {
+      "main": [
+        [
+          {
+            "node": "HTTP GET img",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP GET img": {
+      "main": [
+        [
+          {
+            "node": "PUT Image3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Link Posted Failed": {
+      "main": [
+        [
+          {
+            "node": "Get First PrintCart Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8AM30 Mon - Sat": {
+      "main": [
+        [
+          {
+            "node": "Get First PrintCart Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get First PrintCart Link": {
+      "main": [
+        [
+          {
+            "node": "Get HTML code from link promotion  (HTTP)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get HTML code from link promotion  (HTTP)": {
+      "main": [
+        [
+          {
+            "node": "Get random link image (Code)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Valid Link": {
+      "main": [
+        [
+          {
+            "node": "Check Valid Image Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Valid Image Link": {
+      "main": [
+        [
+          {
+            "node": "Loop when image link is not valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop when image link is not valid": {
+      "main": [
+        [
+          {
+            "node": "Mark Link Posted Failed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get random link image (Code)": {
+      "main": [
+        [
+          {
+            "node": "Check Valid Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Convert Content To JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get First PrintCart Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Image1": {
+      "main": [
+        [
+          {
+            "node": "Print Commerce Group1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "registerUpload1": {
+      "main": [
+        [
+          {
+            "node": "HTTP GET img1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP GET img1": {
+      "main": [
+        [
+          {
+            "node": "PUT Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Print Commerce Group1": {
+      "main": [
+        [
+          {
+            "node": "Mark Link Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5b3d1e31-9ccd-4cd7-b69c-928eef4b6e56",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "rdxoYqX2loyJzGsJ",
+  "tags": []
+}

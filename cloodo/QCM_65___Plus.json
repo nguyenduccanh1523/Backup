@@ -1,0 +1,389 @@
+{
+  "name": "QCM 65 - Plus",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "bc09cd59-1f0b-430f-902e-db5dda4097b1",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1940,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "additionalFields": {
+          "search": "Reviews"
+        },
+        "requestOptions": {}
+      },
+      "id": "6f6e017f-1cf9-4116-a31c-f9e1ac7314fc",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -1720,
+        420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "c4e2664c-583f-4b8e-a1b7-ca65c3e3d9e0",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -1500,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "56022677-9989-4d95-aeb0-3b485fc044cf",
+              "leftValue": "={{ $json.project_id }}",
+              "rightValue": "19cc841f-b867-4c53-8377-1749006674e2",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f5c90004-e1da-4947-9c2e-0c22b89c7998",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1280,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.start_date }}",
+              "operation": "larger",
+              "value2": "={{ $today.plus({ months: -1 }).minus({days: 1}).format('yyyy-MM-dd') }}"
+            }
+          ]
+        }
+      },
+      "id": "e8e443d3-af9e-4e7b-b759-f22d27b7098b",
+      "name": "Take a month",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1060,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "c5407ad5-367f-4725-9c51-8aa643f1b1a4",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        380
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "uL6pbTJUJrD9Ug6k",
+          "name": "Cloodo Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.summary }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "0eba21dc-caad-402d-bd07-26b0c9351549",
+      "name": "IF is not empty summary",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.data.project.name }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "Trustpilot Reviews"
+            }
+          ]
+        },
+        "fallbackOutput": 0
+      },
+      "id": "e9283906-a3f0-4895-93ed-d4f662dafa69",
+      "name": "Check out project reviews",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "={{ $('Take a month').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "c6f39a7e-8de8-4174-9902-7fb09519c584",
+      "name": "Search riview1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        320
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "498823b4-186e-43e1-a249-ac0cebc9a061",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        160,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Take a month').item.json.agent.id }}",
+        "points": 10,
+        "note": "=QCM65:{{ $('IF is not empty summary').item.json.data.agent.name }} +10 points for having {{ $('Take a month').item.json.project_name }} :https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('IF is not empty summary').item.json.data.id }} "
+      },
+      "id": "d25c5b18-4976-4368-a8f9-bebc84d2f5a3",
+      "name": "trustpilot reviews",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        440,
+        320
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "XXu5qERVTq5JJyek",
+          "name": "Cloodo account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtHour": 22,
+              "triggerAtMinute": 20
+            }
+          ]
+        }
+      },
+      "id": "b1beb30a-9170-41ae-b3bc-03aa4c5b02aa",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1960,
+        680
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Take a month",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take a month": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "IF is not empty summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF is not empty summary": {
+      "main": [
+        [
+          {
+            "node": "Check out project reviews",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check out project reviews": {
+      "main": [
+        [
+          {
+            "node": "Search riview1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search riview1": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "trustpilot reviews",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b829feca-de3f-4e28-9654-9e3226412b06",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "2sv5CpZakFCHIRWo",
+  "tags": []
+}

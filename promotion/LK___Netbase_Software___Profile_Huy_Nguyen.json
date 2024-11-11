@@ -1,0 +1,1191 @@
+{
+  "name": "LK - Netbase Software - Profile Huy Nguyen",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "351c1e53-7a47-40f4-b976-c76a62bd3dfc",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        20,
+        920
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=\nNetbase Software is located in Vietnam and I want to write Linkedin post to promote its Custom Software Development services\n\nPlease create a LinkedIn post using the following content:\n\n{{ $('Get Outsourcing Link').item.json['Top pages'] }}\n\nThe post should be like a mind-share, not anouncement, also reflect my daily work in Netbase, where I am working as a tech investor and innovation consultancy, engage in various technology ventures, providing investment and advisory support\n\n\nEnsure it has a clear call to action, uses a professional tone, and incorporates relevant hashtags. Additionally, make it suitable for an audience of entrepreneurs, tech professionals, and investors.\n\nUse below contact for CTA:\n\nDavid Nguyen, Netbase CEO (Email to project@netbasejsc.com or WhatsApp me at https://wa.me/+84937869689\n\nThe post should start with a client problem which then lead to highlight our technology consultancy services, and engage my audience in a easy-going, smart, friendly but courteously foster partnerships and collaborations to our partner workwide.\n\nThe post should brief, not too much word"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 1600
+        },
+        "requestOptions": {}
+      },
+      "id": "1a24b4fb-0fc5-485c-8950-67b6a424aa05",
+      "name": "OpenAI1",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2580,
+        760
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer AQVnK7Y8gsc5j8Bw_gnPEcKWJPmzbHgUGCmMZSlkofFTFmQ0vhGIxGpcRnmvMXsuYIBsHaNl89PkDw_37CYl0WBBQhCYu45BYB35ITFCXgkEi5htyrg2eFBkQr3JOHOwauA3Z98IDMiSTrelsXnoHey1SIUKXH7sQ_djGrTHc0RAtrHxjD1hS43ezQsfRr1bqb923cIL7GH_1eKh78RkMQi-O8FkrdbxXzfcYi47V-JV2Hc4udQxgFSuG9LKC5zb0YDs2rOkViKk2ZS4TnwJMlkZystcO67-p4f4yJQ_yyhetcYnHkCnec8uHgNlG8fBesOXZQ8htKmujI1Pwd42Qesr8LITRA"
+            },
+            {
+              "name": "cookie",
+              "value": "lidc=b=OB33:s=O:r=O:a=O:p=O:g=4317:u=30:x=1:i=1728890950:t=1728976253:v=2:sig=AQF2XzAMSbUFhOp42V7Oad-NDD0D1R0d;bcookie=v=2&24fa8d40-44aa-4efb-8779-ce2b1c5ea65d;"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"author\": \"urn:li:organization:1727584\",\n     \"lifecycleState\": \"PUBLISHED\",\n    \"specificContent\": {\n        \"com.linkedin.ugc.ShareContent\": {\n            \"shareCommentary\": {\n                \"text\": {{ $('Convert Content').item.json.html }}\n            },\n            \"shareMediaCategory\": \"IMAGE\",\n            \"media\": [\n                {\n                    \"status\": \"READY\",\n                    \"media\": \"{{ $('registerUpload1').item.json.value.asset }}\",\n                    \"description\": {\n                        \"text\": \"Cloodo Project\"\n                    },\n                    \"title\": {\n                        \"text\": \"We are Cloodo\"\n                    }\n                }\n            ]\n        }\n    },\n    \"visibility\": {\n        \"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\"\n    }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "2cac49d1-7ee6-4fe3-84a6-d03b0b7a210a",
+      "name": "HTTP Request Post To Cloodo Workspace1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        4120,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/assets?action=registerUpload",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer AQVnK7Y8gsc5j8Bw_gnPEcKWJPmzbHgUGCmMZSlkofFTFmQ0vhGIxGpcRnmvMXsuYIBsHaNl89PkDw_37CYl0WBBQhCYu45BYB35ITFCXgkEi5htyrg2eFBkQr3JOHOwauA3Z98IDMiSTrelsXnoHey1SIUKXH7sQ_djGrTHc0RAtrHxjD1hS43ezQsfRr1bqb923cIL7GH_1eKh78RkMQi-O8FkrdbxXzfcYi47V-JV2Hc4udQxgFSuG9LKC5zb0YDs2rOkViKk2ZS4TnwJMlkZystcO67-p4f4yJQ_yyhetcYnHkCnec8uHgNlG8fBesOXZQ8htKmujI1Pwd42Qesr8LITRA"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"registerUploadRequest\": {\n    \"recipes\": [\n      \"urn:li:digitalmediaRecipe:feedshare-image\"\n    ],\n    \"owner\": \"urn:li:organization:1727584\",\n    \"serviceRelationships\": [\n      {\n        \"identifier\": \"urn:li:userGeneratedContent\",\n        \"relationshipType\": \"OWNER\"\n      }\n    ]\n  }\n}\n",
+        "options": {}
+      },
+      "id": "2b2f3bda-ab0e-4cdb-a0c7-21b5c8d2c722",
+      "name": "registerUpload1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3180,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $json.value.uploadMechanism['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'].uploadUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "image/png"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "3e60c5a2-42e9-45ec-9afb-ce21baa19de5",
+      "name": "PUT Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3820,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Loop when image link is not valid').item.json.imageLinks }}",
+        "options": {}
+      },
+      "id": "573c63de-1b30-425a-b27d-9060b403bc5c",
+      "name": "HTTP GET img2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3520,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 271080997,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Outsourcing Vietnam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=271080997"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "PostedLinkedin": "={{ $now.format('yyyy/MM/dd HH:mm') }}",
+            "STT": "={{ $('Get Outsourcing Link').item.json.STT }}"
+          },
+          "matchingColumns": [
+            "STT"
+          ],
+          "schema": [
+            {
+              "id": "STT",
+              "displayName": "STT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Top pages",
+              "displayName": "Top pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PostedAtOutsourcing ",
+              "displayName": "PostedAtOutsourcing ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PostedLinkedin",
+              "displayName": "PostedLinkedin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5a8cf67b-ed81-4b30-a50e-3fc30759370a",
+      "name": "Save ID project posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        4440,
+        760
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Write Content\nWrite content base on description of agency and short intro of peoject\n",
+        "height": 296.8121833646138,
+        "width": 219.6561390424718,
+        "color": 7
+      },
+      "id": "9df34fcb-cbe9-4566-a5d3-537bb112c4c9",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2520,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Convert Content\nConvert content to JSON\n",
+        "height": 296.8121833646138,
+        "width": 219.6561390424718,
+        "color": 2
+      },
+      "id": "4b88b66c-ae86-4a32-8c7c-11b1f0a088ad",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2800,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputText = $('OpenAI1').item.json.message.content;\nconst jsonObject = JSON.stringify(inputText);\nreturn {\n  html: jsonObject\n};"
+      },
+      "id": "b876bcef-102c-48ea-9ece-3de99fa535e8",
+      "name": "Convert Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2860,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Image\nUse uploadUrl returned at Register node previous to PUT image binary file we just got at previous node",
+        "height": 325.94767532408196,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "99c1b8e9-ee45-4b32-98ab-810fb7a6b7d5",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3760,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Image\nUse image link we got before, use it to get an image and export it as a Binary image file",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "77c46f3b-3c7f-4f77-a9dc-b99b822be94a",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3460,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Register Post Image\nWe need to use ID of linkedin page, where we need to post. Get its ID and register post image with linkedin",
+        "height": 305.99395395245244,
+        "width": 290.54603652481285,
+        "color": 5
+      },
+      "id": "3a1fc7ff-b9bd-4e4c-b74f-3472450982aa",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3080,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Execute Post\nuse image file and content we got before, execute post these on linkedin page",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "a69963ca-6169-4fc0-a980-f769931b6850",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4060,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Mark Link Posted\nSave time the link is posted",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 4
+      },
+      "id": "765941f6-ba54-4329-8631-3fe1bdc76130",
+      "name": "Sticky Note15",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4380,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Lấy HTML từ node trước\nconst htmlContent = $json[\"data\"];\n\n// Sử dụng Regex để tìm các thẻ <img> và lấy thuộc tính src\nconst imageLinks = [];\nconst regex = /<img[^>]+src=\"([^\">]+)\"/g;\nlet match;\n\n// Các từ khóa không mong muốn\nconst excludedWords = ['brand', 'banner', 'whouse', 'default', 'logo', 'button', 'cong_fb', 'rating', 'imgur', 'thank-you', 'screenshot', '{{', 'view', 'start', 'favicon','men', 'twimg', 'netbase-2'];\n\nconst startLink = 'https://'\n\nwhile ((match = regex.exec(htmlContent)) !== null) {\n  const src = match[1];\n  if(!excludedWords.some(word=> src.includes(word))){\n    if(src.startsWith(startLink))\n     imageLinks.push(src);\n  }\n   \n}\n\nconsole.log('imageLinks:: ', imageLinks)\n// Trả về random 1 link ảnh từ những link ảnh lấy được\nif(imageLinks.length > 0){\n  const randomImg = imageLinks[Math.floor(Math.random() * imageLinks.length)];\n  return {\n  imageLinks: randomImg\n};\n}\n\n\n// Trả về một đối tượng chứa all danh sách các link ảnh\nreturn {\n  imageLinks: imageLinks\n};\n"
+      },
+      "id": "189a4c63-2a65-4c39-bef7-94a7933c8e52",
+      "name": "Get random link image (Code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json[\"Top pages\"] }}",
+        "options": {}
+      },
+      "id": "919bc5b0-b119-4dd4-a785-d4ea50158d58",
+      "name": "Get HTML code from link promotion  (HTTP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        960,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get HTML Code\nGet html code from link selected",
+        "height": 273.24288866625744,
+        "width": 229.00554478968388,
+        "color": 5
+      },
+      "id": "52c0870e-89b9-4b9b-9c06-d2970bdd4382",
+      "name": "Sticky Note17",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        900,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Random Img\nGet random one img link to promote",
+        "height": 273.24288866625744,
+        "width": 229.00554478968388,
+        "color": 2
+      },
+      "id": "d692d056-4ad2-4564-95f1-9c38852882ff",
+      "name": "Sticky Note18",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Set Time Post Mon - Sat\n1. 8AM30\n",
+        "height": 273.24288866625744,
+        "width": 221.30942614246254,
+        "color": 4
+      },
+      "id": "d885bfe3-3f52-41cb-ad8e-58f741ae589f",
+      "name": "Sticky Note22",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 271080997,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Outsourcing Vietnam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=271080997"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "STT": "={{ $('Get Outsourcing Link').item.json.STT }}",
+            "PostedLinkedin": "={{ $now.format('yyyy/MM/dd HH:mm') }} - Image Notfound"
+          },
+          "matchingColumns": [
+            "STT"
+          ],
+          "schema": [
+            {
+              "id": "STT",
+              "displayName": "STT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Top pages",
+              "displayName": "Top pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PostedAtOutsourcing ",
+              "displayName": "PostedAtOutsourcing ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PostedLinkedin",
+              "displayName": "PostedLinkedin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e5b78326-c29f-4dd5-a71b-5ee96b95676e",
+      "name": "Mark Link Posted Failed",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2220,
+        1140
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "0f64d8fe-cf44-4de2-8a67-e5bd9dcdb337",
+              "leftValue": "={{ $json.imageLinks && typeof $json.imageLinks === 'string' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false,
+          "looseTypeValidation": true
+        }
+      },
+      "id": "7f6108ca-9668-4dda-8c75-8336e9348cc7",
+      "name": "Check Valid Link",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.imageLinks }}",
+        "options": {}
+      },
+      "id": "3a42a00f-d6c5-49b4-ba11-f79652673ce3",
+      "name": "Check Valid Image Link",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1940,
+        740
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "96287d34-596c-4736-8082-d658e68d6199",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_UNKNOWN_ENCODING",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "ee65020f-acbf-4261-bcf0-537cea356a07",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_INVALID_URL",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "b93d438c-0441-4afd-b57f-cb36f7b144c6",
+              "leftValue": "={{ $json.error.code }}",
+              "rightValue": "ERR_BAD_REQUEST",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "dedd202a-ea38-4b96-bd3e-a7f7832c686e",
+      "name": "Loop when image link is not valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2200,
+        740
+      ],
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 271080997,
+          "mode": "list",
+          "cachedResultName": "FB-LK - Outsourcing Vietnam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=271080997"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "PostedLinkedin",
+              "lookupValue": "="
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5ca06fd8-6733-4feb-92ed-efbd071fdc62",
+      "name": "Get Outsourcing Link",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        560,
+        760
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Get All Link \nGet all link need to promotion",
+        "height": 273.24288866625744,
+        "width": 221.30942614246254,
+        "color": 4
+      },
+      "id": "565fd3f9-d4eb-4e71-8b36-689b974e08cf",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        500,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Valid Link \nCheck the image link selected in previous node is enable to post",
+        "height": 263.91906665078557,
+        "width": 215.54603652481288,
+        "color": 4
+      },
+      "id": "f3d707f7-991b-46fa-9f47-a79b92f001e3",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Link Posted Faile\nSave time the link is selected and note reason it can't posted and rerun flow",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 4
+      },
+      "id": "078b1022-0f44-4b3d-8cdb-5ec46e7f2211",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2180,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer AQVnK7Y8gsc5j8Bw_gnPEcKWJPmzbHgUGCmMZSlkofFTFmQ0vhGIxGpcRnmvMXsuYIBsHaNl89PkDw_37CYl0WBBQhCYu45BYB35ITFCXgkEi5htyrg2eFBkQr3JOHOwauA3Z98IDMiSTrelsXnoHey1SIUKXH7sQ_djGrTHc0RAtrHxjD1hS43ezQsfRr1bqb923cIL7GH_1eKh78RkMQi-O8FkrdbxXzfcYi47V-JV2Hc4udQxgFSuG9LKC5zb0YDs2rOkViKk2ZS4TnwJMlkZystcO67-p4f4yJQ_yyhetcYnHkCnec8uHgNlG8fBesOXZQ8htKmujI1Pwd42Qesr8LITRA"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"author\": \"urn:li:person:EFrUw9vKhR\",\n  \"lifecycleState\": \"PUBLISHED\",\n  \"specificContent\": {\n    \"com.linkedin.ugc.ShareContent\": {\n      \"shareCommentary\": {\n       \"text\": {{ $('Convert Content').item.json.html }}\n},\n      \"shareMediaCategory\": \"IMAGE\",\n      \"media\": [\n        {\n          \"status\": \"READY\",\n          \"media\": \"{{ $('registerUpload').item.json.value.asset }}\",\n          \"description\": {\n            \"text\": \"\"\n          },\n          \"title\": {\n            \"text\": \"\"\n          }\n        }\n      ]\n    }\n  },\n  \"visibility\": {\n    \"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\"\n  }\n}",
+        "options": {}
+      },
+      "id": "a20b1c1e-0391-4227-94d4-1c630bace830",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4180,
+        1180
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/assets?action=registerUpload",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer AQVnK7Y8gsc5j8Bw_gnPEcKWJPmzbHgUGCmMZSlkofFTFmQ0vhGIxGpcRnmvMXsuYIBsHaNl89PkDw_37CYl0WBBQhCYu45BYB35ITFCXgkEi5htyrg2eFBkQr3JOHOwauA3Z98IDMiSTrelsXnoHey1SIUKXH7sQ_djGrTHc0RAtrHxjD1hS43ezQsfRr1bqb923cIL7GH_1eKh78RkMQi-O8FkrdbxXzfcYi47V-JV2Hc4udQxgFSuG9LKC5zb0YDs2rOkViKk2ZS4TnwJMlkZystcO67-p4f4yJQ_yyhetcYnHkCnec8uHgNlG8fBesOXZQ8htKmujI1Pwd42Qesr8LITRA"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"registerUploadRequest\": {\n    \"recipes\": [\n      \"urn:li:digitalmediaRecipe:feedshare-image\"\n    ],\n    \"owner\": \"urn:li:person:EFrUw9vKhR\",\n    \"serviceRelationships\": [\n      {\n        \"identifier\": \"urn:li:userGeneratedContent\",\n        \"relationshipType\": \"OWNER\"\n      }\n    ]\n  }\n}\n",
+        "options": {}
+      },
+      "id": "1702e91a-ab02-4f57-906a-24194f0d86e2",
+      "name": "registerUpload",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3220,
+        1180
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $json.value.uploadMechanism['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'].uploadUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "image/png"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "6099728c-e241-494b-bbc9-a7d7e7796070",
+      "name": "PUT Image1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3860,
+        1180
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Loop when image link is not valid').item.json.imageLinks }}",
+        "options": {}
+      },
+      "id": "4d35acb1-6c2f-4b86-bf8c-cf4696399568",
+      "name": "HTTP GET img",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3560,
+        1180
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Image\nUse uploadUrl returned at Register node previous to PUT image binary file we just got at previous node",
+        "height": 325.94767532408196,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "db1365ec-c526-42f2-b157-d1ce0ee8a849",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3800,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get Image\nUse image link we got before, use it to get an image and export it as a Binary image file",
+        "height": 305.99395395245244,
+        "width": 230.54603652481285,
+        "color": 5
+      },
+      "id": "31e3fc5e-da4a-4dd6-8e6b-64ab8ba81b67",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3500,
+        1060
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Register Post Image\nWe need to use ID of linkedin page, where we need to post. Get its ID and register post image with linkedin",
+        "height": 305.99395395245244,
+        "width": 287.9757519581727,
+        "color": 5
+      },
+      "id": "84460f0d-683f-4452-ad5a-cfccde12aebe",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3120,
+        1060
+      ]
+    },
+    {
+      "parameters": {
+        "person": "=EFrUw9vKhR",
+        "additionalFields": {}
+      },
+      "id": "30798792-fd44-452b-bd2f-3013d910cd28",
+      "name": "LinkedIn",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        3560,
+        1600
+      ],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "pruiPUs3AdcQBOcz",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer AQVnK7Y8gsc5j8Bw_gnPEcKWJPmzbHgUGCmMZSlkofFTFmQ0vhGIxGpcRnmvMXsuYIBsHaNl89PkDw_37CYl0WBBQhCYu45BYB35ITFCXgkEi5htyrg2eFBkQr3JOHOwauA3Z98IDMiSTrelsXnoHey1SIUKXH7sQ_djGrTHc0RAtrHxjD1hS43ezQsfRr1bqb923cIL7GH_1eKh78RkMQi-O8FkrdbxXzfcYi47V-JV2Hc4udQxgFSuG9LKC5zb0YDs2rOkViKk2ZS4TnwJMlkZystcO67-p4f4yJQ_yyhetcYnHkCnec8uHgNlG8fBesOXZQ8htKmujI1Pwd42Qesr8LITRA"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"author\": \"urn:li:person:EFrUw9vKhR\",\n  \"containerEntity\": \"urn:li:group:13913621\", \n  \"lifecycleState\": \"PUBLISHED\",\n  \"specificContent\": {\n    \"com.linkedin.ugc.ShareContent\": {\n      \"shareCommentary\": {\n         \"text\": {{ $('Convert Content').item.json.html }}\n      },\n      \"shareMediaCategory\": \"IMAGE\",\n      \"media\": [\n        {\n          \"status\": \"READY\",\n          \"media\": \"{{ $('registerUpload').item.json.value.asset }}\",\n          \"description\": { \"text\": \"\" },\n          \"title\": { \"text\": \"\" }\n        }\n      ]\n    }\n  },\n  \"visibility\": {\n    \"com.linkedin.ugc.MemberNetworkVisibility\": \"CONTAINER\"\n  }\n}\n",
+        "options": {}
+      },
+      "id": "e1299f22-b958-430d-b001-d4287e3deee3",
+      "name": "Print Commerce Group",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4200,
+        1440
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2,
+                1,
+                3,
+                5,
+                4,
+                6
+              ],
+              "triggerAtHour": 8,
+              "triggerAtMinute": 40
+            }
+          ]
+        }
+      },
+      "id": "8c5aa14c-4afd-4230-97d1-6c524d9ef56c",
+      "name": "8AM40",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        20,
+        560
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Convert Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Post To Cloodo Workspace1": {
+      "main": [
+        [
+          {
+            "node": "Save ID project posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "registerUpload1": {
+      "main": [
+        [
+          {
+            "node": "HTTP GET img2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Image": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Post To Cloodo Workspace1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP GET img2": {
+      "main": [
+        [
+          {
+            "node": "PUT Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Content": {
+      "main": [
+        [
+          {
+            "node": "registerUpload",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "registerUpload1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Outsourcing Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get random link image (Code)": {
+      "main": [
+        [
+          {
+            "node": "Check Valid Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get HTML code from link promotion  (HTTP)": {
+      "main": [
+        [
+          {
+            "node": "Get random link image (Code)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Link Posted Failed": {
+      "main": [
+        [
+          {
+            "node": "Get Outsourcing Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Valid Link": {
+      "main": [
+        [
+          {
+            "node": "Check Valid Image Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Valid Image Link": {
+      "main": [
+        [
+          {
+            "node": "Loop when image link is not valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop when image link is not valid": {
+      "main": [
+        [
+          {
+            "node": "Mark Link Posted Failed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Outsourcing Link": {
+      "main": [
+        [
+          {
+            "node": "Get HTML code from link promotion  (HTTP)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "registerUpload": {
+      "main": [
+        [
+          {
+            "node": "HTTP GET img",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP GET img": {
+      "main": [
+        [
+          {
+            "node": "PUT Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Image1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8AM40": {
+      "main": [
+        [
+          {
+            "node": "Get Outsourcing Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4cad6d67-0a12-40ed-a558-3e71811be838",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "LI1P9RGfyEkJZatP",
+  "tags": []
+}

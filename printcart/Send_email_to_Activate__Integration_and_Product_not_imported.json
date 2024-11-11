@@ -1,0 +1,798 @@
+{
+  "name": "Send email to Activate/ Integration and Product not imported",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "533a210b-adcd-42aa-a904-7136e99b49ea",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "4327a5c7-dbd6-4e6b-a207-1d93f9c6d074",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -500,
+        -340
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM stores\nJOIN users u ON stores.user_id = u.id\nWHERE stores.integration IN ('shopify', 'wix', 'woocommerce')\nAND YEAR(stores.updated_at) = YEAR(NOW())\nAND MONTH(stores.updated_at) = MONTH(NOW())\nAND DAY(stores.updated_at) = DAY(NOW())- 2\nAND stores.deleted_at IS NULL;",
+        "options": {}
+      },
+      "id": "060dd3c8-7d06-4bcd-9f84-8cbf3ae1a72e",
+      "name": "Get Store1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -260,
+        -140
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "d4d72d37-6634-4243-82fd-9deee592b6d6",
+      "name": "Replace Me1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "product",
+        "operation": "getListOfImportProduct",
+        "sid": "={{ $json.sid }}",
+        "secret": "={{ $json.secret }}"
+      },
+      "id": "39ec6650-2d3e-4fd3-a1e5-b633bd0dd6ee",
+      "name": "Printcart",
+      "type": "@printcart/n8n-nodes-printcart.printcart",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -160
+      ],
+      "credentials": {
+        "printcartTokenApi": {
+          "id": "aOndDgnYoPbPBLS1",
+          "name": "Printcart Admin"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "1d93e2f2-ac7c-44d2-9cc7-6b2b081b0332",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -20,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "25fe7514-eee7-49e5-9ec2-efaece7143a4",
+              "leftValue": "={{ $json.data.products }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "bb7f56cf-6db6-47fb-b04d-2d5d596b787e",
+      "name": "Check product empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@printcart.com",
+        "toEmail": "={{ $json.email }}",
+        "subject": "Notification for New Unsynchronized Product from Printcart",
+        "html": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification for New Unsynchronized Product in Printcart</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin: 30;\n            padding: 10;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            padding: 30px;\n            background-color: #fff;\n        }\n\n        .header {\n            color: #007bff;\n            font-size: 24px;\n            margin-bottom: 20px;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"content\">\n            Dear {{ $json.name }},<br><br></div>\n        <div class=\"content\">\n            We would like to inform you that there is a new product that has not been synchronized into Printcart.\n            Please take necessary actions to synchronize this product to ensure it is available in Printcart for your\n            customers.<br></div>\n<div class=\"center-container\" >\n        <a href=\"https://dashboard.printcart.com/inventory\" style=\"color: #fff\" class=\"button\">Go to Custom Product Setting</a></div><br>\n        <div class=\"content\">     \n            If you have any questions or need assistance with synchronizing the product, feel free to reach out to us at\n            <a href=\"mailto:support@printcart.com\">support@printcart.com</a>. We are here to help you with a smooth\n            synchronization process and ensure a seamless customer experience.<br><br>\n\n            Thank you for using Printcart.<br><br>\n            Best regards,<br><br>\n            Ryan D.G. (Mr.)<br>\n            Business & Project Consultant<br><br>\n            Website: <a href=\"https://www.printcart.com\" style=\"color: #007bff;\">www.printcart.com</a><br>\n            Skype: live:.cid.e5694f64b5c806f6<br>\n            WhatsApp: <a href=\"https://wa.me/84967319788\" style=\"color: #007bff;\">https://wa.me/84967319788</a><br>\n            Facebook: <a href=\"https://www.facebook.com/printcart.webtoprint\"\n                style=\"color: #007bff;\">https://www.facebook.com/printcart.webtoprint</a><br>\n\n        </div>\n<div class=\"center-container\">\n            <img src=\"https://www.printcart.com/_next/static/media/printcart-logo.8ca73bdc.png\" alt=\"logo\">\n        </div>\n        <footer style=\"background-color: #140c0c; padding: 20px; text-align: center; font-size: 14px; color: #eee7e7;\">\n            &copy; Printcart is Web2Print and POD Platform backed by Netbase JSC. We are trusted by thousands of\n            worldwide web-to-print partners since 2012\n        </footer>.\n</body>\n\n</html>",
+        "options": {
+          "ccEmail": "sales@printcart.com"
+        }
+      },
+      "id": "9360932b-ae50-4d6b-a851-71bf47c356f2",
+      "name": "Send Email1",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        980,
+        440
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "jL633h5uTtTsmeIc",
+          "name": "Printcart Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT users.email, users.name FROM categories\nJOIN stores ON categories.store_id = stores.id\nJOIN users ON stores.user_id = users.id\nWHERE categories.uuid = '{{ $json.categoryId }}'\n",
+        "options": {}
+      },
+      "id": "2862711b-2219-4e3f-944d-ea6d62857b06",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        1180,
+        -200
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@printcart.com",
+        "toEmail": "={{ $json.email }}",
+        "subject": "Notification of Store Activation from Printcart",
+        "html": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification of Store Activation/Integration Status - Connection Failure</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin: 30;\n            padding: 10;\n            margin-top: 50px;\n        }\n\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            padding: 30px;\n            background-color: #fff;\n        }\n\n        .header {\n            color: #007bff;\n            font-size: 24px;\n            margin-bottom: 20px;\n        }\n\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n\n        .center-container {\n            text-align: center;\n        }\n\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"content\">\n            Dear {{ $json.name }},<br><br>\n            We are writing to inform you about the status of activation/integration of your store with our platform.\n            Unfortunately, we encountered a connection failure during the activation process.<br><br>\n            <div class=\"center-container\">\n                <a href=\"https://dashboard.printcart.com/inventory\" style=\"color: #fff\" class=\"button\">Fix Store Integration with Printcart</a>\n            </div><br><br>\n            Please take immediate action to resolve the connection issue to ensure successful activation/integration of\n            your store with our platform. You may need to review your settings and credentials to ensure they are\n            correct and up-to-date.<br><br>\n            If you require any assistance or have any questions regarding the activation/integration process, please\n            don't hesitate to contact our support team at <a\n                href=\"mailto:support@printcart.com\">support@printcart.com</a>. We are here to assist you and ensure a\n            smooth activation/integration process.<br><br>\n            Thank you for choosing our platform.<br><br>\n\n            Best regards,<br><br>\n            Ryan D.G. (Mr.)<br>\n            Business & Project Consultant<br><br>\n            Website: <a href=\"https://www.printcart.com\" style=\"color: #007bff;\">www.printcart.com</a><br>\n            Skype: live:.cid.e5694f64b5c806f6<br>\n            WhatsApp: <a href=\"https://wa.me/84967319788\" style=\"color: #007bff;\">https://wa.me/84967319788</a><br>\n            Facebook: <a href=\"https://www.facebook.com/printcart.webtoprint\"\n                style=\"color: #007bff;\">https://www.facebook.com/printcart.webtoprint</a><br>\n        </div>\n        <div class=\"center-container\">\n            <img src=\"https://www.printcart.com/_next/static/media/printcart-logo.8ca73bdc.png\" alt=\"logo\">\n        </div>\n        <footer style=\"background-color: #140c0c; padding: 20px; text-align: center; font-size: 14px; color: #eee7e7;\">\n            &copy; Printcart is Web2Print and POD Platform backed by Netbase JSC. We are trusted by thousands of\n            worldwide web-to-print partners since 2012\n        </footer>.\n    </div>\n</body>\n\n</html>",
+        "options": {
+          "ccEmail": "sales@printcart.com"
+        }
+      },
+      "id": "59704fdc-4fe5-498b-8d79-3b54a5123673",
+      "name": "Send Email2",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        160
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "jL633h5uTtTsmeIc",
+          "name": "Printcart Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT users.name, users.email FROM users\nWHERE users.uuid = '{{ $json.uuid}}'\n",
+        "options": {}
+      },
+      "id": "42b9f540-d724-4ec7-828b-2e48caff8587",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        120,
+        540
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "zeIUsGdBlo7sjOHL",
+          "name": "Printcart Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@printcart.com",
+        "toEmail": "=hieuwork.com@gmail.com",
+        "subject": "Notification of Store Activation from Printcart",
+        "html": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification of Store Activation/Integration Status - Connection Failure</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin: 30;\n            padding: 10;\n            margin-top: 50px;\n        }\n\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            padding: 30px;\n            background-color: #fff;\n        }\n\n        .header {\n            color: #007bff;\n            font-size: 24px;\n            margin-bottom: 20px;\n        }\n\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n\n        .center-container {\n            text-align: center;\n        }\n\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"content\">\n            Dear {{ $json.name }},<br><br>\n            We are writing to inform you about the status of activation/integration of your store with our platform.\n            Unfortunately, we encountered a connection failure during the activation process.<br><br>\n            <div class=\"center-container\">\n                <a href=\"https://dashboard.printcart.com/inventory\" style=\"color: #fff\" class=\"button\">Fix Store Integration with Printcart</a>\n            </div><br><br>\n            Please take immediate action to resolve the connection issue to ensure successful activation/integration of\n            your store with our platform. You may need to review your settings and credentials to ensure they are\n            correct and up-to-date.<br><br>\n            If you require any assistance or have any questions regarding the activation/integration process, please\n            don't hesitate to contact our support team at <a\n                href=\"mailto:support@printcart.com\">support@printcart.com</a>. We are here to assist you and ensure a\n            smooth activation/integration process.<br><br>\n            Thank you for choosing our platform.<br><br>\n\n            Best regards,<br><br>\n            Ryan D.G. (Mr.)<br>\n            Business & Project Consultant<br><br>\n            Website: <a href=\"https://www.printcart.com\" style=\"color: #007bff;\">www.printcart.com</a><br>\n            Skype: live:.cid.e5694f64b5c806f6<br>\n            WhatsApp: <a href=\"https://wa.me/84967319788\" style=\"color: #007bff;\">https://wa.me/84967319788</a><br>\n            Facebook: <a href=\"https://www.facebook.com/printcart.webtoprint\"\n                style=\"color: #007bff;\">https://www.facebook.com/printcart.webtoprint</a><br>\n        </div>\n        <div class=\"center-container\">\n            <img src=\"https://www.printcart.com/_next/static/media/printcart-logo.8ca73bdc.png\" alt=\"logo\">\n        </div>\n        <footer style=\"background-color: #140c0c; padding: 20px; text-align: center; font-size: 14px; color: #eee7e7;\">\n            &copy; Printcart is Web2Print and POD Platform backed by Netbase JSC. We are trusted by thousands of\n            worldwide web-to-print partners since 2012\n        </footer>.\n    </div>\n</body>\n\n</html>",
+        "options": {}
+      },
+      "id": "dde0a8b6-138e-442a-b912-394954d6911c",
+      "name": "Check Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        400,
+        200
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "jL633h5uTtTsmeIc",
+          "name": "Printcart Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@printcart.com",
+        "toEmail": "=hieuwork.com@gmail.com",
+        "subject": "Notification of Store Activation from Printcart",
+        "html": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification for New Unsynchronized Product in Printcart</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin: 30;\n            padding: 10;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            padding: 30px;\n            background-color: #fff;\n        }\n\n        .header {\n            color: #007bff;\n            font-size: 24px;\n            margin-bottom: 20px;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"content\">\n            Dear {{ $json.name }},<br><br></div>\n        <div class=\"content\">\n            We would like to inform you that there is a new product that has not been synchronized into Printcart.\n            Please take necessary actions to synchronize this product to ensure it is available in Printcart for your\n            customers.<br></div>\n<div class=\"center-container\" >\n        <a href=\"https://dashboard.printcart.com/inventory\" style=\"color: #fff\" class=\"button\">Go to Custom Product Setting</a></div><br>\n        <div class=\"content\">     \n            If you have any questions or need assistance with synchronizing the product, feel free to reach out to us at\n            <a href=\"mailto:support@printcart.com\">support@printcart.com</a>. We are here to help you with a smooth\n            synchronization process and ensure a seamless customer experience.<br><br>\n\n            Thank you for using Printcart.<br><br>\n            Best regards,<br><br>\n            Ryan D.G. (Mr.)<br>\n            Business & Project Consultant<br><br>\n            Website: <a href=\"https://www.printcart.com\" style=\"color: #007bff;\">www.printcart.com</a><br>\n            Skype: live:.cid.e5694f64b5c806f6<br>\n            WhatsApp: <a href=\"https://wa.me/84967319788\" style=\"color: #007bff;\">https://wa.me/84967319788</a><br>\n            Facebook: <a href=\"https://www.facebook.com/printcart.webtoprint\"\n                style=\"color: #007bff;\">https://www.facebook.com/printcart.webtoprint</a><br>\n\n        </div>\n<div class=\"center-container\">\n            <img src=\"https://www.printcart.com/_next/static/media/printcart-logo.8ca73bdc.png\" alt=\"logo\">\n        </div>\n        <footer style=\"background-color: #140c0c; padding: 20px; text-align: center; font-size: 14px; color: #eee7e7;\">\n            &copy; Printcart is Web2Print and POD Platform backed by Netbase JSC. We are trusted by thousands of\n            worldwide web-to-print partners since 2012\n        </footer>.\n</body>\n\n</html>",
+        "options": {}
+      },
+      "id": "d7c4824d-98f6-4e91-acff-30baeb5d7f3e",
+      "name": "Check Email1",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1240,
+        540
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "jL633h5uTtTsmeIc",
+          "name": "Printcart Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.name }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification for New Unsynchronized Product in Printcart</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin: 30;\n            padding: 10;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            padding: 30px;\n            background-color: #fff;\n        }\n\n        .header {\n            color: #007bff;\n            font-size: 24px;\n            margin-bottom: 20px;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"content\">\n            Dear {{ $json.name }},<br><br></div>\n        <div class=\"content\">\n            We would like to inform you that there is a new product that has not been synchronized into Printcart.\n            Please take necessary actions to synchronize this product to ensure it is available in Printcart for your\n            customers.<br></div>\n<div class=\"center-container\" >\n        <a href=\"https://dashboard.printcart.com/inventory\" style=\"color: #fff\" class=\"button\">Go to Custom Product Setting</a></div><br>\n        <div class=\"content\">     \n            If you have any questions or need assistance with synchronizing the product, feel free to reach out to us at\n            <a href=\"mailto:support@printcart.com\">support@printcart.com</a>. We are here to help you with a smooth\n            synchronization process and ensure a seamless customer experience.<br><br>\n\n            Thank you for using Printcart.<br><br>\n            Best regards,<br><br>\n            Ryan D.G. (Mr.)<br>\n            Business & Project Consultant<br><br>\n            Website: <a href=\"https://www.printcart.com\" style=\"color: #007bff;\">www.printcart.com</a><br>\n            Skype: live:.cid.e5694f64b5c806f6<br>\n            WhatsApp: <a href=\"https://wa.me/84967319788\" style=\"color: #007bff;\">https://wa.me/84967319788</a><br>\n            Facebook: <a href=\"https://www.facebook.com/printcart.webtoprint\"\n                style=\"color: #007bff;\">https://www.facebook.com/printcart.webtoprint</a><br>\n\n        </div>\n<div class=\"center-container\">\n            <img src=\"https://www.printcart.com/_next/static/media/printcart-logo.8ca73bdc.png\" alt=\"logo\">\n        </div>\n        <footer style=\"background-color: #140c0c; padding: 20px; text-align: center; font-size: 14px; color: #eee7e7;\">\n            &copy; Printcart is Web2Print and POD Platform backed by Netbase JSC. We are trusted by thousands of\n            worldwide web-to-print partners since 2012\n        </footer>.\n</body>\n\n</html>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "91"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "93837e05-18ff-432c-9493-a33bb11d6bd3",
+      "name": "HTTP Request2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1440,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.name }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification of Store Activation/Integration Status - Connection Failure</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin: 30;\n            padding: 10;\n            margin-top: 50px;\n        }\n\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            padding: 30px;\n            background-color: #fff;\n        }\n\n        .header {\n            color: #007bff;\n            font-size: 24px;\n            margin-bottom: 20px;\n        }\n\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n\n        .center-container {\n            text-align: center;\n        }\n\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"content\">\n            Dear {{ $json.name }},<br><br>\n            We are writing to inform you about the status of activation/integration of your store with our platform.\n            Unfortunately, we encountered a connection failure during the activation process.<br><br>\n            <div class=\"center-container\">\n                <a href=\"https://dashboard.printcart.com/inventory\" style=\"color: #fff\" class=\"button\">Fix Store Integration with Printcart</a>\n            </div><br><br>\n            Please take immediate action to resolve the connection issue to ensure successful activation/integration of\n            your store with our platform. You may need to review your settings and credentials to ensure they are\n            correct and up-to-date.<br><br>\n            If you require any assistance or have any questions regarding the activation/integration process, please\n            don't hesitate to contact our support team at <a\n                href=\"mailto:support@printcart.com\">support@printcart.com</a>. We are here to assist you and ensure a\n            smooth activation/integration process.<br><br>\n            Thank you for choosing our platform.<br><br>\n\n            Best regards,<br><br>\n            Ryan D.G. (Mr.)<br>\n            Business & Project Consultant<br><br>\n            Website: <a href=\"https://www.printcart.com\" style=\"color: #007bff;\">www.printcart.com</a><br>\n            Skype: live:.cid.e5694f64b5c806f6<br>\n            WhatsApp: <a href=\"https://wa.me/84967319788\" style=\"color: #007bff;\">https://wa.me/84967319788</a><br>\n            Facebook: <a href=\"https://www.facebook.com/printcart.webtoprint\"\n                style=\"color: #007bff;\">https://www.facebook.com/printcart.webtoprint</a><br>\n        </div>\n        <div class=\"center-container\">\n            <img src=\"https://www.printcart.com/_next/static/media/printcart-logo.8ca73bdc.png\" alt=\"logo\">\n        </div>\n        <footer style=\"background-color: #140c0c; padding: 20px; text-align: center; font-size: 14px; color: #eee7e7;\">\n            &copy; Printcart is Web2Print and POD Platform backed by Netbase JSC. We are trusted by thousands of\n            worldwide web-to-print partners since 2012\n        </footer>.\n    </div>\n</body>\n\n</html>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "82"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0085bac4-1b90-4b6e-8605-30204deb722f",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        360,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "1b6d04a8-4286-479a-a088-88b722573d5d",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        900,
+        -360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "d259be1d-7787-403b-9e1b-26a12ab27b78",
+              "leftValue": "={{ $json.data.products[0].category[0].id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "155ba469-3d09-48d1-b8a6-6f5167166ff8",
+              "leftValue": "={{ $json.data.products[1].category[0].id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "56ea4a36-f8c1-4dea-83d8-d2b94886d3b0",
+              "leftValue": "={{ $json.data.products[2].category[0].id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "d1ec089c-528f-4dcc-830f-651d14a8746b",
+              "leftValue": "={{ $json.data.products[3].category[0].id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": false,
+          "looseTypeValidation": true
+        }
+      },
+      "id": "5b3fad9f-183d-464f-bcea-43d08a51f71c",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        720,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1af18b85-3ab4-4772-babe-8f1cca988ac8",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        640,
+        -360
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const products = items[0].json.data.products;\n\nfor (let product of products) {\n  if (product.category && product.category[0] && product.category[0].id) {\n    return [{ json: { categoryId: product.category[0].id } }];\n  }\n}\n\n// Return null if no category ID is found\nreturn [{ json: { categoryId: null } }];"
+      },
+      "id": "9289d325-5ccf-417a-9e8c-72994373eb9b",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=support@printcart.com"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.name }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification for New Unsynchronized Product in Printcart</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin: 30;\n            padding: 10;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            padding: 30px;\n            background-color: #fff;\n        }\n\n        .header {\n            color: #007bff;\n            font-size: 24px;\n            margin-bottom: 20px;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"content\">\n            Dear {{ $json.name }},<br><br></div>\n        <div class=\"content\">\n            We would like to inform you that there is a new product that has not been synchronized into Printcart.\n            Please take necessary actions to synchronize this product to ensure it is available in Printcart for your\n            customers.<br></div>\n<div class=\"center-container\" >\n        <a href=\"https://dashboard.printcart.com/inventory\" style=\"color: #fff\" class=\"button\">Go to Custom Product Setting</a></div><br>\n        <div class=\"content\">     \n            If you have any questions or need assistance with synchronizing the product, feel free to reach out to us at\n            <a href=\"mailto:support@printcart.com\">support@printcart.com</a>. We are here to help you with a smooth\n            synchronization process and ensure a seamless customer experience.<br><br>\n\n            Thank you for using Printcart.<br><br>\n            Best regards,<br><br>\n            Ryan D.G. (Mr.)<br>\n            Business & Project Consultant<br><br>\n            Website: <a href=\"https://www.printcart.com\" style=\"color: #007bff;\">www.printcart.com</a><br>\n            Skype: live:.cid.e5694f64b5c806f6<br>\n            WhatsApp: <a href=\"https://wa.me/84967319788\" style=\"color: #007bff;\">https://wa.me/84967319788</a><br>\n            Facebook: <a href=\"https://www.facebook.com/printcart.webtoprint\"\n                style=\"color: #007bff;\">https://www.facebook.com/printcart.webtoprint</a><br>\n\n        </div>\n<div class=\"center-container\">\n            <img src=\"https://www.printcart.com/_next/static/media/printcart-logo.8ca73bdc.png\" alt=\"logo\">\n        </div>\n        <footer style=\"background-color: #140c0c; padding: 20px; text-align: center; font-size: 14px; color: #eee7e7;\">\n            &copy; Printcart is Web2Print and POD Platform backed by Netbase JSC. We are trusted by thousands of\n            worldwide web-to-print partners since 2012\n        </footer>.\n</body>\n\n</html>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "91"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "271d71ab-eaa3-428e-bee8-229d2baf1c60",
+      "name": "HTTP Request3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1440,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=support@printcart.com"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $json.name }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification of Store Activation/Integration Status - Connection Failure</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin: 30;\n            padding: 10;\n            margin-top: 50px;\n        }\n\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            padding: 30px;\n            background-color: #fff;\n        }\n\n        .header {\n            color: #007bff;\n            font-size: 24px;\n            margin-bottom: 20px;\n        }\n\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n\n        .center-container {\n            text-align: center;\n        }\n\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"content\">\n            Dear {{ $json.name }},<br><br>\n            We are writing to inform you about the status of activation/integration of your store with our platform.\n            Unfortunately, we encountered a connection failure during the activation process.<br><br>\n            <div class=\"center-container\">\n                <a href=\"https://dashboard.printcart.com/inventory\" style=\"color: #fff\" class=\"button\">Fix Store Integration with Printcart</a>\n            </div><br><br>\n            Please take immediate action to resolve the connection issue to ensure successful activation/integration of\n            your store with our platform. You may need to review your settings and credentials to ensure they are\n            correct and up-to-date.<br><br>\n            If you require any assistance or have any questions regarding the activation/integration process, please\n            don't hesitate to contact our support team at <a\n                href=\"mailto:support@printcart.com\">support@printcart.com</a>. We are here to assist you and ensure a\n            smooth activation/integration process.<br><br>\n            Thank you for choosing our platform.<br><br>\n\n            Best regards,<br><br>\n            Ryan D.G. (Mr.)<br>\n            Business & Project Consultant<br><br>\n            Website: <a href=\"https://www.printcart.com\" style=\"color: #007bff;\">www.printcart.com</a><br>\n            Skype: live:.cid.e5694f64b5c806f6<br>\n            WhatsApp: <a href=\"https://wa.me/84967319788\" style=\"color: #007bff;\">https://wa.me/84967319788</a><br>\n            Facebook: <a href=\"https://www.facebook.com/printcart.webtoprint\"\n                style=\"color: #007bff;\">https://www.facebook.com/printcart.webtoprint</a><br>\n        </div>\n        <div class=\"center-container\">\n            <img src=\"https://www.printcart.com/_next/static/media/printcart-logo.8ca73bdc.png\" alt=\"logo\">\n        </div>\n        <footer style=\"background-color: #140c0c; padding: 20px; text-align: center; font-size: 14px; color: #eee7e7;\">\n            &copy; Printcart is Web2Print and POD Platform backed by Netbase JSC. We are trusted by thousands of\n            worldwide web-to-print partners since 2012\n        </footer>.\n    </div>\n</body>\n\n</html>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "82"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3bb183ed-4d3c-4864-b677-cf4454c2c9eb",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        360,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=phamngochuy0102@gmail.com"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello Ocean"
+            },
+            {
+              "name": "content",
+              "value": "<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification of Store Activation/Integration Status - Connection Failure</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin: 30;\n            padding: 10;\n            margin-top: 50px;\n        }\n\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            padding: 30px;\n            background-color: #fff;\n        }\n\n        .header {\n            color: #007bff;\n            font-size: 24px;\n            margin-bottom: 20px;\n        }\n\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n\n        .center-container {\n            text-align: center;\n        }\n\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"content\">\n            Dear Ocean,<br><br>\n            We are writing to inform you about the status of activation/integration of your store with our platform.\n            Unfortunately, we encountered a connection failure during the activation process.<br><br>\n            <div class=\"center-container\">\n                <a href=\"https://dashboard.printcart.com/inventory\" style=\"color: #fff\" class=\"button\">Fix Store Integration with Printcart</a>\n            </div><br><br>\n            Please take immediate action to resolve the connection issue to ensure successful activation/integration of\n            your store with our platform. You may need to review your settings and credentials to ensure they are\n            correct and up-to-date.<br><br>\n            If you require any assistance or have any questions regarding the activation/integration process, please\n            don't hesitate to contact our support team at <a\n                href=\"mailto:support@printcart.com\">support@printcart.com</a>. We are here to assist you and ensure a\n            smooth activation/integration process.<br><br>\n            Thank you for choosing our platform.<br><br>\n\n            Best regards,<br><br>\n            Ryan D.G. (Mr.)<br>\n            Business & Project Consultant<br><br>\n            Website: <a href=\"https://www.printcart.com\" style=\"color: #007bff;\">www.printcart.com</a><br>\n            Skype: live:.cid.e5694f64b5c806f6<br>\n            WhatsApp: <a href=\"https://wa.me/84967319788\" style=\"color: #007bff;\">https://wa.me/84967319788</a><br>\n            Facebook: <a href=\"https://www.facebook.com/printcart.webtoprint\"\n                style=\"color: #007bff;\">https://www.facebook.com/printcart.webtoprint</a><br>\n        </div>\n        <div class=\"center-container\">\n            <img src=\"https://www.printcart.com/_next/static/media/printcart-logo.8ca73bdc.png\" alt=\"logo\">\n        </div>\n        <footer style=\"background-color: #140c0c; padding: 20px; text-align: center; font-size: 14px; color: #eee7e7;\">\n            &copy; Printcart is Web2Print and POD Platform backed by Netbase JSC. We are trusted by thousands of\n            worldwide web-to-print partners since 2012\n        </footer>.\n    </div>\n</body>\n\n</html>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "82"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5ddd3f41-d0c6-467f-82d5-6c3e0daa0fd1",
+      "name": "HTTP Request4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        480,
+        900
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Store1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Printcart": {
+      "main": [
+        [
+          {
+            "node": "Check product empty",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Replace Me1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Printcart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check product empty": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "164d4c76-90c4-4d79-a7cb-72e418c679c9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "dFDJ6WlNirCwc1G5",
+  "tags": []
+}

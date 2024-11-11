@@ -1,0 +1,1173 @@
+{
+  "name": "QCM15 24 25 26 - POINT - Cmsmart project bonus fine 11h20",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "96d63909-2eca-43aa-9e38-2dbb35bb063f",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        2300,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "e339396a-45ea-4f37-ac16-99bf01de0de6",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        2860,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.data.created_at }}",
+              "operation": "largerEqual",
+              "value2": "={{ $today.minus({day:1}) }}"
+            }
+          ]
+        }
+      },
+      "id": "5304b4d9-6a6e-4812-be4e-24e17b7b8e32",
+      "name": "IF create Yesterday",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3300,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23,
+              "triggerAtMinute": 20
+            }
+          ]
+        }
+      },
+      "id": "ffde9358-4cb7-4179-87e3-d1d10d7c9c7d",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        2280,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.data[9].created_at }}",
+              "operation": "largerEqual",
+              "value2": "={{ $today.minus({day:1}) }}"
+            }
+          ]
+        }
+      },
+      "id": "b6f77f29-44d8-4af6-a15e-490c6ec3bc6e",
+      "name": "IF Loop",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2860,
+        760
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "ad7542db-b3f4-4655-aa59-de5fa328d3f5",
+      "name": "End",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3960,
+        1100
+      ]
+    },
+    {
+      "parameters": {
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "aca19b88-65b3-4f1a-bf95-2a5871e13b11",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        2560,
+        620
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "5ccd4cd4-474f-4a70-b62d-56d7a425543c",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3080,
+        540
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.project_admin }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "11fcac8b-9fbf-4632-af28-9d0ab2030219",
+      "name": "IF Project Admin not Empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3580,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.data.members.length }}",
+              "operation": "equal",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "20e0d2e5-7225-4fb0-968c-06f52150e2fa",
+      "name": "IF Project Member is One",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3960,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "projectAdmin",
+        "ID": "={{ $json.data.id }}",
+        "project_admin_id": "={{ $json.data.members[0].id }}",
+        "requestOptions": {}
+      },
+      "id": "20b39672-8af0-4da2-a92e-33d071d104e3",
+      "name": "Update Project Admin",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        4160,
+        700
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C05PR7A8DKN",
+          "mode": "list",
+          "cachedResultName": "worksuite-point"
+        },
+        "text": "=xxx Project point error: Project have many members: https://worksuite.cloodo.com/work/project/{{ $('Item Lists').item.json.id }} ",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "b99fabec-448b-4233-8853-605521a68d49",
+      "name": "Slack error log",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        4180,
+        900
+      ],
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "rkwu69eQauIE6nxW",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.category }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "c8bf7436-cb63-40e6-9cc1-d90df43a1559",
+      "name": "IF category not Empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        4540,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data.department }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "150e9f28-b80f-4131-9d1d-e083f9681aea",
+      "name": "IF Department not empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        4560,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Cloodo Project1').item.json.data.client }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "82dacce6-1599-4cc1-abac-2128cc6fcae0",
+      "name": "IF Client Empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        4460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=category: https://worksuite.cloodo.com/work/project/{{ $('Item Lists').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "3bb5cf3a-6d7d-4656-954d-b531c40c68b1",
+      "name": "Search point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4860,
+        1020
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM26 {{ $('IF Project Admin not Empty').item.json.data.project_admin.name }} was fined -1 point for creating a project without selecting a Department: https://worksuite.cloodo.com/apps/work/project/{{ $('IF Project Admin not Empty').item.json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "c995cbda-c5e8-467f-8a01-b75589bd4f54",
+      "name": "Search point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4860,
+        800
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "6dcca4e6-f93d-448b-9cc9-5edded9a6c2b",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5080,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "44302a47-d4a2-4b19-b562-c8f07b90f23c",
+      "name": "IF not found1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5060,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=Client: https://worksuite.cloodo.com/work/project/{{ $('Item Lists').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "4566b7b4-190d-464e-8fa1-bc0abeddc91d",
+      "name": "Search point2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5020,
+        540
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "0aedca59-2063-4cb1-8ac1-32a1aabe3ab0",
+      "name": "IF not found2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5260,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT projects.id,projects.user_client_id,projects.project_admin,DATEDIFF(NOW(),projects.created_at) AS day_count,\nengagement.id AS engagement_id,engagement.subject,engagement.created_at AS engagement_created_at,custom_field_datas.value AS project_type FROM projects\nLEFT JOIN \n(\n    SELECT * FROM custom_field_datas\n    WHERE model=\"App\\\\Models\\\\Project\" AND custom_field_id=256    \n)\nAS custom_field_datas ON projects.id=custom_field_datas.model_id \nLEFT JOIN\n(\n    SELECT * FROM tickets\n    WHERE DATEDIFF(NOW(),created_at) <= 36 \n    ORDER BY tickets.created_at DESC\n)\nAS engagement ON projects.id = engagement.project_id\nWHERE projects.company_id = 675\nAND DATEDIFF(NOW(),projects.created_at) BETWEEN 31 AND 36 \nAND custom_field_datas.value NOT LIKE \"%Inactive%\"\nORDER BY projects.created_at DESC;",
+        "options": {}
+      },
+      "id": "be9bb931-980a-4866-8a04-a809eea6af2e",
+      "name": "Select project created more than 30 days",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        2560,
+        300
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "SJei6ksLjiCIXFRS",
+          "name": "Worksuite database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "ID": "={{ $json.id }}",
+        "additionalFields": {
+          "custom_fields_data": "={\"project-type-1_256\":\"{{ $json.project_type }},Inactive\"} "
+        },
+        "requestOptions": {}
+      },
+      "id": "30cfce52-fd91-4bf6-84ef-ab615638c1c3",
+      "name": "Update Project Inactive",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3020,
+        280
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "update",
+        "ID": "={{ $('Select project created more than 30 days').item.json.client_id }}",
+        "additionalFields": {
+          "custom_fields_data": "{\"status-funnel_223\" :  \"6\"}"
+        },
+        "requestOptions": {}
+      },
+      "id": "ede95e26-e316-48a8-81e4-b0fcfc2514bd",
+      "name": "Update Client Non-Active",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3260,
+        280
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.engagement_id }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "5631ae4d-a511-481f-8e25-7502ab7e6c63",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2780,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Update Project Inactive').item.json.data.project_admin }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "8da4bcf8-b762-41df-8d00-70cdd8920993",
+      "name": "IF Project admin is not empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3480,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Cloodo Project2').item.json.data.project_admin.id }}",
+        "points": 2,
+        "note": "=QCM15 {{ $('Cloodo Project2').item.json.data.project_admin.name }} is rewarded with +2 points for creating new Project: https://worksuite.cloodo.com/apps/work/project/{{ $('Cloodo Project2').item.json.data.id }} "
+      },
+      "id": "70529b17-defc-456a-8907-ca5a453596f5",
+      "name": "QCM15",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5680,
+        180
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('IF Project Admin not Empty').item.json.data.project_admin.id }}",
+        "points": 1,
+        "note": "=QCM25 {{ $('IF Project Admin not Empty').item.json.data.project_admin.name }} was fined -1 point for creating a project without selecting a Client: https://worksuite.cloodo.com/apps/work/project/{{ $('IF Project Admin not Empty').item.json.data.id }} "
+      },
+      "id": "2c819de6-9aca-445c-8eeb-1347fa44d5ab",
+      "name": "QCM25",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5460,
+        600
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('IF Project Admin not Empty').item.json.data.project_admin.id }}",
+        "points": 1,
+        "note": "=QCM26 {{ $('IF Project Admin not Empty').item.json.data.project_admin.name }} was fined -1 point for creating a project without selecting a Department: https://worksuite.cloodo.com/apps/work/project/{{ $('IF Project Admin not Empty').item.json.data.id }}"
+      },
+      "id": "d02d353a-89a8-4ac7-b446-7c21e9b4773b",
+      "name": "QCM26",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5280,
+        780
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('IF Project Admin not Empty').item.json.data.project_admin.id }}",
+        "points": 1,
+        "note": "=QCM24 {{ $('IF Project Admin not Empty').item.json.data.project_admin.name }} was fined -1 point for creating a project without selecting a category: https://worksuite.cloodo.com/apps/work/project/{{ $('IF Project Admin not Empty').item.json.data.id }}  "
+      },
+      "id": "e50ab86d-0464-4f92-86f9-bf0f32d408ca",
+      "name": "QCM24",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5300,
+        1000
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Update Project Inactive').item.json.data.project_admin.id }}",
+        "points": 5,
+        "note": "=QCM27 {{ $('Update Project Inactive').item.json.data.project_admin.name }} is penalized with a deduction of -5 points because, after 30 days of the new AM Care project, no engagement has been generated: https://worksuite.cloodo.com/apps/work/project/{{ $('Update Project Inactive').item.json.data.id }}"
+      },
+      "id": "0e931230-4d8e-4ed0-8679-cce0f8954ed2",
+      "name": "QCM27",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3740,
+        260
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM15 {{ $json.data.project_admin.name }} is rewarded with +2 points for creating new Project: https://worksuite.cloodo.com/apps/work/project/{{ $json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "e05c607a-0b93-4f42-8f31-c2448a48a857",
+      "name": "Search point3",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5240,
+        20
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "12dadfd1-4754-428d-977a-7879484d8afd",
+      "name": "IF not found3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5440,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * FROM `projects`\n  where uuid =\"{{ $('IF Project Admin not Empty').item.json.data.id }}\"",
+        "options": {}
+      },
+      "id": "44378ed1-e21a-4773-b981-a17832446d5c",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        4700,
+        160
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "SJei6ksLjiCIXFRS",
+          "name": "Worksuite database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "316cfd4b-968b-4216-925e-4be2822aafd4",
+              "leftValue": "={{ $json.added_by }}",
+              "rightValue": 1271,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "420784d1-0e8b-4dab-9d18-723f1d2eaa40",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        4920,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.uuid }}",
+        "requestOptions": {}
+      },
+      "id": "9dab1fc9-1580-43ac-9c84-00addff6be77",
+      "name": "Cloodo Project2",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        5040,
+        60
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b2bba83c-5489-4d2b-a02c-30bde8efaa52",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2d9c45ca-10b6-46ca-8743-ed40efcdf216",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4080,
+        40
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF create Yesterday": {
+      "main": [
+        [
+          {
+            "node": "IF Project Admin not Empty",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "End",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Loop": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "End",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "IF create Yesterday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Project Admin not Empty": {
+      "main": [
+        [
+          {
+            "node": "IF Client Empty",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF Department not empty",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF category not Empty",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IF Project Member is One",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Project Member is One": {
+      "main": [
+        [
+          {
+            "node": "Update Project Admin",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack error log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Project Admin": {
+      "main": [
+        [
+          {
+            "node": "IF category not Empty",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF Department not empty",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF Client Empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF category not Empty": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Department not empty": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Client Empty": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search point2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point1": {
+      "main": [
+        [
+          {
+            "node": "IF not found1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "QCM24",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "QCM26",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point2": {
+      "main": [
+        [
+          {
+            "node": "IF not found2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found2": {
+      "main": [
+        [
+          {
+            "node": "QCM25",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select project created more than 30 days": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Project Inactive": {
+      "main": [
+        [
+          {
+            "node": "Update Client Non-Active",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Client Non-Active": {
+      "main": [
+        [
+          {
+            "node": "IF Project admin is not empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Update Project Inactive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search point3": {
+      "main": [
+        [
+          {
+            "node": "IF not found3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found3": {
+      "main": [
+        [
+          {
+            "node": "QCM15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project2": {
+      "main": [
+        [
+          {
+            "node": "Search point3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f89fd09e-8b9f-4c47-a35c-36e74654c3ff",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "3c05YkoPOBYFHjbE",
+  "tags": []
+}

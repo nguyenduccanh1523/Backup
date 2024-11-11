@@ -1,0 +1,1200 @@
+{
+  "name": "Send message whatsapp new Client",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "26dc017d-8f53-472b-be72-3aa1d5a90655",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        160,
+        860
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "getmany",
+        "page": "1",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "7bc2ab6b-2896-45eb-8fc7-4af369cda15c",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3120,
+        1720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "1opePqPakyaymjTT",
+          "name": "Cloodo account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "29ed9a45-ba54-4739-8a78-d81035d589a8",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 2.2,
+      "position": [
+        3360,
+        1720
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $json.user.id }}",
+        "requestOptions": {}
+      },
+      "id": "0e610458-a003-4799-9987-58bec106ef7f",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3580,
+        1720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "1opePqPakyaymjTT",
+          "name": "Cloodo account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "clientDetails",
+        "operation": "getEngagement",
+        "ID": "={{ $json.data.user.id }}",
+        "requestOptions": {}
+      },
+      "id": "b4bf94eb-1bb3-428a-8c68-58896f841414",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3800,
+        1720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "1opePqPakyaymjTT",
+          "name": "Cloodo account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "eb65a7a5-84ea-4501-a18a-6b0b40de1993",
+        "requestOptions": {}
+      },
+      "id": "76ec8fc9-fafd-4390-a56e-37add9560846",
+      "name": "Cloodo CRM3",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4020,
+        1720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "1opePqPakyaymjTT",
+          "name": "Cloodo account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "phoneNumberId": "379021215295985",
+        "recipientPhoneNumber": "=84379003225",
+        "template": "show_change|en_US",
+        "components": {
+          "component": [
+            {
+              "bodyParameters": {
+                "parameter": [
+                  {
+                    "text": "=xn chao"
+                  },
+                  {
+                    "text": "=bye"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "requestOptions": {}
+      },
+      "id": "927e6164-416e-4033-9059-bb8d6dae9481",
+      "name": "WhatsApp Business Cloud",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        4200,
+        1840
+      ],
+      "credentials": {
+        "whatsAppApi": {
+          "id": "m7F17FEwVzsGgbnK",
+          "name": "WhatsApp WACRM - Send"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/379021215295985/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer EAASUjOZC0KDIBOyaCVAoe3qclfOADtPqvw6eDgHXzbdnU7X4B8ZBBoNZB4WklwRUl1LXot1HvZAIHU9taqI6PsEViUjKzBcNTK2SqQ9NH7GIkwV2Lun3aieie0kYDZCOZBJOcvvmZADrlcwByeNzVdpueA0ZB9m1vmjZCpZB7RnO4ZAREOdBOZASa96UqUMsDUNy6jpoJGZCZBqpIELKZBZCmh3HxURtZCFWsjYoZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"84379003225\",\n  \"type\": \"template\",\n  \"template\": {\n    \"name\": \"show_change\",\n    \"language\": {\n      \"code\": \"en_US\"\n    },\n    \"components\": [\n      {\n        \"type\": \"body\",\n        \"parameters\": [\n          {\n            \"type\": \"text\",\n            \"text\": \"John\"\n          },\n          {\n            \"type\": \"text\",\n            \"text\": \"12345\"\n          }\n        ]\n      }\n    ]\n  }\n}\n",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "a763d661-3ea8-4ca9-b36d-89f3b0e32557",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2740,
+        1800
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/379021215295985/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAASUjOZC0KDIBO9GADGvYPp38EvOKZAAQsITtr5BhotSgK8s7XR6RvqoCF6oXAvHJCWNDicjl9J6SS25ZAKZBQRz7kNDdqZA0stzNg5ZBZCN1G8aKe4q4C0mBL25aioBY6XpByLIOxVCzbFXU8sAe5BUL2Wu2Mb0P1LaZA6MZCS5r3Ur7MjhtA9ZCi0Xw9zqMHh1vNNXIydTaR2pvwGewO8DPi09j6qmYZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"84379003225\",\n  \"type\": \"template\",\n  \"template\": {\n    \"name\": \"test_message\",\n    \"language\": {\n      \"code\": \"en_US\"\n    },\n    \"components\": [\n      {\n        \"type\": \"body\",\n        \"parameters\": [\n          {\n            \"type\": \"text\",\n            \"text\": \"John\"\n          },\n          {\n            \"type\": \"text\",\n            \"text\": \"12345\"\n          }\n        ]\n      }\n    ]\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "a8ce2875-2108-4e2e-a285-5bc519bb5761",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2940,
+        1800
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "=https://convert.cloodo.com/api/workchat/contact",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json, text/plain, */*"
+            },
+            {
+              "name": "accept-language",
+              "value": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5"
+            },
+            {
+              "name": "authorization",
+              "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3MjkxNjQ2OTcsImV4cCI6MTczMDAyODY5NywibmJmIjoxNzI5MTY0Njk3LCJqdGkiOiJqRDhpenRCcUdFSXpsOElSIiwic3ViIjoiNDg1NjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.S9_JHewzGqTlECNVXCeKvG_nFChpmH9Njy1fshi0ZS8"
+            },
+            {
+              "name": "origin",
+              "value": "https://worksuite.cloodo.com"
+            },
+            {
+              "name": "referer",
+              "value": "https://worksuite.cloodo.com/"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_dfc5d2e01984650160260f57beca02e5cac193a749e4dc43e1df8ec59c29fe5e"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "26f5da89-2baa-47dd-a721-2685e310650e",
+      "name": "HTTP Request2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        700,
+        620
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "d24ac0e0-83c9-4472-8a77-c2ce20ca7b32",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        920,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const fullData = $items(\"Google Sheets4\"); // Access data directly from the Google Sheets node\nconst sheetUids = fullData.map(item => item.json?.uid);\nconst newContact = [];\nfor (const item of $input.all()) {\n  console.log('uid: ', item?.json?.uid, sheetUids.includes(item?.json?.uid)); // true\n  if(sheetUids.includes(item?.json?.uid)) continue\n  const phoneSend = item?.json?.whatsapp_id.split('@')\n  const nameSend = item?.json?.client_contact_name.split('@')\n  const userSend = {\n    name: phoneSend[0] !== nameSend[0] && !/\\d/.test(nameSend[0]) ? item?.json?.client_contact_name : 'Friend',\n    phone: phoneSend[0],\n  }\n item.json.userSend =userSend\n  newContact.push(item)\n}\n\nreturn newContact;"
+      },
+      "id": "168b70d8-f231-4804-99b1-bb2276f4903d",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1140,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=1822009032#gid=1822009032",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1822009032,
+          "mode": "list",
+          "cachedResultName": "Send - WACRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=1822009032"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "uid": "={{ $('Code').item.json.uid }}",
+            "uuid": "={{ $('Code').item.json.uuid }}",
+            "whatsapp_id": "={{ $('Code').item.json.whatsapp_id }}",
+            "client_contact_name": "={{ $('Code').item.json.client_contact_name }}",
+            "agent_name": "={{ $('Code').item.json.agent_name }}",
+            "channel": "={{ $('Code').item.json.channel }}",
+            "user_name_send": "={{ $('Code').item.json.userSend.name }}",
+            "user_phone_send": "={{ $('Code').item.json.userSend.phone }}"
+          },
+          "matchingColumns": [
+            "uid"
+          ],
+          "schema": [
+            {
+              "id": "uid",
+              "displayName": "uid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "uuid",
+              "displayName": "uuid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "client_contact_name",
+              "displayName": "client_contact_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "agent_name",
+              "displayName": "agent_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "user_name_send",
+              "displayName": "user_name_send",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "user_phone_send",
+              "displayName": "user_phone_send",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "30ca70cc-b8e1-4b8e-8a7d-c3fa4739dc0c",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1320,
+        620
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "024b2941-6751-4f4c-a8af-6a80c21124b2",
+              "leftValue": "={{ $('Get Cmsmart Link').item.json.row_number }}",
+              "rightValue": 300,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            },
+            {
+              "id": "1dd5cb90-88bd-4ae3-ba1d-d51f0ed074f4",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a36d78f8-f821-411c-ba9e-9dca2ca224dd",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        1300
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1822009032,
+          "mode": "list",
+          "cachedResultName": "Send - WACRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=1822009032"
+        },
+        "options": {}
+      },
+      "id": "95b50ff8-7bed-4bff-81c4-710dc0e37498",
+      "name": "Google Sheets4",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        500,
+        620
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 45
+            }
+          ]
+        }
+      },
+      "id": "ca370c97-0ef7-44c6-993b-c74126e5d859",
+      "name": "8AM45",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        160,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "2d269fe6-5fdc-4605-bfb1-d0e45b274a8a",
+      "name": "9AM00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        140,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1822009032,
+          "mode": "list",
+          "cachedResultName": "Send - WACRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=1822009032"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "="
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6b38d61e-3da1-434f-864f-a6341a98ffb6",
+      "name": "Get Cmsmart Link",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        1220
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=1822009032#gid=1822009032",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1822009032,
+          "mode": "list",
+          "cachedResultName": "Send - WACRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=1822009032"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "uid": "={{ $('Get Cmsmart Link').item.json.uid }}",
+            "Status": "Sent"
+          },
+          "matchingColumns": [
+            "uid"
+          ],
+          "schema": [
+            {
+              "id": "uid",
+              "displayName": "uid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "uuid",
+              "displayName": "uuid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_contact_name",
+              "displayName": "client_contact_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "agent_name",
+              "displayName": "agent_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "user_name_send",
+              "displayName": "user_name_send",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "user_phone_send",
+              "displayName": "user_phone_send",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3923657e-3373-4117-94a0-ab308847a5c6",
+      "name": "Google Sheets1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1220,
+        1080
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit?gid=1822009032#gid=1822009032",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1822009032,
+          "mode": "list",
+          "cachedResultName": "Send - WACRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pRm-6FtazTKCK-vDxXL9fM-Y1THn2u7PqhV4-Gp3uZk/edit#gid=1822009032"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "uid": "={{ $('Get Cmsmart Link').item.json.uid }}",
+            "Status": "Error phone number"
+          },
+          "matchingColumns": [
+            "uid"
+          ],
+          "schema": [
+            {
+              "id": "uid",
+              "displayName": "uid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "uuid",
+              "displayName": "uuid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_contact_name",
+              "displayName": "client_contact_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "agent_name",
+              "displayName": "agent_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "user_name_send",
+              "displayName": "user_name_send",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "user_phone_send",
+              "displayName": "user_phone_send",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b5d1c59a-c8bb-4b1e-8c5b-4ab47e1ee83e",
+      "name": "Google Sheets5",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1200,
+        1280
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6ZPseCXSZ0dgVauE",
+          "name": "Google Sheets FB - OCEAN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "phoneNumberId": "379021215295985",
+        "recipientPhoneNumber": "=84379003225",
+        "template": "prompt_notice|en_US",
+        "components": {
+          "component": [
+            {
+              "type": "header",
+              "headerParameters": {
+                "parameter": [
+                  {
+                    "text": "=Friend"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "requestOptions": {}
+      },
+      "id": "817d69ea-24ab-4fe9-acaa-890805b57fb5",
+      "name": "WhatsApp Business Cloud1",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        740,
+        980
+      ],
+      "credentials": {
+        "whatsAppApi": {
+          "id": "m7F17FEwVzsGgbnK",
+          "name": "WhatsApp WACRM - Send"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "99122b7c-79d7-4b9a-9f36-8e5c0a63dfd9",
+              "leftValue": "={{ $json.messages[0].message_status }}",
+              "rightValue": "accepted",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0109faf3-4af8-4fe0-ac50-3decc9b919a0",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "phoneNumberId": "379021215295985",
+        "recipientPhoneNumber": "={{ $json.user_phone_send +'' }}",
+        "template": "prompt_notice|en_US",
+        "components": {
+          "component": [
+            {
+              "type": "header",
+              "headerParameters": {
+                "parameter": [
+                  {
+                    "text": "={{ $json.user_name_send }}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "requestOptions": {}
+      },
+      "id": "148b979a-bcb5-4927-8f22-db53ff08facd",
+      "name": "WhatsApp Business Cloud2",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        760,
+        1220
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "m7F17FEwVzsGgbnK",
+          "name": "WhatsApp WACRM - Send"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "id": "90b76c67-e31f-4479-85f0-daac80ee84f2",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1760,
+        1300
+      ],
+      "webhookId": "39f6f998-bd48-462e-a855-9e53c18734cf"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get Cmsmart Link",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets4": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "9AM00": {
+      "main": [
+        [
+          {
+            "node": "Get Cmsmart Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8AM45": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Cmsmart Link": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets5": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Business Cloud2": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get Cmsmart Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e3e43f99-c4e3-4273-8dd1-94ec217f69c7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "npXjIjjm0F0aBccZ",
+  "tags": []
+}

@@ -1,0 +1,1547 @@
+{
+  "name": "WF30 - AI workflow cho Cmsmart",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0ff24775-5b44-4313-abec-90159dd17b66",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -560,
+        960
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "additionalFields": {
+          "fromDate": ""
+        },
+        "requestOptions": {}
+      },
+      "id": "85a46d90-f20d-4266-bf0e-997ad123db75",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        60,
+        320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "1opePqPakyaymjTT",
+          "name": "Cloodo account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "2a9ad4a7-1f3b-44ae-8cd1-7a39d03f9625",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 2.2,
+      "position": [
+        300,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "058a1ea1-e314-4a27-bbea-a0389ff0cedf",
+              "leftValue": "={{ $json.requester.id }}",
+              "rightValue": "={{ $json.create_by.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a88348d5-a7d8-43a3-be59-b8fba20c7c4a",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        540,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "162ad7fa-dee9-487b-9507-a9894914cdb5",
+              "leftValue": "={{ $json.projects.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "99b0ee8f-7653-4eb3-8de7-f0b2801fa49e",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        840,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## check client create\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 281,
+        "width": 228
+      },
+      "id": "455bfdbf-cff8-45d5-b7e3-82defbb7ee32",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        480,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "options": {}
+      },
+      "id": "da1e743a-733a-4816-b7db-5066c8efa31f",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.5,
+      "position": [
+        1460,
+        -460
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Check project\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 361
+      },
+      "id": "50a6e0d2-5362-46f5-be32-f6be81361f4e",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        780,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.projects.id }}",
+        "requestOptions": {}
+      },
+      "id": "3e4ba467-b5f7-49a2-8d7a-f5780c759df5",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        280
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "1opePqPakyaymjTT",
+          "name": "Cloodo account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=\n\nWrite a Project Summary about 300 words using html tags. For example: <p> <strong> <br/>... which show attractive business profile for an eCommerce development project based on the analysis of the website provided ({{ $json.value }}).\n\n\n\nBusiness Owner:\nProvide the name of the company that owns the project.\nMention their business location and relevant business profiles.\nWebsite Structure and Content:\nAnalyze the website's structure, including navigation flow, key landing pages, product pages, and categories.\nHighlight different content types such as blogs, reviews, and FAQs.\nDesign & User Experience:\nEvaluate the visual design, branding, and user interface.\nAssess mobile responsiveness and cross-browser compatibility.\nIdentify any user experience flaws like slow loading times or unclear CTAs.\nTechnical Details:\nCheck the hosting provider and server environment.\nVerify domain information and the SSL certificate status.\nFunctionality & Features:\nExamine current eCommerce functionality (cart, checkout, payment gateways).\nIdentify any custom-built features or plugins.\nCheck integrations with external systems like CRM, ERP, or marketing tools.\nPerformance:\nReview site speed, loading time, and SEO status (keywords, meta tags, indexing).\nAnalyze traffic statistics and user behavior, if available.\nSecurity:\nInvestigate existing security measures (firewalls, malware protection).\nIdentify any vulnerabilities, such as outdated software or hacking potential.\nSales & Marketing:\nReview the analytics setup (Google Analytics, conversion tracking).\nAssess integration with social media, marketing automation, or email systems.\nLook at sales performance and customer acquisition strategies.\nCompetitor Benchmarking:\nCompare the client’s website with their competitors.\nIdentify industry market trends and user expectations.\nMake sure the profile is comprehensive and visually appealing, emphasizing areas where the website can improve or where Cmsmart can add value to the development.\"\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "11178c95-670d-488a-84e7-df7a5b2378dc",
+      "name": "OpenAI1",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        3740,
+        140
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "ID": "=c818a8fc-b35f-4289-893e-01417ba9efdc",
+        "additionalFields": {
+          "custom_fields_data": "=\"summary\": \"<p>sssssssss</p>\""
+        },
+        "requestOptions": {}
+      },
+      "id": "81080edd-388c-4eea-853b-8a6afac70d86",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        -460
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "1opePqPakyaymjTT",
+          "name": "Cloodo account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://erp-amz.cloodo.com/v4/projects/{{ $('Code4').item.json.data.id }}\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json, text/plain, */*"
+            },
+            {
+              "name": "accept-language",
+              "value": "en-US,en;q=0.9,vi;q=0.8,vi-VN;q=0.7,fr-FR;q=0.6,fr;q=0.5"
+            },
+            {
+              "name": "authorization",
+              "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3Mjg5ODc2NTQsImV4cCI6MTcyOTg1MTY1NCwibmJmIjoxNzI4OTg3NjU0LCJqdGkiOiJIUkkwekJIdUFrS3EyUDFPIiwic3ViIjoiMTI3MSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.tgjhuPfIwHd21Iy6FVqUSiKyjhGhSQP5TCX48I-sKCg"
+            },
+            {
+              "name": "dnt",
+              "value": "1"
+            },
+            {
+              "name": "origin",
+              "value": "https://worksuite.cloodo.com"
+            },
+            {
+              "name": "priority",
+              "value": "u=1, i"
+            },
+            {
+              "name": "referer",
+              "value": "https://worksuite.cloodo.com/"
+            },
+            {
+              "name": "sec-ch-ua",
+              "value": "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\""
+            },
+            {
+              "name": "sec-ch-ua-mobile",
+              "value": "?0"
+            },
+            {
+              "name": "sec-ch-ua-platform",
+              "value": "\"Windows\""
+            },
+            {
+              "name": "sec-fetch-dest",
+              "value": "empty"
+            },
+            {
+              "name": "sec-fetch-mode",
+              "value": "cors"
+            },
+            {
+              "name": "sec-fetch-site",
+              "value": "same-site"
+            },
+            {
+              "name": "user-agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_6b13bba250af9cdc690d4e07e2fe66b05bdc56e5ef1632de55264a7d175cff87"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{ $('Code4').item.json.data.id }}"
+            },
+            {
+              "name": "project_summary",
+              "value": "={{ $json.message.content }}\n{{ $('Code4').item.json.data.summary }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "f228845a-31c0-4ab0-a2c8-562fd6c1b54a",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4280,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "additionalFields": {
+          "search": "Canh Test"
+        },
+        "requestOptions": {}
+      },
+      "id": "53c624a2-af24-4ca8-8409-11fb37dde6d8",
+      "name": "Cloodo Project2",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        460,
+        -400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "1opePqPakyaymjTT",
+          "name": "Cloodo account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.data[0].id }}",
+        "requestOptions": {}
+      },
+      "id": "a68ead5a-7ec1-4707-83b4-c1d53bcda7b2",
+      "name": "Cloodo Project3",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        780,
+        -420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "1opePqPakyaymjTT",
+          "name": "Cloodo account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Write a Project Summary about 300 words which show attractive business profile for an eCommerce development project based on the analysis of the website provided (https://www.cattelanitalia.com/).\n\n\n\nBusiness Owner:\nProvide the name of the company that owns the project.\nMention their business location and relevant business profiles.\nWebsite Structure and Content:\nAnalyze the website's structure, including navigation flow, key landing pages, product pages, and categories.\nHighlight different content types such as blogs, reviews, and FAQs.\nDesign & User Experience:\nEvaluate the visual design, branding, and user interface.\nAssess mobile responsiveness and cross-browser compatibility.\nIdentify any user experience flaws like slow loading times or unclear CTAs.\nTechnical Details:\nCheck the hosting provider and server environment.\nVerify domain information and the SSL certificate status.\nFunctionality & Features:\nExamine current eCommerce functionality (cart, checkout, payment gateways).\nIdentify any custom-built features or plugins.\nCheck integrations with external systems like CRM, ERP, or marketing tools.\nPerformance:\nReview site speed, loading time, and SEO status (keywords, meta tags, indexing).\nAnalyze traffic statistics and user behavior, if available.\nSecurity:\nInvestigate existing security measures (firewalls, malware protection).\nIdentify any vulnerabilities, such as outdated software or hacking potential.\nSales & Marketing:\nReview the analytics setup (Google Analytics, conversion tracking).\nAssess integration with social media, marketing automation, or email systems.\nLook at sales performance and customer acquisition strategies.\nCompetitor Benchmarking:\nCompare the client’s website with their competitors.\nIdentify industry market trends and user expectations.\nMake sure the profile is comprehensive and visually appealing, emphasizing areas where the website can improve or where Cmsmart can add value to the development.\"\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "ba174102-803e-48e4-8533-bf5ed6e632ef",
+      "name": "OpenAI2",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        1100,
+        -420
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputText = $('OpenAI1').item.json.message.content;\nconst jsonObject = JSON.stringify(inputText);\nreturn {\n  html: jsonObject\n};"
+      },
+      "id": "54198c8e-7a83-423a-8ba2-e036a5bc4ba8",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2700,
+        -480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nlet obj = []; // Khởi tạo mảng rỗng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  // Tìm các đối tượng trong custom_fields_data có giá trị 'Premium,'\n  const foundItem = item?.json?.data?.custom_fields_data.find(i => i?.value === 'Premium,');\n  \n  if (foundItem) {\n    // Nếu tìm thấy, thêm vào mảng obj\n    obj.push(item);\n  }\n}\n\nconsole.log('item.json.name:', obj); // In ra mảng kết quả\n\nreturn obj; // Trả về mảng các đối tượng"
+      },
+      "id": "c219be86-e352-454f-87b9-c4fe741f50ee",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2200,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b3d9f2e5-1654-4aa9-b7b1-9d01cffe853e",
+              "leftValue": "={{ $json.data.custom_fields_data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "09237eb8-f926-4199-acd8-e024e459457e",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1860,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check custom field data\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 335.507903410063,
+        "width": 242
+      },
+      "id": "7c4fd0d5-5a24-4ba2-a8d7-7ff1c8f17c06",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f745bf24-51aa-4e55-9577-912f54f3199c",
+              "leftValue": "={{ $json.data.custom_fields_data[0].label }}",
+              "rightValue": "Website",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5e5cb85e-cabd-4400-9f4c-b299afd25c8a",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2280,
+        -520
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check là URL \n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 330,
+        "width": 211
+      },
+      "id": "a13977d0-cb99-4bfc-a9e9-555ad1da5053",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2440,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Convert Json\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 314.7929880637998
+      },
+      "id": "353b3d1b-be12-4920-b32f-ca950d515afe",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2680,
+        -640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Auto chat AI project summary\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 318.9817523565616,
+        "width": 252.7557748526095
+      },
+      "id": "80a8566d-8ab3-4305-b211-ebf3be73ab0b",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3680,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Update project sumary\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 304.80634367258693
+      },
+      "id": "94850469-f6a9-4f42-886e-5e71d1e9ae1f",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4200,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let obj = []; // Khởi tạo mảng rỗng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  // Tìm các đối tượng trong custom_fields_data có giá trị ''\n  const foundItem = item?.json?.data?.custom_fields_data.find(i => i?.label === 'Website');\n  \n  if (foundItem) {\n    // Nếu tìm thấy, thêm vào mảng obj\n    obj.push(item);\n  }\n}\n\nconsole.log('item.json.name:', obj); // In ra mảng kết quả\n\nreturn obj; // Trả về mảng các đối tượng"
+      },
+      "id": "eac88daa-3cda-40fe-bb75-a6f7e918952e",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2500,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let obj = []; // Khởi tạo mảng rỗng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  // Tìm các đối tượng trong custom_fields_data có label là 'Website'\n  const foundItem = item?.json?.data?.custom_fields_data.find(i => i?.label === 'Website' || '');\n  \n  if (foundItem) {\n    // Nếu tìm thấy, thêm giá trị vào mảng obj\n    obj.push(foundItem);\n  }\n  console.log('found:', foundItem); // In ra mảng kết quả\n}\n\n\n\nreturn obj; // Trả về mảng các giá trị"
+      },
+      "id": "3899c099-7dc0-4d10-ab10-48f07cdd8de9",
+      "name": "Code3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3300,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Take URL\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 306.1988551741618
+      },
+      "id": "240517aa-10a9-4ad3-bfab-30f75dea6afb",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3260,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## check Premium\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 313.08074883763925
+      },
+      "id": "73932113-cdc4-4a61-ba0c-15dccb7675b6",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2140,
+        106.95091737319967
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let obj = []; // Khởi tạo mảng rỗng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  // Lấy nội dung summary trực tiếp\n  const summaryText = item?.json?.data?.summary || '';\n  \n  // Kiểm tra nếu summary có ít hơn 100 từ\n  const wordCount = summaryText.split(/\\s+/).filter(Boolean).length;\n\n  if (wordCount < 200) {\n    // Nếu summary ít hơn 200 từ, thêm vào mảng obj\n    obj.push(item);\n  }\n}\n\nconsole.log('item.json.name:', obj); // In ra mảng kết quả\n\nreturn obj; // Trả về mảng các đối tượng"
+      },
+      "id": "b3371146-1a43-48ab-be01-3531ef7cb009",
+      "name": "Code4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2900,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check sumary smaller 200 word\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 338.58084793653336
+      },
+      "id": "4f844b0b-046f-4be7-afd8-61319f3bd939",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2840,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let obj = []; // Khởi tạo mảng rỗng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  // Lấy nội dung summary trực tiếp\n  const summaryText = item?.json?.data?.notes || '';\n  \n  // Kiểm tra nếu summary có ít hơn 100 từ\n  const wordCount = summaryText.split(/\\s+/).filter(Boolean).length;\n\n  if (wordCount < 200) {\n    // Nếu summary ít hơn 200 từ, thêm vào mảng obj\n    obj.push(item);\n  }\n}\n\nconsole.log('item.json.name:', obj); // In ra mảng kết quả\n\nreturn obj; // Trả về mảng các đối tượng"
+      },
+      "id": "99f91336-870e-4101-a4be-3d2a2fbb927e",
+      "name": "Code5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2900,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let obj = []; // Khởi tạo mảng rỗng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  // Tìm các đối tượng trong custom_fields_data có label là 'Website'\n  const foundItem = item?.json?.data?.custom_fields_data.find(i => i?.label === 'Website' || '');\n  \n  if (foundItem) {\n    // Nếu tìm thấy, thêm giá trị vào mảng obj\n    obj.push(foundItem);\n  }\n  console.log('found:', foundItem); // In ra mảng kết quả\n}\n\n\n\nreturn obj; // Trả về mảng các giá trị"
+      },
+      "id": "acf53461-510f-45d1-8b9c-b5436bd753bc",
+      "name": "Code6",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3300,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Take URL\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 306.1988551741618
+      },
+      "id": "21b69abd-7352-4cae-9365-e93bb40e05ed",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3260,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=\n\n\"Write a detailed and attractive business profile using html tags. For example: <p> <strong> <br/>...  for an eCommerce development project based on the analysis of the website provided ({{ $json.value }}). The profile should include the following sections:\n\nBusiness Owner:\nProvide the name of the company that owns the project.\nMention their business location and relevant business profiles.\nWebsite Structure and Content:\nAnalyze the website's structure, including navigation flow, key landing pages, product pages, and categories.\nHighlight different content types such as blogs, reviews, and FAQs.\nDesign & User Experience:\nEvaluate the visual design, branding, and user interface.\nAssess mobile responsiveness and cross-browser compatibility.\nIdentify any user experience flaws like slow loading times or unclear CTAs.\nTechnical Details:\nCheck the hosting provider and server environment.\nVerify domain information and the SSL certificate status.\nFunctionality & Features:\nExamine current eCommerce functionality (cart, checkout, payment gateways).\nIdentify any custom-built features or plugins.\nCheck integrations with external systems like CRM, ERP, or marketing tools.\nPerformance:\nReview site speed, loading time, and SEO status (keywords, meta tags, indexing).\nAnalyze traffic statistics and user behavior, if available.\nSecurity:\nInvestigate existing security measures (firewalls, malware protection).\nIdentify any vulnerabilities, such as outdated software or hacking potential.\nSales & Marketing:\nReview the analytics setup (Google Analytics, conversion tracking).\nAssess integration with social media, marketing automation, or email systems.\nLook at sales performance and customer acquisition strategies.\nCompetitor Benchmarking:\nCompare the client’s website with their competitors.\nIdentify industry market trends and user expectations.\nMake sure the profile is comprehensive and visually appealing, emphasizing areas where the website can improve or where Cmsmart can add value to the development.\"\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "0070ba8b-1a7f-4f4b-8099-7f94eac7f04a",
+      "name": "OpenAI3",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        3740,
+        560
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "n8dQI8Jd37RLAV5K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://erp-amz.cloodo.com/v4/projects/{{ $('Code5').item.json.data.id }}\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json, text/plain, */*"
+            },
+            {
+              "name": "accept-language",
+              "value": "en-US,en;q=0.9,vi;q=0.8,vi-VN;q=0.7,fr-FR;q=0.6,fr;q=0.5"
+            },
+            {
+              "name": "authorization",
+              "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3Mjg5ODc2NTQsImV4cCI6MTcyOTg1MTY1NCwibmJmIjoxNzI4OTg3NjU0LCJqdGkiOiJIUkkwekJIdUFrS3EyUDFPIiwic3ViIjoiMTI3MSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.tgjhuPfIwHd21Iy6FVqUSiKyjhGhSQP5TCX48I-sKCg"
+            },
+            {
+              "name": "dnt",
+              "value": "1"
+            },
+            {
+              "name": "origin",
+              "value": "https://worksuite.cloodo.com"
+            },
+            {
+              "name": "priority",
+              "value": "u=1, i"
+            },
+            {
+              "name": "referer",
+              "value": "https://worksuite.cloodo.com/"
+            },
+            {
+              "name": "sec-ch-ua",
+              "value": "\"Google Chrome\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\""
+            },
+            {
+              "name": "sec-ch-ua-mobile",
+              "value": "?0"
+            },
+            {
+              "name": "sec-ch-ua-platform",
+              "value": "\"Windows\""
+            },
+            {
+              "name": "sec-fetch-dest",
+              "value": "empty"
+            },
+            {
+              "name": "sec-fetch-mode",
+              "value": "cors"
+            },
+            {
+              "name": "sec-fetch-site",
+              "value": "same-site"
+            },
+            {
+              "name": "user-agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_6b13bba250af9cdc690d4e07e2fe66b05bdc56e5ef1632de55264a7d175cff87"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{ $('Code5').item.json.data.id }}"
+            },
+            {
+              "name": "notes",
+              "value": "={{ $json.message.content }}\n{{ $('Code5').item.json.data.notes }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "4d40e76d-84cf-4822-9cf5-923b8e1948ed",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4240,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Auto chat AI project summary\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 318.9817523565616,
+        "width": 252.7557748526095
+      },
+      "id": "ebbed9d9-4a14-4d79-a662-b7bdd56797b6",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3660,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Update project notes\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 304.80634367258693,
+        "width": 268.35878289935516
+      },
+      "id": "14b0798c-79b3-400e-837c-fc79b3ef06e8",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4160,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check notes smaller 200 word\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 338.58084793653336
+      },
+      "id": "0ee967d1-3f54-40d7-b2c6-729fc369f17b",
+      "name": "Sticky Note13",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2840,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "getmany",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "sort": "desc",
+          "fromDate": "={{ $today.set({ hour: 00, minute: 01 }).format('dd-MM-yyyy HH:mm') }}",
+          "toDate": "={{ $today.set({ hour: 23, minute: 59 }).format('dd-MM-yyyy HH:mm') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "18ae54ae-f814-4474-bca9-41873c8621f8",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        120,
+        860
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "fiBPKuOgHpT88AYp",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "ef071054-1cd0-47a2-bf1e-add597125afe",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $json.user.id }}",
+        "requestOptions": {}
+      },
+      "id": "ede2cccc-d369-4b04-abdc-e85ed44e99bf",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        620,
+        860
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "fiBPKuOgHpT88AYp",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from users u \nWHERE u.email = '{{ $json.data.user.email }}'",
+        "options": {}
+      },
+      "id": "d0f3ad8a-43de-4bee-8133-5507ceae8fc2",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        920,
+        860
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "xHtmPZXijb7mD4Ds",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "messageImport": "=Welcome to Cmsmart! 🎉\n\nWe're excited to have you on the team! Cmsmart is all about innovation, collaboration, and helping each other grow. Feel free to reach out if you have any questions as you settle in. Here’s to new beginnings and a successful journey together!\n\nWarm welcome from all of us at Cmsmart 🚀",
+        "userId": "={{ $json.id }}"
+      },
+      "id": "b3fd94c6-31d6-454d-b573-3fce03f5d7c4",
+      "name": "Workchat",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        880
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "Uts59d1XHxJGu1wy",
+          "name": "Workchat Token account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "fromDate": "={{ $today.set({ hour: 0, minute: 1 }).format('dd-MM-yyyy HH:mm') }}",
+          "toDate": "={{ $today.set({ hour: 23, minute: 59 }).format('dd-MM-yyyy HH:mm') }}",
+          "sort": "desc"
+        },
+        "requestOptions": {}
+      },
+      "id": "0b76e284-2055-44bf-8e6d-9cec72a6b06e",
+      "name": "Cloodo CRM3",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        40,
+        1480
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "fiBPKuOgHpT88AYp",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "82eaad6c-7bb1-49af-aab7-5211ce4e28ed",
+      "name": "Item Lists2",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 2.2,
+      "position": [
+        360,
+        1480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from users u \nWHERE u.email = '{{ $json.lead.client_email }}'",
+        "options": {}
+      },
+      "id": "7938cb49-8a3f-429d-a733-3d6e1893e4a5",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1020,
+        1520
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "xHtmPZXijb7mD4Ds",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "messageImport": "=Hello {{ $json.name }},\n\nYou have a new proposal that needs your review. Please take a moment to go through the details at the link below:\n\nhttps://worksuite.cloodo.com/proposal/view/{{ $('If4').item.json.id }}\n\nLet us know if you have any questions or need further clarification.\n\nBest regards,\nCmsMart Admin",
+        "userId": "={{ $json.id }}"
+      },
+      "id": "406d7fe2-7820-4cfa-a45c-682d54a3d431",
+      "name": "Workchat1",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        1520
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "Uts59d1XHxJGu1wy",
+          "name": "Workchat Token account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "54e4f8cb-9b63-4bd0-bc6c-34f893c11eb6",
+              "leftValue": "={{ $json.status.id }}",
+              "rightValue": "aca8bead-453f-41ab-9f29-69690c63f496",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8c90c146-952c-4b7d-8df1-e96c6c782104",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        700,
+        1480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Send message to new member Workchat",
+        "height": 336.5705859223863,
+        "width": 292.08069403675563
+      },
+      "id": "e2f1c20f-967f-4098-a8e3-6957673ee5e9",
+      "name": "Sticky Note14",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23
+            }
+          ]
+        }
+      },
+      "id": "0e165672-8efa-4ecd-9692-344bdf56be3f",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -260,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex + 1 }}",
+              "operation": "smallerEqual",
+              "value2": 2
+            }
+          ]
+        }
+      },
+      "id": "807cf587-0d2b-4c57-b9e8-c7e4cd7d3b6b",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        300,
+        1060
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Send message client You have a proposal need your reviews",
+        "height": 343.6440076327044
+      },
+      "id": "b7fd0eea-8c21-4e65-b870-cac8f806e795",
+      "name": "Sticky Note15",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex + 1 }}",
+              "operation": "smallerEqual",
+              "value2": 4
+            }
+          ]
+        }
+      },
+      "id": "7cae353a-4d3d-4997-8d0b-8dc0c0cc8b10",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        160,
+        1660
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23
+            }
+          ]
+        }
+      },
+      "id": "c2d7c67d-4371-4c11-98a8-b8ba489471cd",
+      "name": "Schedule Trigger1",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -240,
+        1320
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project3": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "OpenAI3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM2": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Workchat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM3": {
+      "main": [
+        [
+          {
+            "node": "Item Lists2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists2": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "Workchat1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [],
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b47d6eea-d13d-4d98-a276-60a863dfb39d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "tjkCBuA8A7DjAaB6",
+  "tags": []
+}
