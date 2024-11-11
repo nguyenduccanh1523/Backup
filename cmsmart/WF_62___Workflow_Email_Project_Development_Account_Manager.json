@@ -1,0 +1,2173 @@
+{
+  "name": "WF 62 - Workflow_Email_Project_Development_Account_Manager",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "8889693c-3c59-47f7-bc57-927125c98b74",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -140,
+        1440
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "cf7a7842-4781-445d-84b0-5e6bac68652c",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        300,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ef83d966-2e62-47c5-89e0-0740d6ec7d42",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "77cf81dc-38c8-4311-930d-62058a190b4e",
+      "name": "Aggregate1",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2100,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "53134a50-a85d-4f7a-ad6c-d7e6ed14a0b7",
+      "name": "Aggregate2",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "80b5858d-ca5d-4543-9b71-bec7e147214d",
+      "name": "Aggregate3",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2100,
+        880
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "e78cab22-0c1c-4b36-b458-30765a1e3fbc",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1860,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=nguyenduccanh1523@gmail.com"
+            },
+            {
+              "name": "uname",
+              "value": "=Canh"
+            },
+            {
+              "name": "subject",
+              "value": "=Welcome to {{ $('Take Value').item.json.project.name }} – Meet Your Project Team!"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "103"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"max-width: 600px; background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px;\">\n                <p>{{ $('Standardize').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value').item.json.project.id }}\">{{ $('Take Value').item.json.project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9eedd212-eade-4718-8485-2c74a3781752",
+      "name": "Onboarding Email Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3900,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=dung.ha@netbasejsc.com"
+            },
+            {
+              "name": "uname",
+              "value": "Dung"
+            },
+            {
+              "name": "subject",
+              "value": "=Welcome to {{ $('Take Value1').item.json.project.name }} – Meet Your Project Team!"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "103"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"max-width: 600px; background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px;\">\n                <p>{{ $json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value1').item.json.project.id }}\">{{ $('Take Value1').item.json.project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cbf4800e-b282-464e-9e00-b5dc5af8d7ae",
+      "name": "Onboarding Email Workflow1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3940,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "website"
+            },
+            {
+              "fieldToAggregate": "user"
+            },
+            {
+              "fieldToAggregate": "adminProject"
+            },
+            {
+              "fieldToAggregate": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "77e7a011-33d5-4870-a88f-6441a87d4d50",
+      "name": "Aggregate5",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2140,
+        1420
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "website"
+            },
+            {
+              "fieldToAggregate": "client.user"
+            },
+            {
+              "fieldToAggregate": "adminProject"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9fddfc01-b59b-41a1-a5ef-85091c3fcc89",
+      "name": "Aggregate4",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        1140
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let obj = []; // Khởi tạo mảng rỗng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  // Tìm các đối tượng trong custom_fields_data có label là 'Website'\n  const foundItem = item?.json?.data?.custom_fields_data.find(i => i?.label === 'Website' || '');\n  const nameClient = item?.json?.data?.client;\n  const projectAdmin = item?.json?.data?.project_admin;\n  \n  if (foundItem) {\n    // Nếu tìm thấy, gộp foundItem và nameClient vào một đối tượng\n    obj.push({\n      website: foundItem, \n      client: nameClient,\n      adminProject: projectAdmin\n    });\n  }\n  console.log('found:', foundItem); // In ra mảng kết quả\n}\n\nreturn obj; // Trả về mảng các giá trị\n"
+      },
+      "id": "6c8ae4cc-ad94-42e1-ba5b-831a5b1d3913",
+      "name": "Take URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        1140
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "ffa61dc1-eed9-41f0-ad44-01c2b7c9b721",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1920,
+        1420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=dung.ha@netbasejsc.com"
+            },
+            {
+              "name": "uname",
+              "value": "Dung"
+            },
+            {
+              "name": "subject",
+              "value": "=Milestone Completed – Your Feedback on [{{ $('Take Value2').item.json.milestone.name }}]"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "103"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"max-width: 600px; background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px;\">\n                <p>{{ $json.textHtml }}</p>\n<strong>Link Milestone: <a href=\"https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('Take Value2').item.json.milestone.id }}\">{{ $('Take Value2').item.json.milestone.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2e21435d-a353-4753-ad7d-6df372fbd9e5",
+      "name": "Post-Milestone Check-In Email Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3940,
+        1420
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "27480044-e48a-435c-a6ef-cb0fe6d0bb91",
+        "requestOptions": {}
+      },
+      "id": "f8c9d7f8-a1e8-44ec-937c-a14beb597f96",
+      "name": "Get Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        560,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "operation": "get",
+        "ID": "ea1f950a-90bb-4090-8372-753d9f9e43b9",
+        "requestOptions": {}
+      },
+      "id": "c80afa1d-e1bf-4a36-aec3-e8f3a662c19c",
+      "name": "Get Milestone",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        520,
+        1440
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "operation": "get",
+        "ID": "07294918-839c-4c53-a5c0-848ca2f4c54b",
+        "requestOptions": {}
+      },
+      "id": "2a3f9d97-cfee-41aa-a2f4-76fa72d7d57a",
+      "name": "Get Milestone1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        400,
+        920
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "149be166-4b74-4309-91eb-acd3cf9d5472",
+              "leftValue": "={{ $json.data.status }}",
+              "rightValue": "not started",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ff963723-ebe1-4f7d-8211-d3bdaf655315",
+      "name": "Check not started",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        860,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.members",
+        "options": {}
+      },
+      "id": "7cf7de51-1a48-45af-a9f7-6022963eae6c",
+      "name": "Split members",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "id": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "00110891-fc00-4e9a-b9e3-cd64404413fd",
+      "name": "Get Employee",
+      "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        120
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bf60afe0-9f95-4d48-b8c6-de848f215516",
+              "name": "project.name",
+              "value": "={{ $json.data[1].name }}",
+              "type": "string"
+            },
+            {
+              "id": "fc4ab56a-f099-4928-9a08-a9ef42b2b213",
+              "name": "project.clientname",
+              "value": "={{ $json.data[1].client.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "12bc061e-c1ea-4385-b3f9-8e83752401c1",
+              "name": "project.clientemail",
+              "value": "={{ $json.data[1].client.user.email }}",
+              "type": "string"
+            },
+            {
+              "id": "faaf9709-45ab-4f71-aa42-01390c6ee194",
+              "name": "project.adminname",
+              "value": "={{ $json.data[1].project_admin.name }}",
+              "type": "string"
+            },
+            {
+              "id": "3af7fb39-6c19-48ca-9dba-4c8fde5e184d",
+              "name": "members",
+              "value": "={{ $json.data[0] }}",
+              "type": "array"
+            },
+            {
+              "id": "60334b29-cb8f-437c-914d-bd69e272187d",
+              "name": "project.start_date",
+              "value": "={{ $json.data[1].start_date }}",
+              "type": "string"
+            },
+            {
+              "id": "9b4bdb93-792f-4a95-8717-a6ac2eec65b8",
+              "name": "project.deadline",
+              "value": "={{ $json.data[1].deadline }}",
+              "type": "string"
+            },
+            {
+              "id": "4651dde7-a41c-4b23-8f17-7ea044db58db",
+              "name": "project.adminEmail",
+              "value": "={{ $json.data[1].project_admin.email }}",
+              "type": "string"
+            },
+            {
+              "id": "c49e5df9-292a-437c-bdca-2691040f0187",
+              "name": "project.id",
+              "value": "={{ $json.data[1].id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e33f5cb3-1bc8-47a4-87e0-f9d0085a4b85",
+      "name": "Take Value",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2340,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n Information of Project: \\n Name: ${rawData?.project?.name}; \\n Start Date of Project: ${rawData?.project?.start_date}; \\n Deadline of Project: ${rawData?.project?.deadline};`\n\n\ndataReFormat+='\\n \\n Assigned team members of project:\\n '\nif(Array.isArray(rawData?.members)){\n      for (const [index, item] of rawData?.members?.entries()) {\n      dataReFormat += `Member ${index + 1} \\n`;\n      dataReFormat += `Name: ${item?.name} \\n`;\n      dataReFormat += `Email: ${item?.email} \\n`;\n      dataReFormat += `Designation: ${item?.designation?.name} \\n`;\n    }\n  dataReFormat += ` \\n \\n`;\n}else{\n      dataReFormat += `Name: ${rawData?.members?.name} \\n`;\n      dataReFormat += `Email: ${rawData?.members?.email} \\n`;\n}\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Project Manager (PM): \\n ' + 'Name: ' + rawData?.project?.adminname + '\\n Email: ' + rawData?.project?.adminEmail\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n// return $input.all()"
+      },
+      "id": "23a355dc-f922-4103-acd8-46b61e9b7d08",
+      "name": "prepareText",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2620,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.message?.content;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "3c4a998f-d823-4eed-805d-e194b628e32e",
+      "name": "Standardize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3200,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.message?.content;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "bc5d1ec7-7cf5-4b7f-a530-884064b65d6d",
+      "name": "Standardize1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3200,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.message?.content;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "eb500251-7095-4cc1-9513-feed36c8665d",
+      "name": "Standardize2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3200,
+        1420
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Write a warm onboarding email from {{ $('Take Value').item.json.project.adminname }} at CmsMart to {{ $('Take Value').item.json.project.clientname }} with no Subject and no Welcome. Introduce the project team members, outline their roles, and set up communication protocols. Encourage the client to reach out with any initial questions. The tone should be friendly, welcoming, and professional.\n\nWith the information below:\n{{ $json.prepareText }}\n\nusing card html: <h3>, <br>, <strong>, <ul>, <li> , ...\n\n\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "05d7a4af-b5de-4490-b446-a6f4884472b6",
+      "name": "AI Onboarding Project",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2900,
+        340
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Write a warm onboarding email from {{ $('Take Value1').item.json.project.adminname }} at CmsMart to {{ $('Take Value1').item.json.project.clientname }} with no Subject. Introduce the project team members, outline their roles, and set up communication protocols. Encourage the client to reach out with any initial questions. The tone should be friendly, welcoming, and professional.\n\nWith the information below:\n{{ $json.prepareText }}\n\nusing card html: <h3>, <br>, <strong>, <ul>, <li> , ...\n\n\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "b9b84f19-bb7b-4c6e-a636-a8db5d41a9f9",
+      "name": "AI Onboarding Milestone",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2900,
+        880
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Compose a follow-up email from {{ $('Take Value2').item.json.project.adminName }} at CmsMart to {{ $('Take Value2').item.json.client.name }} with not Subject, confirming milestone completion for {{ $('Take Value2').item.json.milestone.name }} with not Subject. Ask the client for feedback on the milestone, confirm their satisfaction, and mention the next steps. The tone should be friendly, professional, and appreciative.\nAI Node Output: Generates the email content with a request for feedback and confirmation of milestone satisfaction with not Subject using <br> to line space.\n\nWith the information below:\n{{ $json.prepareText }}\n\nusing card html: <h3>, <br>, <strong>, <ul>, <li> , ...\n\n\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "532ddcd8-3418-4f8e-95b2-6b0a45d58339",
+      "name": "AI Post Milestone",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2920,
+        1420
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n Information of Project: \\n Name: ${rawData?.project?.name}; \\n Start Date of Project: ${rawData?.project?.start_date}; \\n Deadline of Project: ${rawData?.project?.deadline};`\n\n\ndataReFormat+='\\n \\n Assigned team members of project:\\n '\nif(Array.isArray(rawData?.members)){\n      for (const [index, item] of rawData?.members?.entries()) {\n      dataReFormat += `Member ${index + 1} \\n`;\n      dataReFormat += `Name: ${item?.name} \\n`;\n      dataReFormat += `Email: ${item?.email} \\n`;\n      dataReFormat += `Designation: ${item?.designation?.name} \\n`;\n    }\n  dataReFormat += ` \\n \\n`;\n}else{\n      dataReFormat += `Name: ${rawData?.members?.name} \\n`;\n      dataReFormat += `Email: ${rawData?.members?.email} \\n`;\n}\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Project Manager (PM): \\n ' + 'Name: ' + rawData?.project?.adminname + '\\n Email: ' + rawData?.project?.adminEmail\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n// return $input.all()"
+      },
+      "id": "3ad5c3cb-8884-4a59-89c0-c6e235ba58fd",
+      "name": "prepareText1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2620,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n Information of Milestone: \\n Name: ${rawData?.milestone?.name}; \\n Complete Date of Milestone: ${rawData?.milestone?.completeDate}; \\n Summary of Milestone: ${rawData?.milestone?.summary};\n\\n \\n Information of Project: \\n Name: ${rawData?.project?.name}; \\n Website of Project: ${rawData?.project?.website};\n`\n\n\ndataReFormat = dataReFormat +  '\\n \\n Account Manager (AM): \\n ' + 'Name: ' + rawData?.project?.adminName + '\\n Email: ' + rawData?.project?.adminEmail\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n// return $input.all()"
+      },
+      "id": "8dd1ce96-6bc5-4641-9d21-67ca4c1f87d4",
+      "name": "prepareText2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2680,
+        1420
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bf60afe0-9f95-4d48-b8c6-de848f215516",
+              "name": "project.name",
+              "value": "={{ $json.data[1].name }}",
+              "type": "string"
+            },
+            {
+              "id": "fc4ab56a-f099-4928-9a08-a9ef42b2b213",
+              "name": "project.clientname",
+              "value": "={{ $json.data[1].client.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "12bc061e-c1ea-4385-b3f9-8e83752401c1",
+              "name": "project.clientemail",
+              "value": "={{ $json.data[1].client.user.email }}",
+              "type": "string"
+            },
+            {
+              "id": "faaf9709-45ab-4f71-aa42-01390c6ee194",
+              "name": "project.adminname",
+              "value": "={{ $json.data[1].project_admin.name }}",
+              "type": "string"
+            },
+            {
+              "id": "3af7fb39-6c19-48ca-9dba-4c8fde5e184d",
+              "name": "members",
+              "value": "={{ $json.data[0] }}",
+              "type": "array"
+            },
+            {
+              "id": "60334b29-cb8f-437c-914d-bd69e272187d",
+              "name": "project.start_date",
+              "value": "={{ $json.data[1].start_date }}",
+              "type": "string"
+            },
+            {
+              "id": "9b4bdb93-792f-4a95-8717-a6ac2eec65b8",
+              "name": "project.deadline",
+              "value": "={{ $json.data[1].deadline }}",
+              "type": "string"
+            },
+            {
+              "id": "4651dde7-a41c-4b23-8f17-7ea044db58db",
+              "name": "project.adminEmail",
+              "value": "={{ $json.data[1].project_admin.email }}",
+              "type": "string"
+            },
+            {
+              "id": "aaec08e7-9318-4f24-af1c-8adb309139ff",
+              "name": "project.id",
+              "value": "={{ $json.data[1].id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "173e5b1f-75e5-4ea3-9682-04ec8b6790e9",
+      "name": "Take Value1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2380,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bf60afe0-9f95-4d48-b8c6-de848f215516",
+              "name": "milestone.name",
+              "value": "={{ $json.data[0].title }}",
+              "type": "string"
+            },
+            {
+              "id": "fc4ab56a-f099-4928-9a08-a9ef42b2b213",
+              "name": "milestone.completeDate",
+              "value": "={{ $json.data[0].close_date }}",
+              "type": "string"
+            },
+            {
+              "id": "12bc061e-c1ea-4385-b3f9-8e83752401c1",
+              "name": "milestone.summary",
+              "value": "={{ $json.data[0].summary }}",
+              "type": "string"
+            },
+            {
+              "id": "faaf9709-45ab-4f71-aa42-01390c6ee194",
+              "name": "client.name",
+              "value": "={{ $json.user[0][1] }}",
+              "type": "string"
+            },
+            {
+              "id": "3af7fb39-6c19-48ca-9dba-4c8fde5e184d",
+              "name": "client.email",
+              "value": "={{ $json.user[0][2] }}",
+              "type": "string"
+            },
+            {
+              "id": "60334b29-cb8f-437c-914d-bd69e272187d",
+              "name": "project.adminName",
+              "value": "={{ $json.adminProject[0][1] }}",
+              "type": "string"
+            },
+            {
+              "id": "4651dde7-a41c-4b23-8f17-7ea044db58db",
+              "name": "project.adminEmail",
+              "value": "={{ $json.adminProject[0][2] }}",
+              "type": "string"
+            },
+            {
+              "id": "861a36b1-01b5-443b-a474-6da936e2f860",
+              "name": "project.name",
+              "value": "={{ $json.data[0].project.name }}",
+              "type": "string"
+            },
+            {
+              "id": "57c8beb9-2b98-4be4-81d8-ec379518ca80",
+              "name": "project.website",
+              "value": "={{ $json.website[0][2] }}",
+              "type": "string"
+            },
+            {
+              "id": "726ca4e2-2da6-43c2-b59e-2b83a07144c5",
+              "name": "milestone.id",
+              "value": "={{ $json.data[0].id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "483e1ed6-d127-4c79-93c1-7b65db3abde3",
+      "name": "Take Value2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2420,
+        1420
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "website, client.user, adminProject",
+        "options": {}
+      },
+      "id": "098497ca-a521-4de7-83b7-7931abb4ba90",
+      "name": "Split Web, client, adminPro",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        1140
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.data.project.id }}",
+        "requestOptions": {}
+      },
+      "id": "3416f554-caf2-40f9-922e-ac24b18185a6",
+      "name": "Get Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        1140
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "id": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "c811f49d-7b3e-4e7a-ab64-e2c795d99ba7",
+      "name": "Get Employee1",
+      "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        660
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.members",
+        "options": {}
+      },
+      "id": "bcd1eb89-4cbf-4ccb-9726-dda31caadd8b",
+      "name": "Split members1",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.data.project.id }}",
+        "requestOptions": {}
+      },
+      "id": "9b8d0bc5-2b44-4b3f-8718-f9890c9b7803",
+      "name": "Get Project2",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        940,
+        900
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "21c0fa18-5c87-41d0-a294-f9fb54e3a83b",
+              "leftValue": "={{ $json.data.status }}",
+              "rightValue": "Contracted Plan",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "14781068-8dce-4435-89a6-bc6d4d44f1e8",
+      "name": "Check Contracted Plan",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "590d9cb8-f233-482c-b912-4360f6d12ba2",
+              "leftValue": "={{ $json.data.status }}",
+              "rightValue": "Completed",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "95479c25-abab-49a8-a2fb-9c92ee5766a1",
+      "name": "Check Complete",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        820,
+        1440
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# Onboarding Email Workflow",
+        "height": 996.0000420209121,
+        "width": 485.88236530026836,
+        "color": 5
+      },
+      "id": "a8e57a56-3c5b-4ae1-ad8e-5c8e4da5dafb",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3800,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Post-Milestone Check-In Email Workflow",
+        "height": 421.7088411713826,
+        "width": 437.0893742154858,
+        "color": 4
+      },
+      "id": "0a8fee3d-0088-4003-b2e1-81c8857b4987",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3820,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "27480044-e48a-435c-a6ef-cb0fe6d0bb91",
+        "requestOptions": {}
+      },
+      "id": "086cb54e-e0eb-4d55-bad0-8d127f637201",
+      "name": "Get Project3",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        100,
+        2320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c9ac16b6-504e-4bf3-8f9f-be062448cbc8",
+              "leftValue": "={{ $json.data.status }}",
+              "rightValue": "finished",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b34ade1d-7de7-4283-8884-dad269ca038a",
+      "name": "Check Finished",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        2320
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/projects/{{ $json.data.id }}/milestones",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "authorization",
+              "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3MzA3ODExNDIsImV4cCI6MTczMTY0NTE0MiwibmJmIjoxNzMwNzgxMTQyLCJqdGkiOiJnNGVYaVh3Z3pnVnBCbDJEIiwic3ViIjoiMTI3MSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.5kO7o6C2avHUe9CQacmgIkPIZtAQVMhUzvzSiz4SzYU"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "=ws_6b13bba250af9cdc690d4e07e2fe66b05bdc56e5ef1632de55264a7d175cff87"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "95b9f053-930e-4e7a-82be-de133957ef68",
+      "name": "Get Milestones",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        2120
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "c730b28b-46a6-45a2-bb6b-20a32b2f0787",
+      "name": "Split Milestone",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        940,
+        2460
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "92f1f323-39bb-4d29-a256-72981ae5c22c",
+      "name": "Aggregate7",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2060,
+        2280
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "27a8e8a5-ede5-438c-8863-524460420417",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "edabd471-2b6b-477c-9e6c-a5978e11200b",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "709bcf3c-5b0b-4a07-8a93-e803e9192b8c",
+      "name": "Take Title, Summary",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1160,
+        2460
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a4d1d572-d99a-4074-9444-2e559a82f094",
+              "name": "project.id",
+              "value": "={{ $json.data[1].id }}",
+              "type": "string"
+            },
+            {
+              "id": "83cf3617-0390-4fd1-9344-141cc00d2017",
+              "name": "project.name",
+              "value": "={{ $json.data[1].name }}",
+              "type": "string"
+            },
+            {
+              "id": "95f2084e-fdca-4ea1-8310-792a0bb13d93",
+              "name": "project.summary",
+              "value": "={{ $json.data[1].summary }}",
+              "type": "string"
+            },
+            {
+              "id": "1ec51106-baa9-488d-8321-5b35ddf8a6cb",
+              "name": "project.finishedDate",
+              "value": "={{ $json.data[1].updated_at }}",
+              "type": "string"
+            },
+            {
+              "id": "6cc1b412-834d-4e88-bb2e-72f9cf0c4c8e",
+              "name": "milestone",
+              "value": "={{ $json.data[0] }}",
+              "type": "array"
+            },
+            {
+              "id": "ae71c939-1335-4827-8664-a9a80acfc7a1",
+              "name": "client.name",
+              "value": "={{ $json.data[1].client.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "d4284082-98f0-46f2-a594-a22f8c364ca1",
+              "name": "client.email",
+              "value": "={{ $json.data[1].client.user.email }}",
+              "type": "string"
+            },
+            {
+              "id": "88a749a8-aeaf-4e87-a7e5-24bf8c2d9580",
+              "name": "project_admin.name",
+              "value": "={{ $json.data[1].project_admin.name }}",
+              "type": "string"
+            },
+            {
+              "id": "c3894f0e-151e-4e36-968a-a733b3c305fc",
+              "name": "project_admin.email",
+              "value": "={{ $json.data[1].project_admin.email }}",
+              "type": "string"
+            },
+            {
+              "id": "08377f94-8c45-4b90-96ec-4b01bc69ce00",
+              "name": "member_project",
+              "value": "={{ $json.data[1].members }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2a161313-cc17-456a-bf20-f41232c8d668",
+      "name": "Take Value3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2260,
+        2280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n Information of Project: \\n Name: ${rawData?.project?.name}; \\n Finished Date of Project: ${rawData?.project?.finishedDate}; \\n Summary of Project: ${rawData?.project?.summary};\n`\n\ndataReFormat+='\\n \\n With Key Milestones of project:\\n '\nif(Array.isArray(rawData?.milestone)){\n      for (const [index, item] of rawData?.milestone?.entries()) {\n      dataReFormat += `Title: ${item?.title} \\n`;\n      dataReFormat += `Summary: ${item?.summary} \\n`;\n    }\n  dataReFormat += ` \\n \\n`;\n}else{\n      dataReFormat += `Title: ${rawData?.milestone?.title} \\n`;\n      dataReFormat += `Summary: ${rawData?.milestone?.summary} \\n`;\n}\n\ndataReFormat = dataReFormat +  '\\n \\n Account Manager (AM): \\n ' + 'Name: ' + rawData?.project_admin?.name + '\\n Email: ' + rawData?.project_admin?.email\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n// return $input.all()"
+      },
+      "id": "9f7cdecf-6fa0-42dc-8409-22e7a5cf524e",
+      "name": "prepareText3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        2280
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "7825c51c-c682-448b-a4d5-6d13f0e452f0",
+      "name": "Merge3",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1840,
+        2280
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "44477c8b-5c5b-4cb6-81de-2e7e2752883e",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1860,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "title"
+            },
+            {
+              "fieldToAggregate": "summary"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d9226417-3b0f-4162-93cc-36b81cfb1b05",
+      "name": "Aggregate6",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        2460
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Write a friendly end-of-project email from {{ $('Take Value3').item.json.project_admin.name }} at CmsMart to {{ $('Take Value3').item.json.client.name }}, summarizing the project achievements and thanking them for their partnership on {{ $('Take Value3').item.json.project.name }}. Request final feedback, express openness to future collaborations, and suggest any relevant next steps or additional services. The tone should be appreciative, professional, and forward-looking.\nAI Node Output: Generates a wrap-up email with a summary of achievements, a thank-you note, and an invitation for future collaboration using <br> to line space.\n\nWith the information below:\n{{ $json.prepareText }}\n\nusing card html: <h3>, <br>, <strong>, <ul>, <li> , ...\n\n\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "ad88b8c8-6e3b-4b73-ba5f-9d03ea5d61e0",
+      "name": "AI End-of-Project",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2720,
+        2280
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.message?.content;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "f918951f-c2d7-4c4e-b0e7-1d3912aa2117",
+      "name": "Standardize3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2940,
+        2280
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## End-of-Project Follow-Up Email Workflow",
+        "height": 460.72329429689967,
+        "width": 412.20906596489124,
+        "color": 3
+      },
+      "id": "71d4e832-1cb2-413e-87c5-8a9214a0c78b",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3500,
+        2060
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=nguyenduccanh1523@gmail.com"
+            },
+            {
+              "name": "uname",
+              "value": "Canh"
+            },
+            {
+              "name": "subject",
+              "value": "=Thank You for Working with Us on [{{ $('Take Value3').item.json.project.name }}]"
+            },
+            {
+              "name": "send_mail",
+              "value": "project"
+            },
+            {
+              "name": "email_id",
+              "value": "103"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <div width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"max-width: 600px; background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td>\n                <p>{{ $('Standardize3').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value3').item.json.project.id }}\">{{ $('Take Value3').item.json.project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </div>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1824f9ac-758e-4f81-bae5-c9a5e510092a",
+      "name": "End-of-Project Follow-Up Email Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3640,
+        2280
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $('Take Value').item.json.project.id }}",
+        "requestOptions": {}
+      },
+      "id": "9b3e6e6c-6d61-4e56-8575-d51ab8c9e6b5",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3400,
+        480
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "=data.members",
+        "options": {}
+      },
+      "id": "5a5bccc0-bd19-4b2f-bd78-013f540b49f1",
+      "name": "Split member project",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        3640,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $('Take Value1').item.json.project.id }}",
+        "requestOptions": {}
+      },
+      "id": "44e264d0-2522-41fb-9ee8-f533edeb84f0",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        1040
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "=data.members",
+        "options": {}
+      },
+      "id": "b060710b-aa5a-4313-b51e-96594651d0ed",
+      "name": "Split member project1",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        3640,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $('Take Value1').item.json.project.id }}",
+        "requestOptions": {}
+      },
+      "id": "81801fc4-b5cb-48ae-b4b9-80f611ac7f5e",
+      "name": "Cloodo Project2",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        1660
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "=data.members",
+        "options": {}
+      },
+      "id": "03456807-c869-408c-bf6e-c56c7817dfc6",
+      "name": "Split member project2",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        3640,
+        1660
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Take Value",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate3": {
+      "main": [
+        [
+          {
+            "node": "Take Value1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate4": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take URL": {
+      "main": [
+        [
+          {
+            "node": "Split Web, client, adminPro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate5": {
+      "main": [
+        [
+          {
+            "node": "Take Value2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project": {
+      "main": [
+        [
+          {
+            "node": "Check not started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Milestone": {
+      "main": [
+        [
+          {
+            "node": "Check Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Milestone1": {
+      "main": [
+        [
+          {
+            "node": "Check Contracted Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check not started": {
+      "main": [
+        [
+          {
+            "node": "Split members",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split members": {
+      "main": [
+        [
+          {
+            "node": "Get Employee",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Employee": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Value": {
+      "main": [
+        [
+          {
+            "node": "prepareText",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize": {
+      "main": [
+        [
+          {
+            "node": "Onboarding Email Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize1": {
+      "main": [
+        [
+          {
+            "node": "Onboarding Email Workflow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize2": {
+      "main": [
+        [
+          {
+            "node": "Post-Milestone Check-In Email Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Onboarding Project": {
+      "main": [
+        [
+          {
+            "node": "Standardize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Onboarding Milestone": {
+      "main": [
+        [
+          {
+            "node": "Standardize1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Post Milestone": {
+      "main": [
+        [
+          {
+            "node": "Standardize2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText1": {
+      "main": [
+        [
+          {
+            "node": "AI Onboarding Milestone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText2": {
+      "main": [
+        [
+          {
+            "node": "AI Post Milestone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Value1": {
+      "main": [
+        [
+          {
+            "node": "prepareText1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Value2": {
+      "main": [
+        [
+          {
+            "node": "prepareText2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Web, client, adminPro": {
+      "main": [
+        [
+          {
+            "node": "Aggregate4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project1": {
+      "main": [
+        [
+          {
+            "node": "Take URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Employee1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split members1": {
+      "main": [
+        [
+          {
+            "node": "Get Employee1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project2": {
+      "main": [
+        [
+          {
+            "node": "Split members1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Check Contracted Plan": {
+      "main": [
+        [
+          {
+            "node": "Get Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Complete": {
+      "main": [
+        [
+          {
+            "node": "Get Project1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get Project3": {
+      "main": [
+        [
+          {
+            "node": "Check Finished",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Finished": {
+      "main": [
+        [
+          {
+            "node": "Get Milestones",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get Milestones": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Aggregate7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Milestone": {
+      "main": [
+        [
+          {
+            "node": "Take Title, Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Title, Summary": {
+      "main": [
+        [
+          {
+            "node": "Aggregate6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate7": {
+      "main": [
+        [
+          {
+            "node": "Take Value3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Value3": {
+      "main": [
+        [
+          {
+            "node": "prepareText3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText3": {
+      "main": [
+        [
+          {
+            "node": "AI End-of-Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI End-of-Project": {
+      "main": [
+        [
+          {
+            "node": "Standardize3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText": {
+      "main": [
+        [
+          {
+            "node": "AI Onboarding Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize3": {
+      "main": [
+        [
+          {
+            "node": "End-of-Project Follow-Up Email Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "Split member project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split member project": {
+      "main": [
+        []
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "Split member project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split member project1": {
+      "main": [
+        []
+      ]
+    },
+    "Cloodo Project2": {
+      "main": [
+        [
+          {
+            "node": "Split member project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "91c2cd1d-d60c-4df0-a7a3-db1bfb5e6f19",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "c44QvH6cd63EbeVX",
+  "tags": []
+}
