@@ -1,0 +1,478 @@
+{
+  "name": "WF52 - WorkFlow_CRM_Mautic_Proposal_Won",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1ddd6ce1-5c5d-4222-ab75-e3911f64d81c",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "21af988f-6068-41cd-af68-af12c74a8a63",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        840,
+        380
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "e06279f4-8bff-435a-8c37-cf5f05ab7949",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 2.2,
+      "position": [
+        1260,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex+1 }}",
+              "operation": "smallerEqual",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "e65041bc-10f7-44fe-81cb-4e7941cad1e0",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "84311a37-7178-4e99-8465-3ffaee3616da",
+              "leftValue": "={{ $json.status.id }}",
+              "rightValue": "fc9899c9-915d-4f23-b4a0-312d8c966af2",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "620c9204-acf8-4ea0-9d74-5d088b475757",
+      "name": "Check Accepted",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1620,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n Information of Project: \n Name: ${rawData?.project?.name} \n Client Name of Project: ${rawData?.agent?.clientName} \n Description Proposal Accepted of Project: ${rawData?.proposal?.description}\n Date Accepted of Proposal: ${rawData?.proposal?.date}\n`\n\n\ndataReFormat+='\\n \\n Product Items of proposal:\\n '\nif(Array.isArray(rawData?.itemProposal)){\n      for (const [index, item] of rawData?.itemProposal?.entries()) {\n      dataReFormat += `Id ${index + 1} \\n`;\n      dataReFormat += ` ItemName: ${item?.item_name} \\n`;\n      dataReFormat += ` ItemSummary: ${item?.item_summary} \\n`;\n      dataReFormat += ` Unit Price: ${item?.unit_price} \\n`;\n    }\n  dataReFormat += ` \\n \\n`;\n}else{\n      dataReFormat += `ItemName: ${item?.item_name} \\n`;\n      dataReFormat += `ItemSummary: ${item?.item_summary} \\n`;\n}\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Agent: \\n ' + 'Name: ' + rawData?.agent?.name \n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
+      },
+      "id": "a09de236-5318-4d93-a2e1-80e311dabaf2",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2540,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "ID": "=85c21722-34fd-4151-b00e-e3dee4b638bc",
+        "requestOptions": {}
+      },
+      "id": "d028a29d-2619-45e6-8f90-1b87b019fb38",
+      "name": "Get Proposal",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1940,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0b4d030b-c7fd-423a-9e4a-81fc29fb843c",
+              "name": "project.id",
+              "value": "={{ $json.data.project.id }}",
+              "type": "string"
+            },
+            {
+              "id": "3186baac-d2cc-480c-9e3b-cf3702be80ed",
+              "name": "project.name",
+              "value": "={{ $json.data.project.name }}",
+              "type": "string"
+            },
+            {
+              "id": "deba7e3f-87c6-454f-a3d4-fb8936b7adcc",
+              "name": "proposal.description",
+              "value": "={{ $json.data.description }}",
+              "type": "string"
+            },
+            {
+              "id": "2bd98c5b-a21b-4d25-a918-f43a322e5e22",
+              "name": "proposal.date",
+              "value": "={{ $json.data.updated_at }}",
+              "type": "string"
+            },
+            {
+              "id": "8c09495c-ff0f-467e-8125-51c064ece84c",
+              "name": "itemProposal",
+              "value": "={{ $json.data.item }}",
+              "type": "array"
+            },
+            {
+              "id": "6f1661ce-c4d7-49c0-acd6-ae20ff4bd3c9",
+              "name": "agent.name",
+              "value": "={{ $json.data.agent.name }}",
+              "type": "string"
+            },
+            {
+              "id": "9c023ed4-9899-4d96-b19d-10ff736ddb25",
+              "name": "agent.clientName",
+              "value": "={{ $json.data.lead.client_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a720e06d-f911-408a-946d-c86f818b8295",
+      "name": "Take Value",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2240,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Create an email using card: <p>, <strong>, <ul>, <li> and no Subject to congratulate the entire team to celebrate {{ $('Take Value').item.json.agent.name }} successfully completing a proposal for {{ $('Take Value').item.json.project.name }} with {{ $('Take Value').item.json.agent.clientName }}. The email content should:\n- Congratulate {{ $('Take Value').item.json.agent.name }} and highlight specific strengths (e.g., attentiveness to client needs, creative problem solving).\n- Encourage the team to take inspiration from {{ $('Take Value').item.json.agent.name }}'s success and share some practical tips that can help others complete similar deals (e.g., deep understanding of client goals, proactive communication).\n- Emphasize the importance of maintaining a strong relationship with {{ $('Take Value').item.json.agent.clientName }} and explore how this success can lead to future growth.\n- Uplift morale and motivation, using a professional tone.\n\nInclude a closing line that reinforces teamwork and commitment to customer success, and ends with “Sincerely, Netbase Management.”\n\nWith the information below:\n{{ $json.prepareText }}\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value').item.json.project.id }}\">{{ $('Take Value').item.json.project.name }}</a></strong>\n\nusing card html: <p>, <strong>, <ul>, <li>\n\n\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "59d959d9-15e2-476c-bbe7-10c00dd207d8",
+      "name": "Mautic_Proposal_Won",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2800,
+        360
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.message?.content;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "1d699d08-0642-45d4-84d4-3fad9248829c",
+      "name": "Standardize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3040,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=canh.nd@netbasejsc.com"
+            },
+            {
+              "name": "uname",
+              "value": "=Huy Nguyen Quang"
+            },
+            {
+              "name": "subject",
+              "value": "=🎉 Kudos to {{ $('Take Value').item.json.agent.name }} for Closing {{ $('Take Value').item.json.project.name }} Proposal with {{ $('Take Value').item.json.agent.clientName }}! 🎉"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "102"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 15px; color: black\">\n                <p>{{ $('Standardize').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value').item.json.project.id }}\">{{ $('Take Value').item.json.project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "aee19e17-9bbd-49e9-bfeb-fe09d6c278c0",
+      "name": "Mautic_Proposal_Won1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3520,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "canh@gmail.com",
+        "toEmail": "nguyenduccanh2398@gmail.com",
+        "subject": "🎉 Kudos to Perla Nguyen for Closing Project's matthew murphy Proposal with matthew murphy! 🎉",
+        "html": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 15px;\">\n                <p>Dear Team,<p>I am writing this email to extend our warmest congratulations to Perla Nguyen for successfully closing a proposal for the <strong>Project's Matthew Murphy</strong>. This is a commendable achievement that illustrates Perla's unwavering commitment, creative problem-solving skills, and profound attentiveness to client needs.</p><p>Perla's success on this project serves as an exemplar for us all. Her deep understanding of client goals and proactive communication led to the acceptance of the proposal:</p><ul>    <li><strong>On our end:</strong> Our development team will review the StickerYou model and create a similar pricing structure prototype.</li>    <li><strong>On your end:</strong> Could you share details on any specific pricing customizations you would like?</li></ul><p>It's crucial for us to remember the importance of a strong relationship with Matthew Murphy. This success not only drives our current growth but also lays a firm foundation for future prospects.</p><p>Highly motivated and professional, Perla has demonstrated how attention to detail and understanding can lead to the effective completion of a proposal, as exemplified in organizing product items like <strong>Setup Price Matrix</strong> with thorough precision and understanding. This proficiency can be a great learning guide for all of us.</p><p>Let's all take a moment to celebrate Perla's success, using it as motivation to continuously strive for excellence. We are a team, and together, we can turn every challenge into an opportunity. It's through our collective efforts that we can meet our commitment to customer success.</p><p>Sincerily,</p><p>Netbase Management</p></p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/92903fb9-5d61-4c34-a036-3b0a0209ac9e\">Project's matthew murphy</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n",
+        "options": {}
+      },
+      "id": "a04d98f2-ca8c-4103-acea-c1f9c988fe5c",
+      "name": "Send Email1",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        3440,
+        -80
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "3IWSZSQoCZOgbJur",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=canh.nd@netbasejsc.com"
+            },
+            {
+              "name": "uname",
+              "value": "=Huy Nguyen Quang"
+            },
+            {
+              "name": "subject",
+              "value": "=🎉 Kudos to {{ $('Take Value').item.json.agent.name }} for Closing {{ $('Take Value').item.json.project.name }} Proposal with {{ $('Take Value').item.json.agent.clientName }}! 🎉"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "102"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 15px;\">\n                <p>{{ $('Standardize').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value').first().json.project.id }}\">{{ $('Take Value').first().json.project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5fca5127-b0ac-4f7c-b71a-ebb2410bb66e",
+      "name": "Mautic_Proposal_Won1 Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3380,
+        360
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Proposal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Check Accepted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Mautic_Proposal_Won",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Proposal": {
+      "main": [
+        [
+          {
+            "node": "Take Value",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Value": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mautic_Proposal_Won": {
+      "main": [
+        [
+          {
+            "node": "Standardize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize": {
+      "main": [
+        [
+          {
+            "node": "Mautic_Proposal_Won1 Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "de5f5850-c791-4c4c-9197-768be4459991",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "1uGfJ8JBtcBaSATe",
+  "tags": []
+}

@@ -1,0 +1,2180 @@
+{
+  "name": "QCM 82 - Task URL Minus 5 points",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "770ab3b1-b52a-45dc-9838-97877b36be3d",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -560,
+        -760
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "63233259-4a10-4994-89ce-ee2806ba9e27",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 2.2,
+      "position": [
+        360,
+        -760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c589deb2-2c92-4bdf-bfd2-5769ac769437",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "=in progress",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "568b47d0-af80-42de-8145-d99ccad28ff3",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        600,
+        -760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex+1 }}",
+              "operation": "smallerEqual",
+              "value2": 3
+            }
+          ]
+        }
+      },
+      "id": "f278b2de-2020-460f-b173-8bb0dc4644fc",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        340,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "3db7809d-151b-4a9d-b090-2e61182efa90",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -780
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 3 th\nth1: No URL \nth2: URL or premium\nth3: URL and Premium\n",
+        "height": 436.8629692215455
+      },
+      "id": "d877a468-75db-4e3a-b518-602851ee885f",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        -980
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf596c0c-ea73-4d9b-91e0-9441cce10d00",
+              "leftValue": "={{ $json.data.custom_fields_data[0].label }}",
+              "rightValue": "=Website",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1e0b2561-67e9-4ff5-b7d7-034397573d66",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2520,
+        -460
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check URL or premium\n",
+        "height": 287.4162023464633
+      },
+      "id": "e4d1748f-1fc8-4cad-a551-22373026e5ca",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2440,
+        -600
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=Hi {{ $('If1').item.json.data.project_admin.name }}, Please enter URL for project [{{ $('If1').item.json.data.name }}]",
+        "start_date": "={{$today}}",
+        "due_date": "={{$today.plus({days:2})}}",
+        "users": "={{ $('If1').item.json.data.project_admin.id }}",
+        "additionalFields": {
+          "ProjectID": "={{ $('If1').item.json.data.id }}",
+          "taskDescription": "=Link:<a href=https://worksuite.cloodo.com/apps/work/projects/edit-project/{{ $('If1').item.json.data.id }} \">Click here</a><br>\nProjects that lack URLs\n- premium projects, with monthly fees\n- projects with client-created tickets\n- projects with payments\nfor these projects, BAs will have to manually enter the website URL when working on them.",
+          "taskCategoryId": "=7114374e-0342-414e-b4dc-f4ae2d99c757"
+        },
+        "requestOptions": {}
+      },
+      "id": "3d153f1a-1cf6-402d-9dcb-eafe9d955020",
+      "name": "task nhắc cập nhật URL cho project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3477,
+        695
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "search": "=Hi {{ $json.data.project_admin.name }}, Please enter URL for project [{{ $json.data.name }}]"
+        },
+        "requestOptions": {}
+      },
+      "id": "d6fcae1e-742a-48ac-92a7-c98e60fb5981",
+      "name": "Cloodo Project3",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        2877,
+        675
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "72f4a1c4-699a-4924-a740-98ecaa02793f",
+              "leftValue": "={{ $json.meta.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "804fae3a-9594-4009-b105-28c6fea1cbfd",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3097,
+        675
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## check create task chưa\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 369.5263468197786,
+        "width": 381.39814816058686
+      },
+      "id": "e4044061-4516-4144-87a1-555e34f49f53",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2840,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "additionalFields": {
+          "project": "={{ $json.data.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "1dbd89e9-cf74-4386-a855-c7b79e6794f7",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        -1640
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "429ae677-7d25-4cc6-8670-84c50913d08e",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4ee4ba7b-1ff7-47b7-89f5-7e7ce7c1952f",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2360,
+        -1640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check project có trong ticket k, K có thì xem có payment k\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 306.0457964935598,
+        "width": 475.37580520467964
+      },
+      "id": "2a55b932-7a15-41e6-94db-bdb77190132e",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2040,
+        -1780
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b8967e6d-b447-418e-95ae-40d7ee36e6ca",
+              "leftValue": "={{ $json.data[0].requester.id }}",
+              "rightValue": "={{ $json.data[0].create_by.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e4729f6c-b408-4d74-ae5f-07eff27f8ba0",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2860,
+        -1780
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "search": "=Hi {{ $('Switch').item.json.data.project_admin.name }}, Please enter URL for project [{{ $('Switch').item.json.data.name }}]"
+        },
+        "requestOptions": {}
+      },
+      "id": "335218fd-c0ca-433f-a042-ca7c8063a9d9",
+      "name": "Cloodo Project4",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3240,
+        -1840
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## check create task chưa theo project_admin\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 369.5263468197786,
+        "width": 381.39814816058686
+      },
+      "id": "5ba86c91-2fa4-4f20-b425-19c2c4345aff",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        -2000
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check client create\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 332.2486532138056
+      },
+      "id": "03740a68-892d-4e80-a91e-35df957625d5",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2800,
+        -1960
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "72f4a1c4-699a-4924-a740-98ecaa02793f",
+              "leftValue": "={{ $json.meta.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1c24bb58-299b-418e-bebf-d2cd7e94a8a9",
+      "name": "If5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3420,
+        -1840
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=Hi {{ $('If4').item.json.data[0].agent.name }}, Please enter URL for project [{{ $('Switch').item.json.data.name }}]",
+        "start_date": "={{$today}}",
+        "due_date": "={{$today.plus({days:2})}}",
+        "users": "={{ $('If4').item.json.data[0].agent.id }}",
+        "additionalFields": {
+          "ProjectID": "={{ $('Switch').item.json.data.id }}",
+          "taskDescription": "=Link:<a href=https://worksuite.cloodo.com/apps/work/projects/edit-project/{{ $('Switch').item.json.data.id }} \">Click here</a><br>\nProjects that lack URLs\n- premium projects, with monthly fees\n- projects with client-created tickets\n- projects with payments\nfor these projects, BAs will have to manually enter the website URL when working on them.",
+          "taskCategoryId": "=7114374e-0342-414e-b4dc-f4ae2d99c757"
+        },
+        "requestOptions": {}
+      },
+      "id": "02b4056a-6144-40d6-8fd7-42b4ef210132",
+      "name": "task nhắc cập nhật URL cho project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        4400,
+        -1760
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let obj = []; // Khởi tạo mảng rỗng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  // Kiểm tra nếu custom_fields_data tồn tại\n  if (item?.json?.data?.custom_fields_data) {\n    // Tìm các đối tượng không có giá trị bắt đầu bằng 'http' hoặc 'www' hoặc kết thúc bằng '.com'\n    const filteredItems = item.json.data.custom_fields_data.filter(i => \n      i?.value && \n      !i.value.startsWith('http') && \n      !i.value.startsWith('www') && \n      !i.value.endsWith('.com')\n    );\n\n    // Nếu có đối tượng nào không bắt đầu bằng 'http', 'www' hoặc không kết thúc bằng '.com', thêm vào mảng obj\n    if (filteredItems.length > 0) {\n      obj.push(item); // Thêm item vào mảng\n    }\n  }\n}\n\nconsole.log('item.json.name:', obj); // In ra mảng kết quả\n\nreturn obj; // Trả về mảng các đối tượng"
+      },
+      "id": "0c382c8a-6212-46ff-9864-2dba33dfb71c",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3040,
+        -540
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.data.custom_fields_data[0].value }}",
+        "options": {}
+      },
+      "id": "e9920b35-5de3-4f7f-82c1-e4636630143d",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4760,
+        1720
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "search": "=Hi {{ $('If4').item.json.data[0].agent.name }}, Please enter URL for project [{{ $('Switch').item.json.data.name }}]"
+        },
+        "requestOptions": {}
+      },
+      "id": "8626daf9-fb69-4960-b6e3-a8b1e6690956",
+      "name": "Cloodo Project5",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3780,
+        -1780
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "72f4a1c4-699a-4924-a740-98ecaa02793f",
+              "leftValue": "={{ $json.meta.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "50572a94-a7d4-4bb0-997b-257fc4210d05",
+      "name": "If6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4000,
+        -1780
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## check tạo task chưa theo agent trong ticket\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 308.1699615521372,
+        "width": 514.3643481698592
+      },
+      "id": "16d7df65-a1a5-429d-abbb-3dbff9cd34bf",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3716,
+        -1916
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getPayment",
+        "ID": "={{ $('Switch').item.json.data.id }}",
+        "requestOptions": {}
+      },
+      "id": "f46dd69c-b029-4741-bb7e-c0cd0954333a",
+      "name": "Cloodo Project6",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        2840,
+        -1420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "429ae677-7d25-4cc6-8670-84c50913d08e",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "12a31866-5652-4839-87cc-b7e14e6d0f41",
+      "name": "If7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3140,
+        -1420
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check trong payment\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 253.1698871980824,
+        "width": 552.1796220403276
+      },
+      "id": "d2979e23-8fd9-40ef-af42-ed225d183782",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2800,
+        -1500
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "search": "=Hi {{ $('Switch').item.json.data.project_admin.name }}, Please enter URL for project [{{ $('Switch').item.json.data.name }}]"
+        },
+        "requestOptions": {}
+      },
+      "id": "02bcedce-5f67-469e-845c-79ab4b188802",
+      "name": "Cloodo Project7",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3580,
+        -1360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "72f4a1c4-699a-4924-a740-98ecaa02793f",
+              "leftValue": "={{ $json.meta.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0011735d-7dcd-4ef0-ba0c-32717bdbc322",
+      "name": "If8",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3820,
+        -1360
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## check create task chưa theo project_admin\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 369.5263468197786,
+        "width": 494.684008316837
+      },
+      "id": "4072b81c-8372-4a00-bbdc-db0a9e68fcb3",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3540,
+        -1500
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=Hi {{ $('Switch').item.json.data.project_admin.name }}, Please enter URL for project [{{ $('Switch').item.json.data.name }}]",
+        "start_date": "={{$today}}",
+        "due_date": "={{$today.plus({days:2})}}",
+        "users": "={{ $('Switch').item.json.data.project_admin.id }}",
+        "additionalFields": {
+          "ProjectID": "={{ $('Switch').item.json.data.id }}",
+          "taskDescription": "=Link:<a href=https://worksuite.cloodo.com/apps/work/projects/edit-project/{{ $('Switch').item.json.data.id }} \">Click here</a><br>\nProjects that lack URLs\n- premium projects, with monthly fees\n- projects with client-created tickets\n- projects with payments\nfor these projects, BAs will have to manually enter the website URL when working on them.",
+          "taskCategoryId": "=7114374e-0342-414e-b4dc-f4ae2d99c757"
+        },
+        "requestOptions": {}
+      },
+      "id": "c112c58c-37a2-4487-8409-b2f99d393c75",
+      "name": "task nhắc cập nhật URL cho project2",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        4400,
+        -1340
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "additionalFields": {
+          "project": "={{ $json.data.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "360eb49e-9596-4635-87b6-0086903d22d6",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3380,
+        -560
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "429ae677-7d25-4cc6-8670-84c50913d08e",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6f305f86-27aa-42d2-8176-5f6dd066ef24",
+      "name": "If9",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3640,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check project có trong ticket k, K có thì xem có payment k\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 306.0457964935598,
+        "width": 475.37580520467964
+      },
+      "id": "3d839bbb-8568-4e18-a318-d286f2518aa2",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3320,
+        -700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b8967e6d-b447-418e-95ae-40d7ee36e6ca",
+              "leftValue": "={{ $json.data[0].requester.id }}",
+              "rightValue": "={{ $json.data[0].create_by.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "18248edf-1461-4163-86a0-a1f24ba1f55e",
+      "name": "If10",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4060,
+        -580
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check client create\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 332.2486532138056
+      },
+      "id": "0a2c4b35-eef6-4b92-be90-f383bc403fee",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4000,
+        -740
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "search": "=Hi {{ $('If1').item.json.data.project_admin.name }}, Please enter URL for project [{{ $('If1').item.json.data.name }}]"
+        },
+        "requestOptions": {}
+      },
+      "id": "8c6a6073-aaef-499b-939c-12c414e41a92",
+      "name": "Cloodo Project8",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        4420,
+        -600
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## check create task chưa\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 369.5263468197786,
+        "width": 381.39814816058686
+      },
+      "id": "fd139393-e766-43d2-8410-c52ef255d6b7",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4380,
+        -760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "72f4a1c4-699a-4924-a740-98ecaa02793f",
+              "leftValue": "={{ $json.meta.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7165f24e-d570-4085-9cef-bca9013b0aa0",
+      "name": "If11",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4600,
+        -600
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=Hi {{ $('If1').item.json.data.project_admin.name }}, Please enter URL for project [{{ $('Switch').item.json.data.name }}]",
+        "start_date": "={{$today}}",
+        "due_date": "={{$today.plus({days:2})}}",
+        "users": "={{ $('If1').item.json.data.project_admin.id }}",
+        "additionalFields": {
+          "ProjectID": "={{ $('Switch').item.json.data.id }}",
+          "taskDescription": "=Link:<a href=https://worksuite.cloodo.com/apps/work/projects/edit-project/{{ $('Switch').item.json.data.id }} \">Click here</a><br>\nProjects that lack URLs\n- premium projects, with monthly fees\n- projects with client-created tickets\n- projects with payments\nfor these projects, BAs will have to manually enter the website URL when working on them.",
+          "taskCategoryId": "=7114374e-0342-414e-b4dc-f4ae2d99c757"
+        },
+        "requestOptions": {}
+      },
+      "id": "2227c8b8-33f6-4adc-8632-460f3d80f8aa",
+      "name": "task nhắc cập nhật URL cho project3",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        5080,
+        -580
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "getPayment",
+        "ID": "={{ $('Switch').item.json.data.id }}",
+        "requestOptions": {}
+      },
+      "id": "7847b2ba-631b-4965-8a97-0caa62266ae5",
+      "name": "Cloodo Project9",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        3880,
+        -200
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "429ae677-7d25-4cc6-8670-84c50913d08e",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "80ae51e8-60b8-4d40-bc41-090976dfa231",
+      "name": "If12",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4180,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check trong payment\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 253.1698871980824,
+        "width": 552.1796220403276
+      },
+      "id": "17a6d2ec-1c72-4e64-b9bd-9e5f2e8caf1e",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3840,
+        -280
+      ]
+    },
+    {
+      "parameters": {
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "327f972e-4c58-4a1c-948a-fdc5dccc46a7",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -760
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "965aa2c3-d42f-4313-82f5-8e297764b8a2",
+      "name": "Cloodo Project2",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        4980,
+        1660
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "0ce75fe1-9784-4c6c-9a72-1c52a1de1342",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 2.2,
+      "position": [
+        -1940,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex+1 }}",
+              "operation": "smallerEqual",
+              "value2": 2
+            }
+          ]
+        }
+      },
+      "id": "9b3ab7be-5442-4b2f-82d5-45949a642355",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -2080,
+        1060
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "e98783f9-ece9-4591-918d-43c8b0e8b043",
+              "leftValue": "={{ $json.board_column.id }}",
+              "rightValue": "94ff7869-3667-44eb-83c8-39367740d3ba",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ba43d183-5f87-4ebc-9056-d50027281d69",
+      "name": "If13",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1600,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "6c8dc9a2-604c-4b66-aaec-cb57067919b2",
+              "leftValue": "={{ $json.due_date.toDateTime() }}",
+              "rightValue": "={{$today}}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "97231d18-b817-49ca-b5ae-cd833cce9e91",
+      "name": "If14",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1300,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const data = $('Cloodo Project11').item.json.data.description;\nconst uuidPattern = /\\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\b/i;\nconst uuidMatch = uuidPattern.exec(data);\n\n$input.item.json.myNewField = uuidMatch ? uuidMatch[0] : null;\n\nreturn $input.item;\n"
+      },
+      "id": "8de6dfda-f4d9-47c7-a0db-67e6a837738d",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -760,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "b54b2641-e128-4c19-8818-4a6811726ef6",
+              "leftValue": "={{ $json.data.assigned_to }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "609b26c6-8490-40bc-b54d-58aa54f62d40",
+      "name": "If15",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -500,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check complete\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 297.12218984552146
+      },
+      "id": "514e0a99-8ec6-40a0-85d9-70c884450bbb",
+      "name": "Sticky Note13",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1660,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Lấy nội dung từ trường description.\nTìm kiếm một UUID trong nội dung đó.\nLưu UUID tìm được vào một trường mới (myNewField) trong đối tượng JSON và trả về đối tượng đó. Nếu không tìm thấy UUID, trường này sẽ có giá trị null.",
+        "height": 436.37016019472253
+      },
+      "id": "c2079302-7a78-49a9-89fc-0999900f0d45",
+      "name": "Sticky Note14",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -820,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Tồn tại BA\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 306.1037907699911
+      },
+      "id": "f718c011-0527-411d-b28d-afe2b2295ed3",
+      "name": "Sticky Note15",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let obj = []; // Khởi tạo mảng rỗng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  // Tìm các đối tượng trong custom_fields_data có label là 'Website'\n  const foundItem = item?.json?.data?.custom_fields_data.find(i => i?.label === 'Website');\n\n  // Kiểm tra nếu foundItem tồn tại và không có giá trị\n  if (!foundItem || !foundItem.value) {\n    // Nếu tìm thấy và không có giá trị, thêm vào mảng obj\n    obj.push(item); // Thêm đối tượng gốc vào mảng\n  }\n  \n  console.log('found:', foundItem); // In ra giá trị tìm thấy\n}\n\nreturn obj; // Trả về mảng các đối tượng chưa có giá trị cho Website"
+      },
+      "id": "e68faf9f-26b4-4b8c-9433-da55f1b71fce",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        60,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check tồn tại URL\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 319.13376532509506
+      },
+      "id": "62e3146e-888b-4d04-b133-d2df22bbb237",
+      "name": "Sticky Note16",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        20,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 82:{{ $('If15').item.json.data.assigned_to[0].name }} - 5 points After 48 hours of creating a task, it will automatically prompt you to enter the URL if there is no URL in the Project: https://worksuite.cloodo.com/apps/work/tasks/{{ $('If15').item.json.data.id }}",
+        "max_limit_record": 50
+      },
+      "id": "5dbf4d3d-43cc-472b-8c2f-584faff24b7a",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        340,
+        800
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "d6f7b7b4-5419-4bc4-b062-8fc20ca4ff6e",
+              "leftValue": "={{ $json.total_records }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "fdc1acb4-0e28-47a5-9098-cab7c1e1b5b0",
+      "name": "If16",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        680,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If15').item.json.data.assigned_to[0].id }}",
+        "points": 5,
+        "note": "=QCM 82:{{ $('If15').item.json.data.assigned_to[0].name }} - 5 points After 48 hours of creating a task, it will automatically prompt you to enter the URL if there is no URL in the Project: https://worksuite.cloodo.com/apps/work/tasks/{{ $('If15').item.json.data.id }}"
+      },
+      "id": "018db246-1237-4712-a822-cff486ecc918",
+      "name": "Cloodo Point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        800
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "page": "={{ $runIndex+1 }}",
+        "additionalFields": {
+          "search": "Please enter URL for project"
+        },
+        "requestOptions": {}
+      },
+      "id": "afc4d569-5022-453a-bc01-42d72dcd6162",
+      "name": "Cloodo Project10",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -2320,
+        900
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "276f6723-f564-4743-ba34-06e1f25bd13b",
+      "name": "Cloodo Project11",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        820
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.myNewField }}",
+        "requestOptions": {}
+      },
+      "id": "43f4672a-7336-4c7d-9ce0-18f3139159a0",
+      "name": "Cloodo Project12",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        800
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Check quá hạn\n\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 354.7514218433813
+      },
+      "id": "1ea26d37-5cad-460f-8adb-0ce367a76823",
+      "name": "Sticky Note17",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1360,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data.custom_fields_data[0].id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "number",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "4fee0c09-038f-4536-8d9b-839897a3767a",
+                    "leftValue": "={{ $json.data.custom_fields_data[1].id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "number",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8b9d74aa-4563-4c87-af0b-c1b025d2f2ee",
+                    "leftValue": "={{ $json.data.custom_fields_data[1].id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "number",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cf1c4c2c-e2d4-4558-ace6-5d51c2e9da1e",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1100,
+        -780
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/projects",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "={{ $runIndex + 1}}"
+            },
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "status",
+              "value": "in progress"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json, text/plain, */*"
+            },
+            {
+              "name": "accept-language",
+              "value": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5"
+            },
+            {
+              "name": "authorization",
+              "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3MzE2NDUyNTksImV4cCI6MTczMjUwOTI1OSwibmJmIjoxNzMxNjQ1MjU5LCJqdGkiOiIxV1h6RzFSWlE5V3cwalQzIiwic3ViIjoiMTI3MSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.mzSLdwCg6cC0VlaGsd3-8QqgEeANIWbJUnW-j6zEZ-E"
+            },
+            {
+              "name": "origin",
+              "value": "https://worksuite.cloodo.com"
+            },
+            {
+              "name": "priority",
+              "value": "u=1, i"
+            },
+            {
+              "name": "referer",
+              "value": "https://worksuite.cloodo.com/"
+            },
+            {
+              "name": "sec-ch-ua",
+              "value": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\""
+            },
+            {
+              "name": "sec-ch-ua-mobile",
+              "value": "?0"
+            },
+            {
+              "name": "sec-ch-ua-platform",
+              "value": "\"Windows\""
+            },
+            {
+              "name": "sec-fetch-dest",
+              "value": "empty"
+            },
+            {
+              "name": "sec-fetch-mode",
+              "value": "cors"
+            },
+            {
+              "name": "sec-fetch-site",
+              "value": "same-site"
+            },
+            {
+              "name": "user-agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_6b13bba250af9cdc690d4e07e2fe66b05bdc56e5ef1632de55264a7d175cff87"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "21fa1d82-4593-4ac4-987f-6075e3ab24f0",
+      "name": "In Progress",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        -1700
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "848ed982-354a-41e9-8c82-96471cb456ae",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -420,
+        -1020
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cloodo Project3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project3": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "task nhắc cập nhật URL cho project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cloodo Project6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project4": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo Project5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project5": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [],
+        [
+          {
+            "node": "task nhắc cập nhật URL cho project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project6": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project7": {
+      "main": [
+        [
+          {
+            "node": "If8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If7": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If8": {
+      "main": [
+        [],
+        [
+          {
+            "node": "task nhắc cập nhật URL cho project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "If9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If9": {
+      "main": [
+        [
+          {
+            "node": "If10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cloodo Project9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project8": {
+      "main": [
+        [
+          {
+            "node": "If11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If10": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If11": {
+      "main": [
+        [],
+        [
+          {
+            "node": "task nhắc cập nhật URL cho project3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project9": {
+      "main": [
+        [
+          {
+            "node": "If12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "If13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If13": {
+      "main": [
+        [
+          {
+            "node": "If14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If14": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If15": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point": {
+      "main": [
+        [
+          {
+            "node": "If16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If16": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project10": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project11": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project12": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9a8ab574-a933-4281-934b-6e6b21dd6479",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "S1oKfaHSHwu236MA",
+  "tags": []
+}
