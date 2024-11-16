@@ -7,8 +7,8 @@
       "name": "When clicking ‘Test workflow’",
       "type": "n8n-nodes-base.manualTrigger",
       "position": [
-        -1000,
-        3300
+        -1280,
+        2020
       ],
       "typeVersion": 1
     },
@@ -55,7 +55,7 @@
     {
       "parameters": {
         "operation": "get",
-        "ID": "27480044-e48a-435c-a6ef-cb0fe6d0bb91",
+        "ID": "={{ $json.data[0].id }}",
         "requestOptions": {}
       },
       "id": "6124d189-59d3-4af8-a6f7-cdef54cbeae7",
@@ -63,7 +63,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        -320,
+        -60,
         580
       ],
       "credentials": {
@@ -85,7 +85,7 @@
           "conditions": [
             {
               "id": "149be166-4b74-4309-91eb-acd3cf9d5472",
-              "leftValue": "={{ $json.data.status }}",
+              "leftValue": "={{ $json.status }}",
               "rightValue": "not started",
               "operator": {
                 "type": "string",
@@ -103,8 +103,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -20,
-        580
+        -940,
+        600
       ]
     },
     {
@@ -216,7 +216,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n Information of Project: \\n Name: ${rawData?.project?.name}; \\n Project Summary: ${rawData?.project?.summary};\n\\n Start Date of Project: ${rawData?.project?.start_date}; \\n Deadline of Project: ${rawData?.project?.deadline};`\n\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Bussiness Analyst (BA): \\n ' + 'Name: ' + rawData?.BA?.name + '\\n Email: ' + rawData?.BA?.email\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n"
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n Information of Project: \\n Name: ${rawData?.project?.name}; \\n Project Summary: ${rawData?.project?.summary};\n\\n Start Date of Project: ${rawData?.project?.start_date}; \\n Deadline of Project: ${rawData?.project?.deadline};`\n\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Bussiness Analyst (BA): \\n ' + 'Name: ' + rawData?.BA?.name \n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n"
       },
       "id": "8a53fc47-6c71-44f3-9df4-47dd0f08a225",
       "name": "prepareText",
@@ -243,7 +243,7 @@
     {
       "parameters": {
         "content": "## Requirement Gathering Email Workflow",
-        "height": 1063.8094620151069,
+        "height": 1904.8366085677499,
         "width": 485.88236530026836,
         "color": 5
       },
@@ -253,7 +253,7 @@
       "typeVersion": 1,
       "position": [
         2920,
-        360
+        143.8073579672623
       ]
     },
     {
@@ -298,7 +298,7 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        2760,
+        2800,
         700
       ]
     },
@@ -334,7 +334,7 @@
             },
             {
               "name": "email_id",
-              "value": "103"
+              "value": "109"
             },
             {
               "name": "content",
@@ -349,19 +349,13 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3100,
-        560
+        3060,
+        320
       ]
     },
     {
       "parameters": {
-        "fieldsToAggregate": {
-          "fieldToAggregate": [
-            {
-              "fieldToAggregate": "data"
-            }
-          ]
-        },
+        "aggregate": "aggregateAllItemData",
         "options": {}
       },
       "id": "b30510ad-f483-4b08-8908-3fa46305e234",
@@ -370,7 +364,7 @@
       "typeVersion": 1,
       "position": [
         900,
-        920
+        1280
       ]
     },
     {
@@ -389,8 +383,8 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1220,
-        1180
+        1240,
+        1540
       ]
     },
     {
@@ -400,15 +394,15 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        980,
-        1180
+        1000,
+        1540
       ]
     },
     {
       "parameters": {
         "resource": "milestones",
         "operation": "get",
-        "ID": "07294918-839c-4c53-a5c0-848ca2f4c54b",
+        "ID": "55e10d62-93bf-4f65-a94f-b4805d0dae85",
         "requestOptions": {}
       },
       "id": "3e7a8c93-1bcc-4895-8c7d-c91c488f8ea6",
@@ -416,8 +410,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        -520,
-        1220
+        -720,
+        1580
       ],
       "credentials": {
         "cloodoApi": {
@@ -437,8 +431,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
       "typeVersion": 1,
       "position": [
-        380,
-        960
+        -160,
+        1320
       ],
       "credentials": {
         "cloodoApi": {
@@ -458,8 +452,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        140,
-        960
+        -340,
+        1320
       ]
     },
     {
@@ -473,8 +467,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        60,
-        1200
+        -420,
+        1580
       ],
       "credentials": {
         "cloodoApi": {
@@ -495,7 +489,7 @@
           "conditions": [
             {
               "id": "21c0fa18-5c87-41d0-a294-f9fb54e3a83b",
-              "leftValue": "={{ $json.data.status }}",
+              "leftValue": "={{ $json.status }}",
               "rightValue": "Contracted Plan",
               "operator": {
                 "type": "string",
@@ -505,7 +499,7 @@
             },
             {
               "id": "7842cd78-cbef-4289-93d5-4bf3ac6c992d",
-              "leftValue": "={{ $json.data.status }}",
+              "leftValue": "={{ $json.status }}",
               "rightValue": "Under Proposal",
               "operator": {
                 "type": "string",
@@ -523,14 +517,14 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -220,
-        1220
+        -1740,
+        1600
       ]
     },
     {
       "parameters": {
         "operation": "get",
-        "ID": "={{ $('Take Value1').item.json.project.id }}",
+        "ID": "={{ $('Take Value3').item.json.project.id }}",
         "requestOptions": {}
       },
       "id": "aa740af7-6b67-4fb7-8fed-ec40fd143678",
@@ -538,8 +532,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        2660,
-        2560
+        2680,
+        3560
       ],
       "credentials": {
         "cloodoApi": {
@@ -558,8 +552,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        2900,
-        2560
+        2920,
+        3560
       ]
     },
     {
@@ -587,7 +581,7 @@
             {
               "id": "faaf9709-45ab-4f71-aa42-01390c6ee194",
               "name": "BA.name",
-              "value": "={{ $json.data[0][0].name }}",
+              "value": "={{ $json.data[0][0].baData[0].name }}",
               "type": "string"
             },
             {
@@ -611,13 +605,25 @@
             {
               "id": "4651dde7-a41c-4b23-8f17-7ea044db58db",
               "name": "BA.email",
-              "value": "={{ $json.data[0][0].email }}",
+              "value": "={{ $json.data[0][0].baData[0].email }}",
               "type": "string"
             },
             {
               "id": "c49e5df9-292a-437c-bdca-2691040f0187",
               "name": "project.id",
               "value": "={{ $json.data[1].id }}",
+              "type": "string"
+            },
+            {
+              "id": "80b3fed4-2499-4877-92cb-a2a2419df4c5",
+              "name": "BA.nameProject",
+              "value": "={{ $json.data[0][0].data.name }}",
+              "type": "string"
+            },
+            {
+              "id": "f7e01395-c1ac-4a19-8526-9912f7738d84",
+              "name": "BA.emailProject",
+              "value": "={{ $json.data[0][0].data.email }}",
               "type": "string"
             }
           ]
@@ -629,21 +635,21 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1460,
-        1180
+        1480,
+        1540
       ]
     },
     {
       "parameters": {
-        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n Information of Project: \\n Name: ${rawData?.project?.name}; \\n Project Summary: ${rawData?.project?.summary};\n\\n Start Date of Project: ${rawData?.project?.start_date}; \\n Deadline of Project: ${rawData?.project?.deadline};`\n\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Bussiness Analyst (BA): \\n ' + 'Name: ' + rawData?.BA?.name + '\\n Email: ' + rawData?.BA?.email\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n"
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n Information of Project: \\n Name: ${rawData?.project?.name}; \\n Project Summary: ${rawData?.project?.summary};\n\\n Start Date of Project: ${rawData?.project?.start_date}; \\n Deadline of Project: ${rawData?.project?.deadline};`\n\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Bussiness Analyst (BA): \\n ' + 'Name: ' + (rawData?.BA?.name != null ? rawData?.BA?.name : rawData?.BA?.nameProject)\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n"
       },
       "id": "cb2f1c7e-de1d-45ed-b32d-c290b006e712",
       "name": "prepareText1",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1740,
-        1180
+        1760,
+        1540
       ]
     },
     {
@@ -655,8 +661,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2320,
-        1180
+        2340,
+        1540
       ]
     },
     {
@@ -670,8 +676,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        2560,
-        1320
+        2580,
+        1680
       ],
       "credentials": {
         "cloodoApi": {
@@ -690,8 +696,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        2760,
-        1320
+        2780,
+        1680
       ]
     },
     {
@@ -710,7 +716,7 @@
           "parameters": [
             {
               "name": "email",
-              "value": "=nguyenduccanh1523@gmail.com"
+              "value": "=huy.nq@netbasejsc.com"
             },
             {
               "name": "uname",
@@ -726,7 +732,7 @@
             },
             {
               "name": "email_id",
-              "value": "103"
+              "value": "109"
             },
             {
               "name": "content",
@@ -741,19 +747,13 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3120,
-        1180
+        3080,
+        1340
       ]
     },
     {
       "parameters": {
-        "fieldsToAggregate": {
-          "fieldToAggregate": [
-            {
-              "fieldToAggregate": "data"
-            }
-          ]
-        },
+        "aggregate": "aggregateAllItemData",
         "options": {}
       },
       "id": "c1c5b9cc-fa11-42fa-9066-e6c97a569c0f",
@@ -762,7 +762,7 @@
       "typeVersion": 1,
       "position": [
         940,
-        1520
+        2180
       ]
     },
     {
@@ -781,15 +781,15 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1300,
-        1780
+        1280,
+        2500
       ]
     },
     {
       "parameters": {
         "resource": "milestones",
         "operation": "get",
-        "ID": "07294918-839c-4c53-a5c0-848ca2f4c54b",
+        "ID": "=07294918-839c-4c53-a5c0-848ca2f4c54b",
         "requestOptions": {}
       },
       "id": "c53b81a8-290f-497b-adaf-a1e918d3e676",
@@ -797,8 +797,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        -460,
-        1820
+        -780,
+        2520
       ],
       "credentials": {
         "cloodoApi": {
@@ -818,8 +818,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
       "typeVersion": 1,
       "position": [
-        400,
-        1560
+        -180,
+        2220
       ],
       "credentials": {
         "cloodoApi": {
@@ -840,8 +840,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        40,
-        1660
+        -600,
+        2380
       ],
       "credentials": {
         "cloodoApi": {
@@ -862,7 +862,7 @@
           "conditions": [
             {
               "id": "21c0fa18-5c87-41d0-a294-f9fb54e3a83b",
-              "leftValue": "={{ $json.data.status }}",
+              "leftValue": "={{ $json.status }}",
               "rightValue": "Contracted Plan",
               "operator": {
                 "type": "string",
@@ -872,7 +872,7 @@
             },
             {
               "id": "7842cd78-cbef-4289-93d5-4bf3ac6c992d",
-              "leftValue": "={{ $json.data.status }}",
+              "leftValue": "={{ $json.status }}",
               "rightValue": "Awaiting Approval",
               "operator": {
                 "type": "string",
@@ -890,8 +890,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -180,
-        1820
+        -1780,
+        2540
       ]
     },
     {
@@ -919,7 +919,7 @@
             {
               "id": "faaf9709-45ab-4f71-aa42-01390c6ee194",
               "name": "=BA.name",
-              "value": "={{ $json.data[0][0].name }}",
+              "value": "={{ $json.data[0][0].baData[0].name }}",
               "type": "string"
             },
             {
@@ -937,7 +937,7 @@
             {
               "id": "4651dde7-a41c-4b23-8f17-7ea044db58db",
               "name": "BA.email",
-              "value": "={{ $json.data[0][0].email }}",
+              "value": "={{ $json.data[0][0].baData[0].email }}",
               "type": "string"
             },
             {
@@ -951,6 +951,18 @@
               "name": "project.name",
               "value": "={{ $json.data[2].name }}",
               "type": "string"
+            },
+            {
+              "id": "2294a3d0-f825-4a3e-a604-06c87da75e4e",
+              "name": "BA.nameProject",
+              "value": "={{ $json.data[0][0].data.name }}",
+              "type": "string"
+            },
+            {
+              "id": "68eed2a2-4bd7-4aa8-bb74-7e7abae1cde7",
+              "name": "BA.emailProject",
+              "value": "={{ $json.data[0][0].data.email }}",
+              "type": "string"
             }
           ]
         },
@@ -961,21 +973,21 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1540,
-        1780
+        1520,
+        2500
       ]
     },
     {
       "parameters": {
-        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n\\n Information of Project: \\n \\n Name: ${rawData?.project?.name} \\n Client Name: ${rawData?.project?.clientname} \\n Client Email: ${rawData?.project?.clientemail} \\n \\n With Finalized document details:\n\\n Name: ${rawData?.milestone?.name}\n Summary: ${rawData?.milestone?.summary}\n`\n\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Bussiness Analyst (BA): \\n ' + 'Name: ' + rawData?.BA?.name + '\\n Email: ' + rawData?.BA?.email\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n"
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n\\n Information of Project: \\n \\n Name: ${rawData?.project?.name} \\n Client Name: ${rawData?.project?.clientname} \\n Client Email: ${rawData?.project?.clientemail} \\n \\n With Finalized document details:\n\\n Name: ${rawData?.milestone?.name}\n Summary: ${rawData?.milestone?.summary}\n`\n\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Bussiness Analyst (BA): \\n ' + 'Name: ' + (rawData?.BA?.name != null ? rawData?.BA?.name : rawData?.BA?.nameProject)\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n"
       },
       "id": "8d8a444d-f73a-4d4f-9257-f69ec3eddc53",
       "name": "prepareText2",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1820,
-        1780
+        1800,
+        2500
       ]
     },
     {
@@ -987,8 +999,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2400,
-        1780
+        2380,
+        2500
       ]
     },
     {
@@ -1002,8 +1014,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        2640,
-        1920
+        2620,
+        2640
       ],
       "credentials": {
         "cloodoApi": {
@@ -1023,7 +1035,7 @@
       "typeVersion": 1,
       "position": [
         2840,
-        1920
+        2640
       ]
     },
     {
@@ -1048,8 +1060,8 @@
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1.1,
       "position": [
-        2100,
-        1780
+        2080,
+        2500
       ],
       "credentials": {
         "openAiApi": {
@@ -1080,8 +1092,8 @@
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1.1,
       "position": [
-        2020,
-        1180
+        2040,
+        1540
       ],
       "credentials": {
         "openAiApi": {
@@ -1132,8 +1144,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        240,
-        1560
+        -380,
+        2220
       ]
     },
     {
@@ -1148,12 +1160,12 @@
           "conditions": [
             {
               "id": "d8d53b8a-6d37-497e-87c2-75415e0ac736",
-              "leftValue": "={{ $json.data.designation.id }}",
+              "leftValue": "={{ $json.baData }}",
               "rightValue": "c442e6ec-c999-4e06-8c7f-038d18498df7",
               "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
               }
             }
           ],
@@ -1166,8 +1178,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        620,
-        940
+        500,
+        1300
       ]
     },
     {
@@ -1182,12 +1194,12 @@
           "conditions": [
             {
               "id": "d8d53b8a-6d37-497e-87c2-75415e0ac736",
-              "leftValue": "={{ $json.data.designation.id }}",
+              "leftValue": "={{ $json.baData }}",
               "rightValue": "c442e6ec-c999-4e06-8c7f-038d18498df7",
               "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
               }
             }
           ],
@@ -1200,8 +1212,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        680,
-        1540
+        540,
+        2200
       ]
     },
     {
@@ -1236,7 +1248,7 @@
             },
             {
               "name": "email_id",
-              "value": "103"
+              "value": "109"
             },
             {
               "name": "content",
@@ -1251,21 +1263,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3100,
-        1780
-      ]
-    },
-    {
-      "parameters": {
-        "numberInputs": 3
-      },
-      "id": "5ca6f3f0-68a5-4d44-b92d-7f3fb44b3129",
-      "name": "Merge2",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [
-        1060,
-        1780
+        3220,
+        2380
       ]
     },
     {
@@ -1284,8 +1283,8 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        980,
-        2160
+        1000,
+        3160
       ]
     },
     {
@@ -1304,15 +1303,15 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1340,
-        2420
+        1360,
+        3420
       ]
     },
     {
       "parameters": {
         "resource": "milestones",
         "operation": "get",
-        "ID": "1a5a9b1e-35a1-4e96-836d-088ed4e843fd",
+        "ID": "={{ $json.data[0].id }}",
         "requestOptions": {}
       },
       "id": "2e48e3a1-96fa-499a-89c2-5e97d50514aa",
@@ -1320,8 +1319,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        -420,
-        2460
+        -160,
+        3460
       ],
       "credentials": {
         "cloodoApi": {
@@ -1341,8 +1340,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
       "typeVersion": 1,
       "position": [
-        440,
-        2200
+        460,
+        3200
       ],
       "credentials": {
         "cloodoApi": {
@@ -1363,8 +1362,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        80,
-        2300
+        100,
+        3300
       ],
       "credentials": {
         "cloodoApi": {
@@ -1446,21 +1445,21 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1580,
-        2420
+        1600,
+        3420
       ]
     },
     {
       "parameters": {
-        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n\\n Information of Project: \\n \\n Name: ${rawData?.project?.name} \\n Client Name: ${rawData?.project?.clientname} \\n Client Email: ${rawData?.project?.clientemail} \\n \\n With Milestone Goals:\n\\n Name: ${rawData?.milestone?.name}\n Summary: ${rawData?.milestone?.summary}\n Start_Date: ${rawData?.milestone?.start_date}\n Deadline: ${rawData?.milestone?.deadline}\n`\n\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Bussiness Analyst (BA): \\n ' + 'Name: ' + rawData?.BA?.name + '\\n Email: ' + rawData?.BA?.email\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n"
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n\\n Information of Project: \\n \\n Name: ${rawData?.project?.name} \\n Client Name: ${rawData?.project?.clientname} \\n \\n With Milestone Goals:\n\\n Name: ${rawData?.milestone?.name}\n Summary: ${rawData?.milestone?.summary}\n Start_Date: ${rawData?.milestone?.start_date}\n Deadline: ${rawData?.milestone?.deadline}\n`\n\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Bussiness Analyst (BA): \\n ' + 'Name: ' + rawData?.BA?.name \n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n"
       },
       "id": "bf191023-d926-49d4-9948-0dcb857adadc",
       "name": "prepareText3",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1860,
-        2420
+        1880,
+        3420
       ]
     },
     {
@@ -1472,8 +1471,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2440,
-        2420
+        2460,
+        3420
       ]
     },
     {
@@ -1486,8 +1485,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        280,
-        2200
+        300,
+        3200
       ]
     },
     {
@@ -1520,8 +1519,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        720,
-        2180
+        740,
+        3180
       ]
     },
     {
@@ -1533,8 +1532,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        1100,
-        2420
+        1120,
+        3420
       ]
     },
     {
@@ -1549,7 +1548,7 @@
           "conditions": [
             {
               "id": "21c0fa18-5c87-41d0-a294-f9fb54e3a83b",
-              "leftValue": "={{ $json.data.status }}",
+              "leftValue": "={{ $json.status }}",
               "rightValue": "In Progress",
               "operator": {
                 "type": "string",
@@ -1567,8 +1566,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -140,
-        2460
+        -1120,
+        3480
       ]
     },
     {
@@ -1593,8 +1592,8 @@
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1.1,
       "position": [
-        2140,
-        2420
+        2160,
+        3420
       ],
       "credentials": {
         "openAiApi": {
@@ -1635,7 +1634,7 @@
             },
             {
               "name": "email_id",
-              "value": "103"
+              "value": "109"
             },
             {
               "name": "content",
@@ -1650,8 +1649,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3140,
-        2420
+        3360,
+        3300
       ]
     },
     {
@@ -1667,8 +1666,8 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        2840,
-        2200
+        2860,
+        3200
       ],
       "credentials": {
         "smtp": {
@@ -1680,7 +1679,7 @@
     {
       "parameters": {
         "operation": "get",
-        "ID": "={{ $('Take Value1').item.json.project.id }}",
+        "ID": "={{ $('Take Value4').item.json.project.id }}",
         "requestOptions": {}
       },
       "id": "c6fe2d23-0f9e-437f-9d1f-951563106c49",
@@ -1688,8 +1687,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        2820,
-        3480
+        2840,
+        4480
       ],
       "credentials": {
         "cloodoApi": {
@@ -1708,8 +1707,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        3020,
-        3480
+        3040,
+        4480
       ]
     },
     {
@@ -1728,8 +1727,8 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1020,
-        2960
+        1040,
+        3960
       ]
     },
     {
@@ -1748,15 +1747,15 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1540,
-        3260
+        1560,
+        4260
       ]
     },
     {
       "parameters": {
         "resource": "milestones",
         "operation": "get",
-        "ID": "3e625156-5e02-4c0f-b30d-c3294177c7e7",
+        "ID": "={{ $json.data[0].id }}",
         "requestOptions": {}
       },
       "id": "4d397ce3-cb55-4115-9bbc-88efcbedca6d",
@@ -1764,8 +1763,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        -440,
-        3300
+        -180,
+        4260
       ],
       "credentials": {
         "cloodoApi": {
@@ -1785,8 +1784,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
       "typeVersion": 1,
       "position": [
-        480,
-        3000
+        500,
+        4000
       ],
       "credentials": {
         "cloodoApi": {
@@ -1807,8 +1806,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        40,
-        3120
+        60,
+        4120
       ],
       "credentials": {
         "cloodoApi": {
@@ -1896,21 +1895,21 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1780,
-        3260
+        1800,
+        4260
       ]
     },
     {
       "parameters": {
-        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\nInformation of Project: \n\\n Name: ${rawData?.project?.name} \n Summary: ${rawData?.project?.summary}\n Client Name of Project: ${rawData?.project?.clientname} \n Client Email of Project: ${rawData?.project?.clientemail}\n\n\\n \\n With Milestone Progress Summary: Completion percentage, adjustments made, feedback received:\n\\n Name: ${rawData?.milestone?.name}\n Summary: ${rawData?.milestone?.summary}\n Start_Date: ${rawData?.milestone?.start_date}\n Deadline: ${rawData?.milestone?.deadline}\n\n`\n\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Bussiness Analyst (BA): \\n ' + 'Name: ' + rawData?.BA?.name + '\\n Email: ' + rawData?.BA?.email\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n"
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\nInformation of Project: \n\\n Name: ${rawData?.project?.name} \n Summary: ${rawData?.project?.summary}\n Client Name of Project: ${rawData?.project?.clientname} \n Client Email of Project: ${rawData?.project?.clientemail}\n\n\\n \\n With Milestone Progress Summary: Completion percentage, adjustments made, feedback received:\n\\n Name: ${rawData?.milestone?.name}\n Summary: ${rawData?.milestone?.summary}\n Start_Date: ${rawData?.milestone?.start_date}\n Deadline: ${rawData?.milestone?.deadline}\n\n`\n\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Bussiness Analyst (BA): \\n ' + 'Name: ' + rawData?.BA?.name \n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n"
       },
       "id": "d0cc64dc-8971-40ab-8956-f0b4aa1c0da1",
       "name": "prepareText4",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2060,
-        3260
+        2080,
+        4260
       ]
     },
     {
@@ -1922,8 +1921,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2640,
-        3260
+        2660,
+        4260
       ]
     },
     {
@@ -1936,8 +1935,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        320,
-        3000
+        340,
+        4000
       ]
     },
     {
@@ -1970,21 +1969,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        760,
-        2980
-      ]
-    },
-    {
-      "parameters": {
-        "numberInputs": 3
-      },
-      "id": "969aaf9a-a398-4283-a1b2-b86f29aae489",
-      "name": "Merge4",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [
-        1300,
-        3260
+        780,
+        3980
       ]
     },
     {
@@ -1999,7 +1985,7 @@
           "conditions": [
             {
               "id": "21c0fa18-5c87-41d0-a294-f9fb54e3a83b",
-              "leftValue": "={{ $json.data.status }}",
+              "leftValue": "={{ $json.status }}",
               "rightValue": "In Progress",
               "operator": {
                 "type": "string",
@@ -2017,8 +2003,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -160,
-        3300
+        -1180,
+        4280
       ]
     },
     {
@@ -2043,8 +2029,8 @@
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1.1,
       "position": [
-        2340,
-        3260
+        2360,
+        4260
       ],
       "credentials": {
         "openAiApi": {
@@ -2066,8 +2052,8 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        3000,
-        3100
+        2980,
+        4120
       ],
       "credentials": {
         "smtp": {
@@ -2078,15 +2064,18 @@
     },
     {
       "parameters": {
-        "content": "## Mid-Milestone Progress Update Email Workflow"
+        "content": "## Mid-Milestone Progress Update Email Workflow",
+        "height": 650.910405817811,
+        "width": 509.51943848820997,
+        "color": 6
       },
       "id": "9d760c3e-64e9-44c4-b73c-d1d1c1b0f890",
       "name": "Sticky Note1",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -620,
-        3480
+        3260,
+        4100
       ]
     },
     {
@@ -2105,7 +2094,7 @@
           "parameters": [
             {
               "name": "email",
-              "value": "=huy.nq@netbasejsc.com"
+              "value": "=nguyenduccanh1523@gmail.com"
             },
             {
               "name": "uname",
@@ -2121,7 +2110,7 @@
             },
             {
               "name": "email_id",
-              "value": "103"
+              "value": "109"
             },
             {
               "name": "content",
@@ -2136,8 +2125,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3240,
-        3260
+        3420,
+        4260
       ]
     },
     {
@@ -2151,8 +2140,658 @@
       "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
       "typeVersion": 1,
       "position": [
-        640,
-        3400
+        660,
+        4400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "additionalFields": {
+          "limit": "50"
+        },
+        "requestOptions": {}
+      },
+      "id": "63e245ed-7c44-4d19-a231-f8e716ba482a",
+      "name": "Cloodo Project5",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -1440,
+        600
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "802b13f7-5201-4546-9178-540650194aea",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -1220,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "type": "random"
+      },
+      "id": "8dbb3df4-a511-4f54-9796-150ad5dc8367",
+      "name": "Sort",
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "7097dd53-6700-4b5b-aefb-d913a4d88259",
+      "name": "Aggregate10",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -380,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Getting Started: Setting Up Requirements for {{ $('Take Value').item.json.project.name }}"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 15px;\">\n                <p>{{ $('Standardize').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value').item.json.project.id }}\">{{ $('Take Value').item.json.project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "851c5280-e190-467a-b91a-10d5c9904e54",
+      "name": "Requirement Gathering Email Workflow2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3100,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "additionalFields": {
+          "limit": "50"
+        },
+        "requestOptions": {}
+      },
+      "id": "5f3bbaee-01cc-4844-bbd6-306108e23442",
+      "name": "Get Many Milestone",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -2680,
+        3060
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "7a0b4bc8-63d1-4550-a417-d441a7b010f8",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -2360,
+        3060
+      ]
+    },
+    {
+      "parameters": {
+        "type": "random"
+      },
+      "id": "ce346e43-a80b-47c8-a1e7-3bb1a7889885",
+      "name": "Sort1",
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        -1420,
+        1580
+      ]
+    },
+    {
+      "parameters": {
+        "type": "random"
+      },
+      "id": "6c7efd62-2bc2-4023-9784-864c4c508ea0",
+      "name": "Sort2",
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        -1480,
+        2520
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "c0307a85-9ed7-40a9-ba22-939e197f13f3",
+      "name": "Aggregate11",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1060,
+        1580
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "087789c0-ca5a-4569-a4c8-fa18fe357000",
+      "name": "Aggregate12",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1180,
+        2520
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Getting Started: Setting Up Requirements for {{ $('Take Value1').item.json.project.name }}"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 15px;\">\n                <p>{{ $('Standardize1').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value1').item.json.project.id }}\">{{ $('Take Value1').item.json.project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b1f04328-48e2-4344-b293-6650d1335b90",
+      "name": "Requirement Gathering Email Workflow3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3120,
+        1680
+      ]
+    },
+    {
+      "parameters": {
+        "type": "random"
+      },
+      "id": "1f3f2112-e47a-45b5-8449-27b4029bf174",
+      "name": "Sort3",
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        3460
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "862dcbc1-f363-415e-8dcf-8405f3ff8da4",
+      "name": "Aggregate13",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        3460
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=nguyenduccanh1523@gmail.com"
+            },
+            {
+              "name": "uname",
+              "value": "=Huy Nguyen Quang"
+            },
+            {
+              "name": "subject",
+              "value": "=Requirements Finalized for {{ $('Take Value2').item.json.project.name }}"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 15px;\">\n                <p>{{ $('Standardize2').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value2').item.json.project.id }}\">{{ $('Take Value2').item.json.project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9f01cc75-b7ad-4103-a2d3-a0f73bbbdd08",
+      "name": "Requirements Confirmation Email Workflow1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3220,
+        2640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Requirements Confirmation Email Workflow",
+        "height": 609.2326672385868,
+        "width": 662.8072162245523,
+        "color": 2
+      },
+      "id": "279fd389-886c-4cd7-a010-a980bbdeb6b9",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3000,
+        2262.099809882981
+      ]
+    },
+    {
+      "parameters": {
+        "type": "random"
+      },
+      "id": "97f12571-a89b-46cd-ae3c-fe2ed99080ff",
+      "name": "Sort4",
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        -860,
+        4260
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "a7b866b1-72bb-43c2-bac6-e95d13cfc5fc",
+      "name": "Aggregate14",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        4260
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Milestone Kickoff Email",
+        "height": 564.7177137390809,
+        "width": 485.7583483814516,
+        "color": 3
+      },
+      "id": "42ec24a3-d639-42e2-ac51-659633a8e32b",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        3221.4457315003974
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=nguyenduccanh1523@gmail.com"
+            },
+            {
+              "name": "uname",
+              "value": "=Huy Nguyen Quang"
+            },
+            {
+              "name": "subject",
+              "value": "=Kickoff: Starting Work on {{ $('Take Value3').first().json.milestone.name }}"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 15px;\">\n                <p>{{ $('Standardize3').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value3').first().json.project.id }}\">{{ $('Take Value3').first().json.project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3791654a-7a2f-4f00-82b6-7a77113387eb",
+      "name": "Milestone Kickoff Email1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3400,
+        3560
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=nguyenduccanh1523@gmail.com"
+            },
+            {
+              "name": "uname",
+              "value": "=Huy Nguyen Quang"
+            },
+            {
+              "name": "subject",
+              "value": "=Mid-Milestone Update: Progress on  {{ $('Take Value4').first().json.project.name }}"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 15px;\">\n                <p>{{ $('Standardize4').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value4').first().json.project.id }}\">{{ $('Take Value4').first().json.project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b5da766f-b7c1-4299-a572-8e2ee18c787e",
+      "name": "Mid-Milestone Progress Update Email Workflow1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3440,
+        4520
+      ]
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "969aaf9a-a398-4283-a1b2-b86f29aae489",
+      "name": "Merge4",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1320,
+        4260
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "id": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "a60ff52c-5b3d-44e9-9881-80989efa6472",
+      "name": "get Agent1",
+      "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
+      "typeVersion": 1,
+      "position": [
+        740,
+        2320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "id": "={{ $json.data.added_by.id }}",
+        "requestOptions": {}
+      },
+      "id": "73a63cd7-6f39-45c5-8030-f38366a39ef6",
+      "name": "get Agent2",
+      "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
+      "typeVersion": 1,
+      "position": [
+        580,
+        3620
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9f79abe8-8fa7-424b-9671-f27af9b8e94e",
+      "name": "Aggregate15",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        80,
+        2200
+      ]
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "5ca6f3f0-68a5-4d44-b92d-7f3fb44b3129",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1040,
+        2500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rawData = $input.all()[0].json.data;\n\nconst id = $node['Get Project3']?.json?.data?.members[0].id\n\nconst ceoData = rawData.filter(item => item?.designation?.name == \"Business Analyst\");\n\nconsole.log('dd', id)\n\nreturn {baData: ceoData, id: id}; "
+      },
+      "id": "573a0119-3e36-4df6-84c5-112708957a21",
+      "name": "Check BA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        2200
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "27a238b2-3737-4b9c-a79b-f90edeea6c1c",
+      "name": "Aggregate16",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        100,
+        1300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst rawData = $input.all()[0].json.data;\n\nconst id = $node['Get Project2']?.json?.data?.members[0].id\n\nconst ceoData = rawData.filter(item => item?.designation?.name == \"Business Analyst\");\n\nconsole.log('dd', id)\n\nreturn {baData: ceoData, id: id}; "
+      },
+      "id": "742c435d-28b2-4178-90dc-438a3bffcbe2",
+      "name": "Check BA1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        1300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "id": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "36726406-6bf6-4687-afad-982374d40df8",
+      "name": "get Agent3",
+      "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
+      "typeVersion": 1,
+      "position": [
+        720,
+        1380
       ],
       "credentials": {
         "cloodoApi": {
@@ -2190,17 +2829,6 @@
       "main": [
         [
           {
-            "node": "Check not started",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Check not started": {
-      "main": [
-        [
-          {
             "node": "Split members",
             "type": "main",
             "index": 0
@@ -2209,6 +2837,17 @@
             "node": "Merge",
             "type": "main",
             "index": 1
+          }
+        ]
+      ]
+    },
+    "Check not started": {
+      "main": [
+        [
+          {
+            "node": "Sort",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -2260,6 +2899,11 @@
     "Standardize": {
       "main": [
         [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          },
           {
             "node": "Requirement Gathering Email Workflow",
             "type": "main",
@@ -2327,7 +2971,7 @@
       "main": [
         [
           {
-            "node": "Check Contracted Plan",
+            "node": "Get Project2",
             "type": "main",
             "index": 0
           }
@@ -2338,7 +2982,7 @@
       "main": [
         [
           {
-            "node": "Get BA",
+            "node": "Aggregate16",
             "type": "main",
             "index": 0
           }
@@ -2376,7 +3020,7 @@
       "main": [
         [
           {
-            "node": "Get Project2",
+            "node": "Sort1",
             "type": "main",
             "index": 0
           }
@@ -2405,20 +3049,14 @@
         ]
       ]
     },
-    "prepareText1": {
-      "main": [
-        [
-          {
-            "node": "AI Requirement Gathering Milesetone",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Standardize1": {
       "main": [
         [
+          {
+            "node": "Cloodo Project2",
+            "type": "main",
+            "index": 0
+          },
           {
             "node": "Requirement Gathering Email Workflow1",
             "type": "main",
@@ -2464,9 +3102,14 @@
       "main": [
         [
           {
-            "node": "Check Contracted Plan1",
+            "node": "Get Project3",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
           }
         ]
       ]
@@ -2475,7 +3118,7 @@
       "main": [
         [
           {
-            "node": "Get BA1",
+            "node": "Aggregate15",
             "type": "main",
             "index": 0
           }
@@ -2502,23 +3145,7 @@
       "main": [
         [
           {
-            "node": "Get Project3",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge2",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "prepareText2": {
-      "main": [
-        [
-          {
-            "node": "AI Requirement Project2",
+            "node": "Sort2",
             "type": "main",
             "index": 0
           }
@@ -2573,7 +3200,7 @@
       "main": [
         [
           {
-            "node": "Get Milestone3",
+            "node": "Get Milestone1",
             "type": "main",
             "index": 0
           }
@@ -2599,6 +3226,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "get Agent3",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -2607,6 +3241,13 @@
         [
           {
             "node": "Aggregate4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Agent1",
             "type": "main",
             "index": 0
           }
@@ -2624,22 +3265,11 @@
         ]
       ]
     },
-    "Merge2": {
-      "main": [
-        [
-          {
-            "node": "Aggregate5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Standardize2": {
       "main": [
         [
           {
-            "node": "Requirements Confirmation Email Workflow",
+            "node": "Cloodo Project3",
             "type": "main",
             "index": 0
           }
@@ -2661,7 +3291,17 @@
       "main": [
         [
           {
-            "node": "Check InProgress",
+            "node": "Get Project4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "get Agent2",
             "type": "main",
             "index": 0
           }
@@ -2765,14 +3405,9 @@
       "main": [
         [
           {
-            "node": "Get Project4",
+            "node": "Sort3",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "Merge3",
-            "type": "main",
-            "index": 1
           }
         ]
       ]
@@ -2836,9 +3471,19 @@
       "main": [
         [
           {
-            "node": "Check InProgress1",
+            "node": "Get Project5",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "get Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
           }
         ]
       ]
@@ -2925,32 +3570,11 @@
         ]
       ]
     },
-    "Merge4": {
-      "main": [
-        [
-          {
-            "node": "Aggregate9",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Check InProgress1": {
       "main": [
         [
           {
-            "node": "Get Project5",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge4",
-            "type": "main",
-            "index": 1
-          },
-          {
-            "node": "get Agent",
+            "node": "Sort4",
             "type": "main",
             "index": 0
           }
@@ -2978,13 +3602,293 @@
           }
         ]
       ]
+    },
+    "Cloodo Project5": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Check not started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort": {
+      "main": [
+        [
+          {
+            "node": "Aggregate10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate10": {
+      "main": [
+        [
+          {
+            "node": "Get Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split member project": {
+      "main": [
+        [
+          {
+            "node": "Requirement Gathering Email Workflow2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Many Milestone": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "Check Contracted Plan1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate11": {
+      "main": [
+        []
+      ]
+    },
+    "Sort3": {
+      "main": [
+        [
+          {
+            "node": "Aggregate13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate13": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort4": {
+      "main": [
+        [
+          {
+            "node": "Aggregate14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate14": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Aggregate9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split member project2": {
+      "main": [
+        [
+          {
+            "node": "Requirement Gathering Email Workflow3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Agent1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Agent2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate15": {
+      "main": [
+        [
+          {
+            "node": "Check BA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText2": {
+      "main": [
+        [
+          {
+            "node": "AI Requirement Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check BA": {
+      "main": [
+        [
+          {
+            "node": "Get BA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate16": {
+      "main": [
+        [
+          {
+            "node": "Check BA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check BA1": {
+      "main": [
+        [
+          {
+            "node": "Get BA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Agent3": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText1": {
+      "main": [
+        [
+          {
+            "node": "AI Requirement Gathering Milesetone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "ee84d4f1-b73b-4d52-8129-2af6df5e0f0b",
+  "versionId": "31473ff2-889d-4d98-9e14-5f72e52df959",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
