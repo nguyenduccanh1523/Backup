@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        1580,
-        160
+        -160,
+        380
       ]
     },
     {
@@ -17,7 +17,10 @@
         "resource": "Proposal",
         "operation": "getmany",
         "page": "={{ $runIndex + 1 }}",
-        "additionalFields": {},
+        "additionalFields": {
+          "sort": "desc",
+          "statusID": "accepted"
+        },
         "requestOptions": {}
       },
       "id": "21af988f-6068-41cd-af68-af12c74a8a63",
@@ -25,8 +28,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        840,
-        380
+        620,
+        40
       ],
       "credentials": {
         "cloodoApi": {
@@ -45,7 +48,7 @@
       "type": "n8n-nodes-base.itemLists",
       "typeVersion": 2.2,
       "position": [
-        1260,
+        480,
         380
       ]
     },
@@ -66,8 +69,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1100,
-        580
+        580,
+        740
       ]
     },
     {
@@ -100,7 +103,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1620,
+        820,
         380
       ]
     },
@@ -120,7 +123,7 @@
     {
       "parameters": {
         "resource": "Proposal",
-        "ID": "=85c21722-34fd-4151-b00e-e3dee4b638bc",
+        "ID": "={{ $json.data[0].id }}",
         "requestOptions": {}
       },
       "id": "d028a29d-2619-45e6-8f90-1b87b019fb38",
@@ -204,7 +207,7 @@
         "prompt": {
           "messages": [
             {
-              "content": "=Create an email using card: <p>, <strong>, <ul>, <li> and no Subject to congratulate the entire team to celebrate {{ $('Take Value').item.json.agent.name }} successfully completing a proposal for {{ $('Take Value').item.json.project.name }} with {{ $('Take Value').item.json.agent.clientName }}. The email content should:\n- Congratulate {{ $('Take Value').item.json.agent.name }} and highlight specific strengths (e.g., attentiveness to client needs, creative problem solving).\n- Encourage the team to take inspiration from {{ $('Take Value').item.json.agent.name }}'s success and share some practical tips that can help others complete similar deals (e.g., deep understanding of client goals, proactive communication).\n- Emphasize the importance of maintaining a strong relationship with {{ $('Take Value').item.json.agent.clientName }} and explore how this success can lead to future growth.\n- Uplift morale and motivation, using a professional tone.\n\nInclude a closing line that reinforces teamwork and commitment to customer success, and ends with “Sincerely, Netbase Management.”\n\nWith the information below:\n{{ $json.prepareText }}\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value').item.json.project.id }}\">{{ $('Take Value').item.json.project.name }}</a></strong>\n\nusing card html: <p>, <strong>, <ul>, <li>\n\n\n\n"
+              "content": "=Create an email using card: <p>, <strong>, <ul>, <li>, starting Dear Everyone and without a subject line, Congratulations to the entire company for {{ $('Take Value').item.json.agent.name }} successfully completing a proposal for {{ $('Take Value').item.json.project.name }} with {{ $('Take Value').item.json.agent.clientName }}. The email content should:\n- Congratulate {{ $('Take Value').item.json.agent.name }} and highlight specific strengths (e.g., attentiveness to client needs, creative problem solving).\n- Encourage the team to take inspiration from {{ $('Take Value').item.json.agent.name }}'s success and share some practical tips that can help others complete similar deals (e.g., deep understanding of client goals, proactive communication).\n- Emphasize the importance of maintaining a strong relationship with {{ $('Take Value').item.json.agent.clientName }} and explore how this success can lead to future growth.\n- Uplift morale and motivation, using a professional tone.\n\nInclude a closing line that reinforces teamwork and commitment to customer success, and ends with “Sincerely, Netbase Management.”\n\nWith the information below:\n{{ $json.prepareText }}\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value').item.json.project.id }}\">{{ $('Take Value').item.json.project.name }}</a></strong>\n\nusing card html: <p>, <strong>, <ul>, <li>\n\n\n\n"
             }
           ]
         },
@@ -307,7 +310,7 @@
       "typeVersion": 2.1,
       "position": [
         3440,
-        -80
+        -120
       ],
       "credentials": {
         "smtp": {
@@ -332,11 +335,11 @@
           "parameters": [
             {
               "name": "email",
-              "value": "=huy.nq@netbasejsc.com"
+              "value": "=all@netbasejsc.com"
             },
             {
               "name": "uname",
-              "value": "=Huy Nguyen Quang"
+              "value": "=NETBASE"
             },
             {
               "name": "subject",
@@ -366,6 +369,101 @@
         3300,
         360
       ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/proposals",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "limit",
+              "value": "50"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "authorization",
+              "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXJwLWFtei5jbG9vZG8uY29tL3Y0L2FjY291bnRzL3NpZ24taW4iLCJpYXQiOjE3MzE3MzE4MjQsImV4cCI6MTczMjU5NTgyNCwibmJmIjoxNzMxNzMxODI0LCJqdGkiOiI1dlhVTTNtVmMzekxxZk5pIiwic3ViIjoiMTI3MSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.0WwGIIL6c8PbYF_93cx4JVdBlP-C7XBc7laGdoRHWNE"
+            },
+            {
+              "name": "x-worksuite-company-token",
+              "value": "ws_6b13bba250af9cdc690d4e07e2fe66b05bdc56e5ef1632de55264a7d175cff87"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7f48690e-cb6b-425a-9659-d3a8acb4f160",
+      "name": "Get 50 Limit Proposal",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        200,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "type": "random"
+      },
+      "id": "2a1bcb35-7657-48cd-96c7-59f8c297229b",
+      "name": "Sort2",
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "66c8ed3c-df53-437d-a042-e99b24ed2bf1",
+      "name": "Aggregate12",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 9,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "0cb7819c-bc7f-4184-8f3a-c670d78cb99f",
+      "name": "9AM00 Mon to Fri",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        100
+      ]
     }
   ],
   "pinData": {},
@@ -374,23 +472,7 @@
       "main": [
         [
           {
-            "node": "Get Proposal",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Cloodo CRM": {
-      "main": [
-        [
-          {
-            "node": "Item Lists",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "IF",
+            "node": "Get 50 Limit Proposal",
             "type": "main",
             "index": 0
           }
@@ -462,13 +544,68 @@
           }
         ]
       ]
+    },
+    "Get 50 Limit Proposal": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate12": {
+      "main": [
+        [
+          {
+            "node": "Get Proposal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Accepted": {
+      "main": [
+        [
+          {
+            "node": "Sort2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "9AM00 Mon to Fri": {
+      "main": [
+        [
+          {
+            "node": "Get 50 Limit Proposal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "d35182e9-176a-44f8-9168-e12ed08b87c3",
+  "versionId": "299d8e44-7a60-4c87-9d0c-3dcf4c029cee",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
