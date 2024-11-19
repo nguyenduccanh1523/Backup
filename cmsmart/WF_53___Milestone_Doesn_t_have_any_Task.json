@@ -8,7 +8,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        500,
+        -200,
         440
       ]
     },
@@ -22,7 +22,7 @@
       "type": "n8n-nodes-base.itemLists",
       "typeVersion": 2.2,
       "position": [
-        980,
+        400,
         440
       ]
     },
@@ -39,7 +39,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        720,
+        140,
         440
       ],
       "credentials": {
@@ -61,7 +61,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        1600,
+        1020,
         420
       ],
       "credentials": {
@@ -100,7 +100,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1240,
+        660,
         440
       ]
     },
@@ -134,13 +134,13 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1920,
+        1280,
         420
       ]
     },
     {
       "parameters": {
-        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n Information of Milestone: \n Name: ${rawData?.Milestone?.name} \n Summary: ${rawData?.Milestone?.summary} \n Status: ${rawData?.Milestone?.status}\n StartDate: ${rawData?.Milestone?.startDate}\n \\n Name Project of Milestone: ${rawData?.Project?.name}\n`\n\n\ndataReFormat = dataReFormat +  '\\n \\n Contact: \\n ' + 'Name: ' + rawData?.Agent?.name \n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\n Information of Milestone: \n Name: ${rawData?.Milestone?.name} \n Summary: ${rawData?.Milestone?.summary} \n Status: ${rawData?.Milestone?.status}\n StartDate: ${rawData?.Milestone?.startDate}\n \\n Name Project of Milestone: ${rawData?.Project?.name}\n Summary Project of Milestone: ${rawData?.Project?.summary}\n`\ndataReFormat+='\\n Project milestone list:\\n '\nif(Array.isArray(rawData?.ListMilestone)){\n      for (const [index, item] of rawData?.ListMilestone?.entries()) {\n      dataReFormat += `Milestone ${index + 1} \\n`;\n      dataReFormat += `Title: ${item?.title} \\n`;\n      dataReFormat += `Summary: ${item?.summary} \\n`;\n    }\n  dataReFormat += ` \\n \\n`;\n}else{\n      dataReFormat += `Name: ${rawData?.ListMilestone?.title} \\n`;\n      dataReFormat += `Email: ${rawData?.ListMilestone?.summary} \\n`;\n}\n\ndataReFormat = dataReFormat +  '\\n \\n Contact Agent: \\n ' + 'Name: ' + rawData?.Agent?.name \n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
       },
       "id": "04399305-5a5a-40a8-a678-73c18efd0ad8",
       "name": "Code",
@@ -153,7 +153,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let oldData = $input.all()[0]?.json?.message?.content;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+        "jsCode": "let oldData = $input.all()[0]?.json?.message?.content;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\noldData = oldData.replace(/```html`/g, '');\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
       },
       "id": "88e60b9d-2b3e-46a2-8ae7-81c3cc03c762",
       "name": "Standardize",
@@ -166,93 +166,73 @@
     },
     {
       "parameters": {
-        "resource": "chat",
-        "chatModel": "gpt-4",
-        "prompt": {
-          "messages": [
-            {
-              "content": "=Write emails using <p>, <strong>, <ul>, <li> tags without a subject. Gently remind PM to break down milestones into specific tasks.\nSuggest tasks related to milestone goals (can be taken from previous milestones or templates).\nInclude a link to the milestone in the project management tool for easy access.\n\nWith the information below:\n{{ $json.prepareText }}\n<strong>Link milestone: <a href=\"https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('Take Value').item.json.Milestone.id }}\">{{ $('Take Value').item.json.Milestone.name }}</a></strong>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value').item.json.Project.id }}\">{{ $('Take Value').item.json.Project.name }}</a></strong>\n\n\nusing card html: <p>, <strong>, <ul>, <li> , ...\n\n\n\n"
-            }
-          ]
-        },
-        "simplifyOutput": "=true",
-        "options": {
-          "maxTokens": 600
-        },
-        "requestOptions": {}
-      },
-      "id": "98d581c5-87e8-4b2f-81cc-b411aab0c8f0",
-      "name": "AI Onboarding Project",
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1.1,
-      "position": [
-        3200,
-        420
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "NuSZIBmfyaC1efAa",
-          "name": "Cmsmart_API"
-        }
-      }
-    },
-    {
-      "parameters": {
         "assignments": {
           "assignments": [
             {
               "id": "fc4346ba-16e3-4550-82bf-aae3f624adcc",
               "name": "Milestone.id",
-              "value": "={{ $json.data.id }}",
+              "value": "={{ $('Check task').item.json.data.id }}",
               "type": "string"
             },
             {
               "id": "cf52b0b8-e69b-4459-a3a0-eb8813042da9",
               "name": "Milestone.name",
-              "value": "={{ $json.data.title }}",
+              "value": "={{ $('Check task').item.json.data.title }}",
               "type": "string"
             },
             {
               "id": "95bbca3f-00d6-43b7-8229-99a3bc6b1e8b",
               "name": "Milestone.summary",
-              "value": "={{ $json.data.summary }}",
+              "value": "={{ $('Check task').item.json.data.summary }}",
               "type": "string"
             },
             {
               "id": "c113c954-3be1-45d8-bb0f-11327068d6d7",
               "name": "Milestone.status",
-              "value": "={{ $json.data.status }}",
+              "value": "={{ $('Check task').item.json.data.status }}",
               "type": "string"
             },
             {
               "id": "902938dd-2cbb-48b3-9868-5b94801db2d8",
               "name": "Milestone.startDate",
-              "value": "={{ $json.data.start_date }}",
+              "value": "={{ $('Check task').item.json.data.start_date }}",
               "type": "string"
             },
             {
               "id": "b5e8add2-8d50-44b6-a626-eeaba6880900",
               "name": "Project.id",
-              "value": "={{ $json.data.project.id }}",
+              "value": "={{ $('Get Project').item.json.data.id }}",
               "type": "string"
             },
             {
               "id": "444ebfa3-37be-445a-90ef-f6828d76b46d",
               "name": "Project.name",
-              "value": "={{ $json.data.project.name }}",
+              "value": "={{ $('Get Project').item.json.data.name }}",
               "type": "string"
             },
             {
               "id": "f8a58a7d-472d-4635-ba5e-b528cd726511",
               "name": "Agent.name",
-              "value": "={{ $json.data.agent.name }}",
+              "value": "={{ $('Check task').item.json.data.agent.name }}",
               "type": "string"
             },
             {
               "id": "7bfbc9b3-0a84-42d6-adf0-53626a1350ab",
               "name": "Agent.email",
-              "value": "={{ $json.data.agent.email }}",
+              "value": "={{ $('Check task').item.json.data.agent.email }}",
               "type": "string"
+            },
+            {
+              "id": "18e0f444-5368-49c7-92b0-e45023ea1d2e",
+              "name": "Project.summary",
+              "value": "={{ $('Get Project').item.json.data.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "1e7fc041-45cb-4f3f-9c5d-67ea67a84ac4",
+              "name": "ListMilestone",
+              "value": "={{ $json.data }}",
+              "type": "array"
             }
           ]
         },
@@ -287,8 +267,161 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        3300,
-        740
+        3280,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "get",
+        "ID": "={{ $json.data.project.id }}",
+        "requestOptions": {}
+      },
+      "id": "72dfe904-35b5-4968-9369-fee224d31837",
+      "name": "Get Project",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "getMilestones",
+        "ID": "={{ $json.data.id }}",
+        "additionalFields": {
+          "limit": "50"
+        },
+        "requestOptions": {}
+      },
+      "id": "549bdc89-6305-461f-a9df-51cd5eca90d3",
+      "name": "Get All Milestone of Project",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=huy.nq@netbasejsc.com"
+            },
+            {
+              "name": "uname",
+              "value": "=Huy Nguyen Quang"
+            },
+            {
+              "name": "subject",
+              "value": "=Action Required: Breakdown Tasks for Milestone '{{ $('Take Value').item.json.Milestone.name }}'"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 15px;\">\n                <p>{{ $('Standardize').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value').first().json.Project.id }}\">{{ $('Take Value').first().json.Project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f3dd4f38-88f4-4a1c-9959-0bfca6addc7c",
+      "name": "WF 53 - Milestone Doesn't have any Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3700,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4o",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Write emails using only <p>, <strong>, <ul>, <li> tags without a subject. Remind and suggest breaking down milestones into specific tasks for Agents from Best Regards, CmsMart Admin.\nBelow is the data about the milestone that needs to be broken down into tasks and the content of that milestone, the project of that milestone and the content of the milestones related to the project to suggest the milestone to extract.\nInclude a link to the milestone in the project management tool for easy access.\nNotice of deduction of points if not broken down.\n\nWith the information below:\n{{ $json.prepareText }}\n<strong>Link milestone: <a href=\"https://worksuite.cloodo.com/apps/work/milestones/detail/{{ $('Take Value').item.json.Milestone.id }}\">{{ $('Take Value').item.json.Milestone.name }}</a></strong>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value').item.json.Project.id }}\">{{ $('Take Value').item.json.Project.name }}</a></strong>\n\n\nusing card html: <p>, <strong>, <ul>, <li> , ...\n\n\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 900
+        },
+        "requestOptions": {}
+      },
+      "id": "98d581c5-87e8-4b2f-81cc-b411aab0c8f0",
+      "name": "WF 53 - Milestone Doesn't have any Task1",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        3160,
+        420
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "04c5484f-b82d-4d3e-bacc-5da912f6056c",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -60,
+        200
       ]
     }
   ],
@@ -353,29 +486,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "AI Onboarding Project": {
-      "main": [
-        [
-          {
-            "node": "Standardize",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code": {
-      "main": [
-        [
-          {
-            "node": "AI Onboarding Project",
+            "node": "Get Project",
             "type": "main",
             "index": 0
           }
@@ -405,7 +516,18 @@
         ]
       ]
     },
-    "Standardize": {
+    "Get Project": {
+      "main": [
+        [
+          {
+            "node": "Get All Milestone of Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Milestone of Project": {
       "main": [
         [
           {
@@ -415,13 +537,68 @@
           }
         ]
       ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "WF 53 - Milestone Doesn't have any Task1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize": {
+      "main": [
+        [
+          {
+            "node": "WF 53 - Milestone Doesn't have any Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WF 53 - Milestone Doesn't have any Task1": {
+      "main": [
+        [
+          {
+            "node": "Standardize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WF 53 - Milestone Doesn't have any Task": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Many Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "71ae5ff9-8241-4532-ac53-0fbf28aaac20",
+  "versionId": "7c8fce4b-ca8c-4250-a517-4bc43c830f38",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
