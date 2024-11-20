@@ -81,8 +81,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        1960,
-        580
+        1900,
+        760
       ]
     },
     {
@@ -189,7 +189,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const rawData = $input.all()[0].json.data[0];\nconst message = rawData?.message || '';\n\n// Chuẩn hóa message để loại bỏ các ký tự không mong muốn\nconst cleanedMessage = message.replace(/\\s+/g, ' ').trim();\n\n// Kiểm tra đoạn string có tồn tại\nconst isMatch = cleanedMessage.includes('Thank you for downloading <strong>Cmsmart Store 5.0');\n\nconst ticketId = $node['Get Ticket']?.json?.data?.id\nconst name = $node['Get Ticket']?.json?.data?.requester?.name\n\nconsole.log('Đoạn string có tồn tại không:', isMatch);\nconsole.log('ticket', ticketId)\n\nreturn { check: isMatch, name: name, ticket: ticketId};\n\n"
+        "jsCode": "const rawData = $input.all()[0].json.data;\n\n// Kiểm tra nếu rawData là một mảng\nif (Array.isArray(rawData)) {\n    // Tìm trong các object của mảng xem có message nào chứa đoạn text cần tìm\n    const isMatch = rawData.some(item => {\n        const message = item?.message || ''; // Lấy message từ từng object\n        const cleanedMessage = message.replace(/\\s+/g, ' ').trim(); // Chuẩn hóa message\n        return cleanedMessage.includes('Thank you for downloading <strong>Cmsmart Store 5.0');\n    });\n\n    const ticketId = $node['Get Ticket']?.json?.data?.id;\n    const name = $node['Get Ticket']?.json?.data?.requester?.name;\n\n    console.log('Có đoạn string nào tồn tại không:', isMatch);\n    console.log('rawData:', rawData);\n\n    return { check: isMatch, name: name, ticket: ticketId };\n} else {\n    console.log('rawData không phải là một mảng:', rawData);\n    return { check: false };\n}\n\n\n"
       },
       "id": "08034c16-a75f-4d07-a272-3b8afbbbd1c5",
       "name": "Code",
@@ -402,17 +402,6 @@
         ],
         [
           {
-            "node": "Replace Me",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Replace Me": {
-      "main": [
-        [
-          {
             "node": "Loop",
             "type": "main",
             "index": 0
@@ -436,7 +425,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "0d15b1af-9455-4680-8998-b6d549bafa95",
+  "versionId": "4b7d8d27-1f89-4e0e-9f80-ef33e1db407a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"

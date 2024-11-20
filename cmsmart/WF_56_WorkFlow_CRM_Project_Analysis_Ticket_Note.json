@@ -1,0 +1,253 @@
+{
+  "name": "WF-56 WorkFlow_CRM_Project_Analysis_Ticket_Note",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "139f6a36-f997-4a75-a7e8-d0ea24c44274",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        120,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.data.projects.id }}",
+        "requestOptions": {}
+      },
+      "id": "3fb30e3e-907f-4b54-8e10-d81293043072",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8e664b6e-6727-42ec-8a67-c7e832f972e4",
+              "leftValue": "={{ $json.data.projects }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9683bc2d-df46-4183-9e51-462d75b96732",
+      "name": "Check project",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        740,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "06de3905-9835-4565-b54d-d32179e29eb7",
+        "requestOptions": {}
+      },
+      "id": "22114135-c579-45de-9dff-63a556a8b07a",
+      "name": "Get Ticket",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        480,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "getMilestones",
+        "ID": "={{ $json.data.id }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "591bb754-997b-4a78-a4ad-335881c5bc86",
+      "name": "Get Milestone Project",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "884806f1-49fd-4902-9c86-08459531aa0f",
+              "leftValue": "={{ $json.data.status }}",
+              "rightValue": "closed",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "aa8f5075-b91f-40bd-ab8e-86b40c966144",
+      "name": "Check not closed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1060,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5fe825d1-f525-4034-a199-27d269291fd8",
+              "name": "Ticket",
+              "value": "={{ $('Get Ticket').item.json.data.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "23d91620-2729-4b16-b622-7ae9910b8722",
+      "name": "Set Value",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2020,
+        360
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check project": {
+      "main": [
+        [
+          {
+            "node": "Check not closed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket": {
+      "main": [
+        [
+          {
+            "node": "Check project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check not closed": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Milestone Project": {
+      "main": [
+        [
+          {
+            "node": "Set Value",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c57df259-74dc-4eae-96f9-420812bc640e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "7iyz3WO6zYLASb8I",
+  "tags": []
+}

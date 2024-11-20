@@ -1,0 +1,450 @@
+{
+  "name": "Send mail Welcome user",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "6565b571-9413-4836-a0fc-4c4c2e81ca46",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        220,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "getmany",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "a10967ea-b00d-43d8-bbef-ce89413e0f59",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        540,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "64697f30-ce13-4f5f-b1fa-1aad89f51c95",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        820,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=nguyenduccanh1523@gmail.com"
+            },
+            {
+              "name": "uname",
+              "value": "=NETBASE"
+            },
+            {
+              "name": "subject",
+              "value": "=Welcome to the Printcart Family! "
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "95"
+            },
+            {
+              "name": "content",
+              "value": "={{ $('Item Lists').item.json.user.name }}\n\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d525c702-ebe0-4c43-ba8d-632481f786cb",
+      "name": "Mautic_Proposal_Won1 Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2360,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Mail Welcome",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "mail",
+              "lookupValue": "={{ $json.user.email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2fb2ba92-b039-489d-9472-45ee26f348a9",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1420,
+        380
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "a05f8b9f-d309-4aa9-bfd2-81149d18b074",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1060,
+        360
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "710de2d6-b555-40e2-9564-85d60eb3a187",
+      "name": "Replace Me",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8b4fad4d-9a71-434c-9643-499d10fa1f5a",
+              "leftValue": "={{ $json.mail }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "03469ff1-12e0-4507-bc3b-de7cb917a13f",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1700,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Mail Welcome",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "mail": "={{ $('Loop Over Items').item.json.user.email }}"
+          },
+          "matchingColumns": [
+            "mail"
+          ],
+          "schema": [
+            {
+              "id": "mail",
+              "displayName": "mail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8f5d6fca-d07a-4643-8d42-dd66a36ce328",
+      "name": "Google Sheets1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2220,
+        400
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.storeName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Hello {{ $('Code2').item.json.userName }}"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification for New Unsynchronized Product in Printcart</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin-top: 50px;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n        }\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #007bff;\n            background-color: #2f79c9;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n        .button:hover {\n            background-color: #4ca1e6;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n        .center-container {\n            text-align: center;\n        }\n        img {\n            width: 80%;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n <div class=\"content\">\n            Dear {{ $json.userName }},<br><br>\n<div> You have updated products to your store at {{ $json.created_at }}. These fresh additions offer even more variety and options for you and your customers.<br> <br>\n            Take a moment to explore the latest offerings and discover how they can enhance your print-on-demand business.<br> <br>\n</div>\n<div>\n            To manage the design and working with your client to ensure the quality of design, please log in to your\n            Printcart dashboard and navigate to the Design Files section. From there, you can check the custom design\n            and download it for printing production.\n            <br>\n</div>\n</div>\n        <div class=\"center-container\">\n            <a href=\"https://dashboard.printcart.com/product/{{ $json.uuid }}\" style=\"color: #fff\" class=\"button\">Go to Product</a>\n        </div><br>\n</div>\n</body>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "72"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c58f0342-207a-4ab5-a23e-49e8bc04cc1b",
+      "name": "HTTP Request3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1900,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=phamngochuy0102@gmail.com"
+            },
+            {
+              "name": "uname",
+              "value": "=Client"
+            },
+            {
+              "name": "subject",
+              "value": "=Welcome to the Printcart Family!"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Notification for New Unsynchronized Product in Printcart</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            background-color: #f4f4f4;\n            margin-top: 50px;\n        }\n\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #fff;\n        }\n\n        .content {\n            color: #333;\n            font-size: 16px;\n            margin-bottom: 20px;\n        }\n\n        .button {\n            display: inline-block;\n            padding: 10px 20px;\n            text-decoration: none;\n            border-radius: 5px;\n            border: 2px solid #04ca40;\n            background-color: #04ca40;\n            color: #fff;\n            font-size: 20px;\n            transition: background-color 0.3s, box-shadow 0.3s;\n        }\n\n        .button:hover {\n            background-color: #04ca40;\n            color: #fff;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n        }\n\n        .center-container {\n            text-align: center;\n        }\n\n        img {\n            width: 80%;\n        }\n\n        .instructions {\n            margin: 0;\n            padding-left: 20px;\n            margin-bottom: 20px;\n        }\n\n        .instructions li {\n            margin-bottom: 10px;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n<div class=\"container\">\n        <div class=\"content\">\n            Dear Huy,<br>\n            <div>\n                <p class=\"intro\">I hope this message finds you well.</p>\n            </div>\n            <p>Congratulations on joining the Printcart family! We’re thrilled to have you with us. Here’s a big virtual welcome hug to get things started!</p>\n            <div>\n        <p class=\"conclusion\">Let’s jump right in and set up your T-shirt Printcart web store.</p>\n            </div>\n        </div>\n        <div class=\"center-container\">\n            \n            <a href=\"https://click.pstmrk.it/3s/dashboard.printcart.com/IXbh/RXq5AQ/AQ/2868ca04-ac2f-49ad-8f1c-2313fbdb9e19/2/rJ0g-GAacc\" style=\"color: #fff\" class=\"button\">Start building your store now!</a>\n        </div>\n    </div>\n</body>"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "96"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e11b67c0-abae-41f0-9596-5293b8c91065",
+      "name": "HTTP Request2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1980,
+        360
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f0eb2d03-be63-4f88-b113-2bfdb56c191d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "vvtYhRBDtr6OjJml",
+  "tags": []
+}
