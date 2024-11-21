@@ -8,7 +8,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        120,
+        80,
         360
       ]
     },
@@ -70,7 +70,7 @@
     {
       "parameters": {
         "resource": "engagement",
-        "ID": "06de3905-9835-4565-b54d-d32179e29eb7",
+        "ID": "1bf22f6d-424a-4a20-a45e-a72936e15adb",
         "requestOptions": {}
       },
       "id": "22114135-c579-45de-9dff-63a556a8b07a",
@@ -151,8 +151,74 @@
           "assignments": [
             {
               "id": "5fe825d1-f525-4034-a199-27d269291fd8",
-              "name": "Ticket",
+              "name": "Ticket.id",
               "value": "={{ $('Get Ticket').item.json.data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "7ca4d5b5-a919-4f84-b6dc-404b211027d1",
+              "name": "Ticket.subject",
+              "value": "={{ $('Get Ticket').item.json.data.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "a51a35d8-21a4-43e7-b329-925c6098b6a5",
+              "name": "Ticket.detail",
+              "value": "={{ $('Get Ticket').item.json.data.reply.message }}",
+              "type": "string"
+            },
+            {
+              "id": "7f491aa5-9fc5-4674-a8fd-c7546375fdf8",
+              "name": "Ticket.type",
+              "value": "={{ $('Get Ticket').item.json.data.type.type }}",
+              "type": "string"
+            },
+            {
+              "id": "0396fd3b-7efd-4fc7-9823-8231189e856d",
+              "name": "Ticket.status",
+              "value": "={{ $('Get Ticket').item.json.data.status }}",
+              "type": "string"
+            },
+            {
+              "id": "7055bba9-889c-417b-80c2-0fa95009e1d2",
+              "name": "Ticket.last_update",
+              "value": "={{ $('Get Ticket').item.json.data.updated_at }}",
+              "type": "string"
+            },
+            {
+              "id": "1e19ddb7-2314-42bd-be84-97294a0d5ebb",
+              "name": "Project.id",
+              "value": "={{ $('Cloodo Project').item.json.data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "70e6e1d2-ae59-44bf-9e18-2ed4d1033368",
+              "name": "Project.name",
+              "value": "={{ $('Cloodo Project').item.json.data.name }}",
+              "type": "string"
+            },
+            {
+              "id": "6668ea76-94a1-4be0-8df7-6c1116fa3cc5",
+              "name": "Project.summary",
+              "value": "={{ $('Cloodo Project').item.json.data.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "e645c857-eb8a-4e70-a512-54f51ce02dd8",
+              "name": "MilestoneProject",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "2a764578-08ff-4887-a42d-97f4365fdb7f",
+              "name": "Ticket.priority",
+              "value": "={{ $('Get Ticket').item.json.data.priority }}",
+              "type": "string"
+            },
+            {
+              "id": "e386a3f5-bc97-4fb6-a954-980bd725acd2",
+              "name": "Ticket.nameClient",
+              "value": "={{ $('Get Ticket').item.json.data.requester.name }}",
               "type": "string"
             }
           ]
@@ -167,6 +233,136 @@
         2020,
         360
       ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\nAnalyze the following ticket data to identify recurring issues, common patterns, and value-adding opportunities for the project.\\n\n**Information Ticket**: \nSubject: ${rawData?.Ticket?.subject}\nDetail: ${rawData?.Ticket?.detail}\nType: ${rawData?.Ticket?.type}\nStatus: ${rawData?.Ticket?.status}\nPriority: ${rawData?.Ticket?.priority}\nLast Update: ${rawData?.Ticket?.last_update}\n\n**Information Project of Ticket**:\nName: ${rawData?.Project?.name}\nSummary of project goals: ${rawData?.Project?.summary}\n`\n\n\ndataReFormat+='\\n*Milestone of Project*:\\n\\n'\nif(Array.isArray(rawData?.MilestoneProject)){\n      for (const [index, item] of rawData?.MilestoneProject?.entries()) {\n      dataReFormat += `Milestone ${index + 1}: \\n`;\n      dataReFormat += `Title: ${item?.title} \\n`;\n      dataReFormat += `Cost: ${item?.cost} \\n`;\n      dataReFormat += `Summary: ${item?.summary} \\n\\n`;\n      \n    }\n  dataReFormat += ` \\n`;\n}else{\n      dataReFormat += `Title: ${rawData?.MilestoneProject?.title} \\n`;\n      dataReFormat += `Summary: ${rawData?.MilestoneProject?.summary} \\n`;\n}\n\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
+      },
+      "id": "2a5d7900-28e2-4c37-96af-4b116be34b15",
+      "name": "prepareText",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2300,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.message?.content;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "eb08b510-855b-4429-bd63-8756012a7d07",
+      "name": "Standardize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2820,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4o-2024-11-20",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Write an email no html no <strong> Dear <strong> using the tags: <p>, <strong>, <ul>, <li> and no subject line, project overview summary to email staff from admin based on tickets with the following keywords:\n**Project Objective**:\n- Improve e-commerce for Client {{ $('Set Value').item.json.Ticket.nameClient }}.\n- Propose ticket solutions to link to project goals and milestones.\n**Key Ticket Templates**:\n- Recurring issue types or common ticket types.\n**Value-Added Solutions**:\n- Areas where proactive or innovative solutions can add value.\n**High Priority Issues**:\n- Any high-impact or high-impact issue that should be prioritized.\n\nSee below for completion of the keywords above:\n{{ $json.prepareText }}\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Set Value').item.json.Project.id }}\">{{ $('Set Value').item.json.Project.name }}</a></strong>\n\n\n\n\n\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 6000
+        },
+        "requestOptions": {}
+      },
+      "id": "683b8894-8f1e-41de-93a6-ec65627d18e4",
+      "name": "Project_Analysis_Ticket_Note",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2580,
+        360
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=huy.nq@netbasejsc.com"
+            },
+            {
+              "name": "uname",
+              "value": "=Huy Nguyen Quang"
+            },
+            {
+              "name": "subject",
+              "value": "=Weekly Project Insights and BA Recommendations for {{ $('Set Value').item.json.Project.name }}"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>{{ $('Standardize').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Set Value').item.json.Project.id }}\">{{ $('Set Value').item.json.Project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6c17a918-93c3-4222-aa2b-9226ff1cb8ca",
+      "name": "Project_Analysis_Ticket_Note2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3060,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "27480044-e48a-435c-a6ef-cb0fe6d0bb91",
+        "requestOptions": {}
+      },
+      "id": "44c9c77f-09f5-4e79-a69b-ba7c16e16eba",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        200,
+        780
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -237,13 +433,57 @@
           }
         ]
       ]
+    },
+    "Set Value": {
+      "main": [
+        [
+          {
+            "node": "prepareText",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText": {
+      "main": [
+        [
+          {
+            "node": "Project_Analysis_Ticket_Note",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize": {
+      "main": [
+        [
+          {
+            "node": "Project_Analysis_Ticket_Note2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Project_Analysis_Ticket_Note": {
+      "main": [
+        [
+          {
+            "node": "Standardize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "c57df259-74dc-4eae-96f9-420812bc640e",
+  "versionId": "8032ab43-c0f5-49a3-8ed0-968f4b7d4b66",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
