@@ -8,59 +8,27 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        340,
-        400
+        20,
+        420
       ]
     },
     {
       "parameters": {
         "operation": "getAll",
-        "limit": 20,
-        "simple": false,
         "filters": {
           "labelIds": [
             "Label_1"
           ],
           "q": "complaint"
-        },
-        "options": {}
-      },
-      "id": "412ed0bb-be28-4acf-9df3-06395d889fd1",
-      "name": "Gmail2",
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        800,
-        620
-      ],
-      "webhookId": "aefcf050-c874-4379-ba97-28880f32386c",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "C4ugNb8xC2F0tFjh",
-          "name": "SaleCmsmart"
         }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "getAll",
-        "limit": 20,
-        "simple": false,
-        "filters": {
-          "labelIds": [
-            "Label_1"
-          ],
-          "q": "complaint"
-        },
-        "options": {}
       },
       "id": "62eec657-0ed8-4fdd-9efb-04a0ee9402c8",
       "name": "Gmail complaint",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        800,
-        220
+        580,
+        100
       ],
       "webhookId": "aefcf050-c874-4379-ba97-28880f32386c",
       "credentials": {
@@ -73,23 +41,20 @@
     {
       "parameters": {
         "operation": "getAll",
-        "limit": 20,
-        "simple": false,
         "filters": {
           "labelIds": [
             "Label_1"
           ],
-          "q": "bad review"
-        },
-        "options": {}
+          "q": "issue"
+        }
       },
-      "id": "a8d213bc-13a1-4e82-9a5b-7331ccd53cad",
-      "name": "Gmail bad review",
+      "id": "412ed0bb-be28-4acf-9df3-06395d889fd1",
+      "name": "Gmail Isuue",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        800,
-        400
+        580,
+        540
       ],
       "webhookId": "aefcf050-c874-4379-ba97-28880f32386c",
       "credentials": {
@@ -98,6 +63,446 @@
           "name": "SaleCmsmart"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6929e6c9-8f8e-414c-95d0-2520f424fcf6",
+              "leftValue": "={{ $json.From }}",
+              "rightValue": "Nguyen Quang Huy <huy.nq@netbasejsc.com>",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "87ff5d7f-b53d-44cd-8733-494ea9eac359",
+              "leftValue": "={{ $json.From }}",
+              "rightValue": "Perla Nguyen <perlanguyen.ba@gmail.com>",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "992d0ce3-a9d9-4875-8d55-3342eecf8973",
+              "leftValue": "={{ $json.From }}",
+              "rightValue": "chi.hu@netbasejsc.com",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "bfcb4048-89f1-4037-a43c-35a4e36e8c8f",
+              "leftValue": "={{ $json.From }}",
+              "rightValue": "Cmsmart <sales@cmsmart.net>",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "ecb40baf-2885-40ce-a8f3-aa3599ebfa55",
+              "leftValue": "={{ $json.From }}",
+              "rightValue": "no-reply@cmsmart.net",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "128c4177-95d1-47af-a35f-d0d6d7552eb0",
+              "leftValue": "={{ $json.From }}",
+              "rightValue": "Vincent <vincent@cmsmart.net>",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "086916b9-3d0d-438d-89a1-1ad085f94364",
+      "name": "Remove mail employee",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1140,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.id }}",
+        "simple": false,
+        "options": {}
+      },
+      "id": "6a4f406c-81e5-4cf0-abae-7a8e51c7da58",
+      "name": "Get Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1440,
+        420
+      ],
+      "webhookId": "f2d84fc8-fccf-4211-8139-0e48d136b9cd",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "C4ugNb8xC2F0tFjh",
+          "name": "SaleCmsmart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\nSubject: ${rawData?.Subject} \nBody: ${rawData?.Content}\n`\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
+      },
+      "id": "5f4cb5a0-5d65-475e-9723-33f3690efcc6",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2140,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0a8779ce-f62c-40b4-8c69-ca182608848e",
+              "name": "From.email",
+              "value": "={{ $json.from.value[0].address }}",
+              "type": "string"
+            },
+            {
+              "id": "52a11144-b6cd-4177-b337-9f6fc3fd0593",
+              "name": "Subject",
+              "value": "={{ $json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "70c588b3-b6ee-4ff8-ac8d-3937fb2377b6",
+              "name": "Content",
+              "value": "={{ $json.textAsHtml }}",
+              "type": "string"
+            },
+            {
+              "id": "bb4da4de-6c7a-4904-ba58-5489a83acaa7",
+              "name": "From.name",
+              "value": "={{ $json.from.value[0].name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dcc5e5cf-dafc-46ce-b951-4e2b4d59251e",
+      "name": "Value",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1900,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4o",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Create a task using the tags: <p>, <strong>, <ul>, <li> to plan a recommended response for Account Management (AM) to effectively engage with customers. Analyze the following customer reviews for sentiment, key issues, and actionable recommendations.\n\n**Review Content**: {{ $json.prepareText }}\n\nInclude the following in your analysis:\n- **Sentiment**: Overall tone and sentiment (e.g., disappointed, frustrated, concerned).\n- **Key Issues**: Primary areas of concern or dissatisfaction.\n- **Response Strategy**: Offer practical steps for the AM to address the client’s concerns, emphasizing empathy, solution focus, and client retention tactics.\n- **Suggested Response**: A concise and empathetic response template the AM can use when contacting the client, which conveys understanding, addresses the issue, and invites further discussion to resolve the matter.\n\nExample response format:\n- **Sentiment**: [Sentiment Analysis]\n- **Key Issues**: [List of key concerns]\n- **Response Strategy**: [Practical steps for AM]\n- **Suggested Response Template**: [Response Template for Client]\n\n\n\n\n\n\n\n\n\n\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 6000
+        },
+        "requestOptions": {}
+      },
+      "id": "89cc8045-3c62-48aa-be47-88453de705da",
+      "name": "WorkFlow_CRM_Bad_Review",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2400,
+        440
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.message?.content;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "feff08b3-d6d4-4688-926f-e0df073c446a",
+      "name": "Standardize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2680,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "getmany",
+        "additionalFields": {
+          "searchLead": "={{ $('Value').item.json.From.email }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "ceea1458-4182-4259-beb8-d1db06118ce6",
+      "name": "Find client",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2880,
+        440
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a82e55b0-da72-4d10-ae55-b555f9a8b822",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6c456496-2107-4c2b-9de0-1410323d0304",
+      "name": "check client",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3120,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "labelIds": [
+            "Label_1"
+          ],
+          "q": "bad review"
+        }
+      },
+      "id": "eb0f22db-74b5-4d14-9956-5331edafcf8a",
+      "name": "Gmail bad review",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        580,
+        300
+      ],
+      "webhookId": "aefcf050-c874-4379-ba97-28880f32386c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "C4ugNb8xC2F0tFjh",
+          "name": "SaleCmsmart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "additionalFields": {
+          "client_id": "={{ $json.data[0].user.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "2f3df223-8766-4f43-afcf-8734bca02ebb",
+      "name": "Get Project",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3460,
+        420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "33d69c02-0738-4b87-bcf1-af913d5970f5",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ec03b3fa-d48d-4e9b-9b7b-3b5d6c16acef",
+      "name": "Check Projetc",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3680,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "K có project"
+      },
+      "id": "5de00740-302f-47bc-96e8-b5e932d7396a",
+      "name": "Stop and Error",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        3900,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=Investigate Negative Client Review - {{ $json.data[0].client.name }}",
+        "start_date": "={{ $now }}",
+        "due_date": "={{ $now.plus(5, 'days') }}",
+        "users": "={{ $('Find client').item.json.data[0].added_by.id }}",
+        "additionalFields": {
+          "ProjectID": "={{ $json.data[0].id }}",
+          "taskStatus": "incomplete",
+          "taskDescription": "={{ $('Standardize').item.json.textHtml }}",
+          "taskCategoryId": "7114374e-0342-414e-b4dc-f4ae2d99c757",
+          "taskLabelId": "[\"278f2e40-9bd1-493c-a4e3-8b8296c4bc7f\"]"
+        },
+        "requestOptions": {}
+      },
+      "id": "0c67147e-79f9-4bd8-907d-dcdc1eca5ce7",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4140,
+        400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "f7f63918-5ad2-4dbe-9884-3c2f7160ca4b",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1660,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "labelIds": [
+            "Label_1"
+          ],
+          "q": "disappointed"
+        }
+      },
+      "id": "ae13f890-1f79-428e-9b14-e6e44cd395ce",
+      "name": "Gmail Isuue1",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        580,
+        780
+      ],
+      "webhookId": "aefcf050-c874-4379-ba97-28880f32386c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "C4ugNb8xC2F0tFjh",
+          "name": "SaleCmsmart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "id": "57ac3f2d-bdac-4244-a90d-9061fb6a1a02",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        860,
+        400
+      ]
     }
   ],
   "pinData": {},
@@ -105,6 +510,16 @@
     "When clicking ‘Test workflow’": {
       "main": [
         [
+          {
+            "node": "Gmail Isuue1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail Isuue",
+            "type": "main",
+            "index": 0
+          },
           {
             "node": "Gmail bad review",
             "type": "main",
@@ -114,11 +529,191 @@
             "node": "Gmail complaint",
             "type": "main",
             "index": 0
-          },
+          }
+        ]
+      ]
+    },
+    "Get Gmail": {
+      "main": [
+        [
           {
-            "node": "Gmail2",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
+          }
+        ]
+      ]
+    },
+    "Value": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "WorkFlow_CRM_Bad_Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WorkFlow_CRM_Bad_Review": {
+      "main": [
+        [
+          {
+            "node": "Standardize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize": {
+      "main": [
+        [
+          {
+            "node": "Find client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find client": {
+      "main": [
+        [
+          {
+            "node": "check client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail bad review": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "check client": {
+      "main": [
+        [
+          {
+            "node": "Get Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project": {
+      "main": [
+        [
+          {
+            "node": "Check Projetc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Projetc": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove mail employee": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Value",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail complaint": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Isuue": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Remove mail employee",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Isuue1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
           }
         ]
       ]
@@ -128,7 +723,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "0a0b3c77-5374-4917-ab87-0650378ae2e5",
+  "versionId": "fff70972-96da-4a8c-802c-7365b8a78a62",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
