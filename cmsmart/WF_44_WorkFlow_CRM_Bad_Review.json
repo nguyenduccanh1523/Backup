@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        20,
-        420
+        -40,
+        600
       ]
     },
     {
@@ -19,7 +19,9 @@
           "labelIds": [
             "Label_1"
           ],
-          "q": "complaint"
+          "q": "complaint",
+          "receivedAfter": "={{ $now.minus(1, 'hours') }}",
+          "receivedBefore": "={{ $now }}"
         }
       },
       "id": "62eec657-0ed8-4fdd-9efb-04a0ee9402c8",
@@ -45,7 +47,9 @@
           "labelIds": [
             "Label_1"
           ],
-          "q": "issue"
+          "q": "issue",
+          "receivedAfter": "={{ $now.minus(1, 'hours') }}",
+          "receivedBefore": "={{ $now }}"
         }
       },
       "id": "412ed0bb-be28-4acf-9df3-06395d889fd1",
@@ -140,8 +144,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1140,
-        400
+        1120,
+        420
       ]
     },
     {
@@ -169,15 +173,15 @@
     },
     {
       "parameters": {
-        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\nSubject: ${rawData?.Subject} \nBody: ${rawData?.Content}\n`\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
+        "jsCode": "let dataReFormat = ''\nconst rawData = $node['Value'].json\n\n\ndataReFormat =  `\\nSubject: ${rawData?.Subject} \nBody: ${rawData?.Content}\n`\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
       },
       "id": "5f4cb5a0-5d65-475e-9723-33f3690efcc6",
       "name": "Code",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2140,
-        440
+        3660,
+        400
       ]
     },
     {
@@ -243,8 +247,8 @@
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1.1,
       "position": [
-        2400,
-        440
+        3920,
+        400
       ],
       "credentials": {
         "openAiApi": {
@@ -262,8 +266,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2680,
-        440
+        4220,
+        400
       ]
     },
     {
@@ -280,7 +284,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        2880,
+        2200,
         440
       ],
       "credentials": {
@@ -320,7 +324,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3120,
+        2440,
         440
       ]
     },
@@ -331,7 +335,9 @@
           "labelIds": [
             "Label_1"
           ],
-          "q": "bad review"
+          "q": "bad review",
+          "receivedAfter": "={{ $now.minus(1, 'hours') }}",
+          "receivedBefore": "={{ $now }}"
         }
       },
       "id": "eb0f22db-74b5-4d14-9956-5331edafcf8a",
@@ -363,7 +369,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        3460,
+        2780,
         420
       ],
       "credentials": {
@@ -403,7 +409,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3680,
+        3000,
         420
       ]
     },
@@ -416,8 +422,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3900,
-        500
+        3260,
+        640
       ]
     },
     {
@@ -442,8 +448,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        4140,
-        400
+        4260,
+        100
       ],
       "credentials": {
         "cloodoApi": {
@@ -467,16 +473,31 @@
     },
     {
       "parameters": {
+        "numberInputs": 4
+      },
+      "id": "57ac3f2d-bdac-4244-a90d-9061fb6a1a02",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        860,
+        400
+      ]
+    },
+    {
+      "parameters": {
         "operation": "getAll",
         "filters": {
           "labelIds": [
             "Label_1"
           ],
-          "q": "disappointed"
+          "q": "disappointed",
+          "receivedAfter": "={{ $now.minus(1, 'hours') }}",
+          "receivedBefore": "={{ $now }}"
         }
       },
       "id": "ae13f890-1f79-428e-9b14-e6e44cd395ce",
-      "name": "Gmail Isuue1",
+      "name": "Gmail disappointed",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
@@ -493,15 +514,70 @@
     },
     {
       "parameters": {
-        "numberInputs": 4
+        "resource": "note",
+        "operation": "create",
+        "project_id": "={{ $('Get Project').item.json.data[0].id }}",
+        "title": "=Investigate Negative Client Review - {{ $('Value').item.json.From.name }}",
+        "details": "={{ $json.textHtml }}",
+        "category": "client",
+        "user_id": "[]",
+        "additionalFields": {},
+        "requestOptions": {}
       },
-      "id": "57ac3f2d-bdac-4244-a90d-9061fb6a1a02",
-      "name": "Merge",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
+      "id": "f3c931cd-ca31-41e6-a258-bac7a0ba4909",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
       "position": [
-        860,
+        4540,
         400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "note",
+        "operation": "getNotesByProject",
+        "project_id": "={{ $json.data[0].id }}",
+        "requestOptions": {}
+      },
+      "id": "2bb00c81-9666-4d92-b0b2-a0acb6a59b65",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3300,
+        400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "id": "50277ee7-b01c-4911-8c2a-361f928100c4",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -60,
+        240
       ]
     }
   ],
@@ -511,7 +587,7 @@
       "main": [
         [
           {
-            "node": "Gmail Isuue1",
+            "node": "Gmail disappointed",
             "type": "main",
             "index": 0
           },
@@ -548,7 +624,7 @@
       "main": [
         [
           {
-            "node": "Code",
+            "node": "Find client",
             "type": "main",
             "index": 0
           }
@@ -581,7 +657,7 @@
       "main": [
         [
           {
-            "node": "Find client",
+            "node": "Cloodo CRM1",
             "type": "main",
             "index": 0
           }
@@ -618,6 +694,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -636,7 +719,7 @@
       "main": [
         [
           {
-            "node": "Cloodo CRM",
+            "node": "Cloodo CRM2",
             "type": "main",
             "index": 0
           }
@@ -707,7 +790,7 @@
         ]
       ]
     },
-    "Gmail Isuue1": {
+    "Gmail disappointed": {
       "main": [
         [
           {
@@ -717,13 +800,61 @@
           }
         ]
       ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM2": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Gmail complaint",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail bad review",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail Isuue",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail disappointed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "fff70972-96da-4a8c-802c-7365b8a78a62",
+  "versionId": "6b3c6aa2-34a3-4759-82a9-8399b6762053",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"

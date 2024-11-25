@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        80,
-        360
+        280,
+        140
       ]
     },
     {
@@ -70,7 +70,7 @@
     {
       "parameters": {
         "resource": "engagement",
-        "ID": "1bf22f6d-424a-4a20-a45e-a72936e15adb",
+        "ID": "=93e69c94-0d31-4672-a384-91b44bd86ee1",
         "requestOptions": {}
       },
       "id": "22114135-c579-45de-9dff-63a556a8b07a",
@@ -141,7 +141,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1060,
+        1080,
         340
       ]
     },
@@ -339,8 +339,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3060,
-        360
+        2560,
+        -200
       ]
     },
     {
@@ -354,7 +354,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        200,
+        40,
         780
       ],
       "credentials": {
@@ -363,6 +363,93 @@
           "name": "Cmsmart Worksuite account"
         }
       }
+    },
+    {
+      "parameters": {
+        "resource": "note",
+        "operation": "create",
+        "project_id": "={{ $('Set Value').item.json.Project.id }}",
+        "title": "=Weekly Project Insights and BA Recommendations for {{ $('Set Value').item.json.Project.name }}",
+        "details": "={{ $json.textHtml }}",
+        "category": "ticket",
+        "user_id": "[]",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "e55851c0-9d7b-4940-a824-75f4d9d40682",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "cursor": "={{ $json.meta.next_cursor }}",
+        "additionalFields": {
+          "fromDate": "={{ $today.minus(7, 'days').set({ hour: 0, minute: 1 }).format('dd-MM-yyyy HH:mm') }}",
+          "toDate": "={{ $today.minus(1, 'days').set({ hour: 23, minute: 59 }).format('dd-MM-yyyy HH:mm') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "dfe323cf-24f4-4c55-bd43-abafb6115a96",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "c02ee909-1cf0-4de7-ac56-af1c58ca315f",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        -60,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.meta.next_cursor }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "2666551b-0985-4872-9455-eccef2208083",
+      "name": "IF6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        580
+      ]
     }
   ],
   "pinData": {},
@@ -460,7 +547,7 @@
       "main": [
         [
           {
-            "node": "Project_Analysis_Ticket_Note2",
+            "node": "Cloodo CRM",
             "type": "main",
             "index": 0
           }
@@ -477,13 +564,45 @@
           }
         ]
       ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF6": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        []
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "8032ab43-c0f5-49a3-8ed0-968f4b7d4b66",
+  "versionId": "a0de0745-50c2-44ba-82e3-7aec8bb48954",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
