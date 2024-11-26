@@ -1,0 +1,500 @@
+{
+  "name": "WF 46 - WorkFlow_CRM_Case_Study",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "6eb209ea-be14-463d-989d-3a226bfe5ea4",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let obj = []; // Khởi tạo mảng rỗng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  // Tìm các đối tượng trong custom_fields_data có label là 'Website'\n  const foundItem = item?.json?.data?.custom_fields_data.find(i => i?.label === 'Website' || '');\n  const nameClient = item?.json?.data?.client;\n  const projectAdmin = item?.json?.data?.project_admin ? item?.json?.data?.project_admin : item?.json?.data?.member[0];\n  const summaryPro = item?.json?.data?.summary\n  const notePro = item?.json?.data?.notes\n  const namePro = item?.json?.data?.name\n  const idPro = item?.json?.data?.id\n  \n  if (foundItem) {\n    // Nếu tìm thấy, gộp foundItem và nameClient vào một đối tượng\n    obj.push({\n      website: foundItem, \n      client: nameClient,\n      adminProject: projectAdmin,\n      detailProject: [  idPro, namePro, summaryPro, notePro]\n    });\n  }\n  console.log('found:', foundItem); // In ra mảng kết quả\n}\n\nreturn obj; // Trả về mảng các giá trị\n"
+      },
+      "id": "a319f9df-48d1-430e-973d-90b1bf17e67f",
+      "name": "Take URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "operation": "get",
+        "ID": "df52d76d-573b-4fe0-86a7-53bd794ec27a",
+        "requestOptions": {}
+      },
+      "id": "717f89fd-8835-42d9-a257-3d56a9a0ce5d",
+      "name": "Get Milestone",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        440,
+        400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "getMilestones",
+        "ID": "={{ $json.data.project.id }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "48eb9fcd-e432-435b-b2cb-7702a2b151d6",
+      "name": "Check quantity Milestone",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        620,
+        180
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "a9b6720c-831e-4bc6-97ec-a76729de2123",
+      "name": "Separate milestones",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        820,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4fd1215e-b1fe-4124-b329-5ecee08b5928",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "Completed",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f9be669d-f710-4a83-923a-b8fde90dcd1d",
+      "name": "Check completed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1020,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "e5cbc6bd-a830-430e-8e5c-6dd5e3853454",
+      "name": "Merge item",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $json.data.project.id }}",
+        "requestOptions": {}
+      },
+      "id": "dfa1947d-a57f-4eae-8b0f-36d1367e12d6",
+      "name": "Get Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        900,
+        420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "getTaskByMilestone",
+        "milestone_id": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "73552344-3d70-4b12-b15a-ada752385a7c",
+      "name": "Get task",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        160
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const milestone = $node['Check completed'].json\nconst task = $node['Get task'].json.data\nconsole.log(task)\n\nreturn {\n  milestone: milestone,\n  task: task\n}"
+      },
+      "id": "7de7aa49-9c8d-437a-a589-6ac362fd3ad2",
+      "name": "Merge Milestone and Task",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        160
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "9b0f1644-b46b-4812-b817-c15869c85fb5",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1920,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "3547f9cb-74f2-4d82-b155-a966ab64867e",
+      "name": "Merge item1",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2160,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0c0f97bf-c638-4d3f-be51-1e8dada82b1e",
+              "name": "milestone",
+              "value": "={{ $json.data[0].data }}",
+              "type": "array"
+            },
+            {
+              "id": "cc94dc69-a468-40fc-ba85-e2a50dcfea5a",
+              "name": "website",
+              "value": "={{ $json.data[1].website }}",
+              "type": "object"
+            },
+            {
+              "id": "151c4c1a-b24f-40f5-bae6-8f283c1e9665",
+              "name": "client",
+              "value": "={{ $json.data[1].client }}",
+              "type": "object"
+            },
+            {
+              "id": "9160bded-aab3-4f0d-8958-5bf9de3831e8",
+              "name": "adminProject",
+              "value": "={{ $json.data[1].adminProject }}",
+              "type": "object"
+            },
+            {
+              "id": "050190a5-d44b-44f0-be21-6dcb2492762c",
+              "name": "summaryPro",
+              "value": "={{ $json.data[1].detailProject[2] }}",
+              "type": "string"
+            },
+            {
+              "id": "3b883d05-a070-4e5f-a4af-891e2f5ce192",
+              "name": "notesPro",
+              "value": "={{ $json.data[1].detailProject[3] }}",
+              "type": "string"
+            },
+            {
+              "id": "e1e9d985-2b98-402c-9c46-e23fbaa73d0e",
+              "name": "namePro",
+              "value": "={{ $json.data[1].detailProject[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "9f2c64ab-6b17-4a9e-8426-d108cb5b0479",
+              "name": "idPro",
+              "value": "={{ $json.data[1].detailProject[0] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "535b12b6-0edb-447a-935b-90604a72c6cf",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2380,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\ndataReFormat = `\n\\nClient company Name: ${rawData?.client?.company_name}\n`\n\ndataReFormat +=  `\\nInformation of Project: \n- Name: ${rawData?.namePro}; \n- Summary of Project: ${rawData?.summaryPro};\n- Notes of Project: ${rawData?.notesPro};\n- Website Project: ${rawData?.website?.value}\n- Admin of Project: ${rawData?.adminProject?.name}\\n`\n\n\n\ndataReFormat+='\\nMilestone Completed of project:\\n'\nif(Array.isArray(rawData?.milestone)){\n      for (const [index, item] of rawData?.milestone?.entries()) {\n      dataReFormat += `- Milestone ${index + 1}: \\n`;\n      dataReFormat += ` + Title: ${item?.milestone?.title} \\n`;\n      dataReFormat += ` + Summary: ${item?.milestone?.summary} \\n`;\n      dataReFormat += ` + Date Completed: ${item?.milestone?.close_date} \\n`;\n        dataReFormat += ` + Tasks of Milestone:\\n`;\n      if(Array.isArray(item?.task)){\n        for (const [index, item1] of item?.task?.entries()){\n          dataReFormat += `    + Task: ${index + 1} \\n`\n          dataReFormat += `      Heading: ${item1?.heading} \\n`\n        }\n      }\n      dataReFormat += `\\n`;\n    }\n  dataReFormat += ` \\n \\n`;\n}else{\n      dataReFormat += `Title: ${item?.milestone?.title} \\n`;\n      dataReFormat += `Summary: ${item?.milestone?.summary} \\n`;\n}\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };\n// return $input.all()"
+      },
+      "id": "ecfe3f29-68eb-4f34-984a-27e615200092",
+      "name": "prepareText1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "=gpt-4",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Write an email using card: <p>, <strong>, <ul>, <li>  \n\nWith the information below:\n{{ $json.prepareText }}\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Edit Fields').item.json.idPro }}</a></strong>\n\nusing card html: <p>, <strong>, <ul>, <li> , ...\n\n\n\n"
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 600
+        },
+        "requestOptions": {}
+      },
+      "id": "2d1525ea-15f5-47e3-9092-4b328ea7cfa4",
+      "name": "Case Study",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2920,
+        300
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Milestone": {
+      "main": [
+        [
+          {
+            "node": "Check quantity Milestone",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check quantity Milestone": {
+      "main": [
+        [
+          {
+            "node": "Separate milestones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separate milestones": {
+      "main": [
+        [
+          {
+            "node": "Check completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check completed": {
+      "main": [
+        [
+          {
+            "node": "Get task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project": {
+      "main": [
+        [
+          {
+            "node": "Take URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get task": {
+      "main": [
+        [
+          {
+            "node": "Merge Milestone and Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Milestone and Task": {
+      "main": [
+        [
+          {
+            "node": "Merge item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take URL": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge item": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge item1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge item1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "prepareText1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText1": {
+      "main": [
+        [
+          {
+            "node": "Case Study",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fc4b9915-fba5-4793-ade6-7e57dcb67230",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "pwyu0hyXPacsSk04",
+  "tags": []
+}
