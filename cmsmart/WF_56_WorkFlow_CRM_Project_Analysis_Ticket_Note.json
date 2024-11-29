@@ -9,7 +9,7 @@
       "typeVersion": 1,
       "position": [
         -1620,
-        360
+        200
       ]
     },
     {
@@ -197,6 +197,18 @@
               "name": "Client.likedin",
               "value": "={{ $('Get Client').item.json.data.social_details.linkedin }}",
               "type": "string"
+            },
+            {
+              "id": "2fc85086-fee1-42a2-9fa1-6854ea569269",
+              "name": "Agent.name",
+              "value": "={{ $('Check not closed').item.json.data.agent.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "da0c413e-1409-4543-8c1c-51b16d41f6eb",
+              "name": "Agent.email",
+              "value": "={{ $('Check not closed').item.json.data.agent.user.email }}",
+              "type": "string"
             }
           ]
         },
@@ -233,7 +245,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3520,
+        3580,
         80
       ]
     },
@@ -253,15 +265,15 @@
           "parameters": [
             {
               "name": "email",
-              "value": "=huy.nq@netbasejsc.com"
+              "value": "={{ $('Set Value').item.json.Agent.email }}"
             },
             {
               "name": "uname",
-              "value": "=Huy Nguyen Quang"
+              "value": "={{ $('Set Value').item.json.Agent.name }}"
             },
             {
               "name": "subject",
-              "value": "=Weekly Project Insights and BA Recommendations for {{ $('Set Value').item.json.Project.name }}"
+              "value": "=Ticket {{ $('Check not closed').item.json.data.ticket_number }} Detailed analysis and recommendation for {{ $('Set Value').item.json.Project.name }} {{ $('Set Value').item.json.Project.name }}"
             },
             {
               "name": "send_mail",
@@ -273,7 +285,7 @@
             },
             {
               "name": "content",
-              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>{{ $('Standardize').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Set Value').item.json.Project.id }}\">{{ $('Set Value').item.json.Project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $('Set Value').item.json.Agent.name }},</p></br>\n                <p>{{ $('Standardize').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Set Value').item.json.Project.id }}\">{{ $('Set Value').item.json.Project.name }}</a></strong>\n                <p>Best Regards,</p>\n                <p>CmsMart Admin</p>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
             }
           ]
         },
@@ -284,8 +296,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2600,
-        -360
+        4000,
+        80
       ]
     },
     {
@@ -480,7 +492,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        4020,
+        4280,
         80
       ],
       "credentials": {
@@ -507,7 +519,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        3740,
+        3780,
         80
       ],
       "credentials": {
@@ -554,8 +566,8 @@
         "rule": {
           "interval": [
             {
-              "field": "minutes",
-              "minutesInterval": 60
+              "field": "hours",
+              "hoursInterval": 3
             }
           ]
         }
@@ -752,7 +764,9 @@
         "operation": "getEngagementByProject",
         "project_id": "=46354923-2156-45f4-a84d-13189ebf39a9",
         "page": "={{ $runIndex+1  }}",
-        "additionalFields": {},
+        "additionalFields": {
+          "limit": "10"
+        },
         "requestOptions": {}
       },
       "id": "922ff0e1-d0ff-4c8e-910d-f4130ca1c15c",
@@ -760,8 +774,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        -1640,
-        2880
+        -2340,
+        2860
       ],
       "credentials": {
         "cloodoApi": {
@@ -787,8 +801,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -1200,
-        2520
+        -1760,
+        3260
       ]
     },
     {
@@ -814,8 +828,8 @@
       "type": "n8n-nodes-base.itemLists",
       "typeVersion": 3,
       "position": [
-        -1160,
-        2880
+        -2040,
+        2860
       ]
     },
     {
@@ -1054,121 +1068,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "5fe825d1-f525-4034-a199-27d269291fd8",
-              "name": "Ticket.id",
-              "value": "={{ $('Get ticket').item.json.data.id }}",
-              "type": "string"
-            },
-            {
-              "id": "7ca4d5b5-a919-4f84-b6dc-404b211027d1",
-              "name": "Ticket.subject",
-              "value": "={{ $('Get ticket').item.json.data.subject }}",
-              "type": "string"
-            },
-            {
-              "id": "a51a35d8-21a4-43e7-b329-925c6098b6a5",
-              "name": "Ticket.detail",
-              "value": "={{ $('Get ticket').item.json.data.reply.message }}",
-              "type": "string"
-            },
-            {
-              "id": "7f491aa5-9fc5-4674-a8fd-c7546375fdf8",
-              "name": "Ticket.type",
-              "value": "={{ $('Get ticket').item.json.data.type.type }}",
-              "type": "string"
-            },
-            {
-              "id": "0396fd3b-7efd-4fc7-9823-8231189e856d",
-              "name": "Ticket.status",
-              "value": "={{ $('Get ticket').item.json.data.status }}",
-              "type": "string"
-            },
-            {
-              "id": "7055bba9-889c-417b-80c2-0fa95009e1d2",
-              "name": "Ticket.last_update",
-              "value": "={{ $('Get ticket').item.json.data.updated_at }}",
-              "type": "string"
-            },
-            {
-              "id": "1e19ddb7-2314-42bd-be84-97294a0d5ebb",
-              "name": "Project.id",
-              "value": "={{ $('Get Project3').item.json.data.id }}",
-              "type": "string"
-            },
-            {
-              "id": "70e6e1d2-ae59-44bf-9e18-2ed4d1033368",
-              "name": "Project.name",
-              "value": "={{ $('Get Project3').item.json.data.name }}",
-              "type": "string"
-            },
-            {
-              "id": "6668ea76-94a1-4be0-8df7-6c1116fa3cc5",
-              "name": "Project.summary",
-              "value": "={{ $('Get Project3').item.json.data.summary }}",
-              "type": "string"
-            },
-            {
-              "id": "e645c857-eb8a-4e70-a512-54f51ce02dd8",
-              "name": "MilestoneProject",
-              "value": "={{ $json.data }}",
-              "type": "array"
-            },
-            {
-              "id": "2a764578-08ff-4887-a42d-97f4365fdb7f",
-              "name": "Ticket.priority",
-              "value": "={{ $('Get ticket').item.json.data.priority }}",
-              "type": "string"
-            },
-            {
-              "id": "e386a3f5-bc97-4fb6-a954-980bd725acd2",
-              "name": "Ticket.nameClient",
-              "value": "={{ $('Get ticket').item.json.data.requester.name }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "e477fec9-2156-48b9-b61b-6ae890b481cb",
-      "name": "Set Value2",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        2600,
-        1520
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\nAnalyze the following ticket data to identify recurring issues, common patterns, and value-adding opportunities for the project.\\n\n**Information Ticket**: \nSubject: ${rawData?.Ticket?.subject}\nDetail: ${rawData?.Ticket?.detail}\nType: ${rawData?.Ticket?.type}\nStatus: ${rawData?.Ticket?.status}\nPriority: ${rawData?.Ticket?.priority}\nLast Update: ${rawData?.Ticket?.last_update}\n\n**Information Project of Ticket**:\nName: ${rawData?.Project?.name}\nSummary of project goals: ${rawData?.Project?.summary}\n`\n\n\ndataReFormat+='\\n*Milestone of Project*:\\n\\n'\nif(Array.isArray(rawData?.MilestoneProject)){\n      for (const [index, item] of rawData?.MilestoneProject?.entries()) {\n      dataReFormat += `Milestone ${index + 1}: \\n`;\n      dataReFormat += `Title: ${item?.title} \\n`;\n      dataReFormat += `Cost: ${item?.cost} \\n`;\n      dataReFormat += `Summary: ${item?.summary} \\n\\n`;\n      \n    }\n  dataReFormat += ` \\n`;\n}else{\n      dataReFormat += `Title: ${rawData?.MilestoneProject?.title} \\n`;\n      dataReFormat += `Summary: ${rawData?.MilestoneProject?.summary} \\n`;\n}\n\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
-      },
-      "id": "732b9732-8450-4222-a3a8-7f4d06cee524",
-      "name": "prepareText2",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2880,
-        1520
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "let oldData = $input.all()[0]?.json?.output;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
-      },
-      "id": "fc07fae2-127c-48e9-9247-7c31ba3caba8",
-      "name": "Standardize2",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3480,
-        1520
-      ]
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -1237,309 +1136,6 @@
     },
     {
       "parameters": {
-        "operation": "appendOrUpdate",
-        "documentId": {
-          "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 1907794604,
-          "mode": "list",
-          "cachedResultName": "Ticket Check",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1907794604"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "ticketId": "={{ $('Get Ticket').item.json.data.ticket_number }}"
-          },
-          "matchingColumns": [
-            "ticketId"
-          ],
-          "schema": [
-            {
-              "id": "ticketId",
-              "displayName": "ticketId",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "8e43d463-b1a3-42ec-9c6f-fe26e45ee69e",
-      "name": "Google Sheets4",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        3940,
-        2000
-      ],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "appendOrUpdate",
-        "documentId": {
-          "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 1907794604,
-          "mode": "list",
-          "cachedResultName": "Ticket Check",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1907794604"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "ticketId": "={{ $('Get Ticket').item.json.data.ticket_number }}"
-          },
-          "matchingColumns": [
-            "ticketId"
-          ],
-          "schema": [
-            {
-              "id": "ticketId",
-              "displayName": "ticketId",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "17c67f61-dbfb-4c24-9247-c4e1d59b0e36",
-      "name": "Google Sheets5",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        3900,
-        1520
-      ],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "note",
-        "operation": "create",
-        "project_id": "={{ $('Set Value2').item.json.Project.id }}",
-        "title": "=User Stories Insights and BA Recommendations for {{ $('Set Value2').item.json.Project.name }}",
-        "details": "={{ $json.textHtml }}",
-        "category": "client",
-        "user_id": "[]",
-        "additionalFields": {},
-        "requestOptions": {}
-      },
-      "id": "23c13f61-48a3-463b-b2ce-e7b3517728ab",
-      "name": "Cloodo CRM4",
-      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
-      "typeVersion": 1,
-      "position": [
-        3700,
-        1520
-      ],
-      "credentials": {
-        "cloodoApi": {
-          "id": "nP7U7wKTbfdSeafq",
-          "name": "Cmsmart Worksuite account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "let oldData = $input.all()[0]?.json?.output;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
-      },
-      "id": "d9043772-0dd2-4b5c-870b-b6064b2a7deb",
-      "name": "Standardize3",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3500,
-        2000
-      ]
-    },
-    {
-      "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
-          "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
-        },
-        "prompt": "define",
-        "text": "=Write an email no html no <strong> Dear <strong> using the tags: <p>, <strong>, <ul>, <li> and no subject line, project overview summary to email staff from admin based on tickets with the following keywords:\n**Project Objective**:\n- Improve e-commerce for Client {{ $('Set Value3').item.json.Ticket.nameClient }}.\n- Propose ticket solutions to link to project goals and milestones.\n**Key Ticket Templates**:\n- Recurring issue types or common ticket types.\n**Value-Added Solutions**:\n- Areas where proactive or innovative solutions can add value.\n**High Priority Issues**:\n- Any high-impact or high-impact issue that should be prioritized.\n\nSee below for completion of the keywords above:\n{{ $json.prepareText }}\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Set Value3').item.json.Project.id }}\">{{ $('Set Value3').item.json.Project.name }}</a></strong>",
-        "options": {}
-      },
-      "id": "f7d96975-df66-4dcb-bb27-17e19e65f103",
-      "name": "OpenAI2",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        3140,
-        2000
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "Fr1fa0hUFyO4bC5x",
-          "name": "OpenAi Account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\nAnalyze the following ticket data to identify recurring issues, common patterns, and value-adding opportunities for the project.\\n\n**Information Ticket**: \nSubject: ${rawData?.Ticket?.subject}\nDetail: ${rawData?.Ticket?.detail}\nType: ${rawData?.Ticket?.type}\nStatus: ${rawData?.Ticket?.status}\nPriority: ${rawData?.Ticket?.priority}\nLast Update: ${rawData?.Ticket?.last_update}\n\n**Information Project of Ticket**:\nName: ${rawData?.Project?.name}\nSummary of project goals: ${rawData?.Project?.summary}\n`\n\n\ndataReFormat+='\\n*Milestone of Project*:\\n\\n'\nif(Array.isArray(rawData?.MilestoneProject)){\n      for (const [index, item] of rawData?.MilestoneProject?.entries()) {\n      dataReFormat += `Milestone ${index + 1}: \\n`;\n      dataReFormat += `Title: ${item?.title} \\n`;\n      dataReFormat += `Cost: ${item?.cost} \\n`;\n      dataReFormat += `Summary: ${item?.summary} \\n\\n`;\n      \n    }\n  dataReFormat += ` \\n`;\n}else{\n      dataReFormat += `Title: ${rawData?.MilestoneProject?.title} \\n`;\n      dataReFormat += `Summary: ${rawData?.MilestoneProject?.summary} \\n`;\n}\n\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
-      },
-      "id": "14edbc84-8b59-4a6e-89ef-23f7330b7cb9",
-      "name": "prepareText3",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2900,
-        2000
-      ]
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "5fe825d1-f525-4034-a199-27d269291fd8",
-              "name": "Ticket.id",
-              "value": "={{ $('Get ticket').item.json.data.id }}",
-              "type": "string"
-            },
-            {
-              "id": "7ca4d5b5-a919-4f84-b6dc-404b211027d1",
-              "name": "Ticket.subject",
-              "value": "={{ $('Get ticket').item.json.data.subject }}",
-              "type": "string"
-            },
-            {
-              "id": "a51a35d8-21a4-43e7-b329-925c6098b6a5",
-              "name": "Ticket.detail",
-              "value": "={{ $('Get ticket').item.json.data.reply.message }}",
-              "type": "string"
-            },
-            {
-              "id": "7f491aa5-9fc5-4674-a8fd-c7546375fdf8",
-              "name": "Ticket.type",
-              "value": "={{ $('Get ticket').item.json.data.type.type }}",
-              "type": "string"
-            },
-            {
-              "id": "0396fd3b-7efd-4fc7-9823-8231189e856d",
-              "name": "Ticket.status",
-              "value": "={{ $('Get ticket').item.json.data.status }}",
-              "type": "string"
-            },
-            {
-              "id": "7055bba9-889c-417b-80c2-0fa95009e1d2",
-              "name": "Ticket.last_update",
-              "value": "={{ $('Get ticket').item.json.data.updated_at }}",
-              "type": "string"
-            },
-            {
-              "id": "1e19ddb7-2314-42bd-be84-97294a0d5ebb",
-              "name": "Project.id",
-              "value": "={{ $('Get Project2').item.json.data.id }}",
-              "type": "string"
-            },
-            {
-              "id": "70e6e1d2-ae59-44bf-9e18-2ed4d1033368",
-              "name": "Project.name",
-              "value": "={{ $('Get Project2').item.json.data.name }}",
-              "type": "string"
-            },
-            {
-              "id": "6668ea76-94a1-4be0-8df7-6c1116fa3cc5",
-              "name": "Project.summary",
-              "value": "={{ $('Get Project2').item.json.data.summary }}",
-              "type": "string"
-            },
-            {
-              "id": "e645c857-eb8a-4e70-a512-54f51ce02dd8",
-              "name": "MilestoneProject",
-              "value": "={{ $json.data }}",
-              "type": "array"
-            },
-            {
-              "id": "2a764578-08ff-4887-a42d-97f4365fdb7f",
-              "name": "Ticket.priority",
-              "value": "={{ $('Get ticket').item.json.data.priority }}",
-              "type": "string"
-            },
-            {
-              "id": "e386a3f5-bc97-4fb6-a954-980bd725acd2",
-              "name": "Ticket.nameClient",
-              "value": "={{ $('Get ticket').item.json.data.requester.name }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "21e6bbb5-a9dd-46f0-869f-c9b45f67e657",
-      "name": "Set Value3",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        2620,
-        2000
-      ]
-    },
-    {
-      "parameters": {
-        "resource": "note",
-        "operation": "create",
-        "project_id": "={{ $('Set Value3').item.json.Project.id }}",
-        "title": "=Ticket Insights and BA Recommendations for {{ $('Set Value3').item.json.Project.name }}",
-        "details": "={{ $json.textHtml }}",
-        "category": "ticket",
-        "user_id": "[]",
-        "additionalFields": {},
-        "requestOptions": {}
-      },
-      "id": "9ad8042b-b206-4e4f-bb36-4bd589806568",
-      "name": "Cloodo CRM6",
-      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
-      "typeVersion": 1,
-      "position": [
-        3720,
-        2000
-      ],
-      "credentials": {
-        "cloodoApi": {
-          "id": "nP7U7wKTbfdSeafq",
-          "name": "Cmsmart Worksuite account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "get",
         "ID": "={{ $('Get ticket').item.json.data.projects.id }}",
         "requestOptions": {}
@@ -1584,7 +1180,7 @@
       "parameters": {
         "resource": "project",
         "operation": "getMilestones",
-        "ID": "={{ $json.data.id }}",
+        "ID": "={{ $('Get Project3').item.json.data.id}}",
         "additionalFields": {},
         "requestOptions": {}
       },
@@ -1593,7 +1189,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        2320,
+        2560,
         1520
       ],
       "credentials": {
@@ -1607,7 +1203,7 @@
       "parameters": {
         "resource": "project",
         "operation": "getMilestones",
-        "ID": "={{ $json.data.id }}",
+        "ID": "={{ $('Get Project2').item.json.data.id}}",
         "additionalFields": {},
         "requestOptions": {}
       },
@@ -1616,41 +1212,13 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        2340,
+        2640,
         2000
       ],
       "credentials": {
         "cloodoApi": {
           "id": "nP7U7wKTbfdSeafq",
           "name": "Cmsmart Worksuite account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
-          "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
-        },
-        "prompt": "define",
-        "text": "=Write an email no html no <strong> Dear <strong> using the tags: <p>, <strong>, <ul>, <li> and no subject line, project overview summary to email staff from admin based on tickets with the following keywords:\n**Project Objective**:\n- Improve e-commerce for Client {{ $('Set Value2').item.json.Ticket.nameClient }}.\n- Propose ticket solutions to link to project goals and milestones.\n**Key Ticket Templates**:\n- Recurring issue types or common ticket types.\n**Value-Added Solutions**:\n- Areas where proactive or innovative solutions can add value.\n**High Priority Issues**:\n- Any high-impact or high-impact issue that should be prioritized.\n\nSee below for completion of the keywords above:\n{{ $json.prepareText }}\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Set Value2').item.json.Project.id }}\">{{ $('Set Value2').item.json.Project.name }}</a></strong>",
-        "options": {}
-      },
-      "id": "49ed5581-0e33-428f-9f7c-7c260ccff762",
-      "name": "OpenAI3",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        3100,
-        1520
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "Fr1fa0hUFyO4bC5x",
-          "name": "OpenAi Account"
         }
       }
     },
@@ -1665,8 +1233,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        -800,
-        2880
+        -1760,
+        2860
       ],
       "credentials": {
         "cloodoApi": {
@@ -1706,7 +1274,7 @@
           "values": [
             {
               "lookupColumn": "=ticketId",
-              "lookupValue": "={{ $json.data.ticket_number }}"
+              "lookupValue": "={{ $json.TicketNumber }}"
             }
           ]
         },
@@ -1727,121 +1295,6 @@
           "name": "Canh Google Sheets"
         }
       }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "5fe825d1-f525-4034-a199-27d269291fd8",
-              "name": "Ticket.id",
-              "value": "={{ $('Get ticket1').item.json.data.id }}",
-              "type": "string"
-            },
-            {
-              "id": "7ca4d5b5-a919-4f84-b6dc-404b211027d1",
-              "name": "Ticket.subject",
-              "value": "={{ $('Get ticket1').item.json.data.subject }}",
-              "type": "string"
-            },
-            {
-              "id": "a51a35d8-21a4-43e7-b329-925c6098b6a5",
-              "name": "Ticket.detail",
-              "value": "={{ $('Get ticket1').item.json.data.reply.message }}",
-              "type": "string"
-            },
-            {
-              "id": "7f491aa5-9fc5-4674-a8fd-c7546375fdf8",
-              "name": "Ticket.type",
-              "value": "={{ $('Get ticket1').item.json.data.type.type }}",
-              "type": "string"
-            },
-            {
-              "id": "0396fd3b-7efd-4fc7-9823-8231189e856d",
-              "name": "Ticket.status",
-              "value": "={{ $('Get ticket1').item.json.data.status }}",
-              "type": "string"
-            },
-            {
-              "id": "7055bba9-889c-417b-80c2-0fa95009e1d2",
-              "name": "Ticket.last_update",
-              "value": "={{ $('Get ticket1').item.json.data.updated_at }}",
-              "type": "string"
-            },
-            {
-              "id": "1e19ddb7-2314-42bd-be84-97294a0d5ebb",
-              "name": "Project.id",
-              "value": "={{ $('Get Project5').item.json.data.id }}",
-              "type": "string"
-            },
-            {
-              "id": "70e6e1d2-ae59-44bf-9e18-2ed4d1033368",
-              "name": "Project.name",
-              "value": "={{ $('Get Project5').item.json.data.name }}",
-              "type": "string"
-            },
-            {
-              "id": "6668ea76-94a1-4be0-8df7-6c1116fa3cc5",
-              "name": "Project.summary",
-              "value": "={{ $('Get Project5').item.json.data.summary }}",
-              "type": "string"
-            },
-            {
-              "id": "e645c857-eb8a-4e70-a512-54f51ce02dd8",
-              "name": "MilestoneProject",
-              "value": "={{ $json.data }}",
-              "type": "array"
-            },
-            {
-              "id": "2a764578-08ff-4887-a42d-97f4365fdb7f",
-              "name": "Ticket.priority",
-              "value": "={{ $('Get ticket1').item.json.data.priority }}",
-              "type": "string"
-            },
-            {
-              "id": "e386a3f5-bc97-4fb6-a954-980bd725acd2",
-              "name": "Ticket.nameClient",
-              "value": "={{ $('Get ticket1').item.json.data.requester.name }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "bc97e229-471b-4948-be14-f630f1095464",
-      "name": "Set Value4",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1840,
-        2600
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\nAnalyze the following ticket data to identify recurring issues, common patterns, and value-adding opportunities for the project.\\n\n**Information Ticket**: \nSubject: ${rawData?.Ticket?.subject}\nDetail: ${rawData?.Ticket?.detail}\nType: ${rawData?.Ticket?.type}\nStatus: ${rawData?.Ticket?.status}\nPriority: ${rawData?.Ticket?.priority}\nLast Update: ${rawData?.Ticket?.last_update}\n\n**Information Project of Ticket**:\nName: ${rawData?.Project?.name}\nSummary of project goals: ${rawData?.Project?.summary}\n`\n\n\ndataReFormat+='\\n*Milestone of Project*:\\n\\n'\nif(Array.isArray(rawData?.MilestoneProject)){\n      for (const [index, item] of rawData?.MilestoneProject?.entries()) {\n      dataReFormat += `Milestone ${index + 1}: \\n`;\n      dataReFormat += `Title: ${item?.title} \\n`;\n      dataReFormat += `Cost: ${item?.cost} \\n`;\n      dataReFormat += `Summary: ${item?.summary} \\n\\n`;\n      \n    }\n  dataReFormat += ` \\n`;\n}else{\n      dataReFormat += `Title: ${rawData?.MilestoneProject?.title} \\n`;\n      dataReFormat += `Summary: ${rawData?.MilestoneProject?.summary} \\n`;\n}\n\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
-      },
-      "id": "1713450a-5843-4866-8892-26429649c097",
-      "name": "prepareText4",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2120,
-        2600
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "let oldData = $input.all()[0]?.json?.output;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
-      },
-      "id": "0dd048c4-fbdd-4144-b30b-3390406d4dd4",
-      "name": "Standardize4",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2720,
-        2600
-      ]
     },
     {
       "parameters": {
@@ -1913,332 +1366,8 @@
     },
     {
       "parameters": {
-        "operation": "appendOrUpdate",
-        "documentId": {
-          "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 1907794604,
-          "mode": "list",
-          "cachedResultName": "Ticket Check",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1907794604"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "ticketId": "={{ $('Get Ticket').item.json.data.ticket_number }}"
-          },
-          "matchingColumns": [
-            "ticketId"
-          ],
-          "schema": [
-            {
-              "id": "ticketId",
-              "displayName": "ticketId",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "50dd6eb2-556a-4062-9813-c4ef8baec573",
-      "name": "Google Sheets7",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        3180,
-        3080
-      ],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "appendOrUpdate",
-        "documentId": {
-          "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 1907794604,
-          "mode": "list",
-          "cachedResultName": "Ticket Check",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1907794604"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "ticketId": "={{ $('Get Ticket').item.json.data.ticket_number }}"
-          },
-          "matchingColumns": [
-            "ticketId"
-          ],
-          "schema": [
-            {
-              "id": "ticketId",
-              "displayName": "ticketId",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "456395f0-42b4-4fde-9dae-c5409f529959",
-      "name": "Google Sheets8",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        3140,
-        2600
-      ],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "note",
-        "operation": "create",
-        "project_id": "={{ $('Set Value4').item.json.Project.id }}",
-        "title": "=User Stories Insights and BA Recommendations for {{ $('Set Value4').item.json.Project.name }}",
-        "details": "={{ $json.textHtml }}",
-        "category": "client",
-        "user_id": "[]",
-        "additionalFields": {},
-        "requestOptions": {}
-      },
-      "id": "7ee92cf0-b7f0-4bac-91f2-e6d2523748aa",
-      "name": "Cloodo CRM7",
-      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
-      "typeVersion": 1,
-      "position": [
-        2940,
-        2600
-      ],
-      "credentials": {
-        "cloodoApi": {
-          "id": "nP7U7wKTbfdSeafq",
-          "name": "Cmsmart Worksuite account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "let oldData = $input.all()[0]?.json?.output;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
-      },
-      "id": "d52a9159-4c2f-4ecc-81f8-37df3668cde7",
-      "name": "Standardize5",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2740,
-        3080
-      ]
-    },
-    {
-      "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
-          "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
-        },
-        "prompt": "define",
-        "text": "=Write an email no html no <strong> Dear <strong> using the tags: <p>, <strong>, <ul>, <li> and no subject line, project overview summary to email staff from admin based on tickets with the following keywords:\n**Project Objective**:\n- Improve e-commerce for Client {{ $('Set Value5').item.json.Ticket.nameClient }}.\n- Propose ticket solutions to link to project goals and milestones.\n**Key Ticket Templates**:\n- Recurring issue types or common ticket types.\n**Value-Added Solutions**:\n- Areas where proactive or innovative solutions can add value.\n**High Priority Issues**:\n- Any high-impact or high-impact issue that should be prioritized.\n\nSee below for completion of the keywords above:\n{{ $json.prepareText }}\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Set Value5').item.json.Project.id }}\">{{ $('Set Value5').item.json.Project.name }}</a></strong>",
-        "options": {}
-      },
-      "id": "35312afb-3ea9-4a17-95cc-9ba009f6582e",
-      "name": "OpenAI4",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        2380,
-        3080
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "Fr1fa0hUFyO4bC5x",
-          "name": "OpenAi Account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\\nAnalyze the following ticket data to identify recurring issues, common patterns, and value-adding opportunities for the project.\\n\n**Information Ticket**: \nSubject: ${rawData?.Ticket?.subject}\nDetail: ${rawData?.Ticket?.detail}\nType: ${rawData?.Ticket?.type}\nStatus: ${rawData?.Ticket?.status}\nPriority: ${rawData?.Ticket?.priority}\nLast Update: ${rawData?.Ticket?.last_update}\n\n**Information Project of Ticket**:\nName: ${rawData?.Project?.name}\nSummary of project goals: ${rawData?.Project?.summary}\n`\n\n\ndataReFormat+='\\n*Milestone of Project*:\\n\\n'\nif(Array.isArray(rawData?.MilestoneProject)){\n      for (const [index, item] of rawData?.MilestoneProject?.entries()) {\n      dataReFormat += `Milestone ${index + 1}: \\n`;\n      dataReFormat += `Title: ${item?.title} \\n`;\n      dataReFormat += `Cost: ${item?.cost} \\n`;\n      dataReFormat += `Summary: ${item?.summary} \\n\\n`;\n      \n    }\n  dataReFormat += ` \\n`;\n}else{\n      dataReFormat += `Title: ${rawData?.MilestoneProject?.title} \\n`;\n      dataReFormat += `Summary: ${rawData?.MilestoneProject?.summary} \\n`;\n}\n\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
-      },
-      "id": "3ed01a67-d1ee-4935-ae41-07848fa7ce35",
-      "name": "prepareText5",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2140,
-        3080
-      ]
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "5fe825d1-f525-4034-a199-27d269291fd8",
-              "name": "Ticket.id",
-              "value": "={{ $('Get ticket1').item.json.data.id }}",
-              "type": "string"
-            },
-            {
-              "id": "7ca4d5b5-a919-4f84-b6dc-404b211027d1",
-              "name": "Ticket.subject",
-              "value": "={{ $('Get ticket1').item.json.data.subject }}",
-              "type": "string"
-            },
-            {
-              "id": "a51a35d8-21a4-43e7-b329-925c6098b6a5",
-              "name": "Ticket.detail",
-              "value": "={{ $('Get ticket1').item.json.data.reply.message }}",
-              "type": "string"
-            },
-            {
-              "id": "7f491aa5-9fc5-4674-a8fd-c7546375fdf8",
-              "name": "Ticket.type",
-              "value": "={{ $('Get ticket1').item.json.data.type.type }}",
-              "type": "string"
-            },
-            {
-              "id": "0396fd3b-7efd-4fc7-9823-8231189e856d",
-              "name": "Ticket.status",
-              "value": "={{ $('Get ticket1').item.json.data.status }}",
-              "type": "string"
-            },
-            {
-              "id": "7055bba9-889c-417b-80c2-0fa95009e1d2",
-              "name": "Ticket.last_update",
-              "value": "={{ $('Get ticket1').item.json.data.updated_at }}",
-              "type": "string"
-            },
-            {
-              "id": "1e19ddb7-2314-42bd-be84-97294a0d5ebb",
-              "name": "Project.id",
-              "value": "={{ $('Get Project4').item.json.data.id }}",
-              "type": "string"
-            },
-            {
-              "id": "70e6e1d2-ae59-44bf-9e18-2ed4d1033368",
-              "name": "Project.name",
-              "value": "={{ $('Get Project4').item.json.data.name }}",
-              "type": "string"
-            },
-            {
-              "id": "6668ea76-94a1-4be0-8df7-6c1116fa3cc5",
-              "name": "Project.summary",
-              "value": "={{ $('Get Project4').item.json.data.summary }}",
-              "type": "string"
-            },
-            {
-              "id": "e645c857-eb8a-4e70-a512-54f51ce02dd8",
-              "name": "MilestoneProject",
-              "value": "={{ $json.data }}",
-              "type": "array"
-            },
-            {
-              "id": "2a764578-08ff-4887-a42d-97f4365fdb7f",
-              "name": "Ticket.priority",
-              "value": "={{ $('Get ticket1').item.json.data.priority }}",
-              "type": "string"
-            },
-            {
-              "id": "e386a3f5-bc97-4fb6-a954-980bd725acd2",
-              "name": "Ticket.nameClient",
-              "value": "={{ $('Get ticket1').item.json.data.requester.name }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "07de63a6-8caa-40df-8678-cac5768c19b6",
-      "name": "Set Value5",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1860,
-        3080
-      ]
-    },
-    {
-      "parameters": {
-        "resource": "note",
-        "operation": "create",
-        "project_id": "={{ $('Set Value5').item.json.Project.id }}",
-        "title": "=Ticket Insights and BA Recommendations for {{ $('Set Value5').item.json.Project.name }}",
-        "details": "={{ $json.textHtml }}",
-        "category": "ticket",
-        "user_id": "[]",
-        "additionalFields": {},
-        "requestOptions": {}
-      },
-      "id": "763cea07-ef09-44e0-97e1-bbd3b6b3e690",
-      "name": "Cloodo CRM8",
-      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
-      "typeVersion": 1,
-      "position": [
-        2960,
-        3080
-      ],
-      "credentials": {
-        "cloodoApi": {
-          "id": "nP7U7wKTbfdSeafq",
-          "name": "Cmsmart Worksuite account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "get",
-        "ID": "={{ $('Get ticket1').item.json.data.projects.id }}",
-        "requestOptions": {}
-      },
-      "id": "062a951c-231b-4aed-b96e-4c048d4e0769",
-      "name": "Get Project4",
-      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
-      "typeVersion": 1,
-      "position": [
-        1280,
-        3080
-      ],
-      "credentials": {
-        "cloodoApi": {
-          "id": "nP7U7wKTbfdSeafq",
-          "name": "Cmsmart Worksuite account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "get",
-        "ID": "={{ $('Get ticket1').item.json.data.projects.id }}",
+        "ID": "={{ $('TicketSheet').item.json.ProjectId }}",
         "requestOptions": {}
       },
       "id": "807ea3c4-c004-40fd-b698-2296328a0687",
@@ -2253,80 +1382,6 @@
         "cloodoApi": {
           "id": "nP7U7wKTbfdSeafq",
           "name": "Cmsmart Worksuite account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "project",
-        "operation": "getMilestones",
-        "ID": "={{ $json.data.id }}",
-        "additionalFields": {},
-        "requestOptions": {}
-      },
-      "id": "4301aff9-4f03-4813-bf11-e54d115cd670",
-      "name": "Get Milestone Project4",
-      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
-      "typeVersion": 1,
-      "position": [
-        1560,
-        2600
-      ],
-      "credentials": {
-        "cloodoApi": {
-          "id": "nP7U7wKTbfdSeafq",
-          "name": "Cmsmart Worksuite account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "project",
-        "operation": "getMilestones",
-        "ID": "={{ $json.data.id }}",
-        "additionalFields": {},
-        "requestOptions": {}
-      },
-      "id": "210ddb9e-b7b3-4ee1-a090-0ec44a99201b",
-      "name": "Get Milestone Project5",
-      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
-      "typeVersion": 1,
-      "position": [
-        1580,
-        3080
-      ],
-      "credentials": {
-        "cloodoApi": {
-          "id": "nP7U7wKTbfdSeafq",
-          "name": "Cmsmart Worksuite account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
-          "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
-        },
-        "prompt": "define",
-        "text": "=Write an email no html no <strong> Dear <strong> using the tags: <p>, <strong>, <ul>, <li> and no subject line, project overview summary to email staff from admin based on tickets with the following keywords:\n**Project Objective**:\n- Improve e-commerce for Client {{ $('Set Value4').item.json.Ticket.nameClient }}.\n- Propose ticket solutions to link to project goals and milestones.\n**Key Ticket Templates**:\n- Recurring issue types or common ticket types.\n**Value-Added Solutions**:\n- Areas where proactive or innovative solutions can add value.\n**High Priority Issues**:\n- Any high-impact or high-impact issue that should be prioritized.\n\nSee below for completion of the keywords above:\n{{ $json.prepareText }}\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Set Value4').item.json.Project.id }}\">{{ $('Set Value4').item.json.Project.name }}</a></strong>",
-        "options": {}
-      },
-      "id": "4bf8d269-93d3-4c4d-ae82-ca48a8cd4d55",
-      "name": "OpenAI5",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        2340,
-        2600
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "Fr1fa0hUFyO4bC5x",
-          "name": "OpenAi Account"
         }
       }
     },
@@ -2461,7 +1516,7 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        3140,
+        3200,
         80
       ],
       "credentials": {
@@ -2588,6 +1643,18 @@
               "name": "Client.likedin",
               "value": "={{ $('Get Client1').item.json.data.social_details.linkedin }}",
               "type": "string"
+            },
+            {
+              "id": "8042d081-6df9-43ba-96eb-ead83152dde1",
+              "name": "Agent.name",
+              "value": "={{ $('Check not closed').item.json.data.agent.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "ec297e9e-70bb-471f-82ea-de9398960035",
+              "name": "Agent.email",
+              "value": "={{ $('Check not closed').item.json.data.agent.user.email }}",
+              "type": "string"
             }
           ]
         },
@@ -2671,7 +1738,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        4040,
+        4240,
         540
       ],
       "credentials": {
@@ -2698,7 +1765,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        3760,
+        3800,
         540
       ],
       "credentials": {
@@ -2770,7 +1837,7 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        3160,
+        3120,
         540
       ],
       "credentials": {
@@ -2800,6 +1867,1522 @@
           "name": "Cmsmart Worksuite account"
         }
       }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $json.data.client.user.id }}",
+        "requestOptions": {}
+      },
+      "id": "3e289404-9d25-4595-bd4a-4bbf1cd43d39",
+      "name": "Get Client2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        2000
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $json.data.client.user.id }}",
+        "requestOptions": {}
+      },
+      "id": "cc30b5e1-110b-4a87-88be-5342ca809d56",
+      "name": "Get Client3",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2280,
+        1520
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5fe825d1-f525-4034-a199-27d269291fd8",
+              "name": "Ticket.id",
+              "value": "={{ $('Get ticket').item.json.data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "7ca4d5b5-a919-4f84-b6dc-404b211027d1",
+              "name": "Ticket.subject",
+              "value": "={{ $('Get ticket').item.json.data.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "a51a35d8-21a4-43e7-b329-925c6098b6a5",
+              "name": "=Ticket.detail",
+              "value": "={{ $('Get ticket').item.json.data.reply.message }}",
+              "type": "string"
+            },
+            {
+              "id": "7f491aa5-9fc5-4674-a8fd-c7546375fdf8",
+              "name": "Ticket.type",
+              "value": "={{ $('Get ticket').item.json.data.type.type }}",
+              "type": "string"
+            },
+            {
+              "id": "0396fd3b-7efd-4fc7-9823-8231189e856d",
+              "name": "Ticket.status",
+              "value": "={{ $('Get ticket').item.json.data.status }}",
+              "type": "string"
+            },
+            {
+              "id": "7055bba9-889c-417b-80c2-0fa95009e1d2",
+              "name": "Ticket.last_update",
+              "value": "={{ $('Get ticket').item.json.data.updated_at }}",
+              "type": "string"
+            },
+            {
+              "id": "1e19ddb7-2314-42bd-be84-97294a0d5ebb",
+              "name": "Project.id",
+              "value": "={{ $('Get Project3').item.json.data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "70e6e1d2-ae59-44bf-9e18-2ed4d1033368",
+              "name": "Project.name",
+              "value": "={{ $('Get Project3').item.json.data.name }}",
+              "type": "string"
+            },
+            {
+              "id": "6668ea76-94a1-4be0-8df7-6c1116fa3cc5",
+              "name": "Project.summary",
+              "value": "={{ $('Get Project3').item.json.data.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "e645c857-eb8a-4e70-a512-54f51ce02dd8",
+              "name": "MilestoneProject",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "2a764578-08ff-4887-a42d-97f4365fdb7f",
+              "name": "Ticket.priority",
+              "value": "={{ $('Get ticket').item.json.data.priority }}",
+              "type": "string"
+            },
+            {
+              "id": "e386a3f5-bc97-4fb6-a954-980bd725acd2",
+              "name": "Ticket.nameClient",
+              "value": "={{ $('Get ticket').item.json.data.requester.name }}",
+              "type": "string"
+            },
+            {
+              "id": "ba4e48c2-e7de-4a78-86ab-39885bfe9998",
+              "name": "Project.web",
+              "value": "={{ $('Get Client3').item.json.data.website }}",
+              "type": "string"
+            },
+            {
+              "id": "4d49c994-1c26-4db0-ac0f-30879a899f64",
+              "name": "Client.name",
+              "value": "={{ $('Get Client3').item.json.data.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "ee2b6919-a529-4aff-9b49-07b78d907e5d",
+              "name": "Client.email",
+              "value": "={{ $('Get Client3').item.json.data.user.email }}",
+              "type": "string"
+            },
+            {
+              "id": "12b25991-47a5-4ae2-ad4f-119fb8d001b5",
+              "name": "Client.companyName",
+              "value": "={{ $('Get Client3').item.json.data.company_name }}",
+              "type": "string"
+            },
+            {
+              "id": "9952301c-0d45-40ac-8e79-48ffcd980206",
+              "name": "Client.category",
+              "value": "={{ $('Get Client3').item.json.data.category.name }}",
+              "type": "string"
+            },
+            {
+              "id": "5f208c3a-cd39-4053-b703-5690a926319d",
+              "name": "Client.facebook",
+              "value": "={{ $('Get Client3').item.json.data.social_details.facebook }}",
+              "type": "string"
+            },
+            {
+              "id": "4ac3fa44-972b-4a34-9733-92551ce2c897",
+              "name": "Client.likedin",
+              "value": "={{ $('Get Client3').item.json.data.social_details.linkedin }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0a205d93-bde1-494a-8ab9-96bb9c87f8bb",
+      "name": "Set Value2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2900,
+        1520
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\n**Information Ticket**: \n - Subject: ${rawData?.Ticket?.subject}\n - Detail: ${rawData?.Ticket?.detail}\n - Type: ${rawData?.Ticket?.type}\n - Status: ${rawData?.Ticket?.status}\n - Priority: ${rawData?.Ticket?.priority}\n - Last Update: ${rawData?.Ticket?.last_update}\n\n**Information Project of Ticket**:\n - Name: ${rawData?.Project?.name}\n - Summary of project goals: ${rawData?.Project?.summary}\n - Website: ${rawData?.Project?.web}\n\n**Client Profile**:\n - Name: ${rawData?.Client?.name}\n - Email: ${rawData?.Client?.email}\n - Company Name: ${rawData?.Client?.companyName}\n - Client Category: ${rawData?.Client?.category}\n - Client Facebook: ${rawData?.Client?.facebook}\n - Client Likedin: ${rawData?.Client?.likedin}\n`\n\n\ndataReFormat+='\\n*Milestone of Project*:\\n\\n'\nif(Array.isArray(rawData?.MilestoneProject)){\n      for (const [index, item] of rawData?.MilestoneProject?.entries()) {\n      dataReFormat += `- Milestone ${index + 1}: \\n`;\n      dataReFormat += ` + Title: ${item?.title} \\n`;\n      dataReFormat += ` + Cost: ${item?.cost} \\n`;\n      dataReFormat += ` + Summary: ${item?.summary} \\n\\n`;\n      \n    }\n  dataReFormat += ` \\n`;\n}else{\n      dataReFormat += ` + Title: ${rawData?.MilestoneProject?.title} \\n`;\n      dataReFormat += ` + Summary: ${rawData?.MilestoneProject?.summary} \\n`;\n}\n\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
+      },
+      "id": "42ca993b-8f2f-4e9f-af83-1b70d5db0c05",
+      "name": "prepareText2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3200,
+        1520
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.output;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "f5d8a0ac-6b1c-423d-bef3-2e53ccd78de2",
+      "name": "Standardize2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3920,
+        1520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1907794604,
+          "mode": "list",
+          "cachedResultName": "Ticket Check",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1907794604"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ticketId": "={{ $('Check not closed').item.json.data.ticket_number }}"
+          },
+          "matchingColumns": [
+            "ticketId"
+          ],
+          "schema": [
+            {
+              "id": "ticketId",
+              "displayName": "ticketId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "044bf703-c8f5-4e3e-8652-1a99ab522500",
+      "name": "Google Sheets5",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        4420,
+        1520
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "note",
+        "operation": "create",
+        "project_id": "={{ $('Set Value2').item.json.Project.id }}",
+        "title": "=Ticket {{ $('Get ticket').item.json.data.ticket_number }} Detailed analysis and recommendation for {{ $('Set Value2').item.json.Project.name }} {{ $('Set Value2').item.json.Project.name }}",
+        "details": "={{ $json.textHtml }}\n\n<strong>Link Ticket: <a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Set Value2').item.json.Ticket.id }}\"</a>{{ $('Set Value2').item.json.Ticket.subject }}</strong>",
+        "category": "client",
+        "user_id": "[]",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "6bc45548-d5ed-41c5-9a67-130af440eda1",
+      "name": "Cloodo CRM4",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4140,
+        1520
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5fe825d1-f525-4034-a199-27d269291fd8",
+              "name": "Ticket.id",
+              "value": "={{ $('Get ticket').item.json.data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "7ca4d5b5-a919-4f84-b6dc-404b211027d1",
+              "name": "Ticket.subject",
+              "value": "={{ $('Get ticket').item.json.data.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "a51a35d8-21a4-43e7-b329-925c6098b6a5",
+              "name": "=Ticket.detail",
+              "value": "={{ $('Get ticket').item.json.data.reply.message }}",
+              "type": "string"
+            },
+            {
+              "id": "7f491aa5-9fc5-4674-a8fd-c7546375fdf8",
+              "name": "Ticket.type",
+              "value": "={{ $('Get ticket').item.json.data.type.type }}",
+              "type": "string"
+            },
+            {
+              "id": "0396fd3b-7efd-4fc7-9823-8231189e856d",
+              "name": "Ticket.status",
+              "value": "={{ $('Get ticket').item.json.data.status }}",
+              "type": "string"
+            },
+            {
+              "id": "7055bba9-889c-417b-80c2-0fa95009e1d2",
+              "name": "Ticket.last_update",
+              "value": "={{ $('Get ticket').item.json.data.updated_at }}",
+              "type": "string"
+            },
+            {
+              "id": "1e19ddb7-2314-42bd-be84-97294a0d5ebb",
+              "name": "Project.id",
+              "value": "={{ $('Get Project2').item.json.data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "70e6e1d2-ae59-44bf-9e18-2ed4d1033368",
+              "name": "Project.name",
+              "value": "={{ $('Get Project2').item.json.data.name }}",
+              "type": "string"
+            },
+            {
+              "id": "6668ea76-94a1-4be0-8df7-6c1116fa3cc5",
+              "name": "Project.summary",
+              "value": "={{ $('Get Project2').item.json.data.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "e645c857-eb8a-4e70-a512-54f51ce02dd8",
+              "name": "MilestoneProject",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "2a764578-08ff-4887-a42d-97f4365fdb7f",
+              "name": "Ticket.priority",
+              "value": "={{ $('Get ticket').item.json.data.priority }}",
+              "type": "string"
+            },
+            {
+              "id": "e386a3f5-bc97-4fb6-a954-980bd725acd2",
+              "name": "Ticket.nameClient",
+              "value": "={{ $('Get ticket').item.json.data.requester.name }}",
+              "type": "string"
+            },
+            {
+              "id": "ba4e48c2-e7de-4a78-86ab-39885bfe9998",
+              "name": "Project.web",
+              "value": "={{ $('Get Client2').item.json.data.website }}",
+              "type": "string"
+            },
+            {
+              "id": "4d49c994-1c26-4db0-ac0f-30879a899f64",
+              "name": "Client.name",
+              "value": "={{ $('Get Client2').item.json.data.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "ee2b6919-a529-4aff-9b49-07b78d907e5d",
+              "name": "Client.email",
+              "value": "={{ $('Get Client2').item.json.data.user.email }}",
+              "type": "string"
+            },
+            {
+              "id": "12b25991-47a5-4ae2-ad4f-119fb8d001b5",
+              "name": "Client.companyName",
+              "value": "={{ $('Get Client2').item.json.data.company_name }}",
+              "type": "string"
+            },
+            {
+              "id": "9952301c-0d45-40ac-8e79-48ffcd980206",
+              "name": "Client.category",
+              "value": "={{ $('Get Client2').item.json.data.category.name }}",
+              "type": "string"
+            },
+            {
+              "id": "5f208c3a-cd39-4053-b703-5690a926319d",
+              "name": "Client.facebook",
+              "value": "={{ $('Get Client2').item.json.data.social_details.facebook }}",
+              "type": "string"
+            },
+            {
+              "id": "4ac3fa44-972b-4a34-9733-92551ce2c897",
+              "name": "Client.likedin",
+              "value": "={{ $('Get Client2').item.json.data.social_details.linkedin }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9a7ccd47-8e36-4b70-b4e5-e7d9f7d7338c",
+      "name": "Set Value3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2940,
+        2000
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\n**Information Ticket**: \n - Subject: ${rawData?.Ticket?.subject}\n - Detail: ${rawData?.Ticket?.detail}\n - Type: ${rawData?.Ticket?.type}\n - Status: ${rawData?.Ticket?.status}\n - Priority: ${rawData?.Ticket?.priority}\n - Last Update: ${rawData?.Ticket?.last_update}\n\n**Information Project of Ticket**:\n - Name: ${rawData?.Project?.name}\n - Summary of project goals: ${rawData?.Project?.summary}\n - Website: ${rawData?.Project?.web}\n\n**Client Profile**:\n - Name: ${rawData?.Client?.name}\n - Email: ${rawData?.Client?.email}\n - Company Name: ${rawData?.Client?.companyName}\n - Client Category: ${rawData?.Client?.category}\n - Client Facebook: ${rawData?.Client?.facebook}\n - Client Likedin: ${rawData?.Client?.likedin}\n`\n\n\ndataReFormat+='\\n*Milestone of Project*:\\n\\n'\nif(Array.isArray(rawData?.MilestoneProject)){\n      for (const [index, item] of rawData?.MilestoneProject?.entries()) {\n      dataReFormat += `- Milestone ${index + 1}: \\n`;\n      dataReFormat += ` + Title: ${item?.title} \\n`;\n      dataReFormat += ` + Cost: ${item?.cost} \\n`;\n      dataReFormat += ` + Summary: ${item?.summary} \\n\\n`;\n      \n    }\n  dataReFormat += ` \\n`;\n}else{\n      dataReFormat += ` + Title: ${rawData?.MilestoneProject?.title} \\n`;\n      dataReFormat += ` + Summary: ${rawData?.MilestoneProject?.summary} \\n`;\n}\n\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
+      },
+      "id": "c58f84c7-fee2-42ac-9d49-0d5327151591",
+      "name": "prepareText3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3220,
+        2000
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.output;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "a0a750cf-e24d-4be5-bb9e-22336fbab5ed",
+      "name": "Standardize3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3940,
+        2000
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1907794604,
+          "mode": "list",
+          "cachedResultName": "Ticket Check",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1907794604"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ticketId": "={{ $('Check not closed').item.json.data.ticket_number }}"
+          },
+          "matchingColumns": [
+            "ticketId"
+          ],
+          "schema": [
+            {
+              "id": "ticketId",
+              "displayName": "ticketId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "48636df8-f7dd-4615-b8ce-ac41965048e9",
+      "name": "Google Sheets4",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        4440,
+        2000
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "note",
+        "operation": "create",
+        "project_id": "={{ $('Set Value3').item.json.Project.id }}",
+        "title": "=Ticket {{ $('Get ticket').item.json.data.ticket_number }} Detailed analysis and recommendation for {{ $('Set Value3').item.json.Project.name }} {{ $('Set Value3').item.json.Project.name }}",
+        "details": "={{ $json.textHtml }}\n\n<strong>Link Ticket: <a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Set Value3').item.json.Ticket.id }}\"</a>{{ $('Set Value3').item.json.Ticket.subject }}</strong>",
+        "category": "client",
+        "user_id": "[]",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "0248bad8-c6ef-4c84-9fd4-c233f36a1858",
+      "name": "Cloodo CRM6",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4160,
+        2000
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=Using card <p>, <strong>, <ul>, <li>\nYou are a Senior Consultant assisting with the management of a client ticket. The assigned agent is a Business Analyst (BA) or Project Manager, and you need to provide guidance on how to proceed with the ticket. Your goal is to:\n\nAnalyze the ticket content: Understand the client’s request and categorize the issue.\nCreate tasks for technical investigation: Clearly define actionable tasks that can be assigned to the development team for further technical investigation.\nEngage the client with more specific questions: Suggest key questions to ask the client to gather more detailed information or clarify unclear points.\nPropose alternative solutions: Offer suggestions on how the client’s issue might be addressed, including alternatives or best practices.\nProvide additional assistance: Depending on the category of the ticket or the client’s profile, offer further assistance or direct the agent on how to best support the client.\nReview the client profile and project information: Ensure the agent has a complete understanding of the client's background, status, and previous interactions before proceeding.\nOutput structure:\n\nUsing card <p>, <strong>, <ul>, <li>\nTicket Analysis: Summarize the core issue or request.\nKey Questions for Client: List questions that can help gather more information or clarify the request.\nTask Suggestions for Development: Define tasks for technical investigation or further steps.\nAlternative Solutions: Provide potential solutions or options to consider.\nClient Engagement Strategy: Suggest how to proceed with the client based on their profile and ticket category.\n\nSee below for completion of the keywords above:\n{{ $json.prepareText }}\n\n<strong>Link Ticket: <a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Set Value3').item.json.Ticket.id }}\"</a>{{ $('Set Value3').item.json.Ticket.subject }}</strong>\n",
+        "options": {}
+      },
+      "id": "764e0731-56f8-409c-9bcd-dae94a67a61a",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        3560,
+        2000
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Fr1fa0hUFyO4bC5x",
+          "name": "OpenAi Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "45e65ced-05dc-4f34-a44a-1beb999b978c",
+              "leftValue": "={{ $json.data.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6b0256ce-72c9-4411-a926-b954a9488c4e",
+      "name": "Check null",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -920,
+        4000
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 485924616,
+          "mode": "list",
+          "cachedResultName": "TicketMany",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=485924616"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.data.id }}",
+            "TicketNumber": "={{ $json.data.ticket_number }}",
+            "type": "={{ $json.data.type }}",
+            "message": "={{ $json.data.reply.message }}",
+            "requesterName": "={{ $json.data.requester.name }}",
+            "ProjectId": "={{ $json.data.projects.id }}",
+            "priority": "={{ $json.data.priority }}",
+            "status": "={{ $json.data.status }}",
+            "subject": "={{ $json.data.subject }}",
+            "updateAt": "={{ $json.data.updated_at }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updateAt",
+              "displayName": "updateAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "requesterName",
+              "displayName": "requesterName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ProjectId",
+              "displayName": "ProjectId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TicketNumber",
+              "displayName": "TicketNumber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d14460a0-faa6-4455-b6d0-c5081496f64a",
+      "name": "Google Sheets9",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1340,
+        2860
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=Using card <p>, <strong>, <ul>, <li>\nYou are a Senior Consultant assisting with the management of a client ticket. The assigned agent is a Business Analyst (BA) or Project Manager, and you need to provide guidance on how to proceed with the ticket. Your goal is to:\n\nAnalyze the ticket content: Understand the client’s request and categorize the issue.\nCreate tasks for technical investigation: Clearly define actionable tasks that can be assigned to the development team for further technical investigation.\nEngage the client with more specific questions: Suggest key questions to ask the client to gather more detailed information or clarify unclear points.\nPropose alternative solutions: Offer suggestions on how the client’s issue might be addressed, including alternatives or best practices.\nProvide additional assistance: Depending on the category of the ticket or the client’s profile, offer further assistance or direct the agent on how to best support the client.\nReview the client profile and project information: Ensure the agent has a complete understanding of the client's background, status, and previous interactions before proceeding.\nOutput structure:\n\nUsing card <p>, <strong>, <ul>, <li>\nTicket Analysis: Summarize the core issue or request.\nKey Questions for Client: List questions that can help gather more information or clarify the request.\nTask Suggestions for Development: Define tasks for technical investigation or further steps.\nAlternative Solutions: Provide potential solutions or options to consider.\nClient Engagement Strategy: Suggest how to proceed with the client based on their profile and ticket category.\n\nSee below for completion of the keywords above:\n{{ $json.prepareText }}\n\n<strong>Link Ticket: <a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Set Value2').item.json.Ticket.id }}\"</a>{{ $('Set Value2').item.json.Ticket.subject }}</strong>\n",
+        "options": {}
+      },
+      "id": "f8f09b3f-aee9-42aa-b29f-24ba3357f13b",
+      "name": "OpenAI3",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        3540,
+        1520
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Fr1fa0hUFyO4bC5x",
+          "name": "OpenAi Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "getMilestones",
+        "ID": "={{ $('Get Project5').item.json.data.id}}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "162ecfe3-25e8-4051-9776-5e43e9ec6ff5",
+      "name": "Get Milestone Project4",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1820,
+        2600
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $json.data.client.user.id }}",
+        "requestOptions": {}
+      },
+      "id": "7feeeeb9-4a40-41be-bf14-10b63459ac97",
+      "name": "Get Client4",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        2600
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5fe825d1-f525-4034-a199-27d269291fd8",
+              "name": "Ticket.id",
+              "value": "={{ $('TicketSheet').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "7ca4d5b5-a919-4f84-b6dc-404b211027d1",
+              "name": "Ticket.subject",
+              "value": "={{ $('TicketSheet').item.json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "a51a35d8-21a4-43e7-b329-925c6098b6a5",
+              "name": "=Ticket.detail",
+              "value": "={{ $('TicketSheet').item.json.message }}",
+              "type": "string"
+            },
+            {
+              "id": "7f491aa5-9fc5-4674-a8fd-c7546375fdf8",
+              "name": "Ticket.type",
+              "value": "={{ $('TicketSheet').item.json.type }}",
+              "type": "string"
+            },
+            {
+              "id": "0396fd3b-7efd-4fc7-9823-8231189e856d",
+              "name": "Ticket.status",
+              "value": "={{ $('TicketSheet').item.json.status }}",
+              "type": "string"
+            },
+            {
+              "id": "7055bba9-889c-417b-80c2-0fa95009e1d2",
+              "name": "Ticket.last_update",
+              "value": "={{ $('TicketSheet').item.json.updateAt }}",
+              "type": "string"
+            },
+            {
+              "id": "1e19ddb7-2314-42bd-be84-97294a0d5ebb",
+              "name": "Project.id",
+              "value": "={{ $('Get Project5').item.json.data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "70e6e1d2-ae59-44bf-9e18-2ed4d1033368",
+              "name": "Project.name",
+              "value": "={{ $('Get Project5').item.json.data.name }}",
+              "type": "string"
+            },
+            {
+              "id": "6668ea76-94a1-4be0-8df7-6c1116fa3cc5",
+              "name": "Project.summary",
+              "value": "={{ $('Get Project5').item.json.data.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "e645c857-eb8a-4e70-a512-54f51ce02dd8",
+              "name": "MilestoneProject",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "2a764578-08ff-4887-a42d-97f4365fdb7f",
+              "name": "Ticket.priority",
+              "value": "={{ $('TicketSheet').item.json.priority }}",
+              "type": "string"
+            },
+            {
+              "id": "e386a3f5-bc97-4fb6-a954-980bd725acd2",
+              "name": "Ticket.nameClient",
+              "value": "={{ $('TicketSheet').item.json.requesterName }}",
+              "type": "string"
+            },
+            {
+              "id": "ba4e48c2-e7de-4a78-86ab-39885bfe9998",
+              "name": "Project.web",
+              "value": "={{ $('Get Client4').item.json.data.website }}",
+              "type": "string"
+            },
+            {
+              "id": "4d49c994-1c26-4db0-ac0f-30879a899f64",
+              "name": "Client.name",
+              "value": "={{ $('Get Client4').item.json.data.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "ee2b6919-a529-4aff-9b49-07b78d907e5d",
+              "name": "Client.email",
+              "value": "={{ $('Get Client4').item.json.data.user.email }}",
+              "type": "string"
+            },
+            {
+              "id": "12b25991-47a5-4ae2-ad4f-119fb8d001b5",
+              "name": "Client.companyName",
+              "value": "={{ $('Get Client4').item.json.data.company_name }}",
+              "type": "string"
+            },
+            {
+              "id": "9952301c-0d45-40ac-8e79-48ffcd980206",
+              "name": "Client.category",
+              "value": "={{ $('Get Client4').item.json.data.category.name }}",
+              "type": "string"
+            },
+            {
+              "id": "5f208c3a-cd39-4053-b703-5690a926319d",
+              "name": "Client.facebook",
+              "value": "={{ $('Get Client4').item.json.data.social_details.facebook }}",
+              "type": "string"
+            },
+            {
+              "id": "4ac3fa44-972b-4a34-9733-92551ce2c897",
+              "name": "Client.likedin",
+              "value": "={{ $('Get Client4').item.json.data.social_details.linkedin }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e2541b50-e1d2-4ed6-a9be-fe169c2365b4",
+      "name": "Set Value4",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2160,
+        2600
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\n**Information Ticket**: \n - Subject: ${rawData?.Ticket?.subject}\n - Detail: ${rawData?.Ticket?.detail}\n - Type: ${rawData?.Ticket?.type}\n - Status: ${rawData?.Ticket?.status}\n - Priority: ${rawData?.Ticket?.priority}\n - Last Update: ${rawData?.Ticket?.last_update}\n\n**Information Project of Ticket**:\n - Name: ${rawData?.Project?.name}\n - Summary of project goals: ${rawData?.Project?.summary}\n - Website: ${rawData?.Project?.web}\n\n**Client Profile**:\n - Name: ${rawData?.Client?.name}\n - Email: ${rawData?.Client?.email}\n - Company Name: ${rawData?.Client?.companyName}\n - Client Category: ${rawData?.Client?.category}\n - Client Facebook: ${rawData?.Client?.facebook}\n - Client Likedin: ${rawData?.Client?.likedin}\n`\n\n\ndataReFormat+='\\n*Milestone of Project*:\\n\\n'\nif(Array.isArray(rawData?.MilestoneProject)){\n      for (const [index, item] of rawData?.MilestoneProject?.entries()) {\n      dataReFormat += `- Milestone ${index + 1}: \\n`;\n      dataReFormat += ` + Title: ${item?.title} \\n`;\n      dataReFormat += ` + Cost: ${item?.cost} \\n`;\n      dataReFormat += ` + Summary: ${item?.summary} \\n\\n`;\n      \n    }\n  dataReFormat += ` \\n`;\n}else{\n      dataReFormat += ` + Title: ${rawData?.MilestoneProject?.title} \\n`;\n      dataReFormat += ` + Summary: ${rawData?.MilestoneProject?.summary} \\n`;\n}\n\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
+      },
+      "id": "999eb1a2-1752-4f08-8efa-035ec4d9dc54",
+      "name": "prepareText4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2460,
+        2600
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.output;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "97483e0b-3af4-4515-b49a-883e33c93fa8",
+      "name": "Standardize4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3180,
+        2600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1907794604,
+          "mode": "list",
+          "cachedResultName": "Ticket Check",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1907794604"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ticketId": "={{ $('TicketSheet').item.json.TicketNumber }}"
+          },
+          "matchingColumns": [
+            "ticketId"
+          ],
+          "schema": [
+            {
+              "id": "ticketId",
+              "displayName": "ticketId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dcee6093-dd1f-4f1e-8f0a-bee6e47ab4e0",
+      "name": "Google Sheets8",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3680,
+        2600
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "note",
+        "operation": "create",
+        "project_id": "={{ $('Set Value4').item.json.Project.id }}",
+        "title": "=Ticket {{ $('TicketSheet').item.json.TicketNumber }} Detailed analysis and recommendation for {{ $('Set Value4').item.json.Project.name }} {{ $('Set Value4').item.json.Project.name }}",
+        "details": "={{ $json.textHtml }}\n\n<strong>Link Ticket: <a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Set Value4').item.json.Ticket.id }}\"</a>{{ $('Set Value4').item.json.Ticket.subject }}</strong>",
+        "category": "client",
+        "user_id": "[]",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "0fc35edc-06f2-4c46-b20d-e3e7606fab22",
+      "name": "Cloodo CRM7",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3400,
+        2600
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 485924616,
+          "mode": "list",
+          "cachedResultName": "TicketMany",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=485924616"
+        },
+        "options": {}
+      },
+      "id": "6864bcaa-132b-4117-aaa7-d5aaaa7f0fae",
+      "name": "TicketSheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -600,
+        2880
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=Using card <p>, <strong>, <ul>, <li>\nYou are a Senior Consultant assisting with the management of a client ticket. The assigned agent is a Business Analyst (BA) or Project Manager, and you need to provide guidance on how to proceed with the ticket. Your goal is to:\n\nAnalyze the ticket content: Understand the client’s request and categorize the issue.\nCreate tasks for technical investigation: Clearly define actionable tasks that can be assigned to the development team for further technical investigation.\nEngage the client with more specific questions: Suggest key questions to ask the client to gather more detailed information or clarify unclear points.\nPropose alternative solutions: Offer suggestions on how the client’s issue might be addressed, including alternatives or best practices.\nProvide additional assistance: Depending on the category of the ticket or the client’s profile, offer further assistance or direct the agent on how to best support the client.\nReview the client profile and project information: Ensure the agent has a complete understanding of the client's background, status, and previous interactions before proceeding.\nOutput structure:\n\nUsing card <p>, <strong>, <ul>, <li>\nTicket Analysis: Summarize the core issue or request.\nKey Questions for Client: List questions that can help gather more information or clarify the request.\nTask Suggestions for Development: Define tasks for technical investigation or further steps.\nAlternative Solutions: Provide potential solutions or options to consider.\nClient Engagement Strategy: Suggest how to proceed with the client based on their profile and ticket category.\n\nSee below for completion of the keywords above:\n{{ $json.prepareText }}\n\n<strong>Link Ticket: <a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Set Value4').item.json.Ticket.id }}\"</a>{{ $('Set Value4').item.json.Ticket.subject }}</strong>\n",
+        "options": {}
+      },
+      "id": "23f2e9ad-32e2-4e31-990f-94d25770c9b7",
+      "name": "OpenAI5",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        2800,
+        2600
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Fr1fa0hUFyO4bC5x",
+          "name": "OpenAi Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "ID": "={{ $('TicketSheet').item.json.ProjectId }}",
+        "requestOptions": {}
+      },
+      "id": "373884ec-ca8c-4498-b5bc-0efd05c3a572",
+      "name": "Get Project6",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        3060
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "getMilestones",
+        "ID": "={{ $('Get Project6').item.json.data.id}}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "a5372679-9aa7-4393-9944-3c3df2a4b8db",
+      "name": "Get Milestone Project5",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        3060
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $json.data.client.user.id }}",
+        "requestOptions": {}
+      },
+      "id": "7d0c897f-bf1b-4206-8024-7e367a6757a2",
+      "name": "Get Client5",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        3060
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5fe825d1-f525-4034-a199-27d269291fd8",
+              "name": "Ticket.id",
+              "value": "={{ $('TicketSheet').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "7ca4d5b5-a919-4f84-b6dc-404b211027d1",
+              "name": "Ticket.subject",
+              "value": "={{ $('TicketSheet').item.json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "a51a35d8-21a4-43e7-b329-925c6098b6a5",
+              "name": "=Ticket.detail",
+              "value": "={{ $('TicketSheet').item.json.message }}",
+              "type": "string"
+            },
+            {
+              "id": "7f491aa5-9fc5-4674-a8fd-c7546375fdf8",
+              "name": "Ticket.type",
+              "value": "={{ $('TicketSheet').item.json.type }}",
+              "type": "string"
+            },
+            {
+              "id": "0396fd3b-7efd-4fc7-9823-8231189e856d",
+              "name": "Ticket.status",
+              "value": "={{ $('TicketSheet').item.json.status }}",
+              "type": "string"
+            },
+            {
+              "id": "7055bba9-889c-417b-80c2-0fa95009e1d2",
+              "name": "Ticket.last_update",
+              "value": "={{ $('TicketSheet').item.json.updateAt }}",
+              "type": "string"
+            },
+            {
+              "id": "1e19ddb7-2314-42bd-be84-97294a0d5ebb",
+              "name": "Project.id",
+              "value": "={{ $('Get Project6').item.json.data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "70e6e1d2-ae59-44bf-9e18-2ed4d1033368",
+              "name": "Project.name",
+              "value": "={{ $('Get Project6').item.json.data.name }}",
+              "type": "string"
+            },
+            {
+              "id": "6668ea76-94a1-4be0-8df7-6c1116fa3cc5",
+              "name": "Project.summary",
+              "value": "={{ $('Get Project6').item.json.data.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "e645c857-eb8a-4e70-a512-54f51ce02dd8",
+              "name": "MilestoneProject",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "2a764578-08ff-4887-a42d-97f4365fdb7f",
+              "name": "Ticket.priority",
+              "value": "={{ $('TicketSheet').item.json.priority }}",
+              "type": "string"
+            },
+            {
+              "id": "e386a3f5-bc97-4fb6-a954-980bd725acd2",
+              "name": "Ticket.nameClient",
+              "value": "={{ $('TicketSheet').item.json.requesterName }}",
+              "type": "string"
+            },
+            {
+              "id": "ba4e48c2-e7de-4a78-86ab-39885bfe9998",
+              "name": "Project.web",
+              "value": "={{ $('Get Client5').item.json.data.website }}",
+              "type": "string"
+            },
+            {
+              "id": "4d49c994-1c26-4db0-ac0f-30879a899f64",
+              "name": "Client.name",
+              "value": "={{ $('Get Client5').item.json.data.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "ee2b6919-a529-4aff-9b49-07b78d907e5d",
+              "name": "Client.email",
+              "value": "={{ $('Get Client5').item.json.data.user.email }}",
+              "type": "string"
+            },
+            {
+              "id": "12b25991-47a5-4ae2-ad4f-119fb8d001b5",
+              "name": "Client.companyName",
+              "value": "={{ $('Get Client5').item.json.data.company_name }}",
+              "type": "string"
+            },
+            {
+              "id": "9952301c-0d45-40ac-8e79-48ffcd980206",
+              "name": "Client.category",
+              "value": "={{ $('Get Client5').item.json.data.category.name }}",
+              "type": "string"
+            },
+            {
+              "id": "5f208c3a-cd39-4053-b703-5690a926319d",
+              "name": "Client.facebook",
+              "value": "={{ $('Get Client5').item.json.data.social_details.facebook }}",
+              "type": "string"
+            },
+            {
+              "id": "4ac3fa44-972b-4a34-9733-92551ce2c897",
+              "name": "Client.likedin",
+              "value": "={{ $('Get Client5').item.json.data.social_details.linkedin }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c70815dc-1fed-4b06-8273-14e96ccd518a",
+      "name": "Set Value5",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2180,
+        3060
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\n**Information Ticket**: \n - Subject: ${rawData?.Ticket?.subject}\n - Detail: ${rawData?.Ticket?.detail}\n - Type: ${rawData?.Ticket?.type}\n - Status: ${rawData?.Ticket?.status}\n - Priority: ${rawData?.Ticket?.priority}\n - Last Update: ${rawData?.Ticket?.last_update}\n\n**Information Project of Ticket**:\n - Name: ${rawData?.Project?.name}\n - Summary of project goals: ${rawData?.Project?.summary}\n - Website: ${rawData?.Project?.web}\n\n**Client Profile**:\n - Name: ${rawData?.Client?.name}\n - Email: ${rawData?.Client?.email}\n - Company Name: ${rawData?.Client?.companyName}\n - Client Category: ${rawData?.Client?.category}\n - Client Facebook: ${rawData?.Client?.facebook}\n - Client Likedin: ${rawData?.Client?.likedin}\n`\n\n\ndataReFormat+='\\n*Milestone of Project*:\\n\\n'\nif(Array.isArray(rawData?.MilestoneProject)){\n      for (const [index, item] of rawData?.MilestoneProject?.entries()) {\n      dataReFormat += `- Milestone ${index + 1}: \\n`;\n      dataReFormat += ` + Title: ${item?.title} \\n`;\n      dataReFormat += ` + Cost: ${item?.cost} \\n`;\n      dataReFormat += ` + Summary: ${item?.summary} \\n\\n`;\n      \n    }\n  dataReFormat += ` \\n`;\n}else{\n      dataReFormat += ` + Title: ${rawData?.MilestoneProject?.title} \\n`;\n      dataReFormat += ` + Summary: ${rawData?.MilestoneProject?.summary} \\n`;\n}\n\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
+      },
+      "id": "61fe9863-bc89-4844-beeb-83caeb0b6b66",
+      "name": "prepareText5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        3060
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.output;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "7be15fad-d918-418d-ae3c-4b0637f60f65",
+      "name": "Standardize5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3200,
+        3060
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1907794604,
+          "mode": "list",
+          "cachedResultName": "Ticket Check",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1907794604"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ticketId": "={{ $('TicketSheet').item.json.TicketNumber }}"
+          },
+          "matchingColumns": [
+            "ticketId"
+          ],
+          "schema": [
+            {
+              "id": "ticketId",
+              "displayName": "ticketId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a62bd598-f40e-433e-b1df-ad05c79247aa",
+      "name": "Google Sheets10",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3700,
+        3060
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "note",
+        "operation": "create",
+        "project_id": "={{ $('Set Value5').item.json.Project.id }}",
+        "title": "=Ticket {{ $('TicketSheet').item.json.TicketNumber }} Detailed analysis and recommendation for {{ $('Set Value5').item.json.Project.name }} {{ $('Set Value5').item.json.Project.name }}",
+        "details": "={{ $json.textHtml }}\n\n<strong>Link Ticket: <a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Set Value5').item.json.Ticket.id }}\"</a>{{ $('Set Value5').item.json.Ticket.subject }}</strong>",
+        "category": "client",
+        "user_id": "[]",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "5e5e7296-28b0-4850-8ca0-0f02a83d4c0d",
+      "name": "Cloodo CRM8",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3420,
+        3060
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=Using card <p>, <strong>, <ul>, <li>\nYou are a Senior Consultant assisting with the management of a client ticket. The assigned agent is a Business Analyst (BA) or Project Manager, and you need to provide guidance on how to proceed with the ticket. Your goal is to:\n\nAnalyze the ticket content: Understand the client’s request and categorize the issue.\nCreate tasks for technical investigation: Clearly define actionable tasks that can be assigned to the development team for further technical investigation.\nEngage the client with more specific questions: Suggest key questions to ask the client to gather more detailed information or clarify unclear points.\nPropose alternative solutions: Offer suggestions on how the client’s issue might be addressed, including alternatives or best practices.\nProvide additional assistance: Depending on the category of the ticket or the client’s profile, offer further assistance or direct the agent on how to best support the client.\nReview the client profile and project information: Ensure the agent has a complete understanding of the client's background, status, and previous interactions before proceeding.\nOutput structure:\n\nUsing card <p>, <strong>, <ul>, <li>\nTicket Analysis: Summarize the core issue or request.\nKey Questions for Client: List questions that can help gather more information or clarify the request.\nTask Suggestions for Development: Define tasks for technical investigation or further steps.\nAlternative Solutions: Provide potential solutions or options to consider.\nClient Engagement Strategy: Suggest how to proceed with the client based on their profile and ticket category.\n\nSee below for completion of the keywords above:\n{{ $json.prepareText }}\n\n<strong>Link Ticket: <a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Set Value5').item.json.Ticket.id }}\"</a>{{ $('Set Value5').item.json.Ticket.subject }}</strong>\n",
+        "options": {}
+      },
+      "id": "c076486a-3e47-41c1-90a6-e9a7d6280bd4",
+      "name": "OpenAI6",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        2820,
+        3060
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Fr1fa0hUFyO4bC5x",
+          "name": "OpenAi Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 485924616,
+          "mode": "list",
+          "cachedResultName": "TicketMany",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=485924616"
+        },
+        "numberToDelete": 100
+      },
+      "id": "e00de647-791e-402e-b319-147779107f85",
+      "name": "Google Sheets11",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -2640,
+        2860
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "useDataOfInput": 2
+      },
+      "id": "5fc02830-72ab-40f4-8777-659c0ae1e5fd",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -900,
+        2880
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $('Set Value1').item.json.Agent.email }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $('Set Value1').item.json.Agent.name }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Ticket {{ $('Check not closed').item.json.data.ticket_number }} Detailed analysis and recommendation for {{ $('Set Value1').item.json.Project.name }} {{ $('Set Value1').item.json.Project.name }}"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $('Set Value1').item.json.Agent.name }},</p></br>\n                <p>{{ $('Standardize1').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Set Value1').item.json.Project.id }}\">{{ $('Set Value1').item.json.Project.name }}</a></strong>\n                <p>Best Regards,</p>\n                <p>CmsMart Admin</p>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a19bf4c4-65ce-4c72-872c-41ea5a86d223",
+      "name": "Project_Analysis_Ticket_Note3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4040,
+        540
+      ]
     }
   ],
   "pinData": {},
@@ -2887,13 +3470,7 @@
     },
     "IF6": {
       "main": [
-        [
-          {
-            "node": "Cloodo CRM1",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "When clicking ‘Test workflow’": {
@@ -3019,6 +3596,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
         ]
       ]
     },
@@ -3067,28 +3651,6 @@
         ]
       ]
     },
-    "Set Value2": {
-      "main": [
-        [
-          {
-            "node": "prepareText2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Standardize2": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Check Sheet1": {
       "main": [
         [
@@ -3125,77 +3687,11 @@
         ]
       ]
     },
-    "Cloodo CRM4": {
-      "main": [
-        [
-          {
-            "node": "Google Sheets5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Standardize3": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAI2": {
-      "main": [
-        [
-          {
-            "node": "Standardize3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "prepareText3": {
-      "main": [
-        [
-          {
-            "node": "OpenAI2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set Value3": {
-      "main": [
-        [
-          {
-            "node": "prepareText3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Cloodo CRM6": {
-      "main": [
-        [
-          {
-            "node": "Google Sheets4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get Project2": {
       "main": [
         [
           {
-            "node": "Get Milestone Project3",
+            "node": "Get Client2",
             "type": "main",
             "index": 0
           }
@@ -3206,7 +3702,7 @@
       "main": [
         [
           {
-            "node": "Get Milestone Project2",
+            "node": "Get Client3",
             "type": "main",
             "index": 0
           }
@@ -3257,28 +3753,6 @@
         ]
       ]
     },
-    "prepareText2": {
-      "main": [
-        [
-          {
-            "node": "OpenAI3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAI3": {
-      "main": [
-        [
-          {
-            "node": "Standardize2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Loop Over Items2": {
       "main": [
         [],
@@ -3296,28 +3770,6 @@
         [
           {
             "node": "Check Sheet2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set Value4": {
-      "main": [
-        [
-          {
-            "node": "prepareText4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "prepareText4": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items2",
             "type": "main",
             "index": 0
           }
@@ -3353,73 +3805,7 @@
         ],
         [
           {
-            "node": "Get Project4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Cloodo CRM7": {
-      "main": [
-        [
-          {
-            "node": "Google Sheets8",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAI4": {
-      "main": [
-        [
-          {
-            "node": "Standardize5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "prepareText5": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set Value5": {
-      "main": [
-        [
-          {
-            "node": "prepareText5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Cloodo CRM8": {
-      "main": [
-        [
-          {
-            "node": "Google Sheets7",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Project4": {
-      "main": [
-        [
-          {
-            "node": "Get Milestone Project5",
+            "node": "Get Project6",
             "type": "main",
             "index": 0
           }
@@ -3430,40 +3816,7 @@
       "main": [
         [
           {
-            "node": "Get Milestone Project4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Milestone Project4": {
-      "main": [
-        [
-          {
-            "node": "Set Value4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Milestone Project5": {
-      "main": [
-        [
-          {
-            "node": "Set Value5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAI5": {
-      "main": [
-        [
-          {
-            "node": "Standardize4",
+            "node": "Get Client4",
             "type": "main",
             "index": 0
           }
@@ -3519,18 +3872,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "prepareText": {
-      "main": [
-        [
-          {
-            "node": "OpenAI",
+            "node": "Google Sheets9",
             "type": "main",
             "index": 0
           }
@@ -3552,18 +3894,7 @@
       "main": [
         [
           {
-            "node": "Google Sheets",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Sheets": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
+            "node": "Project_Analysis_Ticket_Note2",
             "type": "main",
             "index": 0
           }
@@ -3607,7 +3938,7 @@
       "main": [
         [
           {
-            "node": "Google Sheets1",
+            "node": "Project_Analysis_Ticket_Note3",
             "type": "main",
             "index": 0
           }
@@ -3690,13 +4021,387 @@
           }
         ]
       ]
+    },
+    "Get Client3": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client2": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone Project3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Value2": {
+      "main": [
+        [
+          {
+            "node": "prepareText2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText2": {
+      "main": [
+        [
+          {
+            "node": "OpenAI3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM4": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Value3": {
+      "main": [
+        [
+          {
+            "node": "prepareText3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize3": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM6": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Standardize3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets9": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI3": {
+      "main": [
+        [
+          {
+            "node": "Standardize2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Milestone Project4": {
+      "main": [
+        [
+          {
+            "node": "Set Value4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client4": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone Project4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Value4": {
+      "main": [
+        [
+          {
+            "node": "prepareText4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize4": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM7": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TicketSheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI5": {
+      "main": [
+        [
+          {
+            "node": "Standardize4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project6": {
+      "main": [
+        [
+          {
+            "node": "Get Client5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Milestone Project5": {
+      "main": [
+        [
+          {
+            "node": "Set Value5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client5": {
+      "main": [
+        [
+          {
+            "node": "Get Milestone Project5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Value5": {
+      "main": [
+        [
+          {
+            "node": "prepareText5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize5": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM8": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI6": {
+      "main": [
+        [
+          {
+            "node": "Standardize5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText4": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText5": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets11": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "TicketSheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Project_Analysis_Ticket_Note2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Project_Analysis_Ticket_Note3": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "24e31f04-22c8-40d8-8a14-62888a6b7588",
+  "versionId": "c918aa8c-fec7-45da-96e4-d4201f3588e4",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"

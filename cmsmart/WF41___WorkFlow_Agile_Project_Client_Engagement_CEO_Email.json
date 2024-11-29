@@ -1,0 +1,778 @@
+{
+  "name": "WF41 - WorkFlow_Agile_Project_Client_Engagement_CEO_Email",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "71bba04a-f219-4c88-ab84-259b093cb340",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\n**Information Client**: \n - Name: ${rawData?.Client?.name}\n - Emmail: ${rawData?.Client?.email}\n\n**Information Project**:\n - name: ${rawData?.Project?.name}\n - Summary of project goals: ${rawData?.Project?.summary}\n - Notes of project: ${rawData?.Project?.notes}\n - Website: ${rawData?.Project?.website}\n`\n\n\ndataReFormat+='\\n*Ticket Notes of Project*:\\n\\n'\nif(Array.isArray(rawData?.NoteTicket)){\n      for (const [index, item] of rawData?.NoteTicket?.entries()) {\n      dataReFormat += `- Note Ticket ${index + 1}: \\n`;\n      dataReFormat += ` + Title: ${item?.title} \\n`;\n      dataReFormat += ` + Details: ${item?.details} \\n\\n`;\n      \n    }\n  dataReFormat += ` \\n`;\n}else{\n      dataReFormat += ` + Title: ${rawData?.NoteTicket?.title} \\n`;\n      dataReFormat += ` + Summary: ${rawData?.NoteTicket?.details} \\n`;\n}\n\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
+      },
+      "id": "2cdd2d0b-69fc-42da-9d18-1a3a743474e5",
+      "name": "prepareText2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "get",
+        "ID": "65bcad16-78dc-459c-aad2-a2be6875508c",
+        "requestOptions": {}
+      },
+      "id": "7c35f100-b577-4bf8-901f-0219348daed8",
+      "name": "Get Project",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        820,
+        420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "note",
+        "operation": "getNotesByProject",
+        "project_id": "={{ $json.data.id }}",
+        "requestOptions": {}
+      },
+      "id": "7535465f-f223-4a2f-9ad5-9772c57e8991",
+      "name": "Get All Notes By Project",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $('Get Project').item.json.data.client.user.id }}",
+        "requestOptions": {}
+      },
+      "id": "da42dcda-b125-41db-8f84-2f9be17d70eb",
+      "name": "Get Client",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.output;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\noldData = oldData.replace(/```html/g, '');\noldData = oldData.replace(/```/g, '');\n\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "8144c677-48cb-4204-b81b-191a22076a1b",
+      "name": "Standardize2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2520,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=nguyenduccanh1523@gmail.com"
+            },
+            {
+              "name": "uname",
+              "value": "=Huy Nguyen Quang"
+            },
+            {
+              "name": "subject",
+              "value": "=Project Analysis for {{ $('Take Value').item.json.Project.name }}"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>{{ $('Standardize2').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value').item.json.project.id }}\">{{ $('Take Value').item.json.project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d80d804e-83cb-4ee8-b580-7bf1f0ef0afa",
+      "name": "Project Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2820,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "abccbba8-ac8d-4e74-ad19-20f6efb5cade",
+              "name": "Client.name",
+              "value": "={{ $('Get Project').item.json.data.client.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "a889d7c7-d545-4a35-acb9-2dd11464396e",
+              "name": "Client.email",
+              "value": "={{ $('Get Project').item.json.data.client.user.email }}",
+              "type": "string"
+            },
+            {
+              "id": "3dd20528-7c6c-4e56-ad6b-a01b521be155",
+              "name": "Project.id",
+              "value": "={{ $('Get Project').item.json.data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "05b8d18e-4d59-4497-95df-d8cde714712f",
+              "name": "Project.name",
+              "value": "={{ $('Get Project').item.json.data.name }}",
+              "type": "string"
+            },
+            {
+              "id": "3d0f2bb1-91b2-4ef5-badd-2f33337a5e11",
+              "name": "Project.summary",
+              "value": "={{ $('Get Project').item.json.data.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "da5d811c-4fe7-4edc-a0f0-b988823ca2c7",
+              "name": "Project.notes",
+              "value": "={{ $('Get Project').item.json.data.notes }}",
+              "type": "string"
+            },
+            {
+              "id": "da9e563d-6d6a-470d-b941-332c10c4729f",
+              "name": "NoteTicket",
+              "value": "={{ $('Get All Notes By Project').item.json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "8dedc636-228d-4a72-94e5-5bb1d9d35754",
+              "name": "Project.website",
+              "value": "={{ $json.data.website }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "25a7cbbc-080b-438e-a89f-735551f0fda1",
+      "name": "Take Value",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1560,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Project Analysis\n",
+        "height": 80
+      },
+      "id": "18dcf7b9-03f7-48d2-9c7f-f9b98f87a7b1",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "additionalFields": {
+          "type": "6dc7b7c5-a130-4357-9d83-03030a8a134f"
+        },
+        "requestOptions": {}
+      },
+      "id": "f2c29b72-3e11-450d-bfe1-675cbfb75913",
+      "name": "Get many Ticket Customer Developer",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        0,
+        840
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "cac0a542-edbd-4517-a852-0851db6db05c",
+      "name": "Item Lists3",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        300,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Custom Developer\n",
+        "height": 80,
+        "color": 3
+      },
+      "id": "e61ba6c3-9520-4866-a88d-d80f78e33275",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3080,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "924a6f40-48cb-4b2f-8962-ca1b9353dc38",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        800,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let dataReFormat = ''\nconst rawData = $input.all()[0]?.json\n\n\n\ndataReFormat =  `\n**Information Client**: \n - Name: ${rawData?.Client?.name}\n - Emmail: ${rawData?.Client?.email}\n\n**Information Project**:\n - name: ${rawData?.Project?.name}\n - Summary of project goals: ${rawData?.Project?.summary}\n - Notes of project: ${rawData?.Project?.notes}\n - Website: ${rawData?.Project?.website}\n \n**Custom Development Requirements**:\n \"${rawData?.Project?.customDevelopment}\"\n`\n\n\nconsole.log('dataReFormat: ', dataReFormat)\n\nreturn { prepareText: dataReFormat };"
+      },
+      "id": "c6b966ed-5bef-4269-b6d3-e3c71cc95d5f",
+      "name": "prepareText",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1860,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.output;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n<br>\\n\\n/g, '<br>');\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\noldData = oldData.replace(/```html/g, '');\noldData = oldData.replace(/```/g, '');\n\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+      },
+      "id": "ec253f37-eae3-40fa-9fc3-89cf85832869",
+      "name": "Standardize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2540,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=nguyenduccanh1523@gmail.com"
+            },
+            {
+              "name": "uname",
+              "value": "=Huy Nguyen Quang"
+            },
+            {
+              "name": "subject",
+              "value": "=Custom Development for {{ $('Take Value1').item.json.Project.name }}"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\" background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>{{ $('Standardize').item.json.textHtml }}</p>\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value1').item.json.Project.id }}\">{{ $('Take Value1').item.json.Project.name }}</a></strong>\n            </td>\n        </tr>\n        \n \n    </table>\n</body>\n\n</html>\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "92df2ee0-b50f-4c7b-823e-bc915ab40c7e",
+      "name": "Project Analysis1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2840,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "abccbba8-ac8d-4e74-ad19-20f6efb5cade",
+              "name": "Client.name",
+              "value": "={{ $('Get Project1').item.json.data.client.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "a889d7c7-d545-4a35-acb9-2dd11464396e",
+              "name": "Client.email",
+              "value": "={{ $('Get Project1').item.json.data.client.user.email }}",
+              "type": "string"
+            },
+            {
+              "id": "3dd20528-7c6c-4e56-ad6b-a01b521be155",
+              "name": "Project.id",
+              "value": "={{ $('Get Project1').item.json.data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "05b8d18e-4d59-4497-95df-d8cde714712f",
+              "name": "Project.name",
+              "value": "={{ $('Get Project1').item.json.data.name }}",
+              "type": "string"
+            },
+            {
+              "id": "3d0f2bb1-91b2-4ef5-badd-2f33337a5e11",
+              "name": "Project.summary",
+              "value": "={{ $('Get Project1').item.json.data.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "da5d811c-4fe7-4edc-a0f0-b988823ca2c7",
+              "name": "Project.notes",
+              "value": "={{ $('Get Project1').item.json.data.notes }}",
+              "type": "string"
+            },
+            {
+              "id": "8dedc636-228d-4a72-94e5-5bb1d9d35754",
+              "name": "Project.website",
+              "value": "={{ $json.data.website }}",
+              "type": "string"
+            },
+            {
+              "id": "a538b205-f1e8-41df-9fe2-d5efd967d5e9",
+              "name": "Project.customDevelopment",
+              "value": "={{ $('Get Ticket').item.json.data.reply.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b61664ca-9ac1-4a9f-94c2-ea8b1767b6e6",
+      "name": "Take Value1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1580,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "5fa0eac1-876a-4201-9271-0eb8fca4e4a7",
+      "name": "Get Ticket",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        580,
+        840
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "get",
+        "ID": "={{ $json.data.projects.id }}",
+        "requestOptions": {}
+      },
+      "id": "c7f70771-65f5-458a-9371-76120ed77493",
+      "name": "Get Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        860
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $json.data.client.user.id }}",
+        "requestOptions": {}
+      },
+      "id": "7c718890-1b04-4643-aed9-1a2fb0c7cccc",
+      "name": "Get Client1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        860
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=Compose a project analysis email Using card <p>, <strong>, <ul>, <li> from David, CEO of Netbase JSC, to {{ $('Take Value').item.json.Client.name }}. Acknowledge their request for an analysis of [Business Goals/Project Requirements] for the project {{ $('Take Value').item.json.Project.name }}, and mention past project insights where applicable. Outline the approach we will take to assess and support their goals, and encourage a follow-up meeting to discuss findings. Make it professional and supportive. Include David’s contact details: WhatsApp: +84937869689 and LinkedIn: https://www.linkedin.com/in/huynguyen9999/.\nAI Node Output: Produces a supportive email to engage the client in project analysis.\n\nSee below for completion of the keywords above:\n{{ $json.prepareText }}\n\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value').item.json.Project.id }}\">{{ $('Take Value').item.json.Project.name }}</a></strong>\n",
+        "options": {}
+      },
+      "id": "ea9d9659-c782-4416-8cca-cca285479d51",
+      "name": "OpenAI3",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        2120,
+        420
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Fr1fa0hUFyO4bC5x",
+          "name": "OpenAi Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=Create an email Using card <p>, <strong>, <ul>, <li> and no Subject from David, CEO of Netbase JSC, to {{ $('Take Value1').item.json.Client.name }} regarding their custom development request for {{ $('Take Value1').item.json.Project.name }}. Reaffirm our commitment to tailored solutions and reference any similar successful customizations if relevant. Propose a planning meeting to align on objectives and outcomes. Make it supportive, consultative, and forward-looking. Include David’s contact details: WhatsApp: +84937869689 and LinkedIn: https://www.linkedin.com/in/huynguyen9999/.\nAI Node Output: Generates a consultative email tailored to the custom development request.\n\nSee below for completion of the keywords above:\n{{ $json.prepareText }}\n\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value1').item.json.Project.id }}\">{{ $('Take Value1').item.json.Project.name }}</a></strong>\n",
+        "options": {}
+      },
+      "id": "10694a24-2f33-4d37-9af6-cc450e7bc9ab",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        2140,
+        860
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Fr1fa0hUFyO4bC5x",
+          "name": "OpenAi Account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many Ticket Customer Developer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project": {
+      "main": [
+        [
+          {
+            "node": "Get All Notes By Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Notes By Project": {
+      "main": [
+        [
+          {
+            "node": "Get Client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client": {
+      "main": [
+        [
+          {
+            "node": "Take Value",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText2": {
+      "main": [
+        [
+          {
+            "node": "OpenAI3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Value": {
+      "main": [
+        [
+          {
+            "node": "prepareText2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize2": {
+      "main": [
+        [
+          {
+            "node": "Project Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many Ticket Customer Developer": {
+      "main": [
+        [
+          {
+            "node": "Item Lists3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists3": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepareText": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Value1": {
+      "main": [
+        [
+          {
+            "node": "prepareText",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project1": {
+      "main": [
+        [
+          {
+            "node": "Get Client1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client1": {
+      "main": [
+        [
+          {
+            "node": "Take Value1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI3": {
+      "main": [
+        [
+          {
+            "node": "Standardize2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Standardize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize": {
+      "main": [
+        [
+          {
+            "node": "Project Analysis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "da29ac1c-9d01-496e-936a-11a20a66411a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "GWyW6WsWfzADQYVN",
+  "tags": []
+}

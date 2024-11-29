@@ -1,0 +1,374 @@
+{
+  "name": "Ticket agent",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0c235dcd-c403-483f-ae38-ef492f20233a",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        360,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "getmany",
+        "cursor": "1",
+        "additionalFields": {
+          "fromDate": "={{ $today.set({ hour: 00, minute: 01 }).format('dd-MM-yyyy HH:mm') }}",
+          "toDate": "={{ $today.set({ hour: 23, minute: 59 }).format('dd-MM-yyyy HH:mm') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "0ba254dc-7ef0-45b0-8e32-99e8707f46a5",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        640,
+        520
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "afbe73a9-3858-4c83-966a-4b479e16af91",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        940,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "ko cos addd"
+      },
+      "id": "49dd07ba-a04d-45af-8bae-a8697b9ab52f",
+      "name": "Stop and Error",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        2280,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "update",
+        "ID": "={{ $('Ticket').item.json.data.id }}",
+        "additionalFields": {
+          "agentId": "={{ $('Client').item.json.data.added_by.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "0d7205f2-8fd3-435a-8c97-af1cdd1042cb",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2540,
+        500
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "135a9660-85ac-45c9-817c-1f3614e4b0ec",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1160,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "7e60046a-f3b6-4b17-9622-f8b66a16cd97",
+      "name": "Ticket",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        540
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "ID": "={{ $json.data.requester.id }}",
+        "requestOptions": {}
+      },
+      "id": "a2a46a35-c27b-4dcb-805c-5ec6a470666d",
+      "name": "Client",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        540
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "025c106b-c98b-4c8f-8e1b-dea80439c8ad",
+              "leftValue": "={{ $json.data.added_by.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ccd28a58-c2b3-4dc8-b80c-368a8b612597",
+      "name": "check addd",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "75266bdc-efa6-4e96-94b6-790e72b54b93",
+              "leftValue": "={{ $('Ticket').item.json.data.agent.user.id }}",
+              "rightValue": "={{ $('Client').item.json.data.added_by.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cd9f10a8-baf8-4650-a82e-0cdc3d4e69cf",
+      "name": "check tic and cli",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "id": "20fede30-6334-428a-aedd-513fdb8dace2",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        380,
+        340
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket": {
+      "main": [
+        [
+          {
+            "node": "Client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Client": {
+      "main": [
+        [
+          {
+            "node": "check addd",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check addd": {
+      "main": [
+        [
+          {
+            "node": "check tic and cli",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check tic and cli": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7a0efab7-9635-4cd3-a8be-faaeca49110a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "Q6RANvtHMsLQ7ooC",
+  "tags": []
+}
