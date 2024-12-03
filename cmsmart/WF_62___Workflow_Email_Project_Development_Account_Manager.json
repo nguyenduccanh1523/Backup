@@ -7,7 +7,7 @@
       "name": "When clicking ‘Test workflow’",
       "type": "n8n-nodes-base.manualTrigger",
       "position": [
-        -1540,
+        -1940,
         1300
       ],
       "typeVersion": 1
@@ -82,7 +82,7 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1680,
+        1280,
         640
       ]
     },
@@ -102,7 +102,7 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        2100,
+        1700,
         880
       ]
     },
@@ -113,7 +113,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        1860,
+        1460,
         880
       ]
     },
@@ -244,7 +244,7 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        2200,
+        1800,
         1660
       ]
     },
@@ -270,32 +270,21 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1800,
+        1400,
         1400
       ]
     },
     {
       "parameters": {
-        "jsCode": "let obj = []; // Khởi tạo mảng rỗng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  // Tìm các đối tượng trong custom_fields_data có label là 'Website'\n  const foundItem = item?.json?.data?.custom_fields_data.find(i => i?.label === 'Website' || '');\n  const nameClient = item?.json?.data?.client;\n  const projectAdmin = item?.json?.data?.project_admin;\n  \n  if (foundItem) {\n    // Nếu tìm thấy, gộp foundItem và nameClient vào một đối tượng\n    obj.push({\n      website: foundItem, \n      client: nameClient,\n      adminProject: projectAdmin\n    });\n  }\n  console.log('found:', foundItem); // In ra mảng kết quả\n}\n\nreturn obj; // Trả về mảng các giá trị\n"
+        "jsCode": "let obj = []; // Khởi tạo mảng rỗng để lưu trữ kết quả\n\nfor (const item of $input.all()) {\n  // Tìm các đối tượng trong custom_fields_data có label là 'Website'\n  const foundItem = item?.json?.data?.custom_fields_data.find(i => i?.label === 'Website' || '');\n  const nameClient = item?.json?.data?.client;\n  const projectAdmin = item?.json?.data?.project_admin ? item?.json?.data?.project_admin : item?.json?.data?.members[0];\n    // Nếu tìm thấy, gộp foundItem và nameClient vào một đối tượng\n    obj.push({\n      website: foundItem, \n      client: nameClient,\n      adminProject: projectAdmin\n    });\n  \n  console.log('found:', foundItem); // In ra mảng kết quả\n}\n\nreturn obj; // Trả về mảng các giá trị\n"
       },
       "id": "6c8ae4cc-ad94-42e1-ba5b-831a5b1d3913",
       "name": "Take URL",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1280,
+        880,
         1400
-      ]
-    },
-    {
-      "parameters": {},
-      "id": "ffa61dc1-eed9-41f0-ad44-01c2b7c9b721",
-      "name": "Merge2",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [
-        1980,
-        1660
       ]
     },
     {
@@ -382,7 +371,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        840,
+        440,
         1680
       ],
       "credentials": {
@@ -404,7 +393,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        640,
+        240,
         900
       ],
       "credentials": {
@@ -583,7 +572,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let oldData = $input.all()[0]?.json?.message?.content;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+        "jsCode": "let oldData = $input.all()[0]?.json?.output;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\noldData = oldData.replace(/```html/g, '');\noldData = oldData.replace(/```/g, '');\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
       },
       "id": "bc5d1ec7-7cf5-4b7f-a530-884064b65d6d",
       "name": "Standardize1",
@@ -596,21 +585,21 @@
     },
     {
       "parameters": {
-        "jsCode": "let oldData = $input.all()[0]?.json?.message?.content;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
+        "jsCode": "let oldData = $input.all()[0]?.json?.output;\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n\\n/g, '');\noldData = oldData.replace(/\\n/g, '');\noldData = oldData.replace(/```html/g, '');\noldData = oldData.replace(/```/g, '');\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace ### with <h3> tags for subheadings\noldData = oldData.replace(/###\\s*(.*?)(<br>|$)/g, '<h3>$1</h3>');\n\nreturn { textHtml: oldData };\n\n"
       },
       "id": "eb500251-7095-4cc1-9513-feed36c8665d",
       "name": "Standardize2",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3300,
+        3220,
         1660
       ]
     },
     {
       "parameters": {
         "resource": "chat",
-        "chatModel": "gpt-4",
+        "chatModel": "=gpt-4",
         "prompt": {
           "messages": [
             {
@@ -661,8 +650,8 @@
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1.1,
       "position": [
-        2900,
-        880
+        2400,
+        1140
       ],
       "credentials": {
         "openAiApi": {
@@ -693,8 +682,8 @@
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1.1,
       "position": [
-        2980,
-        1660
+        2800,
+        1940
       ],
       "credentials": {
         "openAiApi": {
@@ -712,7 +701,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2620,
+        2220,
         880
       ]
     },
@@ -725,7 +714,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2740,
+        2340,
         1660
       ]
     },
@@ -796,7 +785,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2380,
+        1980,
         880
       ]
     },
@@ -873,7 +862,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2480,
+        2080,
         1660
       ]
     },
@@ -887,7 +876,7 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        1520,
+        1120,
         1400
       ]
     },
@@ -902,7 +891,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        1060,
+        660,
         1400
       ],
       "credentials": {
@@ -923,7 +912,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
       "typeVersion": 1,
       "position": [
-        1400,
+        1000,
         660
       ],
       "credentials": {
@@ -944,7 +933,7 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        1180,
+        780,
         660
       ]
     },
@@ -959,7 +948,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        940,
+        540,
         900
       ],
       "credentials": {
@@ -999,7 +988,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -400,
+        -800,
         920
       ]
     },
@@ -1033,7 +1022,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -320,
+        -720,
         1700
       ]
     },
@@ -1652,7 +1641,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        -1180,
+        -1580,
         1300
       ],
       "credentials": {
@@ -1694,7 +1683,7 @@
       "type": "n8n-nodes-base.itemLists",
       "typeVersion": 3,
       "position": [
-        -860,
+        -1260,
         1300
       ]
     },
@@ -1707,7 +1696,7 @@
       "type": "n8n-nodes-base.sort",
       "typeVersion": 1,
       "position": [
-        -60,
+        -460,
         900
       ]
     },
@@ -1720,7 +1709,7 @@
       "type": "n8n-nodes-base.sort",
       "typeVersion": 1,
       "position": [
-        20,
+        -380,
         1680
       ]
     },
@@ -1850,7 +1839,7 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        300,
+        -100,
         900
       ]
     },
@@ -1864,7 +1853,7 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        360,
+        -40,
         1680
       ]
     },
@@ -1891,9 +1880,76 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1540,
+        -1940,
         1060
       ]
+    },
+    {
+      "parameters": {},
+      "id": "ffa61dc1-eed9-41f0-ad44-01c2b7c9b721",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1580,
+        1660
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=Write an email using card: <p>, <strong>, <ul>, <li> with a warm greeting from {{ $('Take Value1').item.json.project.adminname }} at CmsMart to {{ $('Take Value1').item.json.project.clientname }} with no Subject, no Welcome. Introduce the project team members, outline their roles, and establish communication protocols. Encourage the client to contact you with any initial questions. The tone should be friendly, welcoming, and professional.\n\nWith the information below:\n{{ $json.prepareText }}\n<strong>Link project: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value1').item.json.project.id }}\">{{ $('Take Value1').item.json.project.name }}</a></strong>\n\n",
+        "options": {}
+      },
+      "id": "96f4505a-ef8f-4498-8959-6efcbc8d682b",
+      "name": "AI Onboarding Milestone1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        2640,
+        880
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Fr1fa0hUFyO4bC5x",
+          "name": "OpenAi Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=Write emails that start with Dear without Subject and use tags: <p>, <strong>, <ul>, <li> followed by {{ $('Take Value2').item.json.project.adminName }} at CmsMart to {{ $('Take Value2').item.json.client.name }} without Subject, confirming milestone completion for {{ $('Take Value2').item.json.milestone.name }}. Ask the customer for feedback on the milestone, confirm their satisfaction and mention next steps. The tone should be friendly, professional and appreciative.\n\nWith the information below:\n{{ $json.prepareText }}\n<strong>Project link: <a href=\"https://worksuite.cloodo.com/apps/work/project/{{ $('Take Value2').item.json.project.id }}\">{{ $('Take Value2').item.json.project.name }}</a></strong>\n",
+        "options": {}
+      },
+      "id": "27d955ee-df01-4463-a020-8db2ad73d258",
+      "name": "AI Onboarding Milestone2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        2640,
+        1660
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Fr1fa0hUFyO4bC5x",
+          "name": "OpenAi Account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -1980,17 +2036,6 @@
         [
           {
             "node": "Split Web, client, adminPro",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge2": {
-      "main": [
-        [
-          {
-            "node": "Aggregate5",
             "type": "main",
             "index": 0
           }
@@ -2115,28 +2160,12 @@
       "main": [
         [
           {
-            "node": "Cloodo Project1",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "Onboarding Email Workflow1",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Standardize2": {
-      "main": [
-        [
-          {
-            "node": "Cloodo Project2",
-            "type": "main",
-            "index": 0
           },
           {
-            "node": "Post-Milestone Check-In Email Workflow",
+            "node": "Cloodo Project1",
             "type": "main",
             "index": 0
           }
@@ -2154,33 +2183,11 @@
         ]
       ]
     },
-    "AI Onboarding Milestone": {
-      "main": [
-        [
-          {
-            "node": "Standardize1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "AI Post Milestone": {
-      "main": [
-        [
-          {
-            "node": "Standardize2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "prepareText1": {
       "main": [
         [
           {
-            "node": "AI Onboarding Milestone",
+            "node": "AI Onboarding Milestone1",
             "type": "main",
             "index": 0
           }
@@ -2191,7 +2198,7 @@
       "main": [
         [
           {
-            "node": "AI Post Milestone",
+            "node": "AI Onboarding Milestone2",
             "type": "main",
             "index": 0
           }
@@ -2630,13 +2637,62 @@
           }
         ]
       ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Onboarding Milestone1": {
+      "main": [
+        [
+          {
+            "node": "Standardize1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize2": {
+      "main": [
+        [
+          {
+            "node": "Post-Milestone Check-In Email Workflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cloodo Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Onboarding Milestone2": {
+      "main": [
+        [
+          {
+            "node": "Standardize2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "2fc3cfaf-7fc8-4859-a42f-9b6da88a2f25",
+  "versionId": "6aba0d6c-b50a-43bd-b60d-4c2a6075b63a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
