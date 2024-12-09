@@ -57,16 +57,18 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 1
           },
           "conditions": [
             {
               "id": "cb1badc0-4b31-4dc0-84c7-ae25af232217",
-              "leftValue": "={{ $json.meta.current_page }}",
-              "rightValue": "={{ $json.meta.last_page }}",
+              "leftValue": "={{ $json.meta.next_cursor }}",
+              "rightValue": "={{ $json.meta.prev_cursor }}",
               "operator": {
-                "type": "number",
-                "operation": "lt"
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
               }
             }
           ],
@@ -79,8 +81,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1020,
-        340
+        1120,
+        420
       ]
     },
     {
@@ -120,10 +122,10 @@
       "parameters": {
         "resource": "engagement",
         "operation": "getmany",
-        "cursor": "={{ $runIndex+1 }}",
+        "cursor": "={{ $json.meta.next_cursor }}",
         "additionalFields": {
-          "fromDate": "={{ $now.minus({day:1}).format('yyyy-MM-dd') }}",
-          "toDate": "={{ $now.plus({day:1}).format('yyyy-MM-dd') }}"
+          "fromDate": "={{ $now.minus({day:1}).minus({month:1}).format('dd-MM-yyyy') }}",
+          "toDate": "={{ $now.plus({day:1}).format('dd-MM-yyyy')}}"
         },
         "requestOptions": {}
       },
@@ -526,6 +528,26 @@
         1720,
         600
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.meta.next_cursor }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "cadfec2d-16f9-4941-9502-00611534b939",
+      "name": "IF6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        920,
+        320
+      ]
     }
   ],
   "pinData": {},
@@ -554,13 +576,7 @@
     },
     "If": {
       "main": [
-        [
-          {
-            "node": "Cloodo CRM",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Cloodo CRM": {
@@ -572,7 +588,7 @@
             "index": 0
           },
           {
-            "node": "If",
+            "node": "IF6",
             "type": "main",
             "index": 0
           }
@@ -699,13 +715,24 @@
           }
         ]
       ]
+    },
+    "IF6": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "af1b98d7-3236-4164-a05f-52b048d67236",
+  "versionId": "18e03ae1-90cf-49d5-977a-3efeab530d7a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"

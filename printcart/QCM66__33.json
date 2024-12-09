@@ -1,0 +1,609 @@
+{
+  "name": "QCM66, 33",
+  "nodes": [
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "d467aca9-eecc-42af-a58a-c2358438af71",
+      "name": "Split Out3",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        120,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "page": "=1",
+        "additionalFields": {
+          "search": "KPI thang",
+          "fromDate": "= {{ $today.set({ day: 1 }).format('dd-MM-yyyy') }} ",
+          "toDate": "={{ $today.set({ day: 1 }).plus({ months: 1 }).minus({days: 1}).format('dd-MM-yyyy') }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "53866c91-c57a-43df-a917-bd17490a165c",
+      "name": "Cloodo Project",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "milestones",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "94e8ea97-8ec2-4c0b-a7e6-6b82e8ee8ee7",
+      "name": "Cloodo Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        580,
+        380
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "14840ac4-3e5e-4dc3-aeaa-112447cb6b2e",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "complete",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "371b6666-1941-4da9-930a-6e7afaa35c9e",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        320,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.task",
+        "options": {}
+      },
+      "id": "1e2ab0a3-ef3b-400a-8f99-3fe938d61cec",
+      "name": "Split Out4",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        800,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "f9382891-7384-435e-a8c1-afa52166c91c",
+              "leftValue": "={{ $json.heading }}",
+              "rightValue": "Ticket",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "faee724b-e0d3-493c-8763-034645d41a3c",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1020,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "7cc102db-6653-4525-bb51-4505d3283a4d",
+      "name": "Cloodo Project2",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "=// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  for (const item of $input.all()) {\n  for(let i=0;i<5;i++) {\n    if(item.json.data.custom_fields_data[i]?.label == 'KPI Target')\n    {   item.json.targetValue = item.json.data.custom_fields_data[i].value}\n  \n\n   if(item.json.data.custom_fields_data[i]?.label == 'KPI Weight')\n    {  \n     let weight= Number(item.json.data.custom_fields_data[i].value) + 1\n      item.json.weightValue = weight}\n    if(item.json.data.custom_fields_data[i]?.label == 'KPI Actual')\n    {   item.json.actualValue = item.json.data.custom_fields_data[i].value}\n    if(item.json.data.custom_fields_data[i]?.label == 'KPI Bonus-Fined')\n    {   item.json.bonusValue = item.json.data.custom_fields_data[i].value}\n  }\n  }\n \n  \n}\n\nreturn $input.all(); "
+      },
+      "id": "83086a2d-2f6b-485c-9fcd-cc4f567e1728",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1480,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "number": [
+            {
+              "name": "KPI Target",
+              "value": "={{ $json.targetValue }}"
+            },
+            {
+              "name": "KPI Bonus-Fined",
+              "value": "={{ $json.bonusValue }} "
+            },
+            {
+              "name": "KPI Actual",
+              "value": "={{ $json.actualValue }}"
+            }
+          ],
+          "string": [
+            {
+              "name": "=Name assigned_to",
+              "value": "={{ $('Cloodo Project2').item.json.data.assigned_to[0].name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4e96df3b-2b1f-4ce0-bf68-cc8f8ba7877e",
+      "name": "Input data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "9374bbef-4679-49d2-8e3c-1fbd228994da",
+              "leftValue": "={{ parseInt($json['KPI Target']) }}",
+              "rightValue": "={{ parseInt($json['KPI Actual']) }}",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f5aec61d-8ce5-416b-a333-a4735a93e74a",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "Phat",
+              "value": "={{ ($json['KPI Target'] - $json['KPI Actual'] )* 5 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "68f63981-ebcb-433c-b21d-2f3c8df1462a",
+      "name": "Results",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        2140,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "9374bbef-4679-49d2-8e3c-1fbd228994da",
+              "leftValue": "={{ parseInt($json['KPI Target']) }}",
+              "rightValue": "={{ parseInt($json['KPI Actual']) }}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8ca20560-9b06-46bf-a60d-961a2eaa92c7",
+      "name": "If5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "Thuong",
+              "value": "={{ ($json['KPI Actual']- ($json['KPI Target']   ))* 10 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dde2cb24-08fb-468a-89f0-73fe1d614421",
+      "name": "Results1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        2140,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "user_id": "={{ $('Code').item.json.data.assigned_to[0].id }}",
+        "points": "={{ $json.Thuong }}",
+        "note": "=QCM66: {{ $json['Name assigned_to'] }} +{{ $json.Thuong }} Failure to meet KPI Engagement targets has type Ticket support closed during the month"
+      },
+      "id": "ce460111-c706-41a8-a9f0-0f951bae5b7f",
+      "name": "QCM66",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        260
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                3,
+                2,
+                4,
+                5
+              ],
+              "triggerAtHour": 20
+            }
+          ]
+        }
+      },
+      "id": "0d19c345-21ac-47e4-9bdb-5d6966aeed96",
+      "name": "Schedule Trigger1",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -300,
+        140
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "ba953aee-5679-4675-814a-1de6ff16993c",
+      "name": "When clicking \"Test Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex }}",
+              "value2": "={{ $json.meta.total }}"
+            }
+          ]
+        }
+      },
+      "id": "776256c3-ddc1-4874-beaf-dc4fe4c04162",
+      "name": "IF2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        120,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $json['ID assigned_to'] }}",
+        "points": "={{ $json.Phat }}",
+        "note": "=QCM33: {{ $json['Name assigned_to'] }} -{{ $json.Phat }} Failure to meet KPI Engagement targets has type Ticket support closed during the month"
+      },
+      "id": "625b99bc-d974-48bf-92c8-00aa89d150b1",
+      "name": "QCM33",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        420
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project1": {
+      "main": [
+        [
+          {
+            "node": "Split Out4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out4": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Project2": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Input data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input data": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Results1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Test Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Results1": {
+      "main": [
+        [
+          {
+            "node": "QCM66",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Results": {
+      "main": [
+        [
+          {
+            "node": "QCM33",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ff8b5e72-5122-4e1f-83e0-a4ca2064af64",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "8rCsa3xGEEa63Kma",
+  "tags": []
+}
