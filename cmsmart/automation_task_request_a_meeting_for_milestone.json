@@ -126,7 +126,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 1
           },
           "conditions": [
             {
@@ -158,14 +159,14 @@
       "typeVersion": 2,
       "position": [
         2600,
-        120
+        240
       ]
     },
     {
       "parameters": {
         "resource": "task",
         "additionalFields": {
-          "search": "=Hey {{ $('Cloodo Project1').item.json.data.added_by.name }}, please request a meeting for milestone \"{{ $('Cloodo Project1').item.json.data.title }}\""
+          "search": "=Hey {{ $json.data.project_admin.name }}, please request a meeting for milestone \"{{ $('Cloodo Project1').item.json.data.title }}\""
         },
         "requestOptions": {}
       },
@@ -174,8 +175,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        2840,
-        260
+        3540,
+        160
       ],
       "credentials": {
         "cloodoApi": {
@@ -192,7 +193,7 @@
         "taskPriority": "high",
         "start_date": "={{$today}}",
         "due_date": "={{$today.plus({days:3})}}",
-        "users": "={{ $('Cloodo Project1').item.json.data.added_by.id }}",
+        "users": "={{ $('Check project admin').item.json.data.project_admin.id }}",
         "additionalFields": {
           "ProjectID": "={{ $('Cloodo Project1').item.json.data.project.id }}",
           "taskDescription": "=The milestone name \"{{ $('Cloodo Project1').item.json.data.title }}\" is coming to due date at {{ new Date($('Cloodo Project1').item.json.data.due_date).toLocaleDateString(\"vi-VN\") }}\nThen you have to request a meeting with client for\u000b\n- final confirmation on the milestone work loads\u000b- provide project training \n- deliver any  milestone documentation sent to client team\n\nLink : <a href=\"https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('Cloodo Project1').item.json.data.id }}\">Click here</a><br>  ",
@@ -207,8 +208,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
       "typeVersion": 1,
       "position": [
-        3520,
-        160
+        4240,
+        120
       ],
       "credentials": {
         "cloodoApi": {
@@ -233,8 +234,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3120,
-        200
+        3860,
+        140
       ]
     },
     {
@@ -263,7 +264,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 1
           },
           "conditions": [
             {
@@ -287,6 +289,75 @@
       "position": [
         2380,
         300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "get",
+        "ID": "={{ $('Cloodo Project1').item.json.data.project.id }}",
+        "requestOptions": {}
+      },
+      "id": "acfd1bc4-6787-4aa9-8825-fcd931673f6f",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2840,
+        200
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "14656c07-1050-4839-9076-cf0c93cc58a0",
+              "leftValue": "={{ $json.data.project_admin }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "257bb8e7-a98b-4176-853a-9f834b9951ba",
+      "name": "Check project admin",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3080,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "ko có project admin"
+      },
+      "id": "d31cb346-35f3-489a-a65f-adde2b74f90c",
+      "name": "Stop and Error",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        3360,
+        420
       ]
     }
   ],
@@ -389,7 +460,7 @@
       "main": [
         [
           {
-            "node": "Search task facebook",
+            "node": "Cloodo CRM",
             "type": "main",
             "index": 0
           }
@@ -417,13 +488,42 @@
           }
         ]
       ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Check project admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check project admin": {
+      "main": [
+        [
+          {
+            "node": "Search task facebook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a780bfad-5d93-492d-9f4c-376f897fd24c",
+  "versionId": "abbb7cfa-846d-49a8-9688-071c112b56d7",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
