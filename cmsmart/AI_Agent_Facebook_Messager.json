@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        1400,
-        280
+        4680,
+        200
       ]
     },
     {
@@ -849,7 +849,6 @@
             "id": "={{ $('Get Detail list Chat User2').item.json.messages.data[0].from.id }}",
             "client_name": "={{ $('Get Detail list Chat User2').item.json.messages.data[0].from.name }}",
             "client": "={{ $('Get Detail list Chat User2').item.json.messages.data[0].from.id }}",
-            "email": "=",
             "status": "open",
             "level": "1"
           },
@@ -923,7 +922,7 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "id_project_support",
@@ -943,7 +942,7 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "id_ticket_support",
@@ -953,7 +952,7 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "list_id_project",
@@ -963,7 +962,7 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "name_project_create",
@@ -973,7 +972,7 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "project_summary_create",
@@ -983,7 +982,7 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "start_date_create",
@@ -993,7 +992,7 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "deadline_create",
@@ -1003,7 +1002,7 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "project_url_create",
@@ -1013,7 +1012,7 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             }
           ]
         },
@@ -1024,8 +1023,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        2820,
-        200
+        2840,
+        300
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -1071,15 +1070,15 @@
     },
     {
       "parameters": {
-        "jsCode": "for (const item of $input.all()) {\n  const mail = item?.json?.messages?.data[0]?.message;\n  console.log('arg', mail);\n\n  // Biểu thức chính quy kiểm tra email\n  const emailRegex = /\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b/\n  const foundEmail = mail ? mail.match(emailRegex) : null;\n\n  // Nếu có email thì gán vào myNewField, không thì trả về null\n  item.json.Email = foundEmail ? foundEmail[0] : null;\n}\n\nreturn $input.all();"
+        "jsCode": "for (const item of $('Get Detail list Chat User2').all()) {\n  const mail = item?.json?.messages?.data[0]?.message;\n  console.log('arg', mail);\n\n  // Biểu thức chính quy kiểm tra email\n  const emailRegex = /\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b/\n  const foundEmail = mail ? mail.match(emailRegex) : null;\n\n  // Nếu có email thì gán vào myNewField, không thì trả về null\n  item.json.Email = foundEmail ? foundEmail[0] : null;\n}\n\nreturn $('Get Detail list Chat User2').all();"
       },
       "id": "ca272141-d7aa-4e83-9880-00e248dd4297",
       "name": "Take mail",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1900,
-        240
+        2380,
+        120
       ]
     },
     {
@@ -1277,8 +1276,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        2340,
-        220
+        2820,
+        100
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -1327,7 +1326,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Check mail').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"Thank you. I have received your information. It seems that you do not have any activity in our system at the moment. To ensure we can support you effectively and keep everything organized, we have created a contact on our system.\\nYou access the link: https://worksuite.cloodo.com/login \\nWith Account: {{ $('Check mail').item.json.email }}\\nPassword: Client@1357\"\n  }\n}",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Check mail').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"Thank you. I have received your information. It seems that you do not have any activity in our system at the moment. To ensure we can support you effectively and keep everything organized, we have created a contact on our system.\\nYou access the link: https://worksuite.cloodo.com/login \\nWith Account: {{ $('Check mail').item.json.email }}\\nPassword: x7M&dL!9wQ#2tV4% \\nIs there anything you need assistance with?\"\n  }\n}",
         "options": {
           "redirect": {
             "redirect": {}
@@ -1339,8 +1338,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4440,
-        820
+        4200,
+        1160
       ]
     },
     {
@@ -1370,8 +1369,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3100,
-        200
+        3120,
+        300
       ]
     },
     {
@@ -1441,31 +1440,6 @@
     },
     {
       "parameters": {
-        "resource": "client",
-        "operation": "create",
-        "name": "={{ $('Check mail').item.json.email }}",
-        "passwordClinet": "=123456",
-        "clientEmail": "={{ $('Check mail').item.json.email }}",
-        "additionalFields": {},
-        "requestOptions": {}
-      },
-      "id": "863b5c3c-19be-4da7-9ffe-e54c41c8eb8b",
-      "name": "Create Client",
-      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
-      "typeVersion": 1,
-      "position": [
-        3800,
-        820
-      ],
-      "credentials": {
-        "cloodoApi": {
-          "id": "2JLk7qrN3C3j9tZ9",
-          "name": "PrintCart Cloodo account "
-        }
-      }
-    },
-    {
-      "parameters": {
         "method": "POST",
         "url": "https://erp-amz.cloodo.com/v4/client-contacts",
         "authentication": "predefinedCredentialType",
@@ -1481,8 +1455,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4020,
-        820
+        3940,
+        1160
       ],
       "credentials": {
         "cloodoApi": {
@@ -1490,104 +1464,6 @@
           "name": "PrintCart Cloodo account "
         }
       }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://erp-amz.cloodo.com/v4/accounts/sign-up",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "accept",
-              "value": "application/json, text/plain, */*"
-            },
-            {
-              "name": "accept-language",
-              "value": "en-US,en;q=0.9,vi;q=0.8,vi-VN;q=0.7,fr-FR;q=0.6,fr;q=0.5"
-            },
-            {
-              "name": "dnt",
-              "value": "1"
-            },
-            {
-              "name": "origin",
-              "value": "https://worksuite.cloodo.com"
-            },
-            {
-              "name": "priority",
-              "value": "u=1, i"
-            },
-            {
-              "name": "referer",
-              "value": "https://worksuite.cloodo.com/"
-            },
-            {
-              "name": "sec-ch-ua",
-              "value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
-            },
-            {
-              "name": "sec-ch-ua-mobile",
-              "value": "?0"
-            },
-            {
-              "name": "sec-ch-ua-platform",
-              "value": "\"Windows\""
-            },
-            {
-              "name": "sec-fetch-dest",
-              "value": "empty"
-            },
-            {
-              "name": "sec-fetch-mode",
-              "value": "cors"
-            },
-            {
-              "name": "sec-fetch-site",
-              "value": "same-site"
-            },
-            {
-              "name": "user-agent",
-              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-            }
-          ]
-        },
-        "sendBody": true,
-        "contentType": "multipart-form-data",
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "name",
-              "value": "={{ $('Check mail').item.json.client_name }}"
-            },
-            {
-              "name": "address",
-              "value": "address"
-            },
-            {
-              "name": "email",
-              "value": "={{ $('Check mail').item.json.email }}"
-            },
-            {
-              "name": "password",
-              "value": "Client@1357"
-            },
-            {
-              "name": "password_confirmation",
-              "value": "Client@1357"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "ca8441a9-b2de-4f06-a9ac-174bf8476688",
-      "name": "HTTP Request2",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        4240,
-        820
-      ]
     },
     {
       "parameters": {
@@ -1785,8 +1661,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        4700,
-        820
+        4440,
+        1160
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -1826,8 +1702,795 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2080,
-        240
+        2560,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 778731400,
+          "mode": "list",
+          "cachedResultName": "Follow CLient",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $json.messages.data[0].from.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "acb2b022-8274-4688-acc0-dc881eab3c1d",
+      "name": "Get Tracked1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1900,
+        140
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e728f992-d3a6-498a-adf0-c5799f54f052",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6561a47f-51bf-4560-9a5a-308e66dba198",
+      "name": "Check mail1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2140,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "additionalFields": {
+          "client_id": "={{ $json.data[0].user.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "e75a2fb0-5522-4fd0-bd35-031e833864d6",
+      "name": "Get Project By Client",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3820,
+        520
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "create",
+        "projectName": "={{ $('Get Client By Email').item.json.data[0].user.name }} Project",
+        "start_date": "={{ $now }}",
+        "user_id": "=[\"{{ $('Get Client By Email').item.json.data[0].added_by.id }}\"]",
+        "additionalFields": {
+          "client_id": "=\"{{ $('Get Client By Email').item.json.data[0].user.id }}\""
+        },
+        "requestOptions": {}
+      },
+      "id": "503c5fd2-3821-4254-b049-3758f1636bbd",
+      "name": "Create Project",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4520,
+        900
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "heading": "=Hi {{ $json.data.members[0].name }}! Please take care project of {{ $json.data.client.user.name }}",
+        "start_date": "={{ $now }}",
+        "due_date": "={{ $now.plus(1, 'month') }}",
+        "users": "={{ $json.data.members[0].id }}",
+        "additionalFields": {
+          "ProjectID": "={{ $json.data.id }}",
+          "taskCategoryId": "494589d7-f5da-4aa0-823a-4f7865cde09b"
+        },
+        "requestOptions": {}
+      },
+      "id": "b59a6f00-7250-413f-94db-1b7df3066089",
+      "name": "Create Task Take Care",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4740,
+        900
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Check mail').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"Hi {{ $('Check mail').item.json.client_name }},\\nIt seems that you currently don’t have any active projects in our system. To ensure we can assist you effectively and keep everything well-organized, we’ve gone ahead and created a project for you.\\nYou can access the project here: https://worksuite.cloodo.com/apps/work/project/{{ $('Create Project').item.json.data.id }}/ \\nFeel free to check it out and let us know if there’s anything specific you’d like to add. We’re here to help with whatever you need!\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "db082deb-aa5c-44ca-8b62-7dbd0fb81a04",
+      "name": "send message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5000,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 778731400,
+          "mode": "list",
+          "cachedResultName": "Follow CLient",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Check mail').item.json.id }}",
+            "level": "2",
+            "status": "created_project",
+            "admin": "112710510078308",
+            "project_name_support": "={{ $('Create Project').item.json.data.name }}",
+            "id_project_support": "={{ $('Create Project').item.json.data.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_project_support",
+              "displayName": "id_project_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "project_name_support",
+              "displayName": "project_name_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_ticket_support",
+              "displayName": "id_ticket_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "list_id_project",
+              "displayName": "list_id_project",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_project_create",
+              "displayName": "name_project_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_summary_create",
+              "displayName": "project_summary_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "start_date_create",
+              "displayName": "start_date_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "deadline_create",
+              "displayName": "deadline_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_url_create",
+              "displayName": "project_url_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "63cef4dd-22b7-4818-9464-d8ba2ca133f7",
+      "name": "UP Level  2 create project",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        5240,
+        900
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/accounts/sign-up",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json, text/plain, */*"
+            },
+            {
+              "name": "accept-language",
+              "value": "en-US,en;q=0.9,vi;q=0.8,vi-VN;q=0.7,fr-FR;q=0.6,fr;q=0.5"
+            },
+            {
+              "name": "dnt",
+              "value": "1"
+            },
+            {
+              "name": "origin",
+              "value": "https://worksuite.cloodo.com"
+            },
+            {
+              "name": "priority",
+              "value": "u=1, i"
+            },
+            {
+              "name": "referer",
+              "value": "https://worksuite.cloodo.com/"
+            },
+            {
+              "name": "sec-ch-ua",
+              "value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+            },
+            {
+              "name": "sec-ch-ua-mobile",
+              "value": "?0"
+            },
+            {
+              "name": "sec-ch-ua-platform",
+              "value": "\"Windows\""
+            },
+            {
+              "name": "sec-fetch-dest",
+              "value": "empty"
+            },
+            {
+              "name": "sec-fetch-mode",
+              "value": "cors"
+            },
+            {
+              "name": "sec-fetch-site",
+              "value": "same-site"
+            },
+            {
+              "name": "user-agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $('Check mail').item.json.client_name }}"
+            },
+            {
+              "name": "address",
+              "value": "address"
+            },
+            {
+              "name": "email",
+              "value": "={{ $('Check mail').item.json.email }}"
+            },
+            {
+              "name": "password",
+              "value": "Client@1357"
+            },
+            {
+              "name": "password_confirmation",
+              "value": "Client@1357"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6fa25a99-77ea-4272-98b6-1450ba0221e4",
+      "name": "HTTP Request2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3740,
+        1540
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/clients",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"name\": \"{{ $('Check mail').item.json.client_name }}\",\n    \"email\": \"{{ $('Check mail').item.json.email }}\",\n    \"status\": \"active\",\n    \"password\": \"x7M&dL!9wQ#2tV4%\"\n}",
+        "options": {}
+      },
+      "id": "efeabdee-4490-4999-962a-368b2be11452",
+      "name": "HTTP Request3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3700,
+        1160
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "create",
+        "name": "={{ $('Check mail').item.json.email }}",
+        "passwordClinet": "=123456",
+        "clientEmail": "={{ $('Check mail').item.json.email }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "6a5ae5c5-aa1d-44f0-a873-0e3f8b34f6dd",
+      "name": "Create Client",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4020,
+        1540
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v21.0/t_1583864212215987/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            },
+            {
+              "name": "fields",
+              "value": "messages{id,message,from,to}"
+            },
+            {
+              "name": "limit",
+              "value": "25"
+            },
+            {
+              "name": "after",
+              "value": "={{ $json.next }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "55fe4bda-3ed8-44ca-9bb3-5c7e17c96f51",
+      "name": "Get Detail list Chat User3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4940,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v21.0/112710510078308/conversations",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "platform",
+              "value": "MESSENGER"
+            },
+            {
+              "name": "user_id",
+              "value": "={{ $('Check mail').item.json.id }}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "22fe0599-bd66-4196-bf26-8f8f080ddf88",
+      "name": "Get Id Store",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4600,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e76054dc-48a2-4397-b175-59036d1b40a7",
+                    "leftValue": "={{ $json.data.length > 1 && $('Get Tracked').item.json.id_project_support.length == 0 }}",
+                    "rightValue": 1,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "many project"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data.length == 1 || $('Get Tracked').item.json.id_project_support.length > 0  }}",
+                    "rightValue": 1,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "one project"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ab0029d6-411d-465d-bdc7-860e02569893",
+                    "leftValue": "={{ $json.data }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "array",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "empty project"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4bec43b5-f105-406a-9661-217e737ea5a5",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        4140,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.next }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "d19457b0-d124-4c40-8ee5-7f6983263e8e",
+      "name": "IF6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5480,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const after = item?.json?.paging?.next;\n  console.log('after', after);\n  \n  // Kiểm tra nếu 'after' có giá trị và có dấu '=' trong chuỗi\n  if (after && after.includes(\"after=\")) {\n    // Tách phần sau dấu '='\n    const valueAfterEqual = after.split(\"after=\")[1];\n    item.json.next = valueAfterEqual;  // Gán giá trị sau '=' vào myNewField\n  } else {\n    item.json.next = null;  // Nếu không có dấu '=', gán null vào myNewField\n  }\n}\n\nreturn $input.all();"
+      },
+      "id": "82fed278-84c7-4144-a57d-ec8197f4963b",
+      "name": "Take Page Next",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5260,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return null;"
+      },
+      "id": "f0d5b316-70a8-4f83-8825-cacc99ef4a4d",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5740,
+        640
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "29551125-c54f-4957-aedb-7cf302eb2a6d",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        6380,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "options": {}
+      },
+      "id": "e092db0d-6f99-4eb8-a3a9-0968e469b7d1",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        6060,
+        480
       ]
     }
   ],
@@ -1837,7 +2500,7 @@
       "main": [
         [
           {
-            "node": "Get Detail list Chat User2",
+            "node": "Get Detail list Chat User3",
             "type": "main",
             "index": 0
           }
@@ -1860,17 +2523,6 @@
         [
           {
             "node": "Get Id User",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Id User": {
-      "main": [
-        [
-          {
-            "node": "Get Detail list Chat User",
             "type": "main",
             "index": 0
           }
@@ -2029,7 +2681,7 @@
             "index": 0
           },
           {
-            "node": "Take mail",
+            "node": "Get Tracked1",
             "type": "main",
             "index": 0
           }
@@ -2083,11 +2735,6 @@
         ]
       ]
     },
-    "Append": {
-      "main": [
-        []
-      ]
-    },
     "Get Client By Email": {
       "main": [
         [
@@ -2110,23 +2757,18 @@
         ]
       ]
     },
-    "Create Client": {
+    "check mail client": {
       "main": [
         [
           {
-            "node": "Update contact client",
+            "node": "Get Project By Client",
             "type": "main",
             "index": 0
           }
-        ]
-      ]
-    },
-    "check mail client": {
-      "main": [
-        [],
+        ],
         [
           {
-            "node": "Create Client",
+            "node": "HTTP Request3",
             "type": "main",
             "index": 0
           }
@@ -2137,7 +2779,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request2",
+            "node": "send message3",
             "type": "main",
             "index": 0
           }
@@ -2163,8 +2805,7 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "Get Tracked": {
@@ -2178,11 +2819,174 @@
         ]
       ]
     },
-    "HTTP Request2": {
+    "Get Tracked1": {
       "main": [
         [
           {
-            "node": "send message3",
+            "node": "Check mail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check mail1": {
+      "main": [
+        [
+          {
+            "node": "Take mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project By Client": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Project": {
+      "main": [
+        [
+          {
+            "node": "Create Task Take Care",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Task Take Care": {
+      "main": [
+        [
+          {
+            "node": "send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send message": {
+      "main": [
+        [
+          {
+            "node": "UP Level  2 create project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Update contact client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get Id Store",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Id Store": {
+      "main": [
+        [
+          {
+            "node": "Get Detail list Chat User3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Detail list Chat User3": {
+      "main": [
+        [
+          {
+            "node": "Take Page Next",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Page Next": {
+      "main": [
+        [
+          {
+            "node": "IF6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF6": {
+      "main": [
+        [
+          {
+            "node": "Get Detail list Chat User3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
             "type": "main",
             "index": 0
           }
@@ -2194,7 +2998,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "aa4d1230-bfd1-4c4c-9992-a33e834a5ba0",
+  "versionId": "3d20c1db-428e-4afd-9400-02d15696a9f5",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
