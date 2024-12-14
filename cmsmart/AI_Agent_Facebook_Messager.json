@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        4680,
-        200
+        4440,
+        320
       ]
     },
     {
@@ -1301,8 +1301,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        3260,
-        640
+        3220,
+        700
       ],
       "credentials": {
         "cloodoApi": {
@@ -1434,8 +1434,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3520,
-        640
+        3480,
+        700
       ]
     },
     {
@@ -2249,7 +2249,7 @@
     },
     {
       "parameters": {
-        "url": "https://graph.facebook.com/v21.0/t_1583864212215987/messages",
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Get Id Store').item.json.data[0].id }}/messages",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
@@ -2298,7 +2298,7 @@
             },
             {
               "name": "user_id",
-              "value": "={{ $('Check mail').item.json.id }}"
+              "value": "=8542948462498669"
             },
             {
               "name": "access_token",
@@ -2428,13 +2428,13 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        5480,
-        660
+        5640,
+        700
       ]
     },
     {
       "parameters": {
-        "jsCode": "for (const item of $input.all()) {\n  const after = item?.json?.paging?.next;\n  console.log('after', after);\n  \n  // Kiểm tra nếu 'after' có giá trị và có dấu '=' trong chuỗi\n  if (after && after.includes(\"after=\")) {\n    // Tách phần sau dấu '='\n    const valueAfterEqual = after.split(\"after=\")[1];\n    item.json.next = valueAfterEqual;  // Gán giá trị sau '=' vào myNewField\n  } else {\n    item.json.next = null;  // Nếu không có dấu '=', gán null vào myNewField\n  }\n}\n\nreturn $input.all();"
+        "jsCode": "for (const item of $input.all()) {\n  const after = item?.json?.paging?.next;\n  console.log('after', after);\n\n  if (after && after.includes(\"after=\")) {\n    const valueAfterEqual = after.split(\"after=\")[1];\n    item.json.next = valueAfterEqual;\n\n    // Kiểm tra dữ liệu trả về từ Get Id Store\n    if ($node[\"Get Id Store\"]?.json?.data && $node[\"Get Id Store\"].json.data.length > 0) {\n      item.json.conver = $node[\"Get Id Store\"]?.json?.data[0]?.id; // Lấy ID từ data[0]\n    } else {\n      console.log('No data found in Get Id Store');\n    }\n  } else {\n    item.json.next = null; // Nếu không có 'after=', gán null vào next\n     if ($node[\"Get Id Store\"]?.json?.data && $node[\"Get Id Store\"].json.data.length > 0) {\n      item.json.conver = $node[\"Get Id Store\"]?.json?.data[0]?.id;\n     }\n  }\n}\n\nreturn $input.all();"
       },
       "id": "82fed278-84c7-4144-a57d-ec8197f4963b",
       "name": "Take Page Next",
@@ -2442,7 +2442,7 @@
       "typeVersion": 2,
       "position": [
         5260,
-        460
+        520
       ]
     },
     {
@@ -2454,8 +2454,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5740,
-        640
+        6020,
+        720
       ],
       "alwaysOutputData": true
     },
@@ -2475,23 +2475,217 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        6380,
-        480
+        6640,
+        540
       ]
     },
     {
       "parameters": {
-        "mode": "combine",
+        "fieldToSplitOut": "data[0]",
         "options": {}
+      },
+      "id": "296604f3-adcf-4c4d-996b-a05cda810f01",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        7100,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const listMessages = $node['Aggregate1']?.json?.data\nlet document =''\ndocument+='List Messages sent by client with admin: \\n'\nfor (const item of listMessages.reverse()) {\n  document+= `${item?.from?.id == 112710510078308 ? 'Admin send: ' : 'Client sent: '} ${item?.message} \\n\\n`\n}\n\ndocument+=`\\n\\n Last message sent by client: ${listMessages[listMessages.length-1].message}`\nconsole.log(document)\nreturn {messagesSent: document};"
+      },
+      "id": "5db9286b-c58b-4201-9dec-ff81fa20b8fb",
+      "name": "Get All Messages",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7640,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            },
+            {
+              "name": "fields",
+              "value": "id,message,from,to"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "c81fadc2-34a3-45c2-99e4-440be0e34dba",
+      "name": "Get messages according to id",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        7100,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "=data",
+        "options": {}
+      },
+      "id": "ca857a5d-6197-4acb-b180-9102f69bdd87",
+      "name": "Aggregate1",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        7400,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "collection": "message",
+        "fields": "={{ $json.data[0].id }}, {{ $json.conver }}",
+        "options": {}
+      },
+      "id": "96ecbeb7-7aeb-4b45-a05e-2412e9205551",
+      "name": "MongoDB",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.1,
+      "position": [
+        5540,
+        180
+      ],
+      "credentials": {
+        "mongoDb": {
+          "id": "6MUSK4mlokNUd5HL",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1466582400,
+          "mode": "list",
+          "cachedResultName": "Message Facebook",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1466582400"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0c7343ff-11c1-49db-9dfb-994c6b23d456",
+      "name": "Save messaage",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        5960,
+        500
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "33171625-0cbc-4aa3-aef3-4e37bd6c4779",
+      "name": "Split Out1",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        5620,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
       },
       "id": "e092db0d-6f99-4eb8-a3a9-0968e469b7d1",
       "name": "Merge",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        6060,
-        480
+        6420,
+        540
       ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1466582400,
+          "mode": "list",
+          "cachedResultName": "Message Facebook",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1466582400"
+        },
+        "options": {}
+      },
+      "id": "332eb4b7-0320-4a1f-8b6a-ece483ae8a5e",
+      "name": "Save messaage1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        6860,
+        540
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -2500,7 +2694,7 @@
       "main": [
         [
           {
-            "node": "Get Detail list Chat User3",
+            "node": "Get Id Store",
             "type": "main",
             "index": 0
           }
@@ -2946,7 +3140,7 @@
             "index": 0
           },
           {
-            "node": "Merge",
+            "node": "Split Out1",
             "type": "main",
             "index": 0
           }
@@ -2982,11 +3176,77 @@
         ]
       ]
     },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Save messaage1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get messages according to id": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Get All Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save messaage": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Save messaage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Merge": {
       "main": [
         [
           {
             "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save messaage1": {
+      "main": [
+        [
+          {
+            "node": "Get messages according to id",
             "type": "main",
             "index": 0
           }
@@ -2998,7 +3258,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "3d20c1db-428e-4afd-9400-02d15696a9f5",
+  "versionId": "76e6294b-bb38-4fdf-ad23-b6e4d1100b41",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
