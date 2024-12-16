@@ -1,0 +1,617 @@
+{
+  "name": "Messager - Summary chat Session",
+  "nodes": [
+    {
+      "parameters": {
+        "messageImport": "={{ $json.output }}",
+        "userId": "={{ $('Trigger').item.json.id }}"
+      },
+      "id": "fad289f7-c7b2-4b23-9adb-1e73c31b76a2",
+      "name": "Workchat Done",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        800,
+        -60
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "zaUKCrkh6p3yOskM",
+          "name": "Workchat Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let oldData = $input.all()[0]?.json?.output\n\n// Replace new lines with <br> tags\noldData = oldData.replace(/\\n/g, '<br>');\n\n// Replace ** with <strong> tags for bold text\noldData = oldData.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');\n\n// Replace * with <em> tags for italic text\noldData = oldData.replace(/\\*(.*?)\\*/g, '<em>$1</em>');\n\nreturn { textHtml: oldData };\n"
+      },
+      "id": "70c57a88-e04a-4fdb-b3cd-78e8e7c2f49a",
+      "name": "Convert to HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        920,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $('Get Info').item.json.email }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $('Get Info').item.json.client_name }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Summary of Our Conversation on {{ $('Get Info').item.json.project_name_support }}"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            color: #333;\n            line-height: 1.6;\n            margin: 0;\n        }\n        table {\n            width: 100%;\n            cellpadding: 0;\n            cellspacing: 0;\n            border: 0;\n            background-color: #fff;\n        }\n        td {\n            font-size: 15px;\n        }\n        a {\n            color: #007bff;\n            text-decoration: none;\n        }\n    </style>\n</head>\n\n<body>\n    <table>\n        <!-- Content -->\n        <tr>\n            <td>\n                <p>Dear {{ $('Get Info').item.json.client_name }},</p>\n                <p>\n                {{ $json.textHtml }}\n                </p>\n                \n               <p>Best regards, <br>\n                David<br>\n                CEO of Netbase JSC</p>\n               \n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9f4677d0-5f60-4e13-b090-5626b0a87038",
+      "name": "Mautic Send Client",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1160,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "onlinemind@gmail.com"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $('Get Info').item.json.client_name }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Summary of Our Conversation on {{ $('Get Info').item.json.project_name_support }}"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            color: #333;\n            line-height: 1.6;\n            margin: 0;\n        }\n        table {\n            width: 100%;\n            cellpadding: 0;\n            cellspacing: 0;\n            border: 0;\n            background-color: #fff;\n        }\n        td {\n            font-size: 15px;\n        }\n        a {\n            color: #007bff;\n            text-decoration: none;\n        }\n    </style>\n</head>\n\n<body>\n    <table>\n        <!-- Content -->\n        <tr>\n            <td>\n                <p>Dear {{ $('Get Info').item.json.client_name }},</p>\n                <p>\n                {{ $json.textHtml }}\n                </p>\n                \n               <p>Best regards, <br>\n                David<br>\n                CEO of Netbase JSC</p>\n               \n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "049fec46-7c5a-4610-921c-8f7651da0180",
+      "name": "Mautic Send Member (Boss)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1180,
+        260
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f196b88-a38a-4657-a3c3-0bc7aa082a4a",
+              "name": "response",
+              "value": "=had done",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6db763c2-4a99-46fe-9ef3-628f625d8b5a",
+      "name": "Response1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1680,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 778731400,
+          "mode": "list",
+          "cachedResultName": "Follow CLient",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4eaadced-295f-489e-916c-bef7a291a2c5",
+      "name": "Get Info",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        140,
+        240
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 778731400,
+          "mode": "list",
+          "cachedResultName": "Follow CLient",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Trigger').item.json.id }}",
+            "status": "done",
+            "level": "5"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_project_support",
+              "displayName": "id_project_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_name_support",
+              "displayName": "project_name_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_ticket_support",
+              "displayName": "id_ticket_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "list_id_project",
+              "displayName": "list_id_project",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_project_create",
+              "displayName": "name_project_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_summary_create",
+              "displayName": "project_summary_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "start_date_create",
+              "displayName": "start_date_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "deadline_create",
+              "displayName": "deadline_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_url_create",
+              "displayName": "project_url_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7c592e8c-5ff5-48b7-a74a-61d516adc2d1",
+      "name": "UP Level 5 - done",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1460,
+        520
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=You are an AI Assistant of Cmsmart\n\nAnalyze the following conversation messages between the client and admin. Based on the content of the messages, create a friendly and professional chat message to summarize the work done during the chat session via the last messaging session. The summary should:  \n\n1. Include a polite greeting and address the client by name.  \n2. Summarize the key points discussed in the messages, such as:  \n   - Actions taken by the admin.  \n   - Requests made by the client.   \n   - Focus on issues resolved within 24 hours based on message send time\n3. Avoid rigidly including categories like \"Project Status,\" \"Recent Activities,\" or \"Next Steps\" if the messages don’t contain relevant information. Instead, adapt the content to reflect what was actually discussed.  \n4. End with a friendly invitation for the client to ask further questions or request additional support.\n5. Always conclude the message with \"Best regards, Cmsmart Admin.\"\n\nEnsure the tone is polite, professional, and client-friendly. You can add some icon to more friendly. But allway just use plain text or use some basic bullet. Never use effect for text like bold, italic...  \n\nHere are the conversation messages:  \n {{ $('Trigger').item.json.messages }}\n\nRespond only with the summary message, ensuring it reflects the content of the conversation. Avoid adding information not present in the messages.  \n\n",
+        "options": {}
+      },
+      "id": "523b6733-2b9b-4d20-9b85-00a3354fea04",
+      "name": "OpenAI_Chat",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        360,
+        140
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Fr1fa0hUFyO4bC5x",
+          "name": "OpenAi Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=You are an AI Assistant of Cmsmart\n\nAnalyze the following conversation messages between the client and admin. Based on the content of the messages, draft a professional email to summarize the work done during the chat session via the last messaging session and provide the client with updates and next steps regarding their project.  \n\nThe email should:  \n1. Start directly with the content, skipping formal greetings like \"Dear [Client Name]\" or \"Subject.\"  \n2. Provide a clear and concise summary of:  \n   - The client’s inquiries or requests.  \n   - Actions taken by the admin.  \n   - Focus on issues resolved within 24 hours based on message send time  \n3. Include follow-up actions, such as links to tickets or specific details relevant to the client’s requests.  \n4. Avoid formal closing statements like \"Best regards, Cmsmart Admin.\"  \n5. Ensure the email is polite, professional, and client-friendly.\n\nHere are the conversation messages:  \n {{ $('Trigger').item.json.messages }}\n\nRespond only with the email content, formatted as specified. Do not include a subject, greeting, or closing.  ",
+        "options": {}
+      },
+      "id": "559a7b16-72fb-49a3-9ecc-9b86c1cc1176",
+      "name": "OpenAI_Email",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        360,
+        400
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Fr1fa0hUFyO4bC5x",
+          "name": "OpenAi Account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "71881a0e-8231-48be-8cfd-a0dc10c81fd3",
+      "name": "Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }}\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "48e8a61e-e905-4424-a9d0-548ff41a6af1",
+      "name": "Messager Done",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        800,
+        140
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Convert to HTML": {
+      "main": [
+        [
+          {
+            "node": "Mautic Send Member (Boss)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mautic Send Client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mautic Send Client": {
+      "main": [
+        [
+          {
+            "node": "UP Level 5 - done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Info": {
+      "main": [
+        [
+          {
+            "node": "OpenAI_Chat",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "OpenAI_Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UP Level 5 - done": {
+      "main": [
+        [
+          {
+            "node": "Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI_Chat": {
+      "main": [
+        [
+          {
+            "node": "Messager Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI_Email": {
+      "main": [
+        [
+          {
+            "node": "Convert to HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "77297a3f-63a7-4c42-8815-a64ec7cfd1e6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "1Os3kiRF9eclEf4j",
+  "tags": []
+}

@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        4440,
-        320
+        1440,
+        260
       ]
     },
     {
@@ -686,8 +686,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1200,
-        840
+        1320,
+        520
       ]
     },
     {
@@ -750,8 +750,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1400,
-        520
+        1480,
+        820
       ]
     },
     {
@@ -817,7 +817,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1980,
+        2100,
         500
       ],
       "alwaysOutputData": true,
@@ -2489,8 +2489,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        7100,
-        320
+        6720,
+        1260
       ]
     },
     {
@@ -2551,28 +2551,6 @@
         7400,
         540
       ]
-    },
-    {
-      "parameters": {
-        "operation": "insert",
-        "collection": "message",
-        "fields": "={{ $json.data[0].id }}, {{ $json.conver }}",
-        "options": {}
-      },
-      "id": "96ecbeb7-7aeb-4b45-a05e-2412e9205551",
-      "name": "MongoDB",
-      "type": "n8n-nodes-base.mongoDb",
-      "typeVersion": 1.1,
-      "position": [
-        5540,
-        180
-      ],
-      "credentials": {
-        "mongoDb": {
-          "id": "6MUSK4mlokNUd5HL",
-          "name": "MongoDB account"
-        }
-      }
     },
     {
       "parameters": {
@@ -2659,7 +2637,7 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
           "mode": "url"
         },
         "sheetName": {
@@ -2686,6 +2664,729 @@
           "name": "Canh Google Sheets"
         }
       }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8dd5f6e1-5663-4875-9a95-0ef4f4cc4b33",
+              "name": "messagesSent",
+              "value": "={{ $('Get All Messages').item.json.messagesSent }}",
+              "type": "string"
+            },
+            {
+              "id": "32b12d76-b7d0-45e2-bb6e-79e2471d3d00",
+              "name": "project.name",
+              "value": "={{ $('Get Project By Client').item.json.data[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "6256a5cf-e613-4a5e-97cd-2a7577d602d0",
+              "name": "project.status",
+              "value": "={{ $('Get Project By Client').item.json.data[0].status }}",
+              "type": "string"
+            },
+            {
+              "id": "507895aa-b100-48f3-91f4-b73275d561ce",
+              "name": "project.start_date",
+              "value": "={{ $('Get Project By Client').item.json.data[0].start_date }}",
+              "type": "string"
+            },
+            {
+              "id": "6188ba61-5d09-4981-9897-9c51baebf721",
+              "name": "project.deadline",
+              "value": "={{ $('Get Project By Client').item.json.data[0].deadline }}",
+              "type": "string"
+            },
+            {
+              "id": "21d301e8-3923-48a7-8fb6-a3a7bb808464",
+              "name": "project.members",
+              "value": "={{ $('Get Project By Client').item.json.data[0].members }}",
+              "type": "array"
+            },
+            {
+              "id": "b6b31ed5-06b9-4d6e-b123-3a3542340022",
+              "name": "client",
+              "value": "={{ $('Get Project By Client').item.json.data[0].client }}",
+              "type": "object"
+            },
+            {
+              "id": "597832ff-562f-437a-b31b-aa1080688fc8",
+              "name": "project.milestone",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ef168dbd-2841-498e-add1-564a0a0c369f",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8180,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "getMilestones",
+        "ID": "={{ $('Get Project By Client').item.json.data[0].id }}",
+        "additionalFields": {
+          "limit": "50"
+        },
+        "requestOptions": {}
+      },
+      "id": "47030f33-1d99-497f-b7c9-8186d12cc38e",
+      "name": "Cloodo Milestone",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        7900,
+        540
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {}
+      },
+      "id": "bf434f28-fcf6-4674-b0f0-5e0258190905",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        8320,
+        760
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=8db38109-d083-45b4-8cb4-60f16cd5bbf9"
+      },
+      "id": "c3cd0092-762d-44fb-8610-f3b391826112",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        8440,
+        820
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "570e14d3-de57-4a5e-a4da-f7fed0dbf908",
+      "name": "Wikipedia",
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        8580,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "name": "create_new_project",
+        "description": "Call this tool to creat new project. The input should be are name of project and summary of project",
+        "workflowId": {
+          "__rl": true,
+          "value": "ul59bchkMPmnFbMy",
+          "mode": "list",
+          "cachedResultName": "Messager - Create New Project"
+        },
+        "fields": {
+          "values": [
+            {
+              "name": "id",
+              "stringValue": "={{ $('Check Client Tracked Before').item.json.id }}"
+            },
+            {
+              "name": "member_project",
+              "stringValue": "={{ $('Get Client By Email').item.json.data[0].added_by.id }}"
+            },
+            {
+              "name": "client_id",
+              "stringValue": "={{ $('Get Client By Email').item.json.data[0].user.id }}"
+            }
+          ]
+        }
+      },
+      "id": "5a7fcde7-1c8b-46d9-ac6b-c1bf1a9a915d",
+      "name": "create_new_project",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        8720,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "name": "resolve_problem_ticket",
+        "description": "Call this tool to resolve problem ticket when client want to support with their ticket. The input should be is number of ticket",
+        "workflowId": {
+          "__rl": true,
+          "value": "vNXQba5R8WXZU80n",
+          "mode": "list",
+          "cachedResultName": "Messager - Resolve proplem of Ticket"
+        },
+        "fields": {
+          "values": [
+            {
+              "name": "messages",
+              "stringValue": "={{ $json.messagesSent }}"
+            },
+            {
+              "name": "client_id",
+              "stringValue": "={{ $('Get Client By Email').item.json.data[0].user.id }}"
+            },
+            {
+              "name": "id",
+              "stringValue": "={{ $('Get Tracked').item.json.id }}"
+            }
+          ]
+        }
+      },
+      "id": "8dbb48d3-c78c-4b6b-9b75-223da897092a",
+      "name": "resolve_problem_ticket",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        9000,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "name": "ask_info_project",
+        "description": "Call this tool to reply client when client ask about their project.\n",
+        "workflowId": {
+          "__rl": true,
+          "value": "UO7emuUbJgzax4sw",
+          "mode": "list",
+          "cachedResultName": "Messager - Reply Info Project"
+        },
+        "fields": {
+          "values": [
+            {
+              "name": "project_id",
+              "stringValue": "={{ $('Get Tracked').item.json.id_project_support }}"
+            },
+            {
+              "name": "id",
+              "stringValue": "={{ $('Get Tracked').item.json.id }}"
+            }
+          ]
+        }
+      },
+      "id": "fbaaa7a0-2d3c-4d69-b42f-c0d77811c838",
+      "name": "ask_info_project",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        8860,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "name": "take_care_client",
+        "description": "Call this tool to help customers with their requests such as adding new features, processing refunds, invoice, estimate or other tasks. The input data for the request is the issue they need support for.",
+        "workflowId": {
+          "__rl": true,
+          "value": "69ieUP8Gx9VnyEbG",
+          "mode": "list",
+          "cachedResultName": "Messager - Take care Client"
+        },
+        "fields": {
+          "values": [
+            {
+              "name": "id",
+              "stringValue": "={{ $('Get Tracked').item.json.id }}"
+            },
+            {
+              "name": "messages",
+              "stringValue": "={{ $json.messagesSent }}"
+            },
+            {
+              "name": "client_id",
+              "stringValue": "={{ $('Get Client By Email').item.json.data[0].user.id }}"
+            }
+          ]
+        }
+      },
+      "id": "5afb70af-8095-4db1-93cf-e26d9c248760",
+      "name": "take_care_client",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        9120,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "name": "summary_chat_session",
+        "description": "Call this tool to perform a summary of the issues discussed with the customer during that session when the customer's issue requiring support has been resolved and the customer has no further requests. The request data is the customer's message confirming that their issue has been resolved and that there are no further requests.",
+        "workflowId": {
+          "__rl": true,
+          "value": "1Os3kiRF9eclEf4j",
+          "mode": "list",
+          "cachedResultName": "Messager - Summary chat Session"
+        },
+        "fields": {
+          "values": [
+            {
+              "name": "id",
+              "stringValue": "={{ $('Get Tracked').item.json.id }}"
+            },
+            {
+              "name": "messages",
+              "stringValue": "={{ $json.messagesSent }}"
+            },
+            {
+              "name": "client_id",
+              "stringValue": "={{ $('Get Client By Email').item.json.data[0].user.id }}"
+            }
+          ]
+        }
+      },
+      "id": "c242d94b-3bf0-4655-91da-64d45f8ba720",
+      "name": "summary_chat_session",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        9220,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "additionalFields": {
+          "limit": "50",
+          "assignedTo": "b0e9a201-e0ad-4a69-aa4b-a3f0442a88ed"
+        },
+        "requestOptions": {}
+      },
+      "id": "bd9d77a7-3c60-49af-b4ed-fdf82b893f90",
+      "name": "Cloodo CRM4",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        -720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "74d60269-304d-491f-9b0e-065eb681a262",
+      "name": "Split Out2",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2880,
+        -720
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "get",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "6ba6cba1-c94e-418a-b302-3d535e23ea83",
+      "name": "Cloodo CRM5",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        3180,
+        -720
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2089448577,
+          "mode": "list",
+          "cachedResultName": "TaskCanh",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2089448577"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $itemIndex + 1 }}",
+            "Task": "={{ $json.data.heading }}",
+            "Assigned by": "={{ $json.data.assigned_by.name }}",
+            "Assigned to": "={{ $json.data.assigned_to[0].name }}",
+            "Status": "={{ $json.data.board_column.name }}",
+            "Milestone": "={{ $json.data.milestone.title }}",
+            "Total Hours Logged": "={{ $json.logtime }}",
+            "Estimated Time": "={{ $json.estimate }}",
+            "Link Task": "=https://worksuite.cloodo.com/apps/work/tasks/{{ $json.data.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Milestone",
+              "displayName": "Milestone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Assigned to",
+              "displayName": "Assigned to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Assigned by",
+              "displayName": "Assigned by",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Estimated Time",
+              "displayName": "Estimated Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Value",
+              "displayName": "Value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total Hours Logged",
+              "displayName": "Total Hours Logged",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link Task",
+              "displayName": "Link Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "aa4e2b25-8fbf-41e7-b54d-76303e8625f6",
+      "name": "Save messaage2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3780,
+        -720
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const estimate = item?.json?.data?.total_estimate;\n  const logtime = item?.json?.data?.total_time_logged;\n  if (estimate) {\n    // Chuyển đổi số phút thành giờ và phút\n    const hours = Math.floor(estimate / 60);  // Lấy số giờ\n    const minutes = estimate % 60;  // Lấy số phút còn lại\n\n    // Định dạng lại thành \"giờ: phút\"\n    item.json.estimate = `${hours}h : ${minutes}m`;\n  } else {\n    item.json.estimate = \"No data\";  // Nếu không có estimate, trả về thông báo lỗi\n  }\n  if (logtime) {\n    // Chuyển đổi số phút thành giờ và phút\n    const hours1 = Math.floor(logtime / 60);  // Lấy số giờ\n    const minutes1 = logtime % 60;  // Lấy số phút còn lại\n\n    // Định dạng lại thành \"giờ: phút\"\n    item.json.logtime = `${hours1} hours ${minutes1} minute`;\n  } else {\n    item.json.logtime = \"No data\";  // Nếu không có estimate, trả về thông báo lỗi\n  }\n}\n\nreturn $input.all();"
+      },
+      "id": "e145b886-1326-4d62-abc8-1d0210eafa33",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3480,
+        -720
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getDetailMessage",
+        "userId": "={{ $('Get Tracked').item.json.id }}"
+      },
+      "id": "66ff5de6-36e2-4290-95ea-5af3d3b810f7",
+      "name": "Workchat1",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        9140,
+        200
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "zaUKCrkh6p3yOskM",
+          "name": "Workchat Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a4bb989a-d243-4888-87d3-773e405fa336",
+              "leftValue": "={{ $json.data[0].user_one }}",
+              "rightValue": 1271,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c7aec2e3-6183-4a41-8ad3-a6fa693fd63b",
+      "name": "Last send by client1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        9440,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "messageImport": "={{ $('AI Agent').item.json.output }}",
+        "userId": "={{ $('Get Tracked').item.json.id }}"
+      },
+      "id": "ef4e4022-b0c1-43c8-836b-9271ce53141f",
+      "name": "Reply Client Default",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        9720,
+        180
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "zaUKCrkh6p3yOskM",
+          "name": "Workchat Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Get Tracked').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output.replaceAll(/\"/g, '') }}\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "b8a3b700-42f3-48e9-bdd2-f01e738640ce",
+      "name": "send message2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        10000,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "51d163c9-5926-4169-a8a7-8a0cdeb98caa",
+              "leftValue": "={{ $json.messages.data[0].from.id }}",
+              "rightValue": "112710510078308",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9736eba4-d548-47a4-a904-0514aa7a6d3d",
+      "name": "Last send by Client1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        9480,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Get Id Store').item.json.data[0].id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "messages{id,message,from,to}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "df592dd7-fd7f-48f3-a348-a65eecbf4b18",
+      "name": "Get Detail list Chat User4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        9140,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let messagerAI = $node['AI Agent']?.json?.output\n  messagerAI = messagerAI.replace(/\\n\\n/g, '\\\\n\\\\n');\n  messagerAI = messagerAI.replace(/\\n/g, '\\\\n');\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();"
+      },
+      "id": "742bea5b-fd1b-4093-ab63-1f9381a619dd",
+      "name": "Code3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9740,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=ALWAYS use plain text and simple bullet points if need for clear and friendly communication. Do not apply any text effects, such as bold, italics, or headings. Keep the message simple, straightforward, and easy to read.\n\nAct as LiveChat AI Assistant \n\nUse the data i provide dynamically below in a way that helps analyze the client's needs and deliver personalized responses, but without directly repeating the data back to the client. You must leverage the information you've supplied to inform its conversation flow and provide insightful, helpful responses based on the client's context.\n\nInformation about client project\nProject name: {{ $json.project.name }}\nProject status: {{ $json.project.status }}\nStart date: {{ $json.project.start_date }}\nDeadline: {{ $json.project.deadline }}\nProject members: {{ $json.project.members.map(item=> item.name) }}\n\nInformation about client:\nName: {{ $json.client.name }}\nEmail: {{ $json.client.email }}\nMobile: {{ $json.client.mobile }}\n\n\nHistory chat messages:\n{{ $json.messagesSent }}\n\n\nAI Assistant Prompt with Contextual Analysis:\nGreeting the Client:\n\n\"Hello! 👋 Welcome to [Company Name]. I’m [Your AI Assistant Name], and I’m here to assist you today. How can I help you?\"\n\n(If the client hasn’t initiated the conversation yet, this greeting will prompt them to describe their needs or project.)\n\n1. If the Client Wants to Create a New Project:\nLet call to create_new_project tools\n\n2. If the Client Needs Support with a Ticket:\nLet call to resolve_problem_ticket tools\n\n3. If the Client Asks About Their Project Information (Milestones, Status, Tasks):\nLet call to ask_info_project tools\n\n4. If the Client Wants to Add a New Feature:\nLet call to take_care_client tools\n\n5. If the Client Requests a Refund or invoice:\nLet call to take_care_client tools\n\n6. Handling Last Message from Client:\nBased on your most recent message, I can see that you’re asking about [issue or request]. Let’s address that right away!\n\nFor example, if the client’s last message is about needing help with a project feature or milestone, the AI would respond:\n\n\"I noticed you're asking about [Milestone X]. Let me help you with that! Could you confirm if you're looking for updates on this milestone or if you need assistance with a specific task related to it?\"\n\n8. Wrapping Up the Chat:\n\"Thank you for sharing all of this information with me! I’ll make sure everything is updated and will send you an email confirmation shortly.\n\nIs there anything else I can assist you with while we’re still chatting?\"\n\n9. Closing the Chat:\nLet call to summary_chat_session tools\n\n\nHow the AI Uses Your Data Dynamically:\nHistory Chat Messages:\n\nThe AI reviews the client’s past messages and uses them to tailor the conversation. For example, if the client mentioned a problem earlier, the AI might start by asking if the issue has been resolved or needs further assistance.\nClient Project Information:\n\nThe AI will dynamically access the project’s name, status, and milestones (e.g., “Your project [Project Name] is currently in [Current Status] and includes milestones like [Milestone 1, Milestone 2]”). This contextualizes the conversation, allowing the AI to give specific advice or updates based on the project’s current phase.\nClient’s Last Message:\n\nThe AI will analyze the last message from the client and build the conversation around it, ensuring that it stays relevant to their current needs (e.g., \"I see you're asking about [specific feature or issue], let me help you with that!\").\n\nFinal Notes:\nStart with a friendly greeting whenever a new conversation begins.\nAsk for relevant details based on what the client needs (creating a project, ticket support, project information, new features, or refunds).\nUse the project information you provide dynamically to craft responses, ensuring that you don’t repeat the data back verbatim but use it to inform the conversation.\n\nALWAYS use plain text with simple bullet points for clear and friendly communication. Do not apply any text effects, such as bold, italics, or headings. Keep the message simple, straightforward, and easy to read.",
+        "options": {}
+      },
+      "id": "3cd38c0d-888c-4388-8f49-82dca8fbf848",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        8640,
+        540
+      ]
     }
   ],
   "pinData": {},
@@ -2694,7 +3395,7 @@
       "main": [
         [
           {
-            "node": "Get Id Store",
+            "node": "Get Detail list Chat User2",
             "type": "main",
             "index": 0
           }
@@ -2848,18 +3549,7 @@
       "main": [
         [
           {
-            "node": "Test",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Test": {
-      "main": [
-        [
-          {
-            "node": "Get Detail list Chat User2",
+            "node": "Last send by Client",
             "type": "main",
             "index": 0
           }
@@ -3252,13 +3942,227 @@
           }
         ]
       ]
+    },
+    "Cloodo Milestone": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Messages": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Milestone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_new_project": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "resolve_problem_ticket": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ask_info_project": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "take_care_client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "summary_chat_session": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM4": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM5": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Save messaage2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Id User": {
+      "main": [
+        [
+          {
+            "node": "Get Detail list Chat User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Detail list Chat User4": {
+      "main": [
+        [
+          {
+            "node": "Last send by Client1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Last send by Client1": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "send message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "76e6294b-bb38-4fdf-ad23-b6e4d1100b41",
+  "versionId": "96cd2b16-ff88-4fea-a7d6-1bb8a6a144cf",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"

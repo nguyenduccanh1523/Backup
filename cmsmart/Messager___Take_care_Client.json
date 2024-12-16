@@ -1,0 +1,3949 @@
+{
+  "name": "Messager - Take care Client",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "49c22580-6d04-4948-a457-61a551756f52",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1100,
+        660
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4o",
+        "prompt": {
+          "messages": [
+            {
+              "role": "assistant",
+              "content": "=Analyze the following conversation messages between me and my client. Based on the analysis, determine the intent of the last client message and identify the specific area where the client needs support:\n\nReturn 1 if the client is requesting refund.  \nReturn 2 if the client is requesting addition features or additional requirements in their project.  \nReturn 3 if the client is requesting another issue.  \n\nALWAY Respond only with the corresponding number (1, 2, or 3).\n\nMessages:  \n{{ $json.messages }}  "
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 1600
+        },
+        "requestOptions": {}
+      },
+      "id": "1f3004a9-ae9e-4046-b0b1-aaa8b4e7f000",
+      "name": "OpenAI",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        -280,
+        1280
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f196b88-a38a-4657-a3c3-0bc7aa082a4a",
+              "name": "response",
+              "value": "=had done",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "eb497f59-b4a5-4e4c-963c-c974c5fcea88",
+      "name": "Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2740,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "messageImport": "={{ $json.message }}",
+        "userId": "={{ $('Trigger').item.json.id }}"
+      },
+      "id": "ee59a719-ce73-469d-bb7b-1219aa29dd9f",
+      "name": "Require Confirm Project2",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        2220,
+        300
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "zaUKCrkh6p3yOskM",
+          "name": "Workchat Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "getTaskByProject",
+        "project_id": "={{ $json.id_project_support }}",
+        "requestOptions": {}
+      },
+      "id": "82748154-9422-4f18-b58b-6638a67cd2e4",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        460,
+        840
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "get",
+        "ID": "={{ $json.id_project_support }}",
+        "requestOptions": {}
+      },
+      "id": "2924f693-a378-4445-be1f-4dfdb1e886b8",
+      "name": "Get Project",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        460,
+        460
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "getMilestones",
+        "ID": "={{ $json.id_project_support }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "34021787-32d8-4c7f-a594-9a42eeb67510",
+      "name": "Get Milestone",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        460,
+        640
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "b6eef7e4-634f-48ac-81e5-299f84a661ee",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        720,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "90dbe8a1-954d-4242-8011-ce5427cd7f72",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        940,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9cc045fe-9f4c-4b8c-8e38-594e9e73cb0b",
+              "name": "project.name",
+              "value": "={{ $json.data[0].data.name }}",
+              "type": "string"
+            },
+            {
+              "id": "3bde1784-723c-462e-82d9-fe908f30cf89",
+              "name": "project.summary",
+              "value": "={{ $json.data[0].data.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "2d779eb2-089e-4589-b7e1-65b9271a4795",
+              "name": "project.start_date",
+              "value": "={{ $json.data[0].data.start_date }}",
+              "type": "string"
+            },
+            {
+              "id": "bb4c2efa-fb9f-4cd5-8c71-4ee2de2bd37c",
+              "name": "project.deadline",
+              "value": "={{ $json.data[0].data.deadline }}",
+              "type": "string"
+            },
+            {
+              "id": "ff854952-dc98-4d5a-ae21-383fa6ee894c",
+              "name": "project.notes",
+              "value": "={{ $json.data[0].data.notes }}",
+              "type": "string"
+            },
+            {
+              "id": "215605be-1525-4c06-81b6-e40595b838ef",
+              "name": "project.project_admin",
+              "value": "={{ $json.data[0].data.project_admin.name }}",
+              "type": "string"
+            },
+            {
+              "id": "1317454f-e263-43af-85b0-cb8b25aab849",
+              "name": "project.members",
+              "value": "={{ $json.data[0].data.members }}",
+              "type": "array"
+            },
+            {
+              "id": "0a180d7e-c661-4762-9a6d-80614275ffba",
+              "name": "milestone",
+              "value": "={{ $json.data[1].data }}",
+              "type": "array"
+            },
+            {
+              "id": "d29a0dce-3076-44d1-bbd9-be49e344d0ea",
+              "name": "tasks",
+              "value": "={{ $json.data[2].data }}",
+              "type": "array"
+            },
+            {
+              "id": "d69151c4-6abe-4434-a48a-82ac3153b69e",
+              "name": "client.name",
+              "value": "={{ $json.data[0].data.client.user.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "57333f0f-ea4b-4dac-b6b7-d292ac4df87c",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1140,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 778731400,
+          "mode": "list",
+          "cachedResultName": "Follow CLient",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $('Trigger').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "abf8e23a-4996-444e-a9ce-a8b2761d4ce3",
+      "name": "Get Client",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        680
+      ],
+      "alwaysOutputData": false,
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "8db38109-d083-45b4-8cb4-60f16cd5bbf9"
+      },
+      "id": "481dc7bc-8256-4e12-b36b-714f099c5c4d",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1540,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let output = $input.all()[0].json.output\n\n\n// Regular expression to match JSON (with or without triple backticks)\nconst jsonMatch = /```json\\s*({[\\s\\S]*?})\\s*```|({[\\s\\S]*?})/;\n\n// Extract the JSON part\nconst jsonMatchResult = output.match(jsonMatch);\nconst jsonData = jsonMatchResult\n  ? JSON.parse(jsonMatchResult[1] || jsonMatchResult[2])\n  : null;\n\n// Remove the JSON part from the output\nconst cleanedOutput = output.replace(jsonMatch, '').trim();\n\nreturn {\n  type: jsonData || null,\n  message: cleanedOutput,\n};\n"
+      },
+      "id": "729bd3ec-5d0a-4af3-afee-9672f49e57df",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 778731400,
+          "mode": "list",
+          "cachedResultName": "Follow CLient",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Trigger').item.json.id }} ",
+            "level": "4",
+            "status": "refund_ask_detail"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project",
+              "displayName": "project",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_name",
+              "displayName": "project_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "list_id_project",
+              "displayName": "list_id_project",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_project_create",
+              "displayName": "name_project_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_summary_create",
+              "displayName": "project_summary_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "start_date_create",
+              "displayName": "start_date_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "deadline_create",
+              "displayName": "deadline_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_url_create",
+              "displayName": "project_url_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "627a14ad-51bc-4b74-a469-2dc1cfe5e412",
+      "name": "Up level 4 - refund_ask_detail",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2480,
+        500
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *, (\n  SELECT COUNT(*) FROM user_chats WHERE (user_chats.from = 1271 AND user_chats.to = 48803) OR  (user_chats.from = 48803 AND user_chats.to = 1271)\n) AS Total_Messages\nFROM user_chats\nWHERE \n  (user_chats.from = 1271 AND user_chats.to = 48803) \n  OR \n  (user_chats.from = 48803 AND user_chats.to = 1271) ORDER BY user_chats.created_at DESC;\n",
+        "options": {}
+      },
+      "id": "8e4b9935-7fd4-41ad-80dc-0e31940f3cfb",
+      "name": "MySQL Get Detail Messages",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        -900,
+        660
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "SJei6ksLjiCIXFRS",
+          "name": "Worksuite database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const listMessages = $node['Aggregate1']?.json?.data\nlet document =''\ndocument+='List Messages sent by client with admin: \\n'\nfor (const item of listMessages.reverse()) {\n  document+= `${item?.user_one == 1271 ? 'Admin send: ' : 'Client sent: '} ${item?.message} \\nTime Send: ${item?.created_at} \\n\\n`\n}\n\ndocument+=`\\n\\n Last message sent by client: ${listMessages[listMessages.length-1].message}`\nconsole.log(document)\nreturn {messagesSent: document};"
+      },
+      "id": "9a69b6a8-0866-4b31-960f-cc80db675bed",
+      "name": "Get All Messages",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -500,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "a52f4b55-1514-4544-a160-aa9f482356e3",
+      "name": "Aggregate1",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "messageImport": "={{ $('Code1').item.json.message }}\n\nYou can track and manage the ticket here: \n https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }}/ \n\nIf you need more details or would like to discuss further, I can connect you with our team for additional support. Let me know how I can assist!  ",
+        "userId": "={{ $('Trigger').item.json.id }}"
+      },
+      "id": "261538f1-c42e-416d-ad5c-f00213038d72",
+      "name": "Workchat Feature",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        2920,
+        620
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "zaUKCrkh6p3yOskM",
+          "name": "Workchat Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = $input.all()[0].json.message.content\n// Extract only the JSON part (everything inside the { })\nconst jsonString = content.match(/{[\\s\\S]*}/)[0];\n\n// Parse the JSON string into an object\nconst jsonObject = JSON.parse(jsonString);\n\nconsole.log(jsonObject)\n\nreturn jsonObject;"
+      },
+      "id": "97c55c37-79e1-47fe-8550-2a57fc744759",
+      "name": "Get Info Feature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2420,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4o",
+        "prompt": {
+          "messages": [
+            {
+              "role": "assistant",
+              "content": "=Analyze the following conversation messages between the client and admin. Focus on the most recent messages sent by the client, especially the last one, to determine the client's intent and construct a JSON object based on the following format:\n\n{\n  \"subject\": \"\",\n  \"message\": \"\"\n}\n\nInstructions:  \n1. subject: is the title of the problem the customer is facing\n2. message: is the details of the problem the customer is facing\n3. Ensure the JSON is correctly formatted, valid, and accurately reflects the client’s most recent intent.  \n4. Do not include any explanation, only return the JSON object in the exact specified format.\n\nBase on summary problem provided and History chat messages, let create an object with subject anb message.\n\nHere are the history conversation messages:  \n\n{{ $('Trigger').item.json.messages }}\n\nSummary problem:\n{{ $('Trigger').item.json.query }}\n\nALWAYS respond only with the correctly formatted JSON object.  "
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 1600
+        },
+        "requestOptions": {}
+      },
+      "id": "8917e707-d3db-4c99-a310-f69bbb9c6d24",
+      "name": "OpenAI Refund",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2200,
+        800
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"tags\": [],\n    \"project_id\": \"{{ $('Aggregate').item.json.data[0].data.id }}\",\n    \"user_id\": \"{{ $('Aggregate').item.json.data[0].data.client.user.id }}\",\n    \"subject\": \"{{ $json.subject }}\",\n    \"priority\": \"high\",\n    \"agent_id\": \"{{ $('Aggregate').item.json.data[0].data.project_admin.id }}\",\n    \"type_id\": \"2c38965a-cf1f-4213-aeaa-eed19c075647\",\n    \"channel_id\": \"f4842a8b-6519-44d0-8bb3-1878df4d0d0c\",\n    \"status\": \"open\",\n    \"message\": \"{{ $json.message }}\",\n    \"note\": \"\",\n    \"ticket_files\": []\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "33a566cf-a2bf-41f0-abfe-a41d81e06586",
+      "name": "Create Ticket1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2680,
+        800
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 778731400,
+          "mode": "list",
+          "cachedResultName": "Follow CLient",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Trigger').item.json.id }} ",
+            "level": "4",
+            "status": "refund_create_ticket"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_project_support",
+              "displayName": "id_project_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_name_support",
+              "displayName": "project_name_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_ticket_support",
+              "displayName": "id_ticket_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "list_id_project",
+              "displayName": "list_id_project",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_project_create",
+              "displayName": "name_project_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_summary_create",
+              "displayName": "project_summary_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "start_date_create",
+              "displayName": "start_date_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "deadline_create",
+              "displayName": "deadline_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_url_create",
+              "displayName": "project_url_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "90e42eba-7504-4c12-8e44-1480933af8b3",
+      "name": "Up level 4 - refund_create_ticket",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        3160,
+        800
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f196b88-a38a-4657-a3c3-0bc7aa082a4a",
+              "name": "response",
+              "value": "=had done",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c2ea5438-6392-4003-87a6-8efdb64815df",
+      "name": "Response1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3440,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return{\n\"query\": \"Client Oceanpham is requesting ask about their invoice  INV#35958.\",\n\"id\": \"48803\",\n\"messages\": $input.all()[0].json.messagesSent,\n\"client_id\": \"68a2c449-9213-4628-ad3a-e6ce29dd0e49\"\n}"
+      },
+      "id": "7201665e-abb8-4826-bc1f-8728109a20b8",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.content }}",
+                    "rightValue": "1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "refund"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "818d7aa4-ad3e-46d6-aa9f-330dcd0bc562",
+                    "leftValue": "={{ $json.message.content }}",
+                    "rightValue": "2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "features"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d400cf2a-ee14-4f48-9762-b2a6e13df776",
+                    "leftValue": "={{ $json.message.content }}",
+                    "rightValue": "3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "another"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "598b0cfa-798f-43bc-9d75-f02d71324ce8",
+      "name": "Switch Request of Client",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -60,
+        1280
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f196b88-a38a-4657-a3c3-0bc7aa082a4a",
+              "name": "response",
+              "value": "=had done",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bdb9ebd0-aa77-405f-b3b2-58c3b9854a96",
+      "name": "Response2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2760,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "messageImport": "={{ $json.message }}",
+        "userId": "={{ $('Trigger').item.json.id }}"
+      },
+      "id": "ff8afdb2-72cf-4402-a317-0dc78946a72a",
+      "name": "Require Confirm Project",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        1000
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "zaUKCrkh6p3yOskM",
+          "name": "Workchat Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "getTaskByProject",
+        "project_id": "={{ $json.id_project_support }}",
+        "requestOptions": {}
+      },
+      "id": "a6607167-fad7-403b-a941-dc2c8933aeec",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        480,
+        1440
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "get",
+        "ID": "={{ $json.id_project_support }}",
+        "requestOptions": {}
+      },
+      "id": "54db9d00-c52a-425e-b531-352b43fc5525",
+      "name": "Get Project1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        480,
+        1060
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "getMilestones",
+        "ID": "={{ $json.id_project_support }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "1c6d479c-ae74-46a6-bb27-bf3640453d1c",
+      "name": "Get Milestone1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        480,
+        1240
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "70b6b993-e65e-437f-9ca9-4ff4f5838467",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        740,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "6a294f69-46fd-47f4-b8f2-d5d77b1daa2f",
+      "name": "Aggregate2",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        960,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9cc045fe-9f4c-4b8c-8e38-594e9e73cb0b",
+              "name": "project.name",
+              "value": "={{ $json.data[0].data.name }}",
+              "type": "string"
+            },
+            {
+              "id": "3bde1784-723c-462e-82d9-fe908f30cf89",
+              "name": "project.summary",
+              "value": "={{ $json.data[0].data.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "2d779eb2-089e-4589-b7e1-65b9271a4795",
+              "name": "project.start_date",
+              "value": "={{ $json.data[0].data.start_date }}",
+              "type": "string"
+            },
+            {
+              "id": "bb4c2efa-fb9f-4cd5-8c71-4ee2de2bd37c",
+              "name": "project.deadline",
+              "value": "={{ $json.data[0].data.deadline }}",
+              "type": "string"
+            },
+            {
+              "id": "ff854952-dc98-4d5a-ae21-383fa6ee894c",
+              "name": "project.notes",
+              "value": "={{ $json.data[0].data.notes }}",
+              "type": "string"
+            },
+            {
+              "id": "215605be-1525-4c06-81b6-e40595b838ef",
+              "name": "project.project_admin",
+              "value": "={{ $json.data[0].data.project_admin.name }}",
+              "type": "string"
+            },
+            {
+              "id": "1317454f-e263-43af-85b0-cb8b25aab849",
+              "name": "project.members",
+              "value": "={{ $json.data[0].data.members }}",
+              "type": "array"
+            },
+            {
+              "id": "0a180d7e-c661-4762-9a6d-80614275ffba",
+              "name": "milestone",
+              "value": "={{ $json.data[1].data }}",
+              "type": "array"
+            },
+            {
+              "id": "d29a0dce-3076-44d1-bbd9-be49e344d0ea",
+              "name": "tasks",
+              "value": "={{ $json.data[2].data }}",
+              "type": "array"
+            },
+            {
+              "id": "d69151c4-6abe-4434-a48a-82ac3153b69e",
+              "name": "client.name",
+              "value": "={{ $json.data[0].data.client.user.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "96824847-4e91-4f66-afbd-b3b6d2a5e166",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1160,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0",
+          "mode": "list",
+          "cachedResultName": "Check error account and auto answer ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 573714152,
+          "mode": "list",
+          "cachedResultName": "Follow Client",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit#gid=573714152"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $('Trigger').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4bf9584e-0426-48e5-9eac-96793ba1a47a",
+      "name": "Get Client1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        1280
+      ],
+      "alwaysOutputData": false,
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "AqIgenjvZ5DQXBHg",
+          "name": "Cmsmart Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "8db38109-d083-45b4-8cb4-60f16cd5bbf9"
+      },
+      "id": "274c3a8d-b1cf-415e-a6fc-dd604d1cfeec",
+      "name": "Window Buffer Memory1",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1560,
+        1440
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let output = $input.all()[0].json.output\n\n\n// Regular expression to match JSON (with or without triple backticks)\nconst jsonMatch = /```json\\s*({[\\s\\S]*?})\\s*```|({[\\s\\S]*?})/;\n\n// Extract the JSON part\nconst jsonMatchResult = output.match(jsonMatch);\nconst jsonData = jsonMatchResult\n  ? JSON.parse(jsonMatchResult[1] || jsonMatchResult[2])\n  : null;\n\n// Remove the JSON part from the output\nconst cleanedOutput = output.replace(jsonMatch, '').trim();\n\nreturn {\n  type: jsonData || null,\n  message: cleanedOutput,\n};\n"
+      },
+      "id": "823fd6a7-690e-47b3-9c56-11607ac89d51",
+      "name": "Code3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type.type }}",
+                    "rightValue": "not enough",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "not enough"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c11b499d-d888-4dbe-a577-9748c41c51ef",
+                    "leftValue": "={{ $json.type.type }}",
+                    "rightValue": "enough",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "enough"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f8fd8eaf-03ca-4785-8621-cb8702945ccf",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2000,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "messageImport": "={{ $('Code3').item.json.message }}\n\nYou can track and manage the ticket here: \n https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }}/ \n\nIf you need more details or would like to discuss further, I can connect you with our team for additional support. Let me know how I can assist!  ",
+        "userId": "={{ $('Trigger').item.json.id }}"
+      },
+      "id": "f455b629-2529-430c-a0e4-0285e4a30ffa",
+      "name": "Workchat Feature1",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        1200
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "zaUKCrkh6p3yOskM",
+          "name": "Workchat Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = $input.all()[0].json.message.content\n// Extract only the JSON part (everything inside the { })\nconst jsonString = content.match(/{[\\s\\S]*}/)[0];\n\n// Parse the JSON string into an object\nconst jsonObject = JSON.parse(jsonString);\n\nconsole.log(jsonObject)\n\nreturn jsonObject;"
+      },
+      "id": "556c852a-51bd-46de-8f9d-6da16173831d",
+      "name": "Get Info Feature1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2440,
+        1400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"tags\": [],\n    \"project_id\": \"{{ $('Aggregate2').item.json.data[0].data.id }}\",\n    \"user_id\": \"{{ $('Aggregate2').item.json.data[0].data.client.user.id }}\",\n    \"subject\": \"{{ $json.subject }}\",\n    \"priority\": \"high\",\n    \"agent_id\": \"{{ $('Aggregate2').item.json.data[0].data.project_admin.id }}\",\n    \"type_id\": \"2c38965a-cf1f-4213-aeaa-eed19c075647\",\n    \"channel_id\": \"f4842a8b-6519-44d0-8bb3-1878df4d0d0c\",\n    \"status\": \"open\",\n    \"message\": \"{{ $json.message }}\",\n    \"note\": \"\",\n    \"ticket_files\": []\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "25aa8e42-51d4-4677-9c6c-c22dc3bd6b5a",
+      "name": "Create Ticket",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2700,
+        1400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f196b88-a38a-4657-a3c3-0bc7aa082a4a",
+              "name": "response",
+              "value": "=had done",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "742a3e76-3bce-4132-8515-162d0f6bfcf8",
+      "name": "Response3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3460,
+        1400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4o",
+        "prompt": {
+          "messages": [
+            {
+              "role": "assistant",
+              "content": "=Analyze the following conversation messages between the client and admin. Focus on the most recent messages sent by the client, especially the last one, to determine the client's intent and construct a JSON object based on the following format:\n\n{\n  \"subject\": \"\",\n  \"message\": \"\"\n}\n\nInstructions:  \n1. subject: is the title of the function the customer is trying to add\n2. message: is the detailed information about the function the customer is trying to add to their project\n3. Ensure the JSON is correctly formatted, valid, and accurately reflects the client’s most recent intent.  \n4. Do not include any explanation, only return the JSON object in the exact specified format.\n\nBase on summary problem provided and History chat messages, let create an object with subject anb message.\n\nHere are the history conversation messages:  \n\n{{ $('Trigger').item.json.messages }}\n\nSummary problem:\n{{ $('Trigger').item.json.query }}\n\nALWAYS respond only with the correctly formatted JSON object.  "
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 1600
+        },
+        "requestOptions": {}
+      },
+      "id": "9e14cbc3-dfaf-472d-993c-da860ec51d07",
+      "name": "OpenAI Features",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2220,
+        1400
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 778731400,
+          "mode": "list",
+          "cachedResultName": "Follow CLient",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Trigger').item.json.id }} ",
+            "level": "4",
+            "status": "feature_create_ticket"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_project_support",
+              "displayName": "id_project_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_name_support",
+              "displayName": "project_name_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_ticket_support",
+              "displayName": "id_ticket_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "list_id_project",
+              "displayName": "list_id_project",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_project_create",
+              "displayName": "name_project_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_summary_create",
+              "displayName": "project_summary_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "start_date_create",
+              "displayName": "start_date_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "deadline_create",
+              "displayName": "deadline_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_url_create",
+              "displayName": "project_url_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6d01d134-7144-47d2-bc4c-dc4ac620fa7b",
+      "name": "Up level 4 - feature_create_ticket1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        3180,
+        1400
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 778731400,
+          "mode": "list",
+          "cachedResultName": "Follow CLient",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Trigger').item.json.id }} ",
+            "level": "4",
+            "status": "feature_create_ticket"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project",
+              "displayName": "project",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_name",
+              "displayName": "project_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "list_id_project",
+              "displayName": "list_id_project",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_project_create",
+              "displayName": "name_project_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_summary_create",
+              "displayName": "project_summary_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "start_date_create",
+              "displayName": "start_date_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "deadline_create",
+              "displayName": "deadline_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_url_create",
+              "displayName": "project_url_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3fe5b354-67e0-48af-92f9-e788e25357fb",
+      "name": "Up level 4 - feature_create_ticket",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2520,
+        1120
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f196b88-a38a-4657-a3c3-0bc7aa082a4a",
+              "name": "response",
+              "value": "=had done",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1e987b5e-2f12-4b06-a58d-327a46077d57",
+      "name": "Response4",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2760,
+        1700
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "getTaskByProject",
+        "project_id": "={{ $json.id_project_support }}",
+        "requestOptions": {}
+      },
+      "id": "c0c04da0-f662-4c44-b5dd-4fd801fc3234",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        480,
+        2020
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "get",
+        "ID": "={{ $json.id_project_support }}",
+        "requestOptions": {}
+      },
+      "id": "a9a3f67f-2b5d-496c-a240-ebb93ac9699d",
+      "name": "Get Project2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        480,
+        1640
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "getMilestones",
+        "ID": "={{ $json.id_project_support }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "841cd0fb-3a9b-412b-bbb7-0f3dd4ab8873",
+      "name": "Get Milestone2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        480,
+        1820
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "007b6692-0c74-46a4-aa7c-81075fbdc1db",
+      "name": "Aggregate3",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        960,
+        1820
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9cc045fe-9f4c-4b8c-8e38-594e9e73cb0b",
+              "name": "project.name",
+              "value": "={{ $json.data[0].data.name }}",
+              "type": "string"
+            },
+            {
+              "id": "3bde1784-723c-462e-82d9-fe908f30cf89",
+              "name": "project.summary",
+              "value": "={{ $json.data[0].data.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "2d779eb2-089e-4589-b7e1-65b9271a4795",
+              "name": "project.start_date",
+              "value": "={{ $json.data[0].data.start_date }}",
+              "type": "string"
+            },
+            {
+              "id": "bb4c2efa-fb9f-4cd5-8c71-4ee2de2bd37c",
+              "name": "project.deadline",
+              "value": "={{ $json.data[0].data.deadline }}",
+              "type": "string"
+            },
+            {
+              "id": "ff854952-dc98-4d5a-ae21-383fa6ee894c",
+              "name": "project.notes",
+              "value": "={{ $json.data[0].data.notes }}",
+              "type": "string"
+            },
+            {
+              "id": "215605be-1525-4c06-81b6-e40595b838ef",
+              "name": "project.project_admin",
+              "value": "={{ $json.data[0].data.project_admin.name }}",
+              "type": "string"
+            },
+            {
+              "id": "1317454f-e263-43af-85b0-cb8b25aab849",
+              "name": "project.members",
+              "value": "={{ $json.data[0].data.members }}",
+              "type": "array"
+            },
+            {
+              "id": "0a180d7e-c661-4762-9a6d-80614275ffba",
+              "name": "milestone",
+              "value": "={{ $json.data[1].data }}",
+              "type": "array"
+            },
+            {
+              "id": "d29a0dce-3076-44d1-bbd9-be49e344d0ea",
+              "name": "tasks",
+              "value": "={{ $json.data[2].data }}",
+              "type": "array"
+            },
+            {
+              "id": "d69151c4-6abe-4434-a48a-82ac3153b69e",
+              "name": "client.name",
+              "value": "={{ $json.data[0].data.client.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "3e2a0ab4-a2d6-4d8e-b50f-ec458f5080ec",
+              "name": "invoices",
+              "value": "={{ $json.data[3].data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2a9c924e-6f33-49b5-808d-b3fde903e18f",
+      "name": "Edit Fields2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1160,
+        1820
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0",
+          "mode": "list",
+          "cachedResultName": "Check error account and auto answer ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 573714152,
+          "mode": "list",
+          "cachedResultName": "Follow Client",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISub6AhptvE9Ac-U2fQW_7Ya0EknULgME0O1i9mLtM0/edit#gid=573714152"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $('Trigger').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "703405e2-420b-45bf-a5cf-cd58e107de0e",
+      "name": "Get Client2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        1860
+      ],
+      "alwaysOutputData": false,
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "AqIgenjvZ5DQXBHg",
+          "name": "Cmsmart Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "8db38109-d083-45b4-8cb4-60f16cd5bbf9"
+      },
+      "id": "bb469988-1046-44f1-a1ef-66d972fad9e0",
+      "name": "Window Buffer Memory2",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1560,
+        2020
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let output = $input.all()[0].json.output\n\n\n// Regular expression to match JSON (with or without triple backticks)\nconst jsonMatch = /```json\\s*({[\\s\\S]*?})\\s*```|({[\\s\\S]*?})/;\n\n// Extract the JSON part\nconst jsonMatchResult = output.match(jsonMatch);\nconst jsonData = jsonMatchResult\n  ? JSON.parse(jsonMatchResult[1] || jsonMatchResult[2])\n  : null;\n\n// Remove the JSON part from the output\nconst cleanedOutput = output.replace(jsonMatch, '').trim();\n\nreturn {\n  type: jsonData || null,\n  message: cleanedOutput,\n};\n"
+      },
+      "id": "d706c443-375a-499f-ad81-4bc4a3e63123",
+      "name": "Code4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        1820
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type.type }}",
+                    "rightValue": "not enough",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "not enough"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c11b499d-d888-4dbe-a577-9748c41c51ef",
+                    "leftValue": "={{ $json.type.type }}",
+                    "rightValue": "enough",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "enough"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "028fbca7-3105-4ac5-89e3-f8f86147c712",
+      "name": "Switch2",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2000,
+        1820
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"tags\": [],\n    \"project_id\": \"{{ $('Aggregate3').item.json.data[0].data.id }}\",\n    \"user_id\": \"{{ $('Aggregate3').item.json.data[0].data.client.user.id }}\",\n    \"subject\": \"{{ $json.subject }}\",\n    \"priority\": \"high\",\n    \"agent_id\": \"{{ $('Aggregate3').item.json.data[0].data.project_admin.id }}\",\n    \"type_id\": \"2c38965a-cf1f-4213-aeaa-eed19c075647\",\n    \"channel_id\": \"f4842a8b-6519-44d0-8bb3-1878df4d0d0c\",\n    \"status\": \"open\",\n    \"message\": \"{{ $json.message }}\",\n    \"note\": \"\",\n    \"ticket_files\": []\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "1f6f69f9-0b61-4a81-bdad-293bd8bb7afd",
+      "name": "Create Ticket2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2700,
+        1980
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f196b88-a38a-4657-a3c3-0bc7aa082a4a",
+              "name": "response",
+              "value": "=had done",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "734d49f9-fe45-404d-8b54-fd7db72873aa",
+      "name": "Response5",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3460,
+        1980
+      ]
+    },
+    {
+      "parameters": {
+        "additionalFields": {
+          "search": "={{ $json.email }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "a22758dc-cd24-4621-a0e2-7a0938a5b0bb",
+      "name": "Cloodo Finance",
+      "type": "@cloodo/n8n-nodes-cloodo-finance.CloodoFinance",
+      "typeVersion": 1,
+      "position": [
+        480,
+        2220
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "id": "ef751333-b942-4718-8319-523166337d02",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        740,
+        1820
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 778731400,
+          "mode": "list",
+          "cachedResultName": "Follow CLient",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Trigger').item.json.id }} ",
+            "level": "4",
+            "status": "ask_another_info"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project",
+              "displayName": "project",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_name",
+              "displayName": "project_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "list_id_project",
+              "displayName": "list_id_project",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_project_create",
+              "displayName": "name_project_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_summary_create",
+              "displayName": "project_summary_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "start_date_create",
+              "displayName": "start_date_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "deadline_create",
+              "displayName": "deadline_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_url_create",
+              "displayName": "project_url_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8ca19696-fb45-4fa6-aae9-087923c14753",
+      "name": "Up level 4 - ask_another_info",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2520,
+        1700
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 778731400,
+          "mode": "list",
+          "cachedResultName": "Follow CLient",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Trigger').item.json.id }} ",
+            "level": "4",
+            "status": "ask_another_info"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_project_support",
+              "displayName": "id_project_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_name_support",
+              "displayName": "project_name_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_ticket_support",
+              "displayName": "id_ticket_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "list_id_project",
+              "displayName": "list_id_project",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_project_create",
+              "displayName": "name_project_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_summary_create",
+              "displayName": "project_summary_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "start_date_create",
+              "displayName": "start_date_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "deadline_create",
+              "displayName": "deadline_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "project_url_create",
+              "displayName": "project_url_create",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3a383ed1-4896-47be-af3e-d5026921fcd2",
+      "name": "Up level 4 - ask_another_info1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        3180,
+        1980
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = $input.all()[0].json.message.content\n// Extract only the JSON part (everything inside the { })\nconst jsonString = content.match(/{[\\s\\S]*}/)[0];\n\n// Parse the JSON string into an object\nconst jsonObject = JSON.parse(jsonString);\n\nconsole.log(jsonObject)\n\nreturn jsonObject;"
+      },
+      "id": "9cf53223-f415-4fea-831d-2ded9a15ffdd",
+      "name": "Get Info Issue",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2440,
+        1980
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatModel": "gpt-4o",
+        "prompt": {
+          "messages": [
+            {
+              "role": "assistant",
+              "content": "=Analyze the following conversation messages between the client and admin. Focus on the most recent messages sent by the client, especially the last one, to determine the client's intent and construct a JSON object based on the following format:\n\n{\n  \"subject\": \"\",\n  \"message\": \"\"\n}\n\nInstructions:  \n1. Subject: is the title of the issue the customer is needing support for\n2. Message: is detailed information about the issue the customer is needing support for\n3. Ensure the JSON is correctly formatted, valid, and accurately reflects the client’s most recent intent.  \n4. Do not include any explanation, only return the JSON object in the exact specified format.\n\nBase on summary problem provided and History chat messages, let create an object with subject anb message.\n\nHere are the history conversation messages:  \n\n{{ $('Trigger').item.json.messages }}\n\nSummary problem:\n{{ $('Trigger').item.json.query }}\n\nALWAYS respond only with the correctly formatted JSON object.  "
+            }
+          ]
+        },
+        "simplifyOutput": "=true",
+        "options": {
+          "maxTokens": 1600
+        },
+        "requestOptions": {}
+      },
+      "id": "146c28e5-53fd-44fb-b344-af3d6aaabd43",
+      "name": "OpenAI Issue",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        2220,
+        1980
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "messageImport": "={{ $('Code4').item.json.message }}\n\nYou can track and manage the ticket here: \n https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }}/ \n\nIf you need more details or would like to discuss further, I can connect you with our team for additional support. Let me know how I can assist!  ",
+        "userId": "={{ $('Trigger').item.json.id }}"
+      },
+      "id": "5b3ccac8-106c-47c7-9e0a-554a10e9b6cc",
+      "name": "Workchat Issue",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        1760
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "zaUKCrkh6p3yOskM",
+          "name": "Workchat Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=You are the Cmsmart AI Assistant\n\nOur customer is currently in need of support for an issue: adding a new feature to their project.\n\nWrite a friendly, professional message that focuses on the issue they are in need of support for and that you are happy to help them add that feature to their project.\n\nAsk the customer for details about the feature they would like to have in their project if they have not already provided them.\n\nOnce they have provided all the details about the feature they would like to add to their project, reassure them that we will create a ticket to best support them and encourage them to contact the agent assigned to the ticket we just created for support. Tell them that they can comment directly on the ticket or email a support agent to assist with the issue\n\nREMEMBER, ALWAY without including the greeting or closing statement.\n\nAt the end of the message, embed an object with the format: \"type\":\"enough\" (if the customer has provided enough information); \"type\":\"not enough\" (if the customer has not provided enough information and needs to ask more to clarify the issue)\n\nBelow is the information provided for you to analyze:\n\n1. The request of client: \n{{ $('Trigger').item.json.query }}\n\n2. Information of client\nclient name: {{ $json.client.name }}\n\n3. Information of project\n - project name: {{ $json.project.name }}\n - project summary: {{ $json.project.summary }}\n - start date: {{ $json.project.start_date }}\n - deadline: {{ $json.project.deadline }}\n - notes: {{ $json.project.notes }}\n - project admin: {{ $json.project.project_admin }}\n - project members {{ ', '+$json.project.members.map(item=>item.name) }}\n\n4. List milestones:\n{{ $json.milestone.map((item, index) => `\nMilestone: ${index+1}\n  - Title: ${item.title}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n  - Summary: ${item.summary}\n`).join('') }}\n\n5. List tasks:\n{{ $json.tasks.map((item, index) => `\nTask: ${index+1}\n  - Title: ${item.heading}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n`).join('') }}\n\n5. History chat messages:\n{{ $('Trigger').item.json.messages }}\n\n",
+        "options": {}
+      },
+      "id": "1a87b20e-42aa-417d-b5d4-f83322050dcc",
+      "name": "OpenAI3",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        1400,
+        1240
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "7c6310dc-a422-49bd-aed2-35939f7dd7ae",
+      "name": "Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -560,
+        1280
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=You are Cmsmart AI Assistant\n\nOur customer is currently in need of support for an issue. Read this customer request: \"{{ $('Trigger').item.json.query }}\n\", and identify what they are looking for support for. And with the information I have provided below, respond appropriately.\n\nWrite a friendly, professional message that focuses on the issue they need support for.\n\nAsk the customer to provide details about the issue they need support for if they haven't already.\n\nOnce they have provided all the details, assure them that we will create a ticket to best assist them and encourage them to contact the agent listed in the ticket we just created for assistance. Tell them that they can comment directly on the ticket or email the agent to get assistance with the issue.\n\nREMEMBER, ALWAY without including the greeting or closing statement\n\nAt the end of the message, embed an object with the format: \"type\":\"enough\" (if the customer has provided enough information); \"type\":\"not enough\" (if the customer has not provided enough information and needs to ask more to clarify the issue)\n\nBelow is the information provided for you to analyze:\n\n1. The request of client: \n{{ $('Trigger').item.json.query }}\n\n2. Information of client\nclient name: {{ $json.client.name }}\n\n3. Information of project\n - project name: {{ $json.project.name }}\n - project summary: {{ $json.project.summary }}\n - start date: {{ $json.project.start_date }}\n - deadline: {{ $json.project.deadline }}\n - notes: {{ $json.project.notes }}\n - project admin: {{ $json.project.project_admin }}\n - project members {{ ', '+$json.project.members.map(item=>item.name) }}\n\n4. List milestones:\n{{ $json.milestone.map((item, index) => `\nMilestone: ${index+1}\n  - Title: ${item.title}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n  - Summary: ${item.summary}\n`).join('') }}\n\n5. List tasks:\n{{ $json.tasks.map((item, index) => `\nTask: ${index+1}\n  - Title: ${item.heading}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n`).join('') }}\n\n6. List client invoice:\n{{ $json.invoices.map((item, index) => `\nInvoice: ${index+1}\n  - Invoice Number: ${item.invoice_number}\n  - Status: ${item.status}\n  - Project: ${item.project.name}\n  - Invoice Date: ${item.invoice_date}\n`).join('') }}\n\n\n7. History chat messages:\n{{ $('Trigger').item.json.messages }}\n\n",
+        "options": {}
+      },
+      "id": "1cf05a3c-e484-4fe4-a88a-3ef72ebcf755",
+      "name": "OpenAI4",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        1400,
+        1820
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "messageImport": "={{ $json.message }}",
+        "userId": "={{ $('Trigger').item.json.id }}"
+      },
+      "id": "4dfd0bd3-c3f3-4d1e-812e-968f2c35c5c1",
+      "name": "Require Info Issue",
+      "type": "@cloodo/n8n-nodes-workchat.workchat",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        1580
+      ],
+      "credentials": {
+        "workchatTokenApi": {
+          "id": "zaUKCrkh6p3yOskM",
+          "name": "Workchat Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=You are an AI Assistant of Cmsmart\n\nOur customer is currently in need of support for a problem: a refund.\nWrite a friendly, professional message that focuses on the issue they are having and that you are sorry for the problem they are having\nAsk the customer for details about the issue they are having and why they want a refund if they haven’t already provided them.\n\nOnce they have provided a full explanation of why they want a refund, tell them to rest assured that we will create a ticket to find the best solution for them and encourage them to contact the agent in the ticket we just created to resolve the issue. Tell them they can comment directly on the ticket or email the agent to resolve the issue\n\n\nREMEMBER, ALWAY without including the greeting or closing statement\n\n\nAt the end of the message, embed an object with the format: \"type\":\"enough\" (if the customer has provided enough information); \"type\":\"not enough\" (if the customer has not provided enough information and needs to ask more to clarify the issue)\n\nBelow is the information provided for you to analyze:\n\n1. The request of client: \n{{ $('Trigger').item.json.query }}\n\n2. Information of client\nclient name: {{ $json.client.name }}\n\n3. Information of project\n - project name: {{ $json.project.name }}\n - project summary: {{ $json.project.summary }}\n - start date: {{ $json.project.start_date }}\n - deadline: {{ $json.project.deadline }}\n - notes: {{ $json.project.notes }}\n - project admin: {{ $json.project.project_admin }}\n - project members {{ ', '+$json.project.members.map(item=>item.name) }}\n\n4. List milestones:\n{{ $json.milestone.map((item, index) => `\nMilestone: ${index+1}\n  - Title: ${item.title}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n  - Summary: ${item.summary}\n`).join('') }}\n\n5. List tasks:\n{{ $json.tasks.map((item, index) => `\nTask: ${index+1}\n  - Title: ${item.heading}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n`).join('') }}\n\n5. History chat messages:\n{{ $('Trigger').item.json.messages }}\n\n",
+        "options": {}
+      },
+      "id": "c7fa3e64-df08-4beb-824f-9fd6775202d1",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        1380,
+        640
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "Cmsmart_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }}\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "0f381715-5cf7-4694-8314-de9587b88057",
+      "name": "Require Confirm Project1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2220,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }}\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "48c7b48f-dcd0-4afe-bfea-02ee342f992c",
+      "name": "Messager Feature",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2920,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }}\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "1efbd14f-d5b8-4ae7-8e57-da1bc948cb98",
+      "name": "Require Confirm Project3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2260,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }}\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "5bb57d38-7db4-48e9-a1fb-03e1c6d7926a",
+      "name": "Messager Feature1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2960,
+        1400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }}\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "cdf19006-f982-4df1-8872-a5f39d1a4acd",
+      "name": "Require Info Issue1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2240,
+        1700
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }}\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "7c9f214b-119d-4c24-ba68-1f7cfed12d0a",
+      "name": "Messager Issue",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2940,
+        1980
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type.type }}",
+                    "rightValue": "not enough",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "not enough"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c11b499d-d888-4dbe-a577-9748c41c51ef",
+                    "leftValue": "={{ $json.type.type }}",
+                    "rightValue": "enough",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "enough"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "23b6453d-3627-4818-9195-2afe4d17ced7",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1980,
+        640
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "MySQL Get Detail Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Switch Request of Client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Get Project": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Milestone": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client": {
+      "main": [
+        [
+          {
+            "node": "Get Project",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Milestone",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Up level 4 - refund_ask_detail": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL Get Detail Messages": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Messages": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Get All Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Info Feature": {
+      "main": [
+        [
+          {
+            "node": "Create Ticket1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Refund": {
+      "main": [
+        [
+          {
+            "node": "Get Info Feature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Ticket1": {
+      "main": [
+        [
+          {
+            "node": "Messager Feature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Up level 4 - refund_create_ticket": {
+      "main": [
+        [
+          {
+            "node": "Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Request of Client": {
+      "main": [
+        [
+          {
+            "node": "Get Client",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Client1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Client2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Get Project1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Milestone1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client1": {
+      "main": [
+        [
+          {
+            "node": "Get Project1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Milestone1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "OpenAI3",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Require Confirm Project3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI Features",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Info Feature1": {
+      "main": [
+        [
+          {
+            "node": "Create Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Ticket": {
+      "main": [
+        [
+          {
+            "node": "Messager Feature1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Features": {
+      "main": [
+        [
+          {
+            "node": "Get Info Feature1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Up level 4 - feature_create_ticket1": {
+      "main": [
+        [
+          {
+            "node": "Response3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Up level 4 - feature_create_ticket": {
+      "main": [
+        [
+          {
+            "node": "Response2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Get Project2": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Milestone2": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Aggregate3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "OpenAI4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client2": {
+      "main": [
+        [
+          {
+            "node": "Get Project2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Milestone2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cloodo Finance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "OpenAI4",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "Require Info Issue1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Ticket2": {
+      "main": [
+        [
+          {
+            "node": "Messager Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Finance": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Up level 4 - ask_another_info": {
+      "main": [
+        [
+          {
+            "node": "Response4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Up level 4 - ask_another_info1": {
+      "main": [
+        [
+          {
+            "node": "Response5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Info Issue": {
+      "main": [
+        [
+          {
+            "node": "Create Ticket2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Issue": {
+      "main": [
+        [
+          {
+            "node": "Get Info Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI3": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI4": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Require Confirm Project1": {
+      "main": [
+        [
+          {
+            "node": "Up level 4 - refund_ask_detail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Messager Feature": {
+      "main": [
+        [
+          {
+            "node": "Up level 4 - refund_create_ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Require Confirm Project3": {
+      "main": [
+        [
+          {
+            "node": "Up level 4 - feature_create_ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Messager Feature1": {
+      "main": [
+        [
+          {
+            "node": "Up level 4 - feature_create_ticket1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Require Info Issue1": {
+      "main": [
+        [
+          {
+            "node": "Up level 4 - ask_another_info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Messager Issue": {
+      "main": [
+        [
+          {
+            "node": "Up level 4 - ask_another_info1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Require Confirm Project1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI Refund",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "30667bbf-0f7a-4da4-9de7-f390cd9d8beb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "69ieUP8Gx9VnyEbG",
+  "tags": []
+}
