@@ -1,0 +1,5185 @@
+{
+  "name": "QCM 83 84 - Ticket reponse trong 24h",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b391f10c-8a22-416e-b3e3-618b16595ac4",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        4700,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "a13e0966-94da-4893-a0c8-b79fa6fd8805",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1300,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "date_from",
+              "value": "2024-01-01"
+            },
+            {
+              "name": "date_to",
+              "value": "2025-01-30"
+            },
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "status",
+              "value": "pending"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $json.meta.next_cursor }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ae85c8b2-1334-4b37-8b4a-68516691ff31",
+      "name": "Ticket Pending",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1000,
+        180
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.meta.next_cursor }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "9b8bf76b-3dc0-487d-b203-2cf441aa8280",
+      "name": "IF6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/tickets/{{ $json.data.id }}/replies",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b8158789-f08f-44f3-b0a0-6fc4b964d013",
+      "name": "Get replies",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1820,
+        180
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "6130e44f-cb54-4f41-ada7-08a3c6929121",
+      "name": "Get Ticket",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        180
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "796ab7b7-b19f-4a08-938e-16c2e40a9325",
+              "name": "replies",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "377ffdcb-97b2-4ab7-b211-3376a7437855",
+              "name": "ticket",
+              "value": "={{ $('Get Ticket').item.json.data }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ddab30b0-a191-4964-810f-236e80238fb3",
+      "name": "Replies and Ticket",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2060,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 15;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600 * 24); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "994673bf-e5c4-4882-b633-6ca009154890",
+      "name": "Ticket 15 days",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2340,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6dc6657f-526c-4633-a42e-591e9f2e964d",
+              "leftValue": "={{ $json.replies[0].user.id }}",
+              "rightValue": "={{ $json.ticket.idClient }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "04518a99-f85e-46a9-ad5b-652862812e72",
+      "name": "Requester Replies",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2660,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Trạng thái Agent rep cuối",
+        "height": 80,
+        "color": 3
+      },
+      "id": "8f9d51af-7206-4dee-ba3d-b582818a625f",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2740,
+        -520
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Trạng thái Client rep cuối",
+        "height": 80,
+        "color": 3
+      },
+      "id": "c843830f-fc5d-4864-8f60-4f2c3d05214a",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2880,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "9ad8363e-b322-49c6-b030-438538fdeff0",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1340,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "date_from",
+              "value": "2024-01-01"
+            },
+            {
+              "name": "date_to",
+              "value": "2025-01-30"
+            },
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "status",
+              "value": "pending"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $json.meta.next_cursor }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "31499302-6b47-42c7-82bb-543c3a244623",
+      "name": "Ticket Pending1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        860
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.meta.next_cursor }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "a8732efb-e7f4-475d-bfeb-e9b27ae872d0",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/tickets/{{ $json.data.id }}/replies",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4454f5de-b9e0-44eb-bb9e-59666d1d3d32",
+      "name": "Get replies1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1860,
+        860
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "4543958a-0fd0-4c45-83e4-6a683fc5d925",
+      "name": "Get Ticket1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        860
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "796ab7b7-b19f-4a08-938e-16c2e40a9325",
+              "name": "replies",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "377ffdcb-97b2-4ab7-b211-3376a7437855",
+              "name": "ticket",
+              "value": "={{ $('Get Ticket1').item.json.data }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ff11785d-176b-4303-9c9c-7b4362c70363",
+      "name": "Replies and Ticket1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2160,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6dc6657f-526c-4633-a42e-591e9f2e964d",
+              "leftValue": "={{ $json.replies[0].user.id }}",
+              "rightValue": "={{ $json.ticket.idClient }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4ca52a20-277d-47be-9528-6553549e9ec2",
+      "name": "Requester Replies1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2760,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 24;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "20eb4db6-e1d8-413d-9605-2675c7392062",
+      "name": "Ticket 24h",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 520222957,
+          "mode": "list",
+          "cachedResultName": "Giang",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=520222957"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b35909cb-6d57-480e-aa38-b48614609333",
+      "name": "Giang",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3600,
+        -300
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1411577358,
+          "mode": "list",
+          "cachedResultName": "Dung",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1411577358"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "030acab5-6030-446e-95e1-6b7a1adb800e",
+      "name": "Dung",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3600,
+        -100
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1289877611,
+          "mode": "list",
+          "cachedResultName": "Huy",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1289877611"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "847f5ad1-d204-4fbf-b9a5-a411bb9bec2f",
+      "name": "Huy",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3600,
+        80
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1419606979,
+          "mode": "list",
+          "cachedResultName": "Default",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1419606979"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6d0a72d7-d7c4-49dd-a11b-2f5cd57fb3ad",
+      "name": "Default",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3580,
+        280
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 520222957,
+          "mode": "list",
+          "cachedResultName": "Giang",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=520222957"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e8d6d8d2-4d74-46b5-897a-857df449b6d7",
+      "name": "Giang1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3620,
+        640
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1411577358,
+          "mode": "list",
+          "cachedResultName": "Dung",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1411577358"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "90cee4a2-5ec4-4339-be64-3ff815fd513c",
+      "name": "Dung1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3620,
+        840
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1289877611,
+          "mode": "list",
+          "cachedResultName": "Huy",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1289877611"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5215a006-daa5-4ba9-afa8-6ecc26f4248d",
+      "name": "Huy1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3620,
+        1020
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1419606979,
+          "mode": "list",
+          "cachedResultName": "Default",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1419606979"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6343650e-eddc-4b2e-87db-62e864229e2c",
+      "name": "Default1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3600,
+        1220
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "cc43c412-339f-4332-980d-d209fd40fc79",
+      "name": "Item Lists2",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1300,
+        2260
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "date_from",
+              "value": "2024-01-01"
+            },
+            {
+              "name": "date_to",
+              "value": "2025-01-30"
+            },
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "status",
+              "value": "open"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $json.meta.next_cursor }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "31d7252c-826c-48ca-91e4-5034848af770",
+      "name": "Ticket Pending2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1000,
+        2260
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.meta.next_cursor }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "6ad9fdf7-9137-46d1-a8de-da69c03cfb8e",
+      "name": "IF7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        2440
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/tickets/{{ $json.data.id }}/replies",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "019d985d-04fc-4079-b5ae-a91bce454016",
+      "name": "Get replies2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1820,
+        2260
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "6c1ff4b2-ffe8-4485-9335-ad6d2adf9d2e",
+      "name": "Get Ticket2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        2260
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "796ab7b7-b19f-4a08-938e-16c2e40a9325",
+              "name": "replies",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "377ffdcb-97b2-4ab7-b211-3376a7437855",
+              "name": "ticket",
+              "value": "={{ $('Get Ticket2').item.json.data }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e0c97b26-6c08-4cdf-953e-4f8ad1dbadbc",
+      "name": "Replies and Ticket2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2060,
+        2260
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 15;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600 * 24); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "30ca16d3-8f98-4544-be29-867f8d9efe01",
+      "name": "Ticket 15 days1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2340,
+        2260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6dc6657f-526c-4633-a42e-591e9f2e964d",
+              "leftValue": "={{ $json.replies[0].user.id }}",
+              "rightValue": "={{ $json.ticket.idClient }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0a58f742-4d03-49ab-ad61-54be7edfbeb9",
+      "name": "Requester Replies2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2660,
+        2260
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Trạng thái Agent rep cuối",
+        "height": 80,
+        "color": 3
+      },
+      "id": "f015a244-3303-41c2-95e1-050a12090e58",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2740,
+        1560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Trạng thái Client rep cuối",
+        "height": 80,
+        "color": 3
+      },
+      "id": "2601788d-aaf9-40a5-a177-333f37e2159f",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2880,
+        2600
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "1c46b81c-ac82-463e-8b03-8706862c30df",
+      "name": "Item Lists3",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1340,
+        2940
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "date_from",
+              "value": "2024-01-01"
+            },
+            {
+              "name": "date_to",
+              "value": "2025-01-30"
+            },
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "status",
+              "value": "open"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $json.meta.next_cursor }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3ce1e87b-30cc-40f5-9889-b374232aa08f",
+      "name": "Ticket Pending3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        2940
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.meta.next_cursor }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "a35639f4-9450-4135-86f6-e7ea1c794b78",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        3120
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/tickets/{{ $json.data.id }}/replies",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a28f0372-5e46-4726-92e0-8f9773803e1b",
+      "name": "Get replies3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1860,
+        2940
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "107b79e4-58df-4146-9e96-97fc86dd19cb",
+      "name": "Get Ticket3",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        2940
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "796ab7b7-b19f-4a08-938e-16c2e40a9325",
+              "name": "replies",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "377ffdcb-97b2-4ab7-b211-3376a7437855",
+              "name": "ticket",
+              "value": "={{ $('Get Ticket3').item.json.data }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c74a9e82-b4a4-4805-9b57-510a61414725",
+      "name": "Replies and Ticket3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2160,
+        2940
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6dc6657f-526c-4633-a42e-591e9f2e964d",
+              "leftValue": "={{ $json.replies[0].user.id }}",
+              "rightValue": "={{ $json.ticket.idClient }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5407a63b-64a2-4e0d-bcb8-5c15fe9e81d9",
+      "name": "Requester Replies3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2760,
+        2940
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 24;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "cc9c5ab9-f6d2-41f2-b25f-c1b7fb21633d",
+      "name": "Ticket 24h1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        2940
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 520222957,
+          "mode": "list",
+          "cachedResultName": "Giang",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=520222957"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "11b27bb4-4056-4e49-a41f-bb6460c280f4",
+      "name": "Giang2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3600,
+        1780
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1411577358,
+          "mode": "list",
+          "cachedResultName": "Dung",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1411577358"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "93277b45-6530-4b9b-a5c2-c83da2c3418b",
+      "name": "Dung2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3600,
+        1980
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1289877611,
+          "mode": "list",
+          "cachedResultName": "Huy",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1289877611"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4ecf59c0-fe50-438f-9335-d68c7c8492d6",
+      "name": "Huy2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3600,
+        2160
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1419606979,
+          "mode": "list",
+          "cachedResultName": "Default",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1419606979"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "978516f2-8666-4bd3-bbcb-74746ca6b19f",
+      "name": "Default2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3580,
+        2360
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 520222957,
+          "mode": "list",
+          "cachedResultName": "Giang",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=520222957"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6fe8ea83-1f54-489b-b2f0-f7f6c4a5d444",
+      "name": "Giang3",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3620,
+        2720
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1411577358,
+          "mode": "list",
+          "cachedResultName": "Dung",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1411577358"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "44b3a599-8695-4673-91b4-120b9ae18c23",
+      "name": "Dung3",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3620,
+        2920
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1289877611,
+          "mode": "list",
+          "cachedResultName": "Huy",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1289877611"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9df57721-4fa3-4263-8ee2-50db2bc215c2",
+      "name": "Huy3",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3620,
+        3100
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1419606979,
+          "mode": "list",
+          "cachedResultName": "Default",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1419606979"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lastRespone": "Agent",
+            "idTicket": "={{ $json.ticket.idTicket }}",
+            "numberTicket": "={{ $json.ticket.numberTicket }}",
+            "agentName": "={{ $json.ticket.agentName }}",
+            "agenEmail": "={{ $json.ticket.agentEmail }}",
+            "nameClient": "={{ $json.ticket.nameClient }}",
+            "subjectTicket": "={{ $json.ticket.subjectTicket }}",
+            "statusTicket": "={{ $json.ticket.statusTicket }}",
+            "typeTicket": "={{ $json.ticket.typeTicket }}",
+            "projectTicket": "={{ $json.ticket.projectTicket }}"
+          },
+          "matchingColumns": [
+            "idTicket"
+          ],
+          "schema": [
+            {
+              "id": "idTicket",
+              "displayName": "idTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numberTicket",
+              "displayName": "numberTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agentName",
+              "displayName": "agentName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agenEmail",
+              "displayName": "agenEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastRespone",
+              "displayName": "lastRespone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nameClient",
+              "displayName": "nameClient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subjectTicket",
+              "displayName": "subjectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "statusTicket",
+              "displayName": "statusTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "typeTicket",
+              "displayName": "typeTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projectTicket",
+              "displayName": "projectTicket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2cf29991-a2e5-4baa-882f-740448f71bb7",
+      "name": "Default3",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3600,
+        3300
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "5c35e0a6-57c0-43dc-8049-8ad274e15bf1",
+      "name": "Item Lists4",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1280,
+        1640
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "date_from",
+              "value": "2024-01-01"
+            },
+            {
+              "name": "date_to",
+              "value": "2025-01-30"
+            },
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "status",
+              "value": "open"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $json.meta.next_cursor }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "83a39118-c444-4106-a324-1190a8e850ff",
+      "name": "Ticket Pending4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        980,
+        1640
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "7e67b24d-894d-4890-a9c7-b1c0b0d1d969",
+      "name": "Get Ticket4",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        1640
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "update",
+        "ID": "={{ $json.data.id }}",
+        "additionalFields": {
+          "agentId": "ebe95d3f-2b79-47f6-bd5e-5d22d67d4f21"
+        },
+        "requestOptions": {}
+      },
+      "id": "21b7cef8-6ed7-4d09-a82a-8fa87fe80718",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2140,
+        1620
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "48ccd2c8-2462-4438-a486-4e36d42623bc",
+              "leftValue": "={{ $json.data.agent.user.id }}",
+              "rightValue": "61fd7c82-41d1-4cd6-b63d-85b927bb7dff",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "3a1087e2-6daa-4a14-928a-4f9f7b0f8c79",
+              "leftValue": "={{ $json.data.agent.user.id }}",
+              "rightValue": "df4b0292-6ac3-46d8-ac65-97b7aafbd3b3",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "4f5777d5-eea8-4490-9142-8f78e54bbf12",
+              "leftValue": "={{ $json.data.agent.user.id }}",
+              "rightValue": "ebe95d3f-2b79-47f6-bd5e-5d22d67d4f21",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "587496a1-9b1b-450a-9324-6813aed4a464",
+              "leftValue": "={{ $json.data.agent.user.id }}",
+              "rightValue": "e669712f-22a2-4109-bc2c-92f947b85f58",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4603c453-d846-445e-915f-80b8047e1f01",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1760,
+        1640
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "7add08a8-dffe-44d7-b27c-73344547b865",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "ethanvu@cmsmart.net",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Giang"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1591f407-008f-43ca-b641-27b4d699617d",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "chau.lt@netbasejsc.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Dung"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b33cb102-6f78-4a4d-9e88-5b2725a64274",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "huy.nhd@netbasejsc.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Huy"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "bbc46fe7-342f-4009-8e07-13b04556dca6",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "admin@printcart.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "default"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7c1b6ae0-c2da-4bd0-b556-b1825e348ce2",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3060,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "7add08a8-dffe-44d7-b27c-73344547b865",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "ethanvu@cmsmart.net",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Giang"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1591f407-008f-43ca-b641-27b4d699617d",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "chau.lt@netbasejsc.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Dung"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b33cb102-6f78-4a4d-9e88-5b2725a64274",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "huy.nhd@netbasejsc.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Huy"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "bbc46fe7-342f-4009-8e07-13b04556dca6",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "admin@printcart.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "default"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "23355262-a81d-482f-8c73-41c655f7b5cc",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3120,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "7add08a8-dffe-44d7-b27c-73344547b865",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "ethanvu@cmsmart.net",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Giang"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1591f407-008f-43ca-b641-27b4d699617d",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "chau.lt@netbasejsc.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Dung"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b33cb102-6f78-4a4d-9e88-5b2725a64274",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "huy.nhd@netbasejsc.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Huy"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "bbc46fe7-342f-4009-8e07-13b04556dca6",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "admin@printcart.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "default"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3438befb-9cef-47d8-bbd3-5739d28a16be",
+      "name": "Switch2",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3120,
+        2060
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "7add08a8-dffe-44d7-b27c-73344547b865",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "ethanvu@cmsmart.net",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Giang"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1591f407-008f-43ca-b641-27b4d699617d",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "chau.lt@netbasejsc.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Dung"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b33cb102-6f78-4a4d-9e88-5b2725a64274",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "huy.nhd@netbasejsc.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Huy"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "bbc46fe7-342f-4009-8e07-13b04556dca6",
+                    "leftValue": "={{ $json.ticket.agentEmail }}",
+                    "rightValue": "admin@printcart.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "default"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f5f2d5b9-5423-414a-a332-5b3826b93dd3",
+      "name": "Switch3",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3120,
+        2880
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "0462b7a0-bc8e-40b7-a285-03c89a075cb2",
+      "name": "Aggregate2",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        5920,
+        1080
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.data[0].agenEmail }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.data[0].agentName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Closed Ticket Client No Replies"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "121"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Ticket Closure Reminder</title>\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $json.data[0].agentName }},</p>\n\n                <p>Here is a friendly reminder about closing tickets:</p>\n\n                <ul>\n                    <li>Tickets must be closed within 15 days of the customer not responding.</li>\n                    <li>If the ticket is not closed after 24 hours, points will be deducted from the CmsMart Admin account.</li>\n                </ul>\n\n                <p>Please ensure that all tickets are properly managed and closed within the specified time frame.</p>\n\n                <p>Thank you for your attention to this matter.</p>\n                <p>Here are the links to the tickets you need to close:</p>\n\n                <table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse: collapse;\">\n                    <tr>\n                        <th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Ticket ID</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Subject</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Client</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Status</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Type</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Project</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Agent</th>\n                      \n                    </tr>\n\n               {{ $json[\"data\"].map(item => `\n                <tr>\n                    <td style=\"border-bottom: 1px solid #ddd; padding: 8px;\"><a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/${item.idTicket}\" style=\"color: #007bff; text-decoration: none;\">Ticket${item.numberTicket}</a></td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.subjectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.nameClient}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.statusTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.typeTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.projectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.agentName}</td>\n                </tr>\n                `).join('') }}\n                \n\n                </table>\n\n                <p>Best regards,</p>\n                <p>Cms Admin</p>\n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "db18b370-97b1-41af-9082-7c7b96881e34",
+      "name": "Send mail closed ticket1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6840,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a652141b-108c-48b9-801a-56a259585aaa",
+              "leftValue": "={{ $json.lastRespone }}",
+              "rightValue": "Agent",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e4ff302b-5f84-4010-beef-b6157da776a2",
+      "name": "Check Agent Reply1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5440,
+        1260
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "286d7a9f-5bee-4636-8216-3f37f84175a6",
+      "name": "Aggregate3",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        5980,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.data[0].agenEmail }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.data[0].agentName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Respond to tickets when customers respond"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Ticket Closure Reminder</title>\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $json.data[0].agentName }},</p>\n<p>I hope this message finds you well.</p>\n<p>This is a friendly reminder to please ensure that all customer tickets are responded to in a timely manner. Once a customer responds, it is important to follow up within 24 hours. Failure to do so will result in points being deducted from the CmsMart Admin system.</p>\n\n<p>Key points to remember:</p>\n\n<ul>\n<li>Ensure timely responses to customer feedback.</li>\n<li>Reply within 24 hours to avoid penalties.</li>\n<li>Points will be deducted from the CmsMart Admin for slow responses.</li>\n</ul>\n\n<p>We appreciate your cooperation and concern for this issue.</p>\n\n<p>Here is the ticket you need to respond to:</p>\n\n                <table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse: collapse;\">\n                    <tr>\n                        <th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Ticket ID</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Subject</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Client</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Status</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Type</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Project</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Agent</th>\n                      \n                    </tr>\n\n               {{ $json[\"data\"].map(item => `\n                <tr>\n                    <td style=\"border-bottom: 1px solid #ddd; padding: 8px;\"><a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/${item.idTicket}\" style=\"color: #007bff; text-decoration: none;\">Ticket${item.numberTicket}</a></td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.subjectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.nameClient}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.statusTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.typeTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.projectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.agentName}</td>\n                </tr>\n                `).join('') }}\n                </table>\n\n                <p>Best regards,</p>\n                <p>Cms Admin</p>\n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b241e254-7644-4f3a-9978-4c775017a51c",
+      "name": "Send mail Reply Ticket1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6820,
+        1380
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=huy.nq@netbasejsc.com"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.data[0].agentName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Respond to tickets when customers respond"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "111"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Ticket Closure Reminder</title>\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $json.data[0].agentName }},</p>\n<p>I hope this message finds you well.</p>\n<p>This is a friendly reminder to please ensure that all customer tickets are responded to in a timely manner. Once a customer responds, it is important to follow up within 24 hours. Failure to do so will result in points being deducted from the CmsMart Admin system.</p>\n\n<p>Key points to remember:</p>\n\n<ul>\n<li>Ensure timely responses to customer feedback.</li>\n<li>Reply within 24 hours to avoid penalties.</li>\n<li>Points will be deducted from the CmsMart Admin for slow responses.</li>\n</ul>\n\n<p>We appreciate your cooperation and concern for this issue.</p>\n\n<p>Here is the ticket you need to respond to:</p>\n\n                <table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse: collapse;\">\n                    <tr>\n                        <th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Ticket ID</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Subject</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Client</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Status</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Type</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Project</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Agent</th>\n                      \n                    </tr>\n\n               {{ $json[\"data\"].map(item => `\n                <tr>\n                    <td style=\"border-bottom: 1px solid #ddd; padding: 8px;\"><a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/${item.idTicket}\" style=\"color: #007bff; text-decoration: none;\">Ticket${item.numberTicket}</a></td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.subjectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.nameClient}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.statusTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.typeTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.projectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.agentName}</td>\n                </tr>\n                `).join('') }}\n                </table>\n\n                <p>Best regards,</p>\n                <p>Cms Admin</p>\n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a8f6d488-234b-4808-925b-6a76652fe6cf",
+      "name": "Send mail Reply Ticket5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6840,
+        1600
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=huy.nq@netbasejsc.com"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.data[0].agentName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Closed Ticket Client No Replies"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "121"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Ticket Closure Reminder</title>\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $json.data[0].agentName }},</p>\n\n                <p>Here is a friendly reminder about closing tickets:</p>\n\n                <ul>\n                    <li>Tickets must be closed within 15 days of the customer not responding.</li>\n                    <li>If the ticket is not closed after 24 hours, points will be deducted from the CmsMart Admin account.</li>\n                </ul>\n\n                <p>Please ensure that all tickets are properly managed and closed within the specified time frame.</p>\n\n                <p>Thank you for your attention to this matter.</p>\n                <p>Here are the links to the tickets you need to close:</p>\n\n                <table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse: collapse;\">\n                    <tr>\n                        <th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Ticket ID</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Subject</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Client</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Status</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Type</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Project</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Agent</th>\n                      \n                    </tr>\n\n               {{ $json[\"data\"].map(item => `\n                <tr>\n                    <td style=\"border-bottom: 1px solid #ddd; padding: 8px;\"><a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/${item.idTicket}\" style=\"color: #007bff; text-decoration: none;\">Ticket${item.numberTicket}</a></td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.subjectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.nameClient}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.statusTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.typeTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.projectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.agentName}</td>\n                </tr>\n                `).join('') }}\n                \n\n                </table>\n\n                <p>Best regards,</p>\n                <p>Cms Admin</p>\n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ca3f9ea2-85ea-4da8-8bf1-158d564b6dbd",
+      "name": "Send mail closed ticket8",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6840,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 520222957,
+          "mode": "list",
+          "cachedResultName": "Giang",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=520222957"
+        },
+        "options": {}
+      },
+      "id": "c807e62f-93d8-4d3c-82d4-40d264ade321",
+      "name": "Giang4",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        5140,
+        1260
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "e7098b94-806a-4d72-b04d-43a0c169b380",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        5940,
+        2020
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.data[0].agenEmail }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.data[0].agentName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Closed Ticket Client No Replies"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "121"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Ticket Closure Reminder</title>\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $json.data[0].agentName }},</p>\n\n                <p>Here is a friendly reminder about closing tickets:</p>\n\n                <ul>\n                    <li>Tickets must be closed within 15 days of the customer not responding.</li>\n                    <li>If the ticket is not closed after 24 hours, points will be deducted from the CmsMart Admin account.</li>\n                </ul>\n\n                <p>Please ensure that all tickets are properly managed and closed within the specified time frame.</p>\n\n                <p>Thank you for your attention to this matter.</p>\n                <p>Here are the links to the tickets you need to close:</p>\n\n                <table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse: collapse;\">\n                    <tr>\n                        <th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Ticket ID</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Subject</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Client</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Status</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Type</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Project</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Agent</th>\n                      \n                    </tr>\n\n               {{ $json[\"data\"].map(item => `\n                <tr>\n                    <td style=\"border-bottom: 1px solid #ddd; padding: 8px;\"><a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/${item.idTicket}\" style=\"color: #007bff; text-decoration: none;\">Ticket${item.numberTicket}</a></td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.subjectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.nameClient}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.statusTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.typeTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.projectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.agentName}</td>\n                </tr>\n                `).join('') }}\n                \n\n                </table>\n\n                <p>Best regards,</p>\n                <p>Cms Admin</p>\n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9e6d618d-f021-4543-a4f5-02803212c419",
+      "name": "Send mail closed ticket",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6860,
+        1820
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a652141b-108c-48b9-801a-56a259585aaa",
+              "leftValue": "={{ $json.lastRespone }}",
+              "rightValue": "Agent",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d768ae64-c370-46eb-a55d-769843b697d4",
+      "name": "Check Agent Reply",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5460,
+        2200
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "ea9790c1-981e-402f-8a49-5a2c0f9fa7e2",
+      "name": "Aggregate4",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        6020,
+        2360
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.data[0].agenEmail }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.data[0].agentName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Respond to tickets when customers respond"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "109"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Ticket Closure Reminder</title>\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $json.data[0].agentName }},</p>\n<p>I hope this message finds you well.</p>\n<p>This is a friendly reminder to please ensure that all customer tickets are responded to in a timely manner. Once a customer responds, it is important to follow up within 24 hours. Failure to do so will result in points being deducted from the CmsMart Admin system.</p>\n\n<p>Key points to remember:</p>\n\n<ul>\n<li>Ensure timely responses to customer feedback.</li>\n<li>Reply within 24 hours to avoid penalties.</li>\n<li>Points will be deducted from the CmsMart Admin for slow responses.</li>\n</ul>\n\n<p>We appreciate your cooperation and concern for this issue.</p>\n\n<p>Here is the ticket you need to respond to:</p>\n\n                <table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse: collapse;\">\n                    <tr>\n                        <th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Ticket ID</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Subject</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Client</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Status</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Type</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Project</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Agent</th>\n                      \n                    </tr>\n\n               {{ $json[\"data\"].map(item => `\n                <tr>\n                    <td style=\"border-bottom: 1px solid #ddd; padding: 8px;\"><a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/${item.idTicket}\" style=\"color: #007bff; text-decoration: none;\">Ticket${item.numberTicket}</a></td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.subjectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.nameClient}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.statusTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.typeTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.projectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.agentName}</td>\n                </tr>\n                `).join('') }}\n                </table>\n\n                <p>Best regards,</p>\n                <p>Cms Admin</p>\n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8c9370d3-bcec-4d0d-8fa6-56d3596fe901",
+      "name": "Send mail Reply Ticket",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6860,
+        2280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=huy.nq@netbasejsc.com"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.data[0].agentName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Respond to tickets when customers respond"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "111"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Ticket Closure Reminder</title>\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $json.data[0].agentName }},</p>\n<p>I hope this message finds you well.</p>\n<p>This is a friendly reminder to please ensure that all customer tickets are responded to in a timely manner. Once a customer responds, it is important to follow up within 24 hours. Failure to do so will result in points being deducted from the CmsMart Admin system.</p>\n\n<p>Key points to remember:</p>\n\n<ul>\n<li>Ensure timely responses to customer feedback.</li>\n<li>Reply within 24 hours to avoid penalties.</li>\n<li>Points will be deducted from the CmsMart Admin for slow responses.</li>\n</ul>\n\n<p>We appreciate your cooperation and concern for this issue.</p>\n\n<p>Here is the ticket you need to respond to:</p>\n\n                <table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse: collapse;\">\n                    <tr>\n                        <th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Ticket ID</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Subject</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Client</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Status</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Type</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Project</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Agent</th>\n                      \n                    </tr>\n\n               {{ $json[\"data\"].map(item => `\n                <tr>\n                    <td style=\"border-bottom: 1px solid #ddd; padding: 8px;\"><a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/${item.idTicket}\" style=\"color: #007bff; text-decoration: none;\">Ticket${item.numberTicket}</a></td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.subjectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.nameClient}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.statusTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.typeTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.projectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.agentName}</td>\n                </tr>\n                `).join('') }}\n                </table>\n\n                <p>Best regards,</p>\n                <p>Cms Admin</p>\n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ae4fb671-bb1e-48f2-b039-bb90b039a3b5",
+      "name": "Send mail Reply Ticket6",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6880,
+        2500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "=huy.nq@netbasejsc.com"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $json.data[0].agentName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Closed Ticket Client No Replies"
+            },
+            {
+              "name": "send_mail",
+              "value": "printcart"
+            },
+            {
+              "name": "email_id",
+              "value": "121"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Ticket Closure Reminder</title>\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $json.data[0].agentName }},</p>\n\n                <p>Here is a friendly reminder about closing tickets:</p>\n\n                <ul>\n                    <li>Tickets must be closed within 15 days of the customer not responding.</li>\n                    <li>If the ticket is not closed after 24 hours, points will be deducted from the CmsMart Admin account.</li>\n                </ul>\n\n                <p>Please ensure that all tickets are properly managed and closed within the specified time frame.</p>\n\n                <p>Thank you for your attention to this matter.</p>\n                <p>Here are the links to the tickets you need to close:</p>\n\n                <table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse: collapse;\">\n                    <tr>\n                        <th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Ticket ID</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Subject</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Client</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Status</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Type</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Project</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Agent</th>\n                      \n                    </tr>\n\n               {{ $json[\"data\"].map(item => `\n                <tr>\n                    <td style=\"border-bottom: 1px solid #ddd; padding: 8px;\"><a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/${item.idTicket}\" style=\"color: #007bff; text-decoration: none;\">Ticket${item.numberTicket}</a></td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.subjectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.nameClient}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.statusTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.typeTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.projectTicket}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">${item.agentName}</td>\n                </tr>\n                `).join('') }}\n                \n\n                </table>\n\n                <p>Best regards,</p>\n                <p>Cms Admin</p>\n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7222a2af-5f15-4981-bd17-625242ca1d92",
+      "name": "Send mail closed ticket9",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6860,
+        2060
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1419606979,
+          "mode": "list",
+          "cachedResultName": "Default",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1419606979"
+        },
+        "options": {}
+      },
+      "id": "19b84c12-3ca7-4834-b09f-f8345c617198",
+      "name": "Admin",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        5160,
+        2200
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vl0s1SHrC6Hdk8iv",
+          "name": "Canh Google Sheets "
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket Pending": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get replies": {
+      "main": [
+        [
+          {
+            "node": "Replies and Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket": {
+      "main": [
+        [
+          {
+            "node": "Get replies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replies and Ticket": {
+      "main": [
+        [
+          {
+            "node": "Ticket 15 days",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 15 days": {
+      "main": [
+        [
+          {
+            "node": "Requester Replies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket Pending1": {
+      "main": [
+        [
+          {
+            "node": "Item Lists1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get replies1": {
+      "main": [
+        [
+          {
+            "node": "Replies and Ticket1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket1": {
+      "main": [
+        [
+          {
+            "node": "Get replies1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replies and Ticket1": {
+      "main": [
+        [
+          {
+            "node": "Ticket 24h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 24h": {
+      "main": [
+        [
+          {
+            "node": "Requester Replies1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requester Replies": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requester Replies1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists2": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket Pending2": {
+      "main": [
+        [
+          {
+            "node": "Item Lists2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get replies2": {
+      "main": [
+        [
+          {
+            "node": "Replies and Ticket2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket2": {
+      "main": [
+        [
+          {
+            "node": "Get replies2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replies and Ticket2": {
+      "main": [
+        [
+          {
+            "node": "Ticket 15 days1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 15 days1": {
+      "main": [
+        [
+          {
+            "node": "Requester Replies2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requester Replies2": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists3": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket Pending3": {
+      "main": [
+        [
+          {
+            "node": "Item Lists3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get replies3": {
+      "main": [
+        [
+          {
+            "node": "Replies and Ticket3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket3": {
+      "main": [
+        [
+          {
+            "node": "Get replies3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replies and Ticket3": {
+      "main": [
+        [
+          {
+            "node": "Ticket 24h1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requester Replies3": {
+      "main": [
+        [
+          {
+            "node": "Switch3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 24h1": {
+      "main": [
+        [
+          {
+            "node": "Requester Replies3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists4": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket Pending4": {
+      "main": [
+        [
+          {
+            "node": "Item Lists4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket4": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Giang",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Dung",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Huy",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Default",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Giang1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Dung1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Huy1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Default1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "Giang2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Dung2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Huy2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Default2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch3": {
+      "main": [
+        [
+          {
+            "node": "Giang3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Dung3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Huy3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Default3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "Send mail closed ticket1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send mail closed ticket8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Agent Reply1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate3": {
+      "main": [
+        [
+          {
+            "node": "Send mail Reply Ticket1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send mail Reply Ticket5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Giang4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Giang4": {
+      "main": [
+        [
+          {
+            "node": "Check Agent Reply1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Send mail closed ticket",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send mail closed ticket9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Agent Reply": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate4": {
+      "main": [
+        [
+          {
+            "node": "Send mail Reply Ticket",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send mail Reply Ticket6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Admin": {
+      "main": [
+        [
+          {
+            "node": "Check Agent Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c7cc293e-b8e2-404e-a93d-78ce6ad24cc8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "JlEQxtkRFt27GFW7",
+  "tags": []
+}
