@@ -1,5 +1,5 @@
 {
-  "name": "QCM28 29 - MINUS - Client ko gắn category 5pm",
+  "name": "QCM28 29 72 - MINUS - Client ko gắn category 5pm",
   "nodes": [
     {
       "parameters": {},
@@ -28,7 +28,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3020,
+        3240,
         700
       ]
     },
@@ -44,7 +44,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        3300,
+        3520,
         680
       ],
       "credentials": {
@@ -66,7 +66,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        3300,
+        3520,
         880
       ],
       "credentials": {
@@ -92,7 +92,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3020,
+        3240,
         900
       ]
     },
@@ -112,7 +112,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3560,
+        3780,
         880
       ]
     },
@@ -132,7 +132,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3560,
+        3780,
         680
       ]
     },
@@ -148,7 +148,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        3820,
+        4060,
         660
       ],
       "credentials": {
@@ -170,7 +170,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        3820,
+        4100,
         860
       ],
       "credentials": {
@@ -355,6 +355,135 @@
         -1200,
         740
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ca435073-acb9-4c80-ba01-38d1ccf1b93a",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6fcbe383-0e94-4ce7-983f-3fcc7e21eacb",
+      "name": "Check not empty",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3180,
+        1180
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM72 {{ $('Cloodo CRM1').item.json.data.added_by.name }} was penalized -1 point for the reason that the client did not attach project: https://worksuite.cloodo.com/apps/clients/detail/{{ $('Cloodo CRM1').item.json.data.user.id }}",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "24581766-6428-4278-8dd6-471a05678b86",
+      "name": "search cateogory point2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3520,
+        1160
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "062cb476-1920-4ff9-8ddb-a6a038287716",
+      "name": "IF not found2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3820,
+        1160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('is not empty sub category1').item.json.data.added_by.id }}",
+        "points": 1,
+        "note": "=QCM29 {{ $('is not empty sub category1').item.json.data.added_by.name }} was penalized -1 point for the reason that the client did not attach a sub category: https://worksuite.cloodo.com/apps/clients/detail/{{ $('is not empty sub category1').item.json.data.user.id }}"
+      },
+      "id": "c3b48fa0-8e20-4cfe-971c-8c36b88c292d",
+      "name": "QCM 72",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4100,
+        1140
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/clients/{{ $json.data.user.id }}/projects",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "50"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9c53272a-1f99-4c4c-8fbb-6ff69ea782a3",
+      "name": "Check project trong client",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2840,
+        1180
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -403,28 +532,6 @@
         ]
       ]
     },
-    "IF not found": {
-      "main": [
-        [
-          {
-            "node": "QCM29",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "IF not found1": {
-      "main": [
-        [
-          {
-            "node": "QCM28",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "When clicking \"Test Workflow\"": {
       "main": [
         [
@@ -451,12 +558,12 @@
       "main": [
         [
           {
-            "node": "Cloodo Project",
+            "node": "Item Lists",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Item Lists",
+            "node": "Cloodo Project",
             "type": "main",
             "index": 0
           }
@@ -508,6 +615,11 @@
             "node": "is not empty sub category1",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Check project trong client",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -533,13 +645,79 @@
           }
         ]
       ]
+    },
+    "search cateogory point2": {
+      "main": [
+        [
+          {
+            "node": "IF not found2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check not empty": {
+      "main": [
+        [
+          {
+            "node": "search cateogory point2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found2": {
+      "main": [
+        [
+          {
+            "node": "QCM 72",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "QCM29",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "QCM28",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check project trong client": {
+      "main": [
+        [
+          {
+            "node": "Check not empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "72922b60-26e2-4b45-97c9-2882deebdeb6",
+  "versionId": "f856a754-9f24-4d24-ad56-c83b78afcf05",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"

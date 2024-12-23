@@ -61,7 +61,7 @@
         "conditions": {
           "dateTime": [
             {
-              "value1": "={{ $json.due_date }}",
+              "value1": "={{ new Date($json.due_date).format('yyyy-MM-dd') }}",
               "operation": "before",
               "value2": "={{new Date().format('yyyy-MM-dd')}}"
             }
@@ -75,32 +75,6 @@
       "position": [
         -1060,
         760
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.board_column.slug }}",
-              "operation": "notEqual",
-              "value2": "completed"
-            },
-            {
-              "value1": "={{ $json.assigned_by.id }}",
-              "operation": "notEqual",
-              "value2": "2c991f1a-6665-4533-bfca-ac969f431eb2"
-            }
-          ]
-        }
-      },
-      "id": "2f761e98-87dd-4601-8918-8b7afec66ff0",
-      "name": "IF not Completed",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -780,
-        740
       ]
     },
     {
@@ -129,8 +103,8 @@
         "page": "={{ $runIndex + 1 }}",
         "additionalFields": {
           "statusId": "94ff7869-3667-44eb-83c8-39367740d3ba",
-          "fromDate": "= {{ $today.minus({day: 16}).format('dd-MM-yyyy') }} ",
-          "toDate": "={{ $today.minus({day: 1}).format('dd-MM-yyyy') }} "
+          "fromDate": "= {{ $today.set({ day: 1 }).minus({month : 0}).format('dd-MM-yyyy') }} ",
+          "toDate": "= {{ $today.set({ day: 1 }).plus({month :1}).minus({day : 0}).format('dd-MM-yyyy') }} "
         },
         "requestOptions": {}
       },
@@ -445,26 +419,6 @@
     {
       "parameters": {
         "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.board_column.slug }}",
-              "value2": "completed"
-            }
-          ]
-        }
-      },
-      "id": "ac07e0de-67bd-4b95-b0ad-8746b08ad4ba",
-      "name": "IF not Completed1",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -1040,
-        1220
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
           "number": [
             {
               "value1": "={{ $json.total_records }}",
@@ -512,31 +466,11 @@
     {
       "parameters": {
         "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.assigned_by.id }}",
-              "operation": "notEqual",
-              "value2": "2c991f1a-6665-4533-bfca-ac969f431eb2"
-            }
-          ]
-        }
-      },
-      "id": "f6e3ffe4-4d6b-44b7-b642-1860c9c5c874",
-      "name": "IF not Completed2",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -720,
-        1200
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 1
           },
           "conditions": [
             {
@@ -624,9 +558,9 @@
     {
       "parameters": {
         "operation": "minus",
-        "user_id": "={{ $('IF not Completed').item.json.assigned_to[0].id }}",
+        "user_id": "={{ $('IF not Completed and not Admin').item.json.assigned_to[0].id }}",
         "points": 3,
-        "note": "=QCM58 {{ $('IF not Completed').item.json.assigned_to[0].name }} have been -3 point for being late: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF not Completed').item.json.id }}"
+        "note": "=QCM58 {{ $('IF not Completed and not Admin').item.json.assigned_to[0].name }} have been -3 point for being late: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF not Completed and not Admin').item.json.id }}"
       },
       "id": "f8162d15-a2cf-4904-af64-234fc2391738",
       "name": "QCM58",
@@ -646,9 +580,9 @@
     {
       "parameters": {
         "operation": "minus",
-        "user_id": "={{ $('IF not Completed').item.json.assigned_to[0].id }}",
+        "user_id": "={{ $('IF not Completed and not Admin').item.json.assigned_to[0].id }}",
         "points": 1,
-        "note": "=QCM57 {{ $('IF not Completed').item.json.assigned_to[0].name }} have been -1 point for being late: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF not Completed').item.json.id }}"
+        "note": "=QCM57 {{ $('IF not Completed and not Admin').item.json.assigned_to[0].name }} have been -1 point for being late: https://worksuite.cloodo.com/apps/work/tasks/{{ $('IF not Completed and not Admin').item.json.id }}"
       },
       "id": "8b2ffd37-b766-46a7-b4cb-66f437dca286",
       "name": "QCM57",
@@ -664,36 +598,6 @@
           "name": "Cmsmart Point API Key"
         }
       }
-    },
-    {
-      "parameters": {
-        "dataType": "string",
-        "value1": "={{ $('Get Task Details').item.json.data.priority }}",
-        "rules": {
-          "rules": [
-            {
-              "value2": "medium",
-              "outputKey": "0"
-            },
-            {
-              "value2": "high",
-              "outputKey": "1"
-            },
-            {
-              "value2": "urgent",
-              "outputKey": "2"
-            }
-          ]
-        }
-      },
-      "id": "08835b08-9767-4221-87bc-7d14ebdc469d",
-      "name": "Switch",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 2,
-      "position": [
-        -140,
-        1180
-      ]
     },
     {
       "parameters": {
@@ -762,6 +666,129 @@
           "name": "Cmsmart Point API Key"
         }
       }
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "page": "={{ $runIndex + 1 }}",
+        "additionalFields": {
+          "statusId": "94ff7869-3667-44eb-83c8-39367740d3ba",
+          "fromDate": "= {{ $today.minus({day: 16}).format('dd-MM-yyyy') }} ",
+          "toDate": "={{ $today.minus({day: 1}).format('dd-MM-yyyy') }} "
+        },
+        "requestOptions": {}
+      },
+      "id": "0a1b96e5-2c33-40f5-85cb-2896bd6625fa",
+      "name": "Get all task imcomplete1",
+      "type": "@cloodo/n8n-nodes-cloodo-project.CloodoProject",
+      "typeVersion": 1,
+      "position": [
+        -1580,
+        700
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.board_column.slug }}",
+              "value2": "completed"
+            }
+          ]
+        }
+      },
+      "id": "ac07e0de-67bd-4b95-b0ad-8746b08ad4ba",
+      "name": "Check equal Completed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.assigned_by.id }}",
+              "operation": "notEqual",
+              "value2": "2c991f1a-6665-4533-bfca-ac969f431eb2"
+            }
+          ]
+        }
+      },
+      "id": "f6e3ffe4-4d6b-44b7-b642-1860c9c5c874",
+      "name": "Check not Equal Assign Admin",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        1200
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $('Get Task Details').item.json.data.priority }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "medium",
+              "outputKey": "0"
+            },
+            {
+              "value2": "high",
+              "outputKey": "1"
+            },
+            {
+              "value2": "urgent",
+              "outputKey": "2"
+            }
+          ]
+        }
+      },
+      "id": "08835b08-9767-4221-87bc-7d14ebdc469d",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        1180
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.board_column.slug }}",
+              "operation": "notEqual",
+              "value2": "completed"
+            },
+            {
+              "value1": "={{ $json.assigned_by.id }}",
+              "operation": "notEqual",
+              "value2": "2c991f1a-6665-4533-bfca-ac969f431eb2"
+            }
+          ]
+        }
+      },
+      "id": "2f761e98-87dd-4601-8918-8b7afec66ff0",
+      "name": "IF not Completed and not Admin",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -780,
+        740
+      ]
     }
   ],
   "pinData": {},
@@ -770,7 +797,7 @@
       "main": [
         [
           {
-            "node": "IF not Completed1",
+            "node": "Check equal Completed",
             "type": "main",
             "index": 0
           },
@@ -797,18 +824,7 @@
       "main": [
         [
           {
-            "node": "IF not Completed",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "IF not Completed": {
-      "main": [
-        [
-          {
-            "node": "If",
+            "node": "IF not Completed and not Admin",
             "type": "main",
             "index": 0
           }
@@ -941,17 +957,6 @@
         ]
       ]
     },
-    "IF not Completed1": {
-      "main": [
-        [
-          {
-            "node": "IF not Completed2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "IF not exists3": {
       "main": [
         [
@@ -968,17 +973,6 @@
         [
           {
             "node": "IF not exists3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "IF not Completed2": {
-      "main": [
-        [
-          {
-            "node": "Get Task Details",
             "type": "main",
             "index": 0
           }
@@ -1037,6 +1031,50 @@
         ]
       ]
     },
+    "Search point4": {
+      "main": [
+        [
+          {
+            "node": "IF not exists4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not exists4": {
+      "main": [
+        [
+          {
+            "node": "QCM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check equal Completed": {
+      "main": [
+        [
+          {
+            "node": "Check not Equal Assign Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check not Equal Assign Admin": {
+      "main": [
+        [
+          {
+            "node": "Get Task Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Switch": {
       "main": [
         [
@@ -1062,22 +1100,11 @@
         ]
       ]
     },
-    "Search point4": {
+    "IF not Completed and not Admin": {
       "main": [
         [
           {
-            "node": "IF not exists4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "IF not exists4": {
-      "main": [
-        [
-          {
-            "node": "QCM",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -1089,7 +1116,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "f93ce997-4e61-4ca0-b99c-6b6b8db33bbc",
+  "versionId": "b9afd050-d9f1-4f49-bb3c-1b38429b48a7",
   "meta": {
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
   },
