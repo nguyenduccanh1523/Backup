@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        760,
-        340
+        560,
+        -340
       ]
     },
     {
@@ -68,7 +68,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM63: https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $json.uuid }}",
+        "keyword": "=QCM63: {{ $('IF create this month2').item.json.name }} is rewarded with -3 points for Proposal/Estimate without changing the Acepted/Declined status within 30 days : https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('IF create this month2').item.json.uuid }}",
         "max_limit_record": 50
       },
       "id": "5af6d2e9-38ea-4acb-b916-8bba29ab83de",
@@ -111,7 +111,7 @@
         "operation": "minus",
         "user_id": "={{ $('IF create this month2').item.json.useid }}",
         "points": 3,
-        "note": "=QCM63: {{ $('IF create this month2').item.json.name }} is rewarded with -3 points for Proposal/Estimate without changing the Acepted/Declined status within 30 days : https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('IF create this month2').item.json.uuid }} "
+        "note": "=QCM63: {{ $('IF create this month2').item.json.name }} is rewarded with -3 points for Proposal/Estimate without changing the Acepted/Declined status within 30 days : https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('IF create this month2').item.json.uuid }}"
       },
       "id": "e52d77d8-0f9c-47cb-a28f-30e41549952c",
       "name": "QCM12",
@@ -126,8 +126,7 @@
           "id": "82nsSr6jMyGAQbyu",
           "name": "Cmsmart Point API Key"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -153,8 +152,164 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.1,
       "position": [
+        340,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "Proposal",
+        "operation": "getmany",
+        "page": "={{ $runIndex+1 }}",
+        "additionalFields": {
+          "fromDate": "={{ $now.minus({month: 1}).startOf('month').format('yyyy-MM-dd') }}",
+          "toDate": "={{ $now.minus({month: 1}).endOf('month').format('yyyy-MM-dd') }}",
+          "statusID": "f48f9b26-0df1-45c1-a402-3d4d18671088"
+        },
+        "requestOptions": {}
+      },
+      "id": "6205e266-13ba-4535-960a-f1ca8ff17647",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
         780,
-        600
+        -340
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "bf47b859-1d4e-4907-8816-ddcd036240b8",
+      "name": "Item Lists3",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1020,
+        -340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ $json.created_at }}",
+              "value2": "={{ $today.set({ day: 1 }).plus({ months: -1}).format('yyyy-MM-dd') }}"
+            },
+            {
+              "value1": "={{ $json.created_at }}",
+              "operation": "before",
+              "value2": "={{ $today.set({ day: 1 }).plus({ months: 0}).format('yyyy-MM-dd') }}"
+            }
+          ],
+          "number": [
+            {
+              "value1": "={{ $json.agent.id }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "e04e4d7e-771a-46b9-bfa1-3192e0db0ca6",
+      "name": "IF create this month",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        -340
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM63: {{ $('IF create this month').item.json.agent.name }} is rewarded with -3 points for Proposal/Estimate without changing the Acepted/Declined status within 30 days : https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('IF create this month').item.json.id }}",
+        "max_limit_record": 50
+      },
+      "id": "3ac9887c-ea97-4870-a480-159a15a0a354",
+      "name": "search point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        -360
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "34deeff3-e41f-4d0b-bd88-e1b7413e03b0",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        -360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('IF create this month').item.json.agent.id }}",
+        "points": 3,
+        "note": "=QCM63: {{ $('IF create this month').item.json.agent.name }} is rewarded with -3 points for Proposal/Estimate without changing the Acepted/Declined status within 30 days : https://worksuite.cloodo.com/apps/proposals/edit-proposal/{{ $('IF create this month').item.json.id }}"
+      },
+      "id": "cc254ea7-abc6-4783-90f7-9da7ecfa4ccd",
+      "name": "QCM",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        -380
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex+1 }}",
+              "operation": "smallerEqual",
+              "value2": 4
+            }
+          ]
+        }
+      },
+      "id": "5bca169a-196b-4ebd-8127-a9900b7e9813",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        960,
+        -120
       ]
     }
   ],
@@ -164,7 +319,7 @@
       "main": [
         [
           {
-            "node": "MySQL",
+            "node": "Cloodo CRM",
             "type": "main",
             "index": 0
           }
@@ -219,7 +374,78 @@
       "main": [
         [
           {
-            "node": "MySQL",
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "Item Lists3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists3": {
+      "main": [
+        [
+          {
+            "node": "IF create this month",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search point1": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "QCM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF create this month": {
+      "main": [
+        [
+          {
+            "node": "search point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM",
             "type": "main",
             "index": 0
           }
@@ -231,7 +457,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "1b7eff6f-4927-4a78-b03d-269ad4ba32ef",
+  "versionId": "f8a500ad-f99e-4342-95d9-c3417eab31c4",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
