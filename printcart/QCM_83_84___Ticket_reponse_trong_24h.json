@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        4700,
-        1620
+        -180,
+        4900
       ]
     },
     {
@@ -1889,8 +1889,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2740,
-        1560
+        -1020,
+        1080
       ]
     },
     {
@@ -3330,8 +3330,8 @@
       "type": "n8n-nodes-base.itemLists",
       "typeVersion": 3,
       "position": [
-        1280,
-        1640
+        -2480,
+        1160
       ]
     },
     {
@@ -3375,8 +3375,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        980,
-        1640
+        -2780,
+        1160
       ],
       "credentials": {
         "cloodoApi": {
@@ -3396,8 +3396,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        1540,
-        1640
+        -2220,
+        1160
       ],
       "credentials": {
         "cloodoApi": {
@@ -3421,8 +3421,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        2140,
-        1620
+        -1620,
+        1140
       ],
       "credentials": {
         "cloodoApi": {
@@ -3487,8 +3487,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1760,
-        1640
+        -2000,
+        1160
       ]
     },
     {
@@ -4542,6 +4542,974 @@
           "name": "Canh Google Sheets "
         }
       }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "d93b3fcc-70a9-4d44-8222-e7c00205ec3b",
+      "name": "Item Lists5",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1360,
+        3880
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "date_from",
+              "value": "2024-01-01"
+            },
+            {
+              "name": "date_to",
+              "value": "2025-01-30"
+            },
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "status",
+              "value": "pending"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $json.meta.next_cursor }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3f17fac3-9840-41a9-b6f2-e101a5e946c9",
+      "name": "Ticket Pending5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1060,
+        3880
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.meta.next_cursor }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "36cf278d-85f4-4a5d-b668-348b5f07c053",
+      "name": "IF8",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        4060
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/tickets/{{ $json.data.id }}/replies",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dd6f5ba2-19cb-4fa4-9466-d4f381308225",
+      "name": "Get replies4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1880,
+        3880
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "57c0844c-df69-4f76-9b4f-3e408471eeb7",
+      "name": "Get Ticket5",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        3880
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "796ab7b7-b19f-4a08-938e-16c2e40a9325",
+              "name": "replies",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "377ffdcb-97b2-4ab7-b211-3376a7437855",
+              "name": "ticket",
+              "value": "={{ $('Get Ticket5').item.json.data }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ce70017f-40dd-44b8-862d-9e89979a7b0a",
+      "name": "Replies and Ticket4",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2120,
+        3880
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 15;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600 * 24); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "b9e2659a-0566-4269-bbcb-16336eecf640",
+      "name": "Ticket 15 days2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        3880
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "25551e19-6e02-4958-9b48-b4b715d1a62d",
+      "name": "Item Lists6",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1400,
+        4560
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "date_from",
+              "value": "2024-01-01"
+            },
+            {
+              "name": "date_to",
+              "value": "2025-01-30"
+            },
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "status",
+              "value": "pending"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $json.meta.next_cursor }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "537c545e-6c99-4a02-8eab-b62d168d7ea2",
+      "name": "Ticket Pending6",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        4560
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.meta.next_cursor }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "a2779a05-0ea8-4184-b662-0735521b8e45",
+      "name": "IF2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        4820
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/tickets/{{ $json.data.id }}/replies",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "01510a48-645f-497a-83a7-3298ecf59c44",
+      "name": "Get replies5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1920,
+        4560
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "ddb53458-1df3-4128-babe-17c3b51383e7",
+      "name": "Get Ticket6",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        4560
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "796ab7b7-b19f-4a08-938e-16c2e40a9325",
+              "name": "replies",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "377ffdcb-97b2-4ab7-b211-3376a7437855",
+              "name": "ticket",
+              "value": "={{ $('Get Ticket6').item.json.data }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "805c2fe9-03e0-4dc9-95e5-bd36e2c0720f",
+      "name": "Replies and Ticket5",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2220,
+        4560
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 24;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "3f7868fe-97d4-4751-ae2f-f15ba6330392",
+      "name": "Ticket 24h2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        4560
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "cc231a01-8e8d-49fb-b6bb-8b8a22bb06a1",
+      "name": "Item Lists7",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1400,
+        5380
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "date_from",
+              "value": "2024-01-01"
+            },
+            {
+              "name": "date_to",
+              "value": "2025-01-30"
+            },
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "status",
+              "value": "open"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $json.meta.next_cursor }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "952b11ad-d724-4b26-8e8c-906f98524c30",
+      "name": "Ticket Pending7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        5380
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.meta.next_cursor }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "5190f4a6-eab1-49fd-8eb0-8bab8aead482",
+      "name": "IF9",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        5560
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/tickets/{{ $json.data.id }}/replies",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3928bebb-073c-4d8a-ab4c-bab8c46f6302",
+      "name": "Get replies6",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1920,
+        5380
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "cd132d25-721a-4278-b405-a715443daad5",
+      "name": "Get Ticket7",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        5380
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "796ab7b7-b19f-4a08-938e-16c2e40a9325",
+              "name": "replies",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "377ffdcb-97b2-4ab7-b211-3376a7437855",
+              "name": "ticket",
+              "value": "={{ $('Get Ticket7').item.json.data }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a2424aff-8d81-4457-8c09-c74a041b8150",
+      "name": "Replies and Ticket6",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2160,
+        5380
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 15;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600 * 24); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "d1b817fb-8fbe-4b85-92ab-5755e2fd2a2b",
+      "name": "Ticket 15 days3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2440,
+        5380
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "34afb856-7590-46a3-a123-3345c8dc58af",
+      "name": "Item Lists8",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        1440,
+        6060
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "date_from",
+              "value": "2024-01-01"
+            },
+            {
+              "name": "date_to",
+              "value": "2025-01-30"
+            },
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "status",
+              "value": "open"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $json.meta.next_cursor }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c639a368-6d51-4cfb-9871-4f1d41114e2a",
+      "name": "Ticket Pending8",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1140,
+        6060
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.meta.next_cursor }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "2235e5b0-6e23-459c-b887-148ba2d20531",
+      "name": "IF3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        6240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/tickets/{{ $json.data.id }}/replies",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fa9b6b36-7771-41de-baed-533d8940172a",
+      "name": "Get replies7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1960,
+        6060
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "id": "34c2f218-c5e1-4474-be79-47c719a7e7f9",
+      "name": "Get Ticket8",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        6060
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "796ab7b7-b19f-4a08-938e-16c2e40a9325",
+              "name": "replies",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "377ffdcb-97b2-4ab7-b211-3376a7437855",
+              "name": "ticket",
+              "value": "={{ $('Get Ticket8').item.json.data }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ff099422-4d52-46b3-b6ff-d9e234c9eeb0",
+      "name": "Replies and Ticket7",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2260,
+        6060
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 24;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "82b63e88-d24c-4e3a-a67c-a27d544c5519",
+      "name": "Ticket 24h3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2500,
+        6060
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Ticket 15 days2').item.json.replies[0].user.id }}",
+        "points": 1,
+        "note": "=QCM 83-84: {{ $('Ticket 15 days2').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15 days2').item.json.ticket.idTicket }}"
+      },
+      "id": "f5389f1f-734b-41d1-967e-6c4c9f4c8103",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3300,
+        3840
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 83-84: {{ $('Ticket 15 days2').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15 days2').item.json.ticket.idTicket }}",
+        "max_limit_record": 50
+      },
+      "id": "36c6e048-efa4-40ea-8269-39d3c2cdd483",
+      "name": "Cloodo Point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2760,
+        3860
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "30c0f031-0308-4d49-8c2d-93704b92784a",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3020,
+        3860
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Ticket 24h2').item.json.replies[0].user.id }}",
+        "points": 1,
+        "note": "=QCM 83-84: {{ $('Ticket 24h2').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 24h2').item.json.ticket.idTicket }}"
+      },
+      "id": "8f3d09b6-affa-4bc7-95cb-c6d854e1061a",
+      "name": "Cloodo Point2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3320,
+        4560
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 83-84: {{ $('Ticket 24h2').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 24h2').item.json.ticket.idTicket }}",
+        "max_limit_record": 50
+      },
+      "id": "457fce58-101a-4ea3-811c-636d94401519",
+      "name": "Cloodo Point3",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2780,
+        4580
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "47b3a2e3-9ee6-473c-a412-a17f2c202308",
+      "name": "IF not found1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        4580
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Ticket 15 days3').item.json.replies[0].user.id }}",
+        "points": 1,
+        "note": "=QCM 83-84: {{ $('Ticket 15 days3').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15 days3').item.json.ticket.idTicket }}"
+      },
+      "id": "10dd4671-df78-4093-a2c9-3c9380313fc0",
+      "name": "Cloodo Point4",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3300,
+        5380
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 83-84: {{ $('Ticket 15 days3').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15 days3').item.json.ticket.idTicket }}",
+        "max_limit_record": 50
+      },
+      "id": "be98a3c6-2218-4d31-99dc-ecb01cda0895",
+      "name": "Cloodo Point5",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2720,
+        5380
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "45bf6baa-0c50-4b32-804c-b33ca337c093",
+      "name": "IF not found2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3000,
+        5400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Ticket 24h3').item.json.replies[0].user.id }}",
+        "points": 1,
+        "note": "=QCM 83-84: {{ $('Ticket 24h3').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 24h3').item.json.ticket.idTicket }}"
+      },
+      "id": "7cf610a1-2bec-43de-9d0d-985f983ac40e",
+      "name": "Cloodo Point6",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3320,
+        6060
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 83-84: {{ $('Ticket 24h3').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 24h3').item.json.ticket.idTicket }}",
+        "max_limit_record": 50
+      },
+      "id": "1b602f87-6941-4d17-8427-28acec1d9028",
+      "name": "Cloodo Point7",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2780,
+        6080
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "d6a33ee4-a0a9-4d96-98a1-7e935b3d8068",
+      "name": "IF not found3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        6080
+      ]
     }
   ],
   "pinData": {},
@@ -5093,12 +6061,7 @@
       "main": [
         [
           {
-            "node": "Giang4",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Admin",
+            "node": "Ticket Pending5",
             "type": "main",
             "index": 0
           }
@@ -5169,13 +6132,385 @@
           }
         ]
       ]
+    },
+    "Item Lists5": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket Pending5": {
+      "main": [
+        [
+          {
+            "node": "Item Lists5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get replies4": {
+      "main": [
+        [
+          {
+            "node": "Replies and Ticket4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket5": {
+      "main": [
+        [
+          {
+            "node": "Get replies4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replies and Ticket4": {
+      "main": [
+        [
+          {
+            "node": "Ticket 15 days2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists6": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket Pending6": {
+      "main": [
+        [
+          {
+            "node": "Item Lists6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get replies5": {
+      "main": [
+        [
+          {
+            "node": "Replies and Ticket5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket6": {
+      "main": [
+        [
+          {
+            "node": "Get replies5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replies and Ticket5": {
+      "main": [
+        [
+          {
+            "node": "Ticket 24h2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists7": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket Pending7": {
+      "main": [
+        [
+          {
+            "node": "Item Lists7",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get replies6": {
+      "main": [
+        [
+          {
+            "node": "Replies and Ticket6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket7": {
+      "main": [
+        [
+          {
+            "node": "Get replies6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replies and Ticket6": {
+      "main": [
+        [
+          {
+            "node": "Ticket 15 days3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists8": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket Pending8": {
+      "main": [
+        [
+          {
+            "node": "Item Lists8",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get replies7": {
+      "main": [
+        [
+          {
+            "node": "Replies and Ticket7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket8": {
+      "main": [
+        [
+          {
+            "node": "Get replies7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replies and Ticket7": {
+      "main": [
+        [
+          {
+            "node": "Ticket 24h3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 15 days2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 24h2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 15 days3": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 24h3": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point1": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point3": {
+      "main": [
+        [
+          {
+            "node": "IF not found1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point5": {
+      "main": [
+        [
+          {
+            "node": "IF not found2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point7": {
+      "main": [
+        [
+          {
+            "node": "IF not found3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found3": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "c7cc293e-b8e2-404e-a93d-78ce6ad24cc8",
+  "versionId": "43494189-9e63-44f9-9348-978a7680cc54",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
