@@ -11,8 +11,8 @@
       "type": "@cloodo/n8n-nodes-workchat.workchat",
       "typeVersion": 1,
       "position": [
-        800,
-        -60
+        760,
+        -140
       ],
       "credentials": {
         "workchatTokenApi": {
@@ -30,8 +30,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        920,
-        420
+        860,
+        400
       ]
     },
     {
@@ -169,10 +169,10 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 778731400,
+          "value": 1419606979,
           "mode": "list",
-          "cachedResultName": "Follow CLient",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+          "cachedResultName": "Client Follow Cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1419606979"
         },
         "filtersUI": {
           "values": [
@@ -209,17 +209,17 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 778731400,
+          "value": 1419606979,
           "mode": "list",
-          "cachedResultName": "Follow CLient",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+          "cachedResultName": "Client Follow Cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1419606979"
         },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "id": "={{ $('Trigger').item.json.id }}",
+            "level": "5",
             "status": "done",
-            "level": "5"
+            "id": "={{ $('Trigger').item.json.id }}"
           },
           "matchingColumns": [
             "id"
@@ -238,6 +238,16 @@
             {
               "id": "admin",
               "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -283,6 +293,16 @@
               "type": "string",
               "canBeUsedToMatch": true,
               "removed": false
+            },
+            {
+              "id": "start_session",
+              "displayName": "start_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
             },
             {
               "id": "email",
@@ -385,6 +405,16 @@
               "removed": true
             },
             {
+              "id": "mailFacebook",
+              "displayName": "mailFacebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
               "id": "row_number",
               "displayName": "row_number",
               "required": false,
@@ -415,6 +445,94 @@
       }
     },
     {
+      "parameters": {},
+      "id": "71881a0e-8231-48be-8cfd-a0dc10c81fd3",
+      "name": "Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/213439902114044/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }}\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "48e8a61e-e905-4424-a9d0-548ff41a6af1",
+      "name": "Messager Done",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let message =  $input.all()[0].json.output\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nreturn {\n  output: message\n};"
+      },
+      "id": "88d5d86a-f625-44f4-8f9c-f741c6993453",
+      "name": "Code6",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2089448577,
+          "mode": "list",
+          "cachedResultName": "message cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2089448577"
+        },
+        "numberToDelete": 200
+      },
+      "id": "64576eef-8230-4cfa-820d-2b892e69f711",
+      "name": "Delete message",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1280,
+        80
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
       "parameters": {
         "resource": "assistant",
         "assistantId": {
@@ -432,8 +550,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        360,
-        140
+        380,
+        80
       ],
       "credentials": {
         "openAiApi": {
@@ -469,48 +587,6 @@
           "name": "OpenAi Account"
         }
       }
-    },
-    {
-      "parameters": {},
-      "id": "71881a0e-8231-48be-8cfd-a0dc10c81fd3",
-      "name": "Trigger",
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "typeVersion": 1,
-      "position": [
-        -100,
-        240
-      ]
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://graph.facebook.com/v21.0/112710510078308/messages",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "access_token",
-              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }}\"\n  }\n}",
-        "options": {
-          "redirect": {
-            "redirect": {}
-          }
-        }
-      },
-      "id": "48e8a61e-e905-4424-a9d0-548ff41a6af1",
-      "name": "Messager Done",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        800,
-        140
-      ]
     }
   ],
   "pinData": {},
@@ -569,11 +645,44 @@
         ]
       ]
     },
-    "OpenAI_Chat": {
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
       "main": [
         [
           {
             "node": "Messager Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Messager Done": {
+      "main": [
+        [
+          {
+            "node": "Delete message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI_Chat": {
+      "main": [
+        [
+          {
+            "node": "Code6",
             "type": "main",
             "index": 0
           }
@@ -590,24 +699,13 @@
           }
         ]
       ]
-    },
-    "Trigger": {
-      "main": [
-        [
-          {
-            "node": "Get Info",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "77297a3f-63a7-4c42-8815-a64ec7cfd1e6",
+  "versionId": "0c052437-4ac6-46c2-819c-58388167a078",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"

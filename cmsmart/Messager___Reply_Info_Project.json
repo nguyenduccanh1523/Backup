@@ -20,7 +20,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2860,
+        3220,
         500
       ]
     },
@@ -45,17 +45,17 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 778731400,
+          "value": 1419606979,
           "mode": "list",
-          "cachedResultName": "Follow CLient",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+          "cachedResultName": "Client Follow Cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1419606979"
         },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
             "id": "={{ $('Execute Workflow Trigger').item.json.id }} ",
-            "level": "4",
-            "status": "ask_info_project"
+            "status": "ask_info_project",
+            "level": "4"
           },
           "matchingColumns": [
             "id"
@@ -74,6 +74,16 @@
             {
               "id": "admin",
               "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -122,6 +132,16 @@
               "removed": false
             },
             {
+              "id": "start_session",
+              "displayName": "start_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
               "id": "email",
               "displayName": "email",
               "required": false,
@@ -132,8 +152,8 @@
               "removed": true
             },
             {
-              "id": "project",
-              "displayName": "project",
+              "id": "id_project_support",
+              "displayName": "id_project_support",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -142,8 +162,18 @@
               "removed": true
             },
             {
-              "id": "project_name",
-              "displayName": "project_name",
+              "id": "project_name_support",
+              "displayName": "project_name_support",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_ticket_support",
+              "displayName": "id_ticket_support",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -212,6 +242,16 @@
               "removed": true
             },
             {
+              "id": "mailFacebook",
+              "displayName": "mailFacebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
               "id": "row_number",
               "displayName": "row_number",
               "required": false,
@@ -271,8 +311,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        360,
-        280
+        400,
+        40
       ],
       "disabled": true
     },
@@ -293,8 +333,8 @@
       ],
       "credentials": {
         "cloodoApi": {
-          "id": "2JLk7qrN3C3j9tZ9",
-          "name": "PrintCart Cloodo account "
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
         }
       }
     },
@@ -315,8 +355,8 @@
       ],
       "credentials": {
         "cloodoApi": {
-          "id": "2JLk7qrN3C3j9tZ9",
-          "name": "PrintCart Cloodo account "
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
         }
       }
     },
@@ -338,23 +378,10 @@
       ],
       "credentials": {
         "cloodoApi": {
-          "id": "2JLk7qrN3C3j9tZ9",
-          "name": "PrintCart Cloodo account "
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
         }
       }
-    },
-    {
-      "parameters": {
-        "numberInputs": 3
-      },
-      "id": "8fb845b1-2914-47b7-9f05-cc213b01a291",
-      "name": "Merge",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [
-        1020,
-        500
-      ]
     },
     {
       "parameters": {
@@ -460,8 +487,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        180,
-        280
+        220,
+        40
       ],
       "disabled": true
     },
@@ -480,42 +507,14 @@
     },
     {
       "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
-          "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
-        },
-        "prompt": "define",
-        "text": "=You are an AI Assistant of Cmsmart\n\nGenerate a friendly and professional message to provide information about the client’s project using the data provided below. Use only simple bullet points for clarity and include minimal icons (no use more than 5 icons in chat message) where necessary to enhance readability. Do not use text effects like bold, italics, or underlining. If any field is missing or empty, omit it from the response. Keep the tone helpful, professional, and engaging. Let embed link to project in chat message.\n\nThese data to analysis:\nclient name: {{ $json.client.name }}\n\nlink to project: https://worksuite.cloodo.com/apps/work/project/{{ $json.project.id }}/   \n  project name: {{ $json.project.name }}\nproject summary: {{ $json.project.summary }}\nstart date: {{ $json.project.start_date }}\ndeadline: {{ $json.project.deadline }}\nnotes: {{ $json.project.notes }}\nproject admin: {{ $json.project.project_admin }}\nproject members {{ ', '+$json.project.members.map(item=>item.name) }}\n\nList milestones:\n{{ $json.milestone.map((item, index) => `\nMilestone: ${index+1}\n  - Title: ${item.title}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n  - Summary: ${item.summary}\n`).join('') }}\n\n\nList tasks:\n{{ $json.tasks.map((item, index) => `\nTask: ${index+1}\n  - Title: ${item.heading}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n`).join('') }}\n\n",
-        "options": {}
-      },
-      "id": "bb8b566b-64db-4211-9890-69837b9883ce",
-      "name": "OpenAI",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        1680,
-        500
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "NuSZIBmfyaC1efAa",
-          "name": "Cmsmart_API"
-        }
-      }
-    },
-    {
-      "parameters": {
         "method": "POST",
-        "url": "https://graph.facebook.com/v21.0/112710510078308/messages",
+        "url": "https://graph.facebook.com/v21.0/213439902114044/messages",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
             {
               "name": "access_token",
-              "value": "EAAQEYCcZCVQ0BOzY6wqcnJVxVynZBLbm5hhScnbluyUZAfGFji6VNyf3R8Jvy0zDoypmZBIsFhZCU1tBRPjlIwS1FWFDeDSqzSa2AGdyDqbTN7MP88cbSiP9CPXY1gmM4EJzHWsO64oZBZA8bimm01LQ3p0n5jCpZCzhjlESwV0JGm16ocyrZBLHu9FSh5wYe08wZD"
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
             }
           ]
         },
@@ -745,6 +744,80 @@
           "name": "Cmsmart Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2089448577,
+          "mode": "list",
+          "cachedResultName": "message cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2089448577"
+        },
+        "numberToDelete": 500
+      },
+      "id": "9818202a-d520-4f0c-845a-c816447ada8c",
+      "name": "Clear Row Message Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2900,
+        500
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "8fb845b1-2914-47b7-9f05-cc213b01a291",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1020,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=You are an AI Assistant of Cmsmart\n\nGenerate a friendly and professional message to provide information about the client’s project using the data provided below. Use only simple bullet points for clarity and include minimal icons (no use more than 5 icons in chat message) where necessary to enhance readability. Do not use text effects like bold, italics, or underlining. If any field is missing or empty, omit it from the response. Keep the tone helpful, professional, and engaging. Let embed link to project in chat message.\n\nThese data to analysis:\nclient name: {{ $json.client.name }}\n\nlink to project: https://worksuite.cloodo.com/apps/work/project/{{ $json.project.id }}/   \n  project name: {{ $json.project.name }}\nproject summary: {{ $json.project.summary }}\nstart date: {{ $json.project.start_date }}\ndeadline: {{ $json.project.deadline }}\nnotes: {{ $json.project.notes }}\nproject admin: {{ $json.project.project_admin }}\nproject members {{ ', '+$json.project.members.map(item=>item.name) }}\n\nList milestones:\n{{ $json.milestone.map((item, index) => `\nMilestone: ${index+1}\n  - Title: ${item.title}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n  - Summary: ${item.summary}\n`).join('') }}\n\n\nList tasks:\n{{ $json.tasks.map((item, index) => `\nTask: ${index+1}\n  - Title: ${item.heading}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n`).join('') }}\n\n",
+        "options": {}
+      },
+      "id": "bb8b566b-64db-4211-9890-69837b9883ce",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        1680,
+        500
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "AI_Agent_API"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -774,7 +847,7 @@
       "main": [
         [
           {
-            "node": "Response",
+            "node": "Clear Row Message Data",
             "type": "main",
             "index": 0
           }
@@ -835,17 +908,6 @@
         ]
       ]
     },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Aggregate",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Aggregate": {
       "main": [
         [
@@ -890,22 +952,44 @@
         ]
       ]
     },
-    "OpenAI": {
+    "Require Confirm Project": {
       "main": [
         [
           {
-            "node": "Code",
+            "node": "Update Info to Create",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Require Confirm Project": {
+    "Clear Row Message Data": {
       "main": [
         [
           {
-            "node": "Update Info to Create",
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Code",
             "type": "main",
             "index": 0
           }
@@ -917,7 +1001,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a70949a7-5f67-40db-b608-2b798031f7a5",
+  "versionId": "a947306a-a74a-4fa6-820c-003a255dfa38",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
