@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -180,
-        4900
+        100,
+        4920
       ]
     },
     {
@@ -4571,11 +4571,11 @@
             },
             {
               "name": "date_from",
-              "value": "2024-01-01"
+              "value": "2025-01-01"
             },
             {
               "name": "date_to",
-              "value": "2025-01-30"
+              "value": "={{ $now.toDateTime() }}"
             },
             {
               "name": "sort",
@@ -4711,19 +4711,6 @@
     },
     {
       "parameters": {
-        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 15;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600 * 24); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
-      },
-      "id": "b9e2659a-0566-4269-bbcb-16336eecf640",
-      "name": "Ticket 15 days2",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2400,
-        3880
-      ]
-    },
-    {
-      "parameters": {
         "fieldToSplitOut": "data",
         "options": {}
       },
@@ -4732,8 +4719,8 @@
       "type": "n8n-nodes-base.itemLists",
       "typeVersion": 3,
       "position": [
-        1400,
-        4560
+        1420,
+        4620
       ]
     },
     {
@@ -4750,11 +4737,11 @@
             },
             {
               "name": "date_from",
-              "value": "2024-01-01"
+              "value": "2025-01-01"
             },
             {
               "name": "date_to",
-              "value": "2025-01-30"
+              "value": "={{ $now.toDateTime() }}"
             },
             {
               "name": "sort",
@@ -4777,8 +4764,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1100,
-        4560
+        1120,
+        4620
       ],
       "credentials": {
         "cloodoApi": {
@@ -4803,8 +4790,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1300,
-        4820
+        1320,
+        4880
       ]
     },
     {
@@ -4828,8 +4815,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1920,
-        4560
+        1940,
+        4620
       ],
       "credentials": {
         "cloodoApi": {
@@ -4849,8 +4836,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        1660,
-        4560
+        1680,
+        4620
       ],
       "credentials": {
         "cloodoApi": {
@@ -4884,8 +4871,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2220,
-        4560
+        2240,
+        4620
       ]
     },
     {
@@ -4897,8 +4884,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2480,
-        4560
+        2500,
+        4620
       ]
     },
     {
@@ -4911,8 +4898,8 @@
       "type": "n8n-nodes-base.itemLists",
       "typeVersion": 3,
       "position": [
-        1400,
-        5380
+        1360,
+        5400
       ]
     },
     {
@@ -4929,11 +4916,11 @@
             },
             {
               "name": "date_from",
-              "value": "2024-01-01"
+              "value": "2025-01-01"
             },
             {
               "name": "date_to",
-              "value": "2025-01-30"
+              "value": "={{ $now.toDateTime() }}"
             },
             {
               "name": "sort",
@@ -4956,8 +4943,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1100,
-        5380
+        1060,
+        5400
       ],
       "credentials": {
         "cloodoApi": {
@@ -4982,8 +4969,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1300,
-        5560
+        1120,
+        5660
       ]
     },
     {
@@ -5007,7 +4994,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1920,
+        2020,
         5380
       ],
       "credentials": {
@@ -5028,8 +5015,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        1660,
-        5380
+        1600,
+        5400
       ],
       "credentials": {
         "cloodoApi": {
@@ -5063,20 +5050,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2160,
-        5380
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 15;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600 * 24); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
-      },
-      "id": "d1b817fb-8fbe-4b85-92ab-5755e2fd2a2b",
-      "name": "Ticket 15 days3",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2440,
+        2260,
         5380
       ]
     },
@@ -5090,8 +5064,8 @@
       "type": "n8n-nodes-base.itemLists",
       "typeVersion": 3,
       "position": [
-        1440,
-        6060
+        1400,
+        6140
       ]
     },
     {
@@ -5108,11 +5082,11 @@
             },
             {
               "name": "date_from",
-              "value": "2024-01-01"
+              "value": "2025-01-01"
             },
             {
               "name": "date_to",
-              "value": "2025-01-30"
+              "value": "={{ $now.toDateTime() }}"
             },
             {
               "name": "sort",
@@ -5136,7 +5110,7 @@
       "typeVersion": 4.2,
       "position": [
         1140,
-        6060
+        6140
       ],
       "credentials": {
         "cloodoApi": {
@@ -5161,8 +5135,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1340,
-        6240
+        1320,
+        6380
       ]
     },
     {
@@ -5186,7 +5160,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1960,
+        2060,
         6060
       ],
       "credentials": {
@@ -5207,8 +5181,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        1700,
-        6060
+        1620,
+        6140
       ],
       "credentials": {
         "cloodoApi": {
@@ -5262,17 +5236,17 @@
     {
       "parameters": {
         "operation": "minus",
-        "user_id": "={{ $('Ticket 15 days2').item.json.replies[0].user.id }}",
+        "user_id": "={{ $('Ticket 8h').item.json.replies[0].user.id }}",
         "points": 1,
-        "note": "=QCM 83-84: {{ $('Ticket 15 days2').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15 days2').item.json.ticket.idTicket }}"
+        "note": "=QCM 83-84: {{ $('Ticket 8h').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 8h').item.json.ticket.idTicket }}"
       },
       "id": "f5389f1f-734b-41d1-967e-6c4c9f4c8103",
       "name": "Cloodo Point",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        3300,
-        3840
+        4560,
+        3560
       ],
       "credentials": {
         "cloodoApi2": {
@@ -5284,7 +5258,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 83-84: {{ $('Ticket 15 days2').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15 days2').item.json.ticket.idTicket }}",
+        "keyword": "=QCM 83-84: {{ $('Ticket 8h').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 8h').item.json.ticket.idTicket }}",
         "max_limit_record": 50
       },
       "id": "36c6e048-efa4-40ea-8269-39d3c2cdd483",
@@ -5292,8 +5266,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2760,
-        3860
+        4020,
+        3580
       ],
       "credentials": {
         "cloodoApi2": {
@@ -5318,8 +5292,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3020,
-        3860
+        4280,
+        3580
       ]
     },
     {
@@ -5334,7 +5308,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        3320,
+        5360,
         4560
       ],
       "credentials": {
@@ -5355,7 +5329,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2780,
+        4820,
         4580
       ],
       "credentials": {
@@ -5381,24 +5355,24 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3040,
+        5080,
         4580
       ]
     },
     {
       "parameters": {
         "operation": "minus",
-        "user_id": "={{ $('Ticket 15 days3').item.json.replies[0].user.id }}",
+        "user_id": "={{ $('Ticket 8h2').item.json.replies[0].user.id }}",
         "points": 1,
-        "note": "=QCM 83-84: {{ $('Ticket 15 days3').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15 days3').item.json.ticket.idTicket }}"
+        "note": "=QCM 83-84: {{ $('Ticket 8h2').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 8h2').item.json.ticket.idTicket }}"
       },
       "id": "10dd4671-df78-4093-a2c9-3c9380313fc0",
       "name": "Cloodo Point4",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        3300,
-        5380
+        5160,
+        5200
       ],
       "credentials": {
         "cloodoApi2": {
@@ -5410,7 +5384,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 83-84: {{ $('Ticket 15 days3').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15 days3').item.json.ticket.idTicket }}",
+        "keyword": "=QCM 83-84: {{ $('Ticket 8h2').item.json.ticket.agentName }} - 3 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 8h2').item.json.ticket.idTicket }}",
         "max_limit_record": 50
       },
       "id": "be98a3c6-2218-4d31-99dc-ecb01cda0895",
@@ -5418,8 +5392,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2720,
-        5380
+        4580,
+        5200
       ],
       "credentials": {
         "cloodoApi2": {
@@ -5444,8 +5418,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3000,
-        5400
+        4860,
+        5200
       ]
     },
     {
@@ -5460,8 +5434,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        3320,
-        6060
+        4340,
+        5560
       ],
       "credentials": {
         "cloodoApi2": {
@@ -5510,6 +5484,1111 @@
         3040,
         6080
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6dc6657f-526c-4633-a42e-591e9f2e964d",
+              "leftValue": "={{ $json.replies[0].user.id }}",
+              "rightValue": "={{ $json.ticket.idClient }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "68304ec8-c77d-4d77-832b-202d058738a4",
+      "name": "Requester Replies6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2620,
+        3880
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Ticket 8h2').item.json.replies[0].user.id }}",
+        "points": "={{ $('Cloodo Point14')?.item?.json?.data.length > 0 ? Math.min(...$('Cloodo Point14')?.item?.json?.data?.map(item => item?.point)?.map(Number)) * -1 + 5 : 5  }}",
+        "note": "=QCM 83-84: {{ $('Ticket 8h2').item.json.ticket.agentName }} -{{ $('Cloodo Point14')?.item?.json?.data.length > 0 ? Math.min(...$('Cloodo Point14')?.item?.json?.data?.map(item => item?.point)?.map(Number)) * -1 + 5 : 5  }} points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 8h2').item.json.ticket.idTicket }}"
+      },
+      "id": "0214c29a-cc46-4358-af35-54a29b57af20",
+      "name": "Cloodo Point13",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3800,
+        3880
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 8h2').item.json.ticket.idTicket }}",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "8b8969bc-25e7-409f-83b2-e60723e74436",
+      "name": "Cloodo Point14",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3280,
+        3880
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $('Ticket 8h2').item.json.ticket.agentEmail }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $('Ticket 8h2').item.json.ticket.agentName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Respond to tickets when customers respond"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "111"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Ticket Closure Reminder</title>\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $('Ticket 8h2').item.json.ticket.agentName }},</p>\n<p>I hope this message finds you well.</p>\n<p>This is a friendly reminder to please ensure that all customer tickets are responded to in a timely manner. Once a customer responds, it is important to follow up within 24 hours. Failure to do so will result in points being deducted from the CmsMart Admin system.</p>\n\n<p>Key points to remember:</p>\n\n<ul>\n<li>Ensure timely responses to customer feedback.</li>\n<li>Reply within 24 hours to avoid penalties.</li>\n<li>Points will be deducted from the CmsMart Admin for slow responses.</li>\n</ul>\n\n<p>We appreciate your cooperation and concern for this issue.</p>\n\n<p>Here is the ticket you need to respond to:</p>\n\n                <table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse: collapse;\">\n                    <tr>\n                        <th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Ticket ID</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Subject</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Client</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Status</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Type</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Project</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Agent</th>\n                      \n                    </tr>\n\n                <tr>\n                    <td style=\"border-bottom: 1px solid #ddd; padding: 8px;\"><a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 8h2').item.json.ticket.idTicket }}\" style=\"color: #007bff; text-decoration: none;\">Ticket </a></td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 8h2').item.json.ticket.subjectTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 8h2').item.json.ticket.nameClient }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 8h2').item.json.ticket.statusTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 8h2').item.json.ticket.typeTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 8h2').item.json.ticket.projectTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 8h2').item.json.ticket.agentName }}</td>\n                </tr>\n                </table>\n\n                <p>Best regards,</p>\n                <p>Cms Admin</p>\n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8d2d5cb3-6610-4ccc-acb0-66d8c7982c3e",
+      "name": "Send mail Reply Ticket11",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3540,
+        3880
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "3038b5aa-f377-446a-807d-3bd020f91dd1",
+      "name": "Loop Over Items4",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2960,
+        3860
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "c2ef0ff2-a08e-49ac-820d-92a1a64588c6",
+      "name": "IF not found5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3580,
+        4200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Ticket 15d2').item.json.replies[0].user.id }}",
+        "points": "=5",
+        "note": "=QCM 83-84: {{ $('Ticket 15d2').item.json.ticket.agentName }} -5 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15d2').item.json.ticket.idTicket }}"
+      },
+      "id": "59b54374-1799-4ff7-b93c-71c1c22e5994",
+      "name": "Cloodo Point15",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4140,
+        4180
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 83-84: {{ $('Ticket 15d2').item.json.ticket.agentName }} -5 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15d2').item.json.ticket.idTicket }}",
+        "max_limit_record": 50,
+        "status_record": 0
+      },
+      "id": "d27f344c-6c8c-45fe-a019-9b3c17c9bfbe",
+      "name": "Cloodo Point16",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3380,
+        4200
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "bad71046-197e-46ac-9ac1-d846d7d0392e",
+      "name": "Loop Over Items5",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3060,
+        4180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 15;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600 * 24); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.idTicket\n  const idClient = item?.json?.ticket?.idClient\n  const clientTicket = item?.json?.ticket?.nameClient\n  const numberTicket = item?.json?.ticket?.numberTicket\n  const subjectTicket = item?.json?.ticket?.subjectTicket\n  const statusTicket = item?.json?.ticket?.statusTicket\n  const typeTicket = item?.json?.ticket?.typeTicket\n  const projectTicket = item?.json?.ticket?.projectTicket\n  const agentNameTicket = item?.json?.ticket?.agentName\n  const agentEmailTicket = item?.json?.ticket?.agentEmail\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "36cdd19c-d3c3-49f6-87e7-077f8a9356ad",
+      "name": "Ticket 15d2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2840,
+        4180
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $('Ticket 15d2').item.json.ticket.agentEmail }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $('Ticket 15d2').item.json.ticket.agentName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Respond to tickets when customers respond"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "111"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Ticket Closure Reminder</title>\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $('Ticket 15d2').item.json.ticket.agentName }},</p>\n<p>I hope this message finds you well.</p>\n<p>This is a friendly reminder to please ensure that all customer tickets are responded to in a timely manner. Once a customer responds, it is important to follow up within 24 hours. Failure to do so will result in points being deducted from the CmsMart Admin system.</p>\n\n<p>Key points to remember:</p>\n\n<ul>\n<li>Ensure timely responses to customer feedback.</li>\n<li>Reply within 24 hours to avoid penalties.</li>\n<li>Points will be deducted from the CmsMart Admin for slow responses.</li>\n</ul>\n\n<p>We appreciate your cooperation and concern for this issue.</p>\n\n<p>Here is the ticket you need to respond to:</p>\n\n                <table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse: collapse;\">\n                    <tr>\n                        <th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Ticket ID</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Subject</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Client</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Status</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Type</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Project</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Agent</th>\n                      \n                    </tr>\n\n                <tr>\n                    <td style=\"border-bottom: 1px solid #ddd; padding: 8px;\"><a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15d2').item.json.ticket.idTicket }}\" style=\"color: #007bff; text-decoration: none;\">Ticket </a></td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 15d2').item.json.ticket.subjectTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 15d2').item.json.ticket.nameClient }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 15d2').item.json.ticket.statusTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 15d2').item.json.ticket.typeTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 15d2').item.json.ticket.projectTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 15d2').item.json.ticket.agentName }}</td>\n                </tr>\n                </table>\n\n                <p>Best regards,</p>\n                <p>Cms Admin</p>\n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5bb44e09-9d7b-4f32-ae67-30e6f9d0f455",
+      "name": "Send mail Reply Ticket7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3840,
+        4180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 8;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "d1b817fb-8fbe-4b85-92ab-5755e2fd2a2b",
+      "name": "Ticket 8h2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2360,
+        3880
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6dc6657f-526c-4633-a42e-591e9f2e964d",
+              "leftValue": "={{ $json.replies[0].user.id }}",
+              "rightValue": "={{ $json.ticket.idClient }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ac42274a-ed2b-406a-ae9a-0e0598dcb185",
+      "name": "Requester Replies8",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2760,
+        4620
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Ticket 24h2').item.json.replies[0].user.id }}",
+        "points": "={{ Math.min(...$('Cloodo Point18').item.json.data?.map(item => item?.point).map(Number)) * -1 }}",
+        "note": "=QCM 83-84: {{ $('Ticket 24h2').item.json.ticket.agentName }} -{{ Math.min(...$('Cloodo Point18').item.json.data?.map(item => item?.point).map(Number)) * -1 }} points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 24h2').item.json.ticket.idTicket }}"
+      },
+      "id": "5b603821-34b3-4953-8ada-4dac57344dc5",
+      "name": "Cloodo Point17",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3820,
+        4500
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 24h2').item.json.ticket.idTicket }}",
+        "max_limit_record": 50,
+        "status_record": 0
+      },
+      "id": "72e5b084-6384-48ce-9ec9-d69d65cdc997",
+      "name": "Cloodo Point18",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3520,
+        4500
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "ac181400-df41-4bcc-9de4-b72450c91ff0",
+      "name": "Loop Over Items6",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3260,
+        4480
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "51551cfc-64fd-4fdf-bd33-fa6bc2421528",
+      "name": "Loop Over Items7",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3320,
+        4860
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "16ea0336-1d7e-4d08-8cf7-2d2248484962",
+      "name": "IF not found6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3840,
+        4880
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Ticket 15d3').item.json.replies[0].user.id }}",
+        "points": "=5",
+        "note": "=QCM 83-84: {{ $('Ticket 15d3').item.json.ticket.agentName }} -5 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15d3').item.json.ticket.idTicket }}"
+      },
+      "id": "4f9fba7e-6f38-49d8-ba36-967b2abc0d4e",
+      "name": "Cloodo Point19",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4180,
+        4860
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 83-84: {{ $('Ticket 15d3').item.json.ticket.agentName }} -5 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15d3').item.json.ticket.idTicket }}",
+        "max_limit_record": 50
+      },
+      "id": "2b7d4f31-88c5-4321-bebb-bc76d31059c5",
+      "name": "Cloodo Point20",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3620,
+        4880
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 15;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600 * 24); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.idTicket\n  const idClient = item?.json?.ticket?.idClient\n  const clientTicket = item?.json?.ticket?.nameClient\n  const numberTicket = item?.json?.ticket?.numberTicket\n  const subjectTicket = item?.json?.ticket?.subjectTicket\n  const statusTicket = item?.json?.ticket?.statusTicket\n  const typeTicket = item?.json?.ticket?.typeTicket\n  const projectTicket = item?.json?.ticket?.projectTicket\n  const agentNameTicket = item?.json?.ticket?.agentName\n  const agentEmailTicket = item?.json?.ticket?.agentEmail\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "49fec6bd-f1ab-4c4e-993f-6959764073a9",
+      "name": "Ticket 15d3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3040,
+        4860
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9ab35c59-58f9-43a8-8026-b499641ff4cd",
+              "leftValue": "={{ $json.data.requester.email }}",
+              "rightValue": "={{ $json.data.create_by.email }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ad7f6e90-b01f-49e2-aa45-8e8be285bf88",
+      "name": "Check client send",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1780,
+        5420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9ab35c59-58f9-43a8-8026-b499641ff4cd",
+              "leftValue": "={{ $json.data.requester.email }}",
+              "rightValue": "={{ $json.data.create_by.email }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6dab35c1-d45e-4fd2-b784-bdb5a790a836",
+      "name": "Check client send1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1820,
+        6120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $('Ticket 8h').item.json.ticket.agentEmail }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $('Ticket 8h').item.json.ticket.agentName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Respond to tickets when customers respond"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "111"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Ticket Closure Reminder</title>\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $('Ticket 8h').item.json.ticket.agentName }},</p>\n<p>I hope this message finds you well.</p>\n<p>This is a friendly reminder to please ensure that all customer tickets are responded to in a timely manner. Once a customer responds, it is important to follow up within 24 hours. Failure to do so will result in points being deducted from the CmsMart Admin system.</p>\n\n<p>Key points to remember:</p>\n\n<ul>\n<li>Ensure timely responses to customer feedback.</li>\n<li>Reply within 24 hours to avoid penalties.</li>\n<li>Points will be deducted from the CmsMart Admin for slow responses.</li>\n</ul>\n\n<p>We appreciate your cooperation and concern for this issue.</p>\n\n<p>Here is the ticket you need to respond to:</p>\n\n                <table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse: collapse;\">\n                    <tr>\n                        <th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Ticket ID</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Subject</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Client</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Status</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Type</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Project</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Agent</th>\n                      \n                    </tr>\n\n                <tr>\n                    <td style=\"border-bottom: 1px solid #ddd; padding: 8px;\"><a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 8h').item.json.ticket.idTicket }}\" style=\"color: #007bff; text-decoration: none;\">Ticket </a></td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 8h').item.json.ticket.subjectTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 8h').item.json.ticket.nameClient }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 8h').item.json.ticket.statusTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 8h').item.json.ticket.typeTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 8h').item.json.ticket.projectTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 8h').item.json.ticket.agentName }}</td>\n                </tr>\n                </table>\n\n                <p>Best regards,</p>\n                <p>Cms Admin</p>\n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "788780c7-6d85-4be5-a6df-5fce2dc384da",
+      "name": "Send mail Reply Ticket10",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3660,
+        5380
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "08bb4e2e-d577-4cb5-8da2-26205790043d",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3080,
+        5360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6dc6657f-526c-4633-a42e-591e9f2e964d",
+              "leftValue": "={{ $json.replies[0].user.id }}",
+              "rightValue": "={{ $json.ticket.idClient }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "caf94dcc-568b-4045-b3dc-1ed411a10155",
+      "name": "Requester Replies4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2680,
+        5380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Ticket 8h').item.json.replies[0].user.id }}",
+        "points": "={{ $('Cloodo Point9')?.item?.json?.data.length > 0 ? Math.min(...$('Cloodo Point9')?.item?.json?.data?.map(item => item?.point)?.map(Number)) * -1 + 5 : 5  }}",
+        "note": "=QCM 83-84: {{ $('Ticket 8h').item.json.ticket.agentName }} -{{ $('Cloodo Point9')?.item?.json?.data.length > 0 ? Math.min(...$('Cloodo Point9')?.item?.json?.data?.map(item => item?.point)?.map(Number)) * -1 + 5 : 5  }} points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 8h').item.json.ticket.idTicket }}"
+      },
+      "id": "4f03d882-b534-4703-86d2-3c71adcf235d",
+      "name": "Cloodo Point8",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3920,
+        5380
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 8h').item.json.ticket.idTicket }}",
+        "max_limit_record": 50,
+        "status_record": -1
+      },
+      "id": "c1c20abd-427d-47d8-b0cd-cf45a22fd533",
+      "name": "Cloodo Point9",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3400,
+        5380
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 8;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.updated_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "b9e2659a-0566-4269-bbcb-16336eecf640",
+      "name": "Ticket 8h",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        5380
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/tickets/{{ $json.data.id }}/replies",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8a9ec2df-3c3e-4a54-b94b-00cae93194b5",
+      "name": "Get replies8",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2040,
+        5640
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "796ab7b7-b19f-4a08-938e-16c2e40a9325",
+              "name": "replies",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "377ffdcb-97b2-4ab7-b211-3376a7437855",
+              "name": "ticket",
+              "value": "={{ $('Get Ticket7').item.json.data }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ed01e09b-f295-4da5-8392-338cef2552ec",
+      "name": "Replies and Ticket8",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2280,
+        5640
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "dd49ad1a-f188-46bf-a594-ef86a921db4e",
+      "name": "Loop Over Items2",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2800,
+        5660
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 15;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.created_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600 * 24); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "0ed031cd-fb82-4708-a06e-e8030e085749",
+      "name": "Ticket 15d",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2540,
+        5660
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "bebdce63-6331-4c25-8516-576bacdec638",
+      "name": "IF not found4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3320,
+        5680
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Ticket 15d').item.json.replies[0].user.id }}",
+        "points": "=5",
+        "note": "=QCM 83-84: {{ $('Ticket 15d').item.json.ticket.agentName }} -5 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15d').item.json.ticket.idTicket }}"
+      },
+      "id": "01076acc-d683-4580-b991-cd5dd65b3c6e",
+      "name": "Cloodo Point11",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3880,
+        5660
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/mautic.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $('Ticket 15d').item.json.ticket.agentEmail }}"
+            },
+            {
+              "name": "uname",
+              "value": "={{ $('Ticket 15d').item.json.ticket.agentName }}"
+            },
+            {
+              "name": "subject",
+              "value": "=Respond to tickets when customers respond"
+            },
+            {
+              "name": "send_mail",
+              "value": "cmsmart"
+            },
+            {
+              "name": "email_id",
+              "value": "111"
+            },
+            {
+              "name": "content",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Ticket Closure Reminder</title>\n</head>\n\n<body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #fff;\">\n        <!-- Content -->\n        <tr>\n            <td style=\"font-size: 14px; color: black\">\n                <p>Dear {{ $('Ticket 15d').item.json.ticket.agentName }},</p>\n<p>I hope this message finds you well.</p>\n<p>This is a friendly reminder to please ensure that all customer tickets are responded to in a timely manner. Once a customer responds, it is important to follow up within 24 hours. Failure to do so will result in points being deducted from the CmsMart Admin system.</p>\n\n<p>Key points to remember:</p>\n\n<ul>\n<li>Ensure timely responses to customer feedback.</li>\n<li>Reply within 24 hours to avoid penalties.</li>\n<li>Points will be deducted from the CmsMart Admin for slow responses.</li>\n</ul>\n\n<p>We appreciate your cooperation and concern for this issue.</p>\n\n<p>Here is the ticket you need to respond to:</p>\n\n                <table width=\"100%\" cellpadding=\"5\" cellspacing=\"0\" style=\"border-collapse: collapse;\">\n                    <tr>\n                        <th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Ticket ID</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Subject</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Client</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Status</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Type</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Project</th>\n<th style=\"border-bottom: 1px solid #ddd; text-align: left;\">Agent</th>\n                      \n                    </tr>\n\n                <tr>\n                    <td style=\"border-bottom: 1px solid #ddd; padding: 8px;\"><a href=\"https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15d').item.json.ticket.idTicket }}\" style=\"color: #007bff; text-decoration: none;\">Ticket </a></td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 15d').item.json.ticket.subjectTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 15d').item.json.ticket.nameClient }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 15d').item.json.ticket.statusTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 15d').item.json.ticket.typeTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 15d').item.json.ticket.projectTicket }}</td>\n<td style=\"border-bottom: 1px solid #ddd; padding: 8px;\">{{ $('Ticket 15d').item.json.ticket.agentName }}</td>\n                </tr>\n                </table>\n\n                <p>Best regards,</p>\n                <p>Cms Admin</p>\n            </td>\n        </tr>\n    </table>\n</body>\n\n</html>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "72ce701e-02bd-45c2-a9a3-8149be20ca8c",
+      "name": "Send mail Reply Ticket2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3580,
+        5660
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 83-84: {{ $('Ticket 15d').item.json.ticket.agentName }} -5 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15d').item.json.ticket.idTicket }}",
+        "max_limit_record": 50,
+        "status_record": 0
+      },
+      "id": "c83bd47a-3d27-44af-a3cd-82ee1541383a",
+      "name": "Cloodo Point10",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3100,
+        5680
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "9c31b956-8a59-4b40-aeb7-83db85649c46",
+      "name": "Loop Over Items1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3480,
+        6060
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Ticket 24h3').item.json.replies[0].user.id }}",
+        "points": "={{ Math.min(...$('Cloodo Point21').item.json.data?.map(item => item?.point).map(Number)) * -1 }}",
+        "note": "=QCM 83-84: {{ $('Ticket 24h3').item.json.ticket.agentName }} -{{ Math.min(...$('Cloodo Point21').item.json.data?.map(item => item?.point).map(Number)) * -1 }} points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 24h3').item.json.ticket.idTicket }}"
+      },
+      "id": "80eea2da-6deb-462b-9f9a-d092461bdfc0",
+      "name": "Cloodo Point12",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4040,
+        6080
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 24h3').item.json.ticket.idTicket }}",
+        "max_limit_record": 50,
+        "status_record": 0
+      },
+      "id": "147cf3ae-d504-47c7-9850-21df5eab5d2b",
+      "name": "Cloodo Point21",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3740,
+        6080
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://erp-amz.cloodo.com/v4/tickets/{{ $json.data.id }}/replies",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7791c6cf-bf42-40d9-890a-ba4566207da4",
+      "name": "Get replies9",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2100,
+        6300
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "9ceDNPpBEBMqKFjc",
+          "name": "Workflow Princart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "796ab7b7-b19f-4a08-938e-16c2e40a9325",
+              "name": "replies",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "377ffdcb-97b2-4ab7-b211-3376a7437855",
+              "name": "ticket",
+              "value": "={{ $('Get Ticket8').item.json.data }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b8dfae82-c5f8-4938-b46d-73a7887f3776",
+      "name": "Replies and Ticket9",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2300,
+        6300
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "bb95f4f7-4ce3-49b9-8520-0813af77079d",
+      "name": "Loop Over Items3",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2880,
+        6400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentDate = new Date();  // Ngày hiện tại\nconst daysLimit = 15;  // Số ngày bạn muốn so sánh\nconst filteredItems = [];\n\n// Lặp qua từng item trong $input.all() và kiểm tra update_at\nfor (const item of $input.all()) {\n  const updateDate = new Date(item?.json?.replies[0]?.created_at);  // Ngày cập nhật của item\n  const diffTime = currentDate - updateDate; // Tính sự khác biệt giữa ngày hiện tại và ngày update_at\n  const diffDays = diffTime / (1000 * 3600 * 24); // Chuyển từ milliseconds sang ngày\n  const idTicket = item?.json?.ticket?.id\n  const idClient = item?.json?.ticket?.requester?.id\n  const clientTicket = item?.json?.ticket?.requester?.name\n  const numberTicket = item?.json?.ticket?.ticket_number\n  const subjectTicket = item?.json?.ticket?.subject\n  const statusTicket = item?.json?.ticket?.status\n  const typeTicket = item?.json?.ticket?.type?.type\n  const projectTicket = item?.json?.ticket?.projects?.name\n  const agentNameTicket = item?.json?.ticket?.agent?.user?.name\n  const agentEmailTicket = item?.json?.ticket?.agent?.user?.email\n  \n  if (diffDays > daysLimit) {\n    item.json.ticket = {idTicket: idTicket,\n                        idClient: idClient,\n                        nameClient: clientTicket,\n                        numberTicket: numberTicket,\n                        subjectTicket: subjectTicket,\n                        statusTicket: statusTicket,\n                        typeTicket: typeTicket,\n                        projectTicket: projectTicket,\n                        agentName: agentNameTicket,\n                        agentEmail: agentEmailTicket\n                       }\n    filteredItems.push(item);  // Thêm item vào danh sách nếu update_at sau 15 ngày\n  }\n}\n\nreturn filteredItems;  // Trả về các item thỏa mãn điều kiện\n"
+      },
+      "id": "e57fad30-4f7c-4348-990d-b028bb302258",
+      "name": "Ticket 15d1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2620,
+        6400
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "56ddd726-04bd-478d-8f40-61b669bc52b8",
+      "name": "IF not found7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3400,
+        6420
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Ticket 15d1').item.json.replies[0].user.id }}",
+        "points": "=5",
+        "note": "=QCM 83-84: {{ $('Ticket 15d1').item.json.ticket.agentName }} -5 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15d1').item.json.ticket.idTicket }}"
+      },
+      "id": "8e9a6ed1-8570-4716-ab51-10a6d85ebe17",
+      "name": "Cloodo Point22",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3740,
+        6400
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 83-84: {{ $('Ticket 15d1').item.json.ticket.agentName }} -5 points Ticket no closed or Ticket no reply Client: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Ticket 15d1').item.json.ticket.idTicket }}",
+        "max_limit_record": 50
+      },
+      "id": "3c53857f-5727-4d14-9a20-8d88b937ef0b",
+      "name": "Cloodo Point23",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        3180,
+        6420
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "ueep8CUM43I6JFUH",
+          "name": "Point Printcart"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -6057,17 +7136,6 @@
         ]
       ]
     },
-    "When clicking ‘Test workflow’": {
-      "main": [
-        [
-          {
-            "node": "Ticket Pending5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Giang4": {
       "main": [
         [
@@ -6186,7 +7254,7 @@
       "main": [
         [
           {
-            "node": "Ticket 15 days2",
+            "node": "Ticket 8h2",
             "type": "main",
             "index": 0
           }
@@ -6295,7 +7363,7 @@
       "main": [
         [
           {
-            "node": "Get replies6",
+            "node": "Check client send",
             "type": "main",
             "index": 0
           }
@@ -6306,7 +7374,7 @@
       "main": [
         [
           {
-            "node": "Ticket 15 days3",
+            "node": "Ticket 8h",
             "type": "main",
             "index": 0
           }
@@ -6355,7 +7423,7 @@
       "main": [
         [
           {
-            "node": "Get replies7",
+            "node": "Check client send1",
             "type": "main",
             "index": 0
           }
@@ -6373,33 +7441,11 @@
         ]
       ]
     },
-    "Ticket 15 days2": {
-      "main": [
-        [
-          {
-            "node": "Cloodo Point1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Ticket 24h2": {
       "main": [
         [
           {
-            "node": "Cloodo Point3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Ticket 15 days3": {
-      "main": [
-        [
-          {
-            "node": "Cloodo Point5",
+            "node": "Requester Replies8",
             "type": "main",
             "index": 0
           }
@@ -6498,7 +7544,592 @@
       "main": [
         [
           {
-            "node": "Cloodo Point6",
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requester Replies6": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ticket 15d2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point13": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point14": {
+      "main": [
+        [
+          {
+            "node": "Send mail Reply Ticket11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send mail Reply Ticket11": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items4": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo Point14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found5": {
+      "main": [
+        [
+          {
+            "node": "Send mail Reply Ticket7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point15": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point16": {
+      "main": [
+        [
+          {
+            "node": "IF not found5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items5": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo Point16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 15d2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send mail Reply Ticket7": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 8h2": {
+      "main": [
+        [
+          {
+            "node": "Requester Replies6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requester Replies8": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ticket 15d3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point17": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point18": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items6": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo Point18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items7": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo Point20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found6": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point19",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point19": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point20": {
+      "main": [
+        [
+          {
+            "node": "IF not found6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 15d3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check client send1": {
+      "main": [
+        [
+          {
+            "node": "Get replies7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get replies9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check client send": {
+      "main": [
+        [
+          {
+            "node": "Get replies6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get replies8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send mail Reply Ticket10": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo Point9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requester Replies4": {
+      "main": [
+        []
+      ]
+    },
+    "Cloodo Point8": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point9": {
+      "main": [
+        [
+          {
+            "node": "Send mail Reply Ticket10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 8h": {
+      "main": [
+        [
+          {
+            "node": "Requester Replies4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get replies8": {
+      "main": [
+        [
+          {
+            "node": "Replies and Ticket8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo Point10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 15d": {
+      "main": [
+        []
+      ]
+    },
+    "IF not found4": {
+      "main": [
+        [
+          {
+            "node": "Send mail Reply Ticket2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point11": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send mail Reply Ticket2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point10": {
+      "main": [
+        [
+          {
+            "node": "IF not found4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replies and Ticket8": {
+      "main": [
+        [
+          {
+            "node": "Ticket 15d",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo Point21",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point12": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point21": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get replies9": {
+      "main": [
+        [
+          {
+            "node": "Replies and Ticket9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items3": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo Point23",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ticket 15d1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found7": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point22",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point22": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point23": {
+      "main": [
+        [
+          {
+            "node": "IF not found7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replies and Ticket9": {
+      "main": [
+        [
+          {
+            "node": "Ticket 15d1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Ticket Pending5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ticket Pending7",
             "type": "main",
             "index": 0
           }
@@ -6510,7 +8141,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "43494189-9e63-44f9-9348-978a7680cc54",
+  "versionId": "ced39ca2-c2cb-465e-925c-f8ae0c082bf9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
