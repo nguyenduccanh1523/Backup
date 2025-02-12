@@ -20,7 +20,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3220,
+        3280,
         500
       ]
     },
@@ -271,7 +271,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        2620,
+        2540,
         500
       ],
       "alwaysOutputData": true,
@@ -532,7 +532,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2340,
+        2260,
         500
       ]
     },
@@ -747,39 +747,6 @@
     },
     {
       "parameters": {
-        "operation": "delete",
-        "documentId": {
-          "__rl": true,
-          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 2089448577,
-          "mode": "list",
-          "cachedResultName": "message cms",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2089448577"
-        },
-        "numberToDelete": 500
-      },
-      "id": "9818202a-d520-4f0c-845a-c816447ada8c",
-      "name": "Clear Row Message Data",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        2900,
-        500
-      ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
-        }
-      }
-    },
-    {
-      "parameters": {
         "numberInputs": 3
       },
       "id": "8fb845b1-2914-47b7-9f05-cc213b01a291",
@@ -793,12 +760,66 @@
     },
     {
       "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Execute Workflow Trigger').item.json.conversation }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            },
+            {
+              "name": "fields",
+              "value": "participants,messages{id}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "9de53b23-130b-44f0-a1a4-7810ac8f6baf",
+      "name": "Get User Facebook3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2820,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook3').item.json.participants.data[0].email }}\",\n      \"body\": \"{{ $('Code').item.json.output }}\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook3').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "91ebd16d-c755-4076-84e0-a17b53ec442e",
+      "name": "Post message lên workchat from admin7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3040,
+        500
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
         "resource": "assistant",
         "assistantId": {
           "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
           "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
+          "cachedResultName": "Cmsmart AI"
         },
         "prompt": "define",
         "text": "=You are an AI Assistant of Cmsmart\n\nGenerate a friendly and professional message to provide information about the client’s project using the data provided below. Use only simple bullet points for clarity and include minimal icons (no use more than 5 icons in chat message) where necessary to enhance readability. Do not use text effects like bold, italics, or underlining. If any field is missing or empty, omit it from the response. Keep the tone helpful, professional, and engaging. Let embed link to project in chat message.\n\nThese data to analysis:\nclient name: {{ $json.client.name }}\n\nlink to project: https://worksuite.cloodo.com/apps/work/project/{{ $json.project.id }}/   \n  project name: {{ $json.project.name }}\nproject summary: {{ $json.project.summary }}\nstart date: {{ $json.project.start_date }}\ndeadline: {{ $json.project.deadline }}\nnotes: {{ $json.project.notes }}\nproject admin: {{ $json.project.project_admin }}\nproject members {{ ', '+$json.project.members.map(item=>item.name) }}\n\nList milestones:\n{{ $json.milestone.map((item, index) => `\nMilestone: ${index+1}\n  - Title: ${item.title}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n  - Summary: ${item.summary}\n`).join('') }}\n\n\nList tasks:\n{{ $json.tasks.map((item, index) => `\nTask: ${index+1}\n  - Title: ${item.heading}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n`).join('') }}\n\n",
@@ -814,8 +835,8 @@
       ],
       "credentials": {
         "openAiApi": {
-          "id": "NuSZIBmfyaC1efAa",
-          "name": "AI_Agent_API"
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "Workflow API"
         }
       }
     }
@@ -847,7 +868,7 @@
       "main": [
         [
           {
-            "node": "Clear Row Message Data",
+            "node": "Get User Facebook3",
             "type": "main",
             "index": 0
           }
@@ -963,7 +984,29 @@
         ]
       ]
     },
-    "Clear Row Message Data": {
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Facebook3": {
+      "main": [
+        [
+          {
+            "node": "Post message lên workchat from admin7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin7": {
       "main": [
         [
           {
@@ -971,14 +1014,10 @@
             "type": "main",
             "index": 0
           }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
+        ],
         [
           {
-            "node": "Aggregate",
+            "node": "Response",
             "type": "main",
             "index": 0
           }
@@ -1001,7 +1040,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a947306a-a74a-4fa6-820c-003a255dfa38",
+  "versionId": "71247cc9-de0a-4129-9a0a-eb8c0317e0ef",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"

@@ -30,8 +30,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        860,
-        400
+        1080,
+        420
       ]
     },
     {
@@ -81,8 +81,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1160,
-        520
+        1380,
+        540
       ]
     },
     {
@@ -132,8 +132,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1180,
-        260
+        1400,
+        280
       ],
       "disabled": true
     },
@@ -156,8 +156,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1680,
-        520
+        1900,
+        540
       ]
     },
     {
@@ -178,7 +178,7 @@
           "values": [
             {
               "lookupColumn": "id",
-              "lookupValue": "={{ $json.id }}"
+              "lookupValue": "={{ $('Trigger').item.json.id }}"
             }
           ]
         },
@@ -189,8 +189,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        140,
-        240
+        360,
+        260
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -434,8 +434,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        1460,
-        520
+        1660,
+        540
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -452,7 +452,7 @@
       "typeVersion": 1,
       "position": [
         -100,
-        240
+        260
       ]
     },
     {
@@ -482,8 +482,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1040,
-        80
+        1260,
+        100
       ]
     },
     {
@@ -495,51 +495,72 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        780,
-        80
+        1000,
+        100
       ]
     },
     {
       "parameters": {
-        "operation": "delete",
-        "documentId": {
-          "__rl": true,
-          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Trigger').item.json.conversation }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            },
+            {
+              "name": "fields",
+              "value": "participants,messages{id}"
+            }
+          ]
         },
-        "sheetName": {
-          "__rl": true,
-          "value": 2089448577,
-          "mode": "list",
-          "cachedResultName": "message cms",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2089448577"
-        },
-        "numberToDelete": 200
-      },
-      "id": "64576eef-8230-4cfa-820d-2b892e69f711",
-      "name": "Delete message",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        1280,
-        80
-      ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
         }
-      }
+      },
+      "id": "c2b8c749-e95a-402f-a517-0e3a060dc5c8",
+      "name": "Get User Facebook3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        120,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook3').item.json.participants.data[0].email }}\",\n      \"body\": \"{{ $('Code6').item.json.output }}\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook3').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "e47bbf39-2c31-4e59-a835-ddc76ea36add",
+      "name": "Post message lên workchat from admin7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1560,
+        100
+      ],
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
         "resource": "assistant",
         "assistantId": {
           "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
           "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
+          "cachedResultName": "Cmsmart AI"
         },
         "prompt": "define",
         "text": "=You are an AI Assistant of Cmsmart\n\nAnalyze the following conversation messages between the client and admin. Based on the content of the messages, create a friendly and professional chat message to summarize the work done during the chat session via the last messaging session. The summary should:  \n\n1. Include a polite greeting and address the client by name.  \n2. Summarize the key points discussed in the messages, such as:  \n   - Actions taken by the admin.  \n   - Requests made by the client.   \n   - Focus on issues resolved within 24 hours based on message send time\n3. Avoid rigidly including categories like \"Project Status,\" \"Recent Activities,\" or \"Next Steps\" if the messages don’t contain relevant information. Instead, adapt the content to reflect what was actually discussed.  \n4. End with a friendly invitation for the client to ask further questions or request additional support.\n5. Always conclude the message with \"Best regards, Cmsmart Admin.\"\n\nEnsure the tone is polite, professional, and client-friendly. You can add some icon to more friendly. But allway just use plain text or use some basic bullet. Never use effect for text like bold, italic...  \n\nHere are the conversation messages:  \n {{ $('Trigger').item.json.messages }}\n\nRespond only with the summary message, ensuring it reflects the content of the conversation. Avoid adding information not present in the messages.  \n\n",
@@ -550,13 +571,13 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        380,
-        80
+        600,
+        100
       ],
       "credentials": {
         "openAiApi": {
-          "id": "Fr1fa0hUFyO4bC5x",
-          "name": "OpenAi Account"
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "Workflow API"
         }
       }
     },
@@ -565,9 +586,9 @@
         "resource": "assistant",
         "assistantId": {
           "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
           "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
+          "cachedResultName": "Cmsmart AI"
         },
         "prompt": "define",
         "text": "=You are an AI Assistant of Cmsmart\n\nAnalyze the following conversation messages between the client and admin. Based on the content of the messages, draft a professional email to summarize the work done during the chat session via the last messaging session and provide the client with updates and next steps regarding their project.  \n\nThe email should:  \n1. Start directly with the content, skipping formal greetings like \"Dear [Client Name]\" or \"Subject.\"  \n2. Provide a clear and concise summary of:  \n   - The client’s inquiries or requests.  \n   - Actions taken by the admin.  \n   - Focus on issues resolved within 24 hours based on message send time  \n3. Include follow-up actions, such as links to tickets or specific details relevant to the client’s requests.  \n4. Avoid formal closing statements like \"Best regards, Cmsmart Admin.\"  \n5. Ensure the email is polite, professional, and client-friendly.\n\nHere are the conversation messages:  \n {{ $('Trigger').item.json.messages }}\n\nRespond only with the email content, formatted as specified. Do not include a subject, greeting, or closing.  ",
@@ -578,13 +599,13 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        360,
-        400
+        580,
+        420
       ],
       "credentials": {
         "openAiApi": {
-          "id": "Fr1fa0hUFyO4bC5x",
-          "name": "OpenAi Account"
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "Workflow API"
         }
       }
     }
@@ -649,7 +670,7 @@
       "main": [
         [
           {
-            "node": "Get Info",
+            "node": "Get User Facebook3",
             "type": "main",
             "index": 0
           }
@@ -667,11 +688,22 @@
         ]
       ]
     },
+    "Get User Facebook3": {
+      "main": [
+        [
+          {
+            "node": "Get Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Messager Done": {
       "main": [
         [
           {
-            "node": "Delete message",
+            "node": "Post message lên workchat from admin7",
             "type": "main",
             "index": 0
           }
@@ -705,7 +737,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "0c052437-4ac6-46c2-819c-58388167a078",
+  "versionId": "4297e538-01e3-4492-af32-f77d2545510f",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"

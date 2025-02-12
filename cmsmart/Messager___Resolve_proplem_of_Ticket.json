@@ -79,7 +79,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        740,
+        700,
         420
       ]
     },
@@ -393,7 +393,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        1780,
+        1720,
         420
       ],
       "credentials": {
@@ -422,7 +422,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2260,
+        2460,
         420
       ]
     },
@@ -659,7 +659,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1560,
+        1500,
         420
       ]
     },
@@ -672,7 +672,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1360,
+        1300,
         420
       ]
     },
@@ -714,45 +714,66 @@
     },
     {
       "parameters": {
-        "operation": "delete",
-        "documentId": {
-          "__rl": true,
-          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Trigger').item.json.conversation }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            },
+            {
+              "name": "fields",
+              "value": "participants,messages{id}"
+            }
+          ]
         },
-        "sheetName": {
-          "__rl": true,
-          "value": 2089448577,
-          "mode": "list",
-          "cachedResultName": "message cms",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2089448577"
-        },
-        "numberToDelete": 500
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
       },
-      "id": "cc790f10-85e9-4be4-a8ae-a3331c534d0c",
-      "name": "Clear Row Message Data",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "id": "3be49f8d-fae1-4413-9511-1ca44b5e868a",
+      "name": "Get User Facebook3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        2040,
+        2000,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook3').item.json.participants.data[0].email }}\",\n      \"body\": \"{{ $('Code').item.json.output }}\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook3').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "fced0d3d-34fd-4086-bc62-b380d47af3a3",
+      "name": "Post message lên workchat from admin7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2200,
         420
       ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
-        }
-      }
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
         "resource": "assistant",
         "assistantId": {
           "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
           "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
+          "cachedResultName": "Cmsmart AI"
         },
         "prompt": "define",
         "text": "=you are an AI Assistant of CMSMART\n\nOur customers are having problems and need support in a ticket. With the chat history with the customer and the information about the project and the details of the ticket the customer is asking, write a friendly, professional, reasonable, focused and focused response to the customer about the problem they are having and encourage the customer to contact our agent who is taking care of them in that ticket to give the best solution to the problem they are having.\nAsk again about the problem they are having and need support when the problem they need help with is not clear.\nThey can comment directly on that ticket so that the agent can give them the solution or email the agent to be able to be resolved faster.\n\nBelow is the information provided for you to analyze:\n\n1. History chat messages:\n{{ $('Trigger').item.json.messages }}\n\n2. Detail info of ticket:\n  - ticket number: {{ $('Switch').item.json.ticketSupport.ticket_number }}\n  - ticket subject: {{ $('Switch').item.json.ticketSupport.subject }}\n  - ticket status: {{ $('Switch').item.json.ticketSupport.status }}\n  - ticket agent: {{ $('Switch').item.json.ticketSupport.agent.name }}\n  - agent email: {{ $('Cloodo CRM').item.json.data[0].agent.email }}\n  - link to ticket: https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Get detail Ticket').item.json.data[0].id }}/   \n  - List comments history between client and agennt: \n    {{ $json.messagesSent }}\n\n3. Info project:\n  - Project name: {{ $('Cloodo CRM').item.json.data[0].projects.name }}\n  - Link to project: https://worksuite.cloodo.com/apps/work/project/{{ $('Cloodo CRM').item.json.data[0].projects.id }}/  ",
@@ -763,13 +784,13 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        980,
+        920,
         420
       ],
       "credentials": {
         "openAiApi": {
-          "id": "Fr1fa0hUFyO4bC5x",
-          "name": "OpenAi Account"
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "Workflow API"
         }
       }
     }
@@ -835,7 +856,7 @@
       "main": [
         [
           {
-            "node": "Clear Row Message Data",
+            "node": "Get User Facebook3",
             "type": "main",
             "index": 0
           }
@@ -886,8 +907,26 @@
         ]
       ]
     },
-    "Clear Row Message Data": {
+    "Get User Facebook3": {
       "main": [
+        [
+          {
+            "node": "Post message lên workchat from admin7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin7": {
+      "main": [
+        [
+          {
+            "node": "response",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "response",
@@ -913,7 +952,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "7a49e818-5ec2-40e3-aff2-98aeb1dcc5b0",
+  "versionId": "7822ee55-305f-49a5-a25c-a584cf105083",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"

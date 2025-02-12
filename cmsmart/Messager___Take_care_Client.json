@@ -8,10 +8,9 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -1100,
-        660
-      ],
-      "disabled": true
+        -1280,
+        960
+      ]
     },
     {
       "parameters": {
@@ -36,7 +35,7 @@
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1.1,
       "position": [
-        -280,
+        -780,
         1280
       ],
       "credentials": {
@@ -65,29 +64,9 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3160,
+        3460,
         500
       ]
-    },
-    {
-      "parameters": {
-        "messageImport": "={{ $json.message }}",
-        "userId": "={{ $('Trigger').item.json.id }}"
-      },
-      "id": "ee59a719-ce73-469d-bb7b-1219aa29dd9f",
-      "name": "Require Confirm Project2",
-      "type": "@cloodo/n8n-nodes-workchat.workchat",
-      "typeVersion": 1,
-      "position": [
-        2220,
-        300
-      ],
-      "credentials": {
-        "workchatTokenApi": {
-          "id": "zaUKCrkh6p3yOskM",
-          "name": "Workchat Token account 3"
-        }
-      }
     },
     {
       "parameters": {
@@ -269,10 +248,10 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 778731400,
+          "value": 1419606979,
           "mode": "list",
-          "cachedResultName": "Follow CLient",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+          "cachedResultName": "Client Follow Cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1419606979"
         },
         "filtersUI": {
           "values": [
@@ -289,7 +268,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        220,
+        -280,
         680
       ],
       "alwaysOutputData": false,
@@ -317,7 +296,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let output = $input.all()[0].json.output\n\n\n// Regular expression to match JSON (with or without triple backticks)\nconst jsonMatch = /```json\\s*({[\\s\\S]*?})\\s*```|({[\\s\\S]*?})/;\n\n// Extract the JSON part\nconst jsonMatchResult = output.match(jsonMatch);\nconst jsonData = jsonMatchResult\n  ? JSON.parse(jsonMatchResult[1] || jsonMatchResult[2])\n  : null;\n\n// Remove the JSON part from the output\nconst cleanedOutput = output.replace(jsonMatch, '').trim();\n\nreturn {\n  type: jsonData || null,\n  message: cleanedOutput,\n};\n"
+        "jsCode": "let output = $input.all()[0].json.output;\n\n// Kiểm tra dữ liệu đầu vào\nconsole.log(\"Original Output:\", output);\n\n// Regular expression để tìm `type` trong output, sau dấu \"type\":\"enough\"\nconst typeMatch = /\"type\"\\s*:\\s*\"([^\"]+)\"/;\n\n// Kiểm tra nếu có phần \"type\" trong output\nconst typeMatchResult = output.match(typeMatch);\nconsole.log(\"typeMatchResult:\", typeMatchResult);\n\n// Nếu tìm thấy \"type\", trích xuất giá trị type\nlet extractedType = typeMatchResult && typeMatchResult[1] ? typeMatchResult[1] : null;\n\n// Loại bỏ phần \"type\" và giá trị của nó khỏi output\nconst cleanedOutput = output.replace(typeMatch, '').trim();\n\nconsole.log(\"Cleaned Output:\", cleanedOutput);\nconsole.log(\"Extracted Type:\", extractedType);\n\nreturn {\n  type: extractedType || null,  // Trả về 'extractedType' thay vì 'type'\n  message: cleanedOutput,  // Phần còn lại của message\n};\n"
       },
       "id": "729bd3ec-5d0a-4af3-afee-9672f49e57df",
       "name": "Code1",
@@ -564,7 +543,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        2680,
+        2980,
         500
       ],
       "alwaysOutputData": true,
@@ -586,8 +565,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        -900,
-        660
+        -800,
+        40
       ],
       "credentials": {
         "mySql": {
@@ -605,8 +584,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -500,
-        660
+        -400,
+        40
       ]
     },
     {
@@ -619,29 +598,9 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        -700,
-        660
+        -600,
+        40
       ]
-    },
-    {
-      "parameters": {
-        "messageImport": "={{ $('Code1').item.json.message }}\n\nYou can track and manage the ticket here: \n https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }}/ \n\nIf you need more details or would like to discuss further, I can connect you with our team for additional support. Let me know how I can assist!  ",
-        "userId": "={{ $('Trigger').item.json.id }}"
-      },
-      "id": "261538f1-c42e-416d-ad5c-f00213038d72",
-      "name": "Workchat Feature",
-      "type": "@cloodo/n8n-nodes-workchat.workchat",
-      "typeVersion": 1,
-      "position": [
-        3360,
-        600
-      ],
-      "credentials": {
-        "workchatTokenApi": {
-          "id": "zaUKCrkh6p3yOskM",
-          "name": "Workchat Token account 3"
-        }
-      }
     },
     {
       "parameters": {
@@ -652,7 +611,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2420,
+        2720,
         800
       ]
     },
@@ -679,7 +638,7 @@
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1.1,
       "position": [
-        2200,
+        2500,
         800
       ],
       "credentials": {
@@ -709,7 +668,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2680,
+        2980,
         800
       ],
       "credentials": {
@@ -955,7 +914,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        3160,
+        3800,
         800
       ],
       "alwaysOutputData": false,
@@ -985,7 +944,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3560,
+        4320,
         800
       ]
     },
@@ -998,8 +957,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -300,
-        660
+        -200,
+        40
       ]
     },
     {
@@ -1088,7 +1047,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -60,
+        -560,
         1280
       ]
     },
@@ -1111,35 +1070,15 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3160,
-        1100
+        3520,
+        1080
       ]
-    },
-    {
-      "parameters": {
-        "messageImport": "={{ $json.message }}",
-        "userId": "={{ $('Trigger').item.json.id }}"
-      },
-      "id": "ff8afdb2-72cf-4402-a317-0dc78946a72a",
-      "name": "Require Confirm Project",
-      "type": "@cloodo/n8n-nodes-workchat.workchat",
-      "typeVersion": 1,
-      "position": [
-        2020,
-        960
-      ],
-      "credentials": {
-        "workchatTokenApi": {
-          "id": "zaUKCrkh6p3yOskM",
-          "name": "Workchat Token account 3"
-        }
-      }
     },
     {
       "parameters": {
         "resource": "task",
         "operation": "getTaskByProject",
-        "project_id": "={{ $json.id_project_support }}",
+        "project_id": "={{ $('Trigger').item.json.project_id }}",
         "requestOptions": {}
       },
       "id": "a6607167-fad7-403b-a941-dc2c8933aeec",
@@ -1161,7 +1100,7 @@
       "parameters": {
         "resource": "project",
         "operation": "get",
-        "ID": "={{ $json.id_project_support }}",
+        "ID": "={{ $('Trigger').item.json.project_id }}",
         "requestOptions": {}
       },
       "id": "54db9d00-c52a-425e-b531-352b43fc5525",
@@ -1183,7 +1122,7 @@
       "parameters": {
         "resource": "project",
         "operation": "getMilestones",
-        "ID": "={{ $json.id_project_support }}",
+        "ID": "={{ $('Trigger').item.json.project_id }}",
         "additionalFields": {},
         "requestOptions": {}
       },
@@ -1315,10 +1254,10 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 778731400,
+          "value": 1419606979,
           "mode": "list",
-          "cachedResultName": "Follow CLient",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+          "cachedResultName": "Client Follow Cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1419606979"
         },
         "filtersUI": {
           "values": [
@@ -1335,7 +1274,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        240,
+        -280,
         1280
       ],
       "alwaysOutputData": false,
@@ -1363,7 +1302,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let output = $input.all()[0].json.output\n\n\n// Regular expression to match JSON (with or without triple backticks)\nconst jsonMatch = /```json\\s*({[\\s\\S]*?})\\s*```|({[\\s\\S]*?})/;\n\n// Extract the JSON part\nconst jsonMatchResult = output.match(jsonMatch);\nconst jsonData = jsonMatchResult\n  ? JSON.parse(jsonMatchResult[1] || jsonMatchResult[2])\n  : null;\n\n// Remove the JSON part from the output\nconst cleanedOutput = output.replace(jsonMatch, '').trim();\n\nreturn {\n  type: jsonData || null,\n  message: cleanedOutput,\n};\n"
+        "jsCode": "let output = $input.all()[0].json.output;\n\n// Kiểm tra dữ liệu đầu vào\nconsole.log(\"Original Output:\", output);\n\n// Regular expression để tìm `type` trong output, sau dấu \"type\":\"enough\"\nconst typeMatch = /\"type\"\\s*:\\s*\"([^\"]+)\"/;\n\n// Kiểm tra nếu có phần \"type\" trong output\nconst typeMatchResult = output.match(typeMatch);\nconsole.log(\"typeMatchResult:\", typeMatchResult);\n\n// Nếu tìm thấy \"type\", trích xuất giá trị type\nlet extractedType = typeMatchResult && typeMatchResult[1] ? typeMatchResult[1] : null;\n\n// Loại bỏ phần \"type\" và giá trị của nó khỏi output\nconst cleanedOutput = output.replace(typeMatch, '').trim();\n\nconsole.log(\"Cleaned Output:\", cleanedOutput);\nconsole.log(\"Extracted Type:\", extractedType);\n\nreturn {\n  type: extractedType || null,  // Trả về 'extractedType' thay vì 'type'\n  message: cleanedOutput,  // Phần còn lại của message\n};\n\n"
       },
       "id": "823fd6a7-690e-47b3-9c56-11607ac89d51",
       "name": "Code3",
@@ -1376,100 +1315,15 @@
     },
     {
       "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.type.type }}",
-                    "rightValue": "not enough",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "not enough"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "c11b499d-d888-4dbe-a577-9748c41c51ef",
-                    "leftValue": "={{ $json.type.type }}",
-                    "rightValue": "enough",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "enough"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "f8fd8eaf-03ca-4785-8621-cb8702945ccf",
-      "name": "Switch",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.2,
-      "position": [
-        2000,
-        1240
-      ]
-    },
-    {
-      "parameters": {
-        "messageImport": "={{ $('Code3').item.json.message }}\n\nYou can track and manage the ticket here: \n https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }}/ \n\nIf you need more details or would like to discuss further, I can connect you with our team for additional support. Let me know how I can assist!  ",
-        "userId": "={{ $('Trigger').item.json.id }}"
-      },
-      "id": "f455b629-2529-430c-a0e4-0285e4a30ffa",
-      "name": "Workchat Feature1",
-      "type": "@cloodo/n8n-nodes-workchat.workchat",
-      "typeVersion": 1,
-      "position": [
-        3380,
-        1240
-      ],
-      "credentials": {
-        "workchatTokenApi": {
-          "id": "zaUKCrkh6p3yOskM",
-          "name": "Workchat Token account 3"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const content = $input.all()[0].json.message.content\n// Extract only the JSON part (everything inside the { })\nconst jsonString = content.match(/{[\\s\\S]*}/)[0];\n\n// Parse the JSON string into an object\nconst jsonObject = JSON.parse(jsonString);\n\nconsole.log(jsonObject)\n\nreturn jsonObject;"
+        "jsCode": "const content = $input.all()[0].json.message.content;\n\n// Extract only the JSON part (everything inside the { })\nconst jsonString = content.match(/{[\\s\\S]*}/)[0];\n\n\n\n// Parse the JSON string into an object\nconst jsonObject = JSON.parse(jsonString);\n\nconsole.log(jsonObject);\n\nreturn jsonObject;"
       },
       "id": "556c852a-51bd-46de-8f9d-6da16173831d",
       "name": "Get Info Feature1",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2440,
-        1400
+        2780,
+        1380
       ]
     },
     {
@@ -1492,8 +1346,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2700,
-        1400
+        3040,
+        1380
       ],
       "credentials": {
         "cloodoApi": {
@@ -1521,8 +1375,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3700,
-        1400
+        4320,
+        1380
       ]
     },
     {
@@ -1548,8 +1402,8 @@
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1.1,
       "position": [
-        2220,
-        1400
+        2560,
+        1380
       ],
       "credentials": {
         "openAiApi": {
@@ -1794,8 +1648,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        3180,
-        1400
+        3680,
+        1380
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -2041,8 +1895,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        2680,
-        1100
+        3020,
+        1080
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -2071,8 +1925,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3400,
-        1700
+        3560,
+        1720
       ]
     },
     {
@@ -2153,7 +2007,7 @@
       "typeVersion": 1,
       "position": [
         960,
-        1820
+        1840
       ]
     },
     {
@@ -2236,7 +2090,7 @@
       "typeVersion": 3.4,
       "position": [
         1160,
-        1820
+        1840
       ]
     },
     {
@@ -2248,10 +2102,10 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 778731400,
+          "value": 1419606979,
           "mode": "list",
-          "cachedResultName": "Follow CLient",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=778731400"
+          "cachedResultName": "Client Follow Cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1419606979"
         },
         "filtersUI": {
           "values": [
@@ -2268,8 +2122,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        240,
-        1860
+        -200,
+        1880
       ],
       "alwaysOutputData": false,
       "executeOnce": true,
@@ -2291,12 +2145,12 @@
       "typeVersion": 1.3,
       "position": [
         1560,
-        2020
+        2100
       ]
     },
     {
       "parameters": {
-        "jsCode": "let output = $input.all()[0].json.output\n\n\n// Regular expression to match JSON (with or without triple backticks)\nconst jsonMatch = /```json\\s*({[\\s\\S]*?})\\s*```|({[\\s\\S]*?})/;\n\n// Extract the JSON part\nconst jsonMatchResult = output.match(jsonMatch);\nconst jsonData = jsonMatchResult\n  ? JSON.parse(jsonMatchResult[1] || jsonMatchResult[2])\n  : null;\n\n// Remove the JSON part from the output\nconst cleanedOutput = output.replace(jsonMatch, '').trim();\n\nreturn {\n  type: jsonData || null,\n  message: cleanedOutput,\n};\n"
+        "jsCode": "let output = $input.all()[0].json.output;\n\n// Kiểm tra dữ liệu đầu vào\nconsole.log(\"Original Output:\", output);\n\n// Regular expression để tìm `type` trong output, sau dấu \"type\":\"enough\"\nconst typeMatch = /\"type\"\\s*:\\s*\"([^\"]+)\"/;\n\n// Kiểm tra nếu có phần \"type\" trong output\nconst typeMatchResult = output.match(typeMatch);\nconsole.log(\"typeMatchResult:\", typeMatchResult);\n\n// Nếu tìm thấy \"type\", trích xuất giá trị type\nlet extractedType = typeMatchResult && typeMatchResult[1] ? typeMatchResult[1] : null;\n\n// Loại bỏ phần \"type\" và giá trị của nó khỏi output\nconst cleanedOutput = output.replace(typeMatch, '').trim();\n\nconsole.log(\"Cleaned Output:\", cleanedOutput);\nconsole.log(\"Extracted Type:\", extractedType);\n\nreturn {\n  type: extractedType || null,  // Trả về 'extractedType' thay vì 'type'\n  message: cleanedOutput,  // Phần còn lại của message\n};"
       },
       "id": "d706c443-375a-499f-ad81-4bc4a3e63123",
       "name": "Code4",
@@ -2304,72 +2158,7 @@
       "typeVersion": 2,
       "position": [
         1780,
-        1820
-      ]
-    },
-    {
-      "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.type.type }}",
-                    "rightValue": "not enough",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "not enough"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "c11b499d-d888-4dbe-a577-9748c41c51ef",
-                    "leftValue": "={{ $json.type.type }}",
-                    "rightValue": "enough",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "enough"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "028fbca7-3105-4ac5-89e3-f8f86147c712",
-      "name": "Switch2",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.2,
-      "position": [
-        2000,
-        1820
+        1840
       ]
     },
     {
@@ -2392,8 +2181,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2700,
-        1980
+        2960,
+        2000
       ],
       "credentials": {
         "cloodoApi": {
@@ -2421,8 +2210,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3600,
-        1980
+        4360,
+        2000
       ]
     },
     {
@@ -2696,8 +2485,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        2780,
-        1700
+        3040,
+        1720
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -2943,8 +2732,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.2,
       "position": [
-        3180,
-        1980
+        3760,
+        2000
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -2963,8 +2752,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2440,
-        1980
+        2700,
+        2000
       ]
     },
     {
@@ -2990,63 +2779,13 @@
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1.1,
       "position": [
-        2220,
-        1980
+        2480,
+        2000
       ],
       "credentials": {
         "openAiApi": {
           "id": "NuSZIBmfyaC1efAa",
           "name": "AI_Agent_API"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "messageImport": "={{ $('Code4').item.json.message }}\n\nYou can track and manage the ticket here: \n https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }}/ \n\nIf you need more details or would like to discuss further, I can connect you with our team for additional support. Let me know how I can assist!  ",
-        "userId": "={{ $('Trigger').item.json.id }}"
-      },
-      "id": "5b3ccac8-106c-47c7-9e0a-554a10e9b6cc",
-      "name": "Workchat Issue",
-      "type": "@cloodo/n8n-nodes-workchat.workchat",
-      "typeVersion": 1,
-      "position": [
-        2940,
-        2180
-      ],
-      "credentials": {
-        "workchatTokenApi": {
-          "id": "zaUKCrkh6p3yOskM",
-          "name": "Workchat Token account 3"
-        }
-      }
-    },
-    {
-      "parameters": {},
-      "id": "7c6310dc-a422-49bd-aed2-35939f7dd7ae",
-      "name": "Trigger",
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "position": [
-        -560,
-        1280
-      ]
-    },
-    {
-      "parameters": {
-        "messageImport": "={{ $json.message }}",
-        "userId": "={{ $('Trigger').item.json.id }}"
-      },
-      "id": "4dfd0bd3-c3f3-4d1e-812e-968f2c35c5c1",
-      "name": "Require Info Issue",
-      "type": "@cloodo/n8n-nodes-workchat.workchat",
-      "typeVersion": 1,
-      "position": [
-        2020,
-        1540
-      ],
-      "credentials": {
-        "workchatTokenApi": {
-          "id": "zaUKCrkh6p3yOskM",
-          "name": "Workchat Token account 3"
         }
       }
     },
@@ -3077,7 +2816,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2420,
+        2720,
         500
       ]
     },
@@ -3096,7 +2835,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $('Code1').item.json.message }} \\nYou can track and manage the ticket here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }}/\"\n  }\n}",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }} \\nWe use a website to manage your projects and requests. You can track and manage your tickets here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Create Ticket1').item.json.data.id }}/\"\n  }\n}",
         "options": {
           "redirect": {
             "redirect": {}
@@ -3108,7 +2847,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2920,
+        3560,
         800
       ]
     },
@@ -3139,8 +2878,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2440,
-        1100
+        2780,
+        1080
       ]
     },
     {
@@ -3158,7 +2897,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $('Code3').item.json.message }} \\nYou can track and manage the ticket here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }}/ \"\n  }\n}",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }} \\nWe use a website to manage your projects and requests. You can track and manage your tickets here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Create Ticket').item.json.data.id }}/ \"\n  }\n}",
         "options": {
           "redirect": {
             "redirect": {}
@@ -3170,8 +2909,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2960,
-        1400
+        3460,
+        1380
       ]
     },
     {
@@ -3201,8 +2940,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2500,
-        1700
+        2760,
+        1720
       ]
     },
     {
@@ -3220,7 +2959,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $('Code4').item.json.message }} \\nYou can track and manage the ticket here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }}/ \"\n  }\n}",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Trigger').item.json.id }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }} \\nWe use a website to manage your projects and requests. You can track and manage your tickets here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Create Ticket2').item.json.data.id }}/ \"\n  }\n}",
         "options": {
           "redirect": {
             "redirect": {}
@@ -3232,9 +2971,316 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2940,
-        1980
+        3520,
+        2000
       ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let message =  $input.all()[0].json.message\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nreturn {\n  output: message\n};"
+      },
+      "id": "0abafd05-8ad8-4908-99a5-92b517f0f886",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2580,
+        1080
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let message =  $input.all()[0].json.message\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nreturn {\n  output: message\n};"
+      },
+      "id": "22f66b39-42b3-437e-876e-048b7d29c4a9",
+      "name": "Code5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2540,
+        1720
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let message =  $input.all()[0].json.message\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nreturn {\n  output: message\n};"
+      },
+      "id": "04bb26ec-5597-4bea-bce7-c6ef745336a6",
+      "name": "Code6",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2500,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "mode": "list",
+          "cachedResultName": "Cmsmart Admin - AI Assistant"
+        },
+        "prompt": "define",
+        "text": "=You are Cmsmart AI Assistant\n\nOur customer is currently in need of support for an issue. Read this customer request: \"{{ $('Trigger').item.json.query }}\n\", and identify what they are looking for support for. And with the information I have provided below, respond appropriately.\n\nWrite a friendly, professional message that focuses on the issue they need support for.\n\nAsk the customer to provide details about the issue they need support for if they haven't already.\n\nOnce they have provided all the details, assure them that we will create a ticket to best assist them and encourage them to contact the agent listed in the ticket we just created for assistance. Tell them that they can comment directly on the ticket or email the agent to get assistance with the issue.\n\nREMEMBER, ALWAY without including the greeting or closing statement\n\nAt the end of the message, embed an object with the format: \"type\":\"enough\" (if the customer has provided enough information); \"type\":\"not enough\" (if the customer has not provided enough information and needs to ask more to clarify the issue)\n\nBelow is the information provided for you to analyze:\n\n1. The request of client: \n{{ $('Trigger').item.json.query }}\n\n2. Information of client\nclient name: {{ $json.client.name }}\n\n3. Information of project\n - project name: {{ $json.project.name }}\n - project summary: {{ $json.project.summary }}\n - start date: {{ $json.project.start_date }}\n - deadline: {{ $json.project.deadline }}\n - notes: {{ $json.project.notes }}\n - project admin: {{ $json.project.project_admin }}\n - project members {{ ', '+$json.project.members.map(item=>item.name) }}\n\n4. List milestones:\n{{ $json.milestone.map((item, index) => `\nMilestone: ${index+1}\n  - Title: ${item.title}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n  - Summary: ${item.summary}\n`).join('') }}\n\n5. List tasks:\n{{ $json.tasks.map((item, index) => `\nTask: ${index+1}\n  - Title: ${item.heading}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n`).join('') }}\n\n6. List client invoice:\n{{ $json.invoices.map((item, index) => `\nInvoice: ${index+1}\n  - Invoice Number: ${item.invoice_number}\n  - Status: ${item.status}\n  - Project: ${item.project.name}\n  - Invoice Date: ${item.invoice_date}\n`).join('') }}\n\n\n7. History chat messages:\n{{ $('Trigger').item.json.messages }}\n\n",
+        "options": {}
+      },
+      "id": "1cf05a3c-e484-4fe4-a88a-3ef72ebcf755",
+      "name": "OpenAI4",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        1420,
+        1840
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "NuSZIBmfyaC1efAa",
+          "name": "AI_Agent_API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let message =  $('Code3').all()[0].json.message\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nmessage = message.replace(/{}/g, '');\nreturn {\n  output: message\n};"
+      },
+      "id": "1382b1ef-04cf-4827-b1d1-5e1fcb1e6c7d",
+      "name": "Code7",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3260,
+        1380
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let message =  $('Code4').all()[0].json.message\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nmessage = message.replace(/{}/g, '');\nreturn {\n  output: message\n};"
+      },
+      "id": "c905c6b8-7eb4-4d62-95c0-f92ef6dcc83e",
+      "name": "Code8",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3260,
+        2000
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let message =  $('Code1').all()[0].json.message\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nmessage = message.replace(/{}/g, '');\nreturn {\n  output: message\n};"
+      },
+      "id": "cf6ba04c-833e-4b84-9b65-0bce6ecd660b",
+      "name": "Code9",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3260,
+        800
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "d826f4ee-23b3-4627-89dc-a5f5d98b3733",
+      "name": "Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1060,
+        1280
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Trigger').item.json.conversation }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            },
+            {
+              "name": "fields",
+              "value": "participants,messages{id}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "b864c4d9-63c3-4a66-a3c0-abe4a24605b0",
+      "name": "Get User Facebook3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2000,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook3').item.json.participants.data[0].email }}\",\n      \"body\": \"{{ $('Code6').item.json.output }}\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook3').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "e705cb3b-4acd-4172-bdb7-25dcfe629ab0",
+      "name": "Post message lên workchat from admin7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3200,
+        500
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
+          "mode": "list",
+          "cachedResultName": "Cmsmart AI"
+        },
+        "prompt": "define",
+        "text": "=You are the Cmsmart AI Assistant\n\nOur customer is currently in need of support for an issue: adding a new feature to their project.\n\nWrite a friendly, professional message that focuses on the issue they are in need of support for and that you are happy to help them add that feature to their project.\n\nAsk the customer for details about the feature they would like to have in their project if they have not already provided them.\n\nOnce they have provided all the details about the feature they would like to add to their project, reassure them that we will create a ticket to best support them and encourage them to contact the agent assigned to the ticket we just created for support. Tell them that they can comment directly on the ticket or email a support agent to assist with the issue\n\nREMEMBER, ALWAY without including the greeting or closing statement.\n\nAt the end of the message, embed an object with the format: \"type\":\"enough\" (if the customer has provided enough information); \"type\":\"not enough\" (if the customer has not provided enough information and needs to ask more to clarify the issue)\n\nBelow is the information provided for you to analyze:\n\n1. The request of client: \n{{ $('Trigger').item.json.query }}\n\n2. Information of client\nclient name: {{ $json.client.name }}\n\n3. Information of project\n - project name: {{ $json.project.name }}\n - project summary: {{ $json.project.summary }}\n - start date: {{ $json.project.start_date }}\n - deadline: {{ $json.project.deadline }}\n - notes: {{ $json.project.notes }}\n - project admin: {{ $json.project.project_admin }}\n - project members {{ ', '+$json.project.members.map(item=>item.name) }}\n\n4. List milestones:\n{{ $json.milestone.map((item, index) => `\nMilestone: ${index+1}\n  - Title: ${item.title}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n  - Summary: ${item.summary}\n`).join('') }}\n\n5. List tasks:\n{{ $json.tasks.map((item, index) => `\nTask: ${index+1}\n  - Title: ${item.heading}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n`).join('') }}\n\n5. History chat messages:\n{{ $('Trigger').item.json.messages }}\n\n",
+        "options": {}
+      },
+      "id": "1a87b20e-42aa-417d-b5d4-f83322050dcc",
+      "name": "OpenAI3",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        1400,
+        1240
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "Workflow API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Trigger').item.json.conversation }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            },
+            {
+              "name": "fields",
+              "value": "participants,messages{id}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "8b332b12-bbe1-4193-8912-2aed87219fd1",
+      "name": "Get User Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2040,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook').item.json.participants.data[0].email }}\",\n      \"body\": \"{{ $('Code').item.json.output }}\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "8cf738e1-5ade-4c1d-a744-cee01ed35644",
+      "name": "Post message lên workchat from admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3260,
+        1080
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Trigger').item.json.conversation }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            },
+            {
+              "name": "fields",
+              "value": "participants,messages{id}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "ecfeadf4-1e9e-4390-a57a-9e44b7375dfa",
+      "name": "Get User Facebook4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2000,
+        1840
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook4').item.json.participants.data[0].email }}\",\n      \"body\": \"{{ $('Code5').item.json.output }}\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook4').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "e61dca90-5493-483d-962a-746012e397c7",
+      "name": "Post message lên workchat from admin8",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3280,
+        1720
+      ],
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -3250,7 +3296,7 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $json.type.type }}",
+                    "leftValue": "={{ $('Code1').item.json.type }}",
                     "rightValue": "not enough",
                     "operator": {
                       "type": "string",
@@ -3274,7 +3320,7 @@
                 "conditions": [
                   {
                     "id": "c11b499d-d888-4dbe-a577-9748c41c51ef",
-                    "leftValue": "={{ $json.type.type }}",
+                    "leftValue": "={{ $('Code1').item.json.type }}",
                     "rightValue": "enough",
                     "operator": {
                       "type": "string",
@@ -3297,255 +3343,217 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        1980,
+        2280,
         640
       ]
     },
     {
       "parameters": {
-        "operation": "delete",
-        "documentId": {
-          "__rl": true,
-          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Code3').item.json.type }}",
+                    "rightValue": "not enough",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "not enough"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c11b499d-d888-4dbe-a577-9748c41c51ef",
+                    "leftValue": "={{ $('Code3').item.json.type }}",
+                    "rightValue": "enough",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "enough"
+            }
+          ]
         },
-        "sheetName": {
-          "__rl": true,
-          "value": 2089448577,
-          "mode": "list",
-          "cachedResultName": "message cms",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2089448577"
-        },
-        "numberToDelete": 1000
+        "options": {}
       },
-      "id": "96b289bc-98c4-46ce-9522-74f042ac9841",
-      "name": "Clear Row Message Data",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "id": "f8fd8eaf-03ca-4785-8621-cb8702945ccf",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
       "position": [
-        2900,
-        500
-      ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "delete",
-        "documentId": {
-          "__rl": true,
-          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 2089448577,
-          "mode": "list",
-          "cachedResultName": "message cms",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2089448577"
-        },
-        "numberToDelete": 500
-      },
-      "id": "fe2cd8e3-368d-49fe-8d98-f441d52bcad1",
-      "name": "Clear Row Message Data1",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        3360,
-        800
-      ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "delete",
-        "documentId": {
-          "__rl": true,
-          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 2089448577,
-          "mode": "list",
-          "cachedResultName": "message cms",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2089448577"
-        },
-        "numberToDelete": 500
-      },
-      "id": "2c8ed9ff-32ba-488a-926f-dc1e8e3975e1",
-      "name": "Clear Row Message Data2",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        2900,
-        1100
-      ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "delete",
-        "documentId": {
-          "__rl": true,
-          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 2089448577,
-          "mode": "list",
-          "cachedResultName": "message cms",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2089448577"
-        },
-        "numberToDelete": 500
-      },
-      "id": "5a26780d-39b3-4c61-ac55-6c3dd9d9efaf",
-      "name": "Clear Row Message Data3",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        3420,
-        1400
-      ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "delete",
-        "documentId": {
-          "__rl": true,
-          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 2089448577,
-          "mode": "list",
-          "cachedResultName": "message cms",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2089448577"
-        },
-        "numberToDelete": 500
-      },
-      "id": "db0773c2-52e7-4a4a-ae0f-30dcf4456f5a",
-      "name": "Clear Row Message Data4",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        3080,
-        1700
-      ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "delete",
-        "documentId": {
-          "__rl": true,
-          "value": "=https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
-          "mode": "url"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 2089448577,
-          "mode": "list",
-          "cachedResultName": "message cms",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2089448577"
-        },
-        "numberToDelete": 1000
-      },
-      "id": "8fad5b09-3dea-4819-bea7-410f7f1f24f8",
-      "name": "Clear Row Message Data5",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        3400,
-        1980
-      ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "P5h6CdXmV7twphIt",
-          "name": "Canh Google Sheets"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "let message =  $input.all()[0].json.message\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nreturn {\n  output: message\n};"
-      },
-      "id": "0abafd05-8ad8-4908-99a5-92b517f0f886",
-      "name": "Code",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2240,
-        1100
+        2320,
+        1240
       ]
     },
     {
       "parameters": {
-        "jsCode": "let message =  $input.all()[0].json.message\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nreturn {\n  output: message\n};"
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Code4').item.json.type }}\n{{ $json.type }}",
+                    "rightValue": "not enough",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "not enough"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c11b499d-d888-4dbe-a577-9748c41c51ef",
+                    "leftValue": "={{ $('Code4').item.json.type }}\n{{ $json.type }}",
+                    "rightValue": "enough",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "enough"
+            }
+          ]
+        },
+        "options": {}
       },
-      "id": "22f66b39-42b3-437e-876e-048b7d29c4a9",
-      "name": "Code5",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "id": "028fbca7-3105-4ac5-89e3-f8f86147c712",
+      "name": "Switch2",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
       "position": [
         2280,
-        1700
+        1840
       ]
     },
     {
       "parameters": {
-        "jsCode": "let message =  $input.all()[0].json.message\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nreturn {\n  output: message\n};"
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook3').item.json.participants.data[0].email }}\",\n      \"body\": \"{{ $('Code9').item.json.output }} \\nWe use a website to manage your projects and requests. You can track and manage your tickets here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Create Ticket1').item.json.data.id }}/\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook3').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
       },
-      "id": "04bb26ec-5597-4bea-bce7-c6ef745336a6",
-      "name": "Code6",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "id": "c1033c49-9daa-4ac6-a33f-59ac904a8a12",
+      "name": "Post message lên workchat from admin9",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        2200,
-        500
-      ]
+        4040,
+        800
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook').item.json.participants.data[0].email }}\",\n      \"body\": \"{{ $('Code7').item.json.output }} \\nWe use a website to manage your projects and requests. You can track and manage your tickets here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Create Ticket').item.json.data.id }}/ \",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "5c89a202-2ab8-4771-8d6a-954cc873bab2",
+      "name": "Post message lên workchat from admin1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3980,
+        1380
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook4').item.json.participants.data[0].email }}\",\n      \"body\": \"{{ $('Code8').item.json.output }} \\nWe use a website to manage your projects and requests. You can track and manage your tickets here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Create Ticket2').item.json.data.id }}/ \",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook4').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "46d7fc68-fe36-4651-9705-fcaa9571fcf9",
+      "name": "Post message lên workchat from admin10",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4020,
+        2000
+      ],
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
         "resource": "assistant",
         "assistantId": {
           "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
           "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
+          "cachedResultName": "Cmsmart AI"
         },
         "prompt": "define",
         "text": "=You are an AI Assistant of Cmsmart\n\nOur customer is currently in need of support for a problem: a refund.\nWrite a friendly, professional message that focuses on the issue they are having and that you are sorry for the problem they are having\nAsk the customer for details about the issue they are having and why they want a refund if they haven’t already provided them.\n\nOnce they have provided a full explanation of why they want a refund, tell them to rest assured that we will create a ticket to find the best solution for them and encourage them to contact the agent in the ticket we just created to resolve the issue. Tell them they can comment directly on the ticket or email the agent to resolve the issue\n\n\nREMEMBER, ALWAY without including the greeting or closing statement\n\n\nAt the end of the message, embed an object with the format: \"type\":\"enough\" (if the customer has provided enough information); \"type\":\"not enough\" (if the customer has not provided enough information and needs to ask more to clarify the issue)\n\nBelow is the information provided for you to analyze:\n\n1. The request of client: \n{{ $('Trigger').item.json.query }}\n\n2. Information of client\nclient name: {{ $json.client.name }}\n\n3. Information of project\n - project name: {{ $json.project.name }}\n - project summary: {{ $json.project.summary }}\n - start date: {{ $json.project.start_date }}\n - deadline: {{ $json.project.deadline }}\n - notes: {{ $json.project.notes }}\n - project admin: {{ $json.project.project_admin }}\n - project members {{ ', '+$json.project.members.map(item=>item.name) }}\n\n4. List milestones:\n{{ $json.milestone.map((item, index) => `\nMilestone: ${index+1}\n  - Title: ${item.title}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n  - Summary: ${item.summary}\n`).join('') }}\n\n5. List tasks:\n{{ $json.tasks.map((item, index) => `\nTask: ${index+1}\n  - Title: ${item.heading}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n`).join('') }}\n\n5. History chat messages:\n{{ $('Trigger').item.json.messages }}\n\n",
@@ -3561,81 +3569,14 @@
       ],
       "credentials": {
         "openAiApi": {
-          "id": "NuSZIBmfyaC1efAa",
-          "name": "AI_Agent_API"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
-          "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
-        },
-        "prompt": "define",
-        "text": "=You are the Cmsmart AI Assistant\n\nOur customer is currently in need of support for an issue: adding a new feature to their project.\n\nWrite a friendly, professional message that focuses on the issue they are in need of support for and that you are happy to help them add that feature to their project.\n\nAsk the customer for details about the feature they would like to have in their project if they have not already provided them.\n\nOnce they have provided all the details about the feature they would like to add to their project, reassure them that we will create a ticket to best support them and encourage them to contact the agent assigned to the ticket we just created for support. Tell them that they can comment directly on the ticket or email a support agent to assist with the issue\n\nREMEMBER, ALWAY without including the greeting or closing statement.\n\nAt the end of the message, embed an object with the format: \"type\":\"enough\" (if the customer has provided enough information); \"type\":\"not enough\" (if the customer has not provided enough information and needs to ask more to clarify the issue)\n\nBelow is the information provided for you to analyze:\n\n1. The request of client: \n{{ $('Trigger').item.json.query }}\n\n2. Information of client\nclient name: {{ $json.client.name }}\n\n3. Information of project\n - project name: {{ $json.project.name }}\n - project summary: {{ $json.project.summary }}\n - start date: {{ $json.project.start_date }}\n - deadline: {{ $json.project.deadline }}\n - notes: {{ $json.project.notes }}\n - project admin: {{ $json.project.project_admin }}\n - project members {{ ', '+$json.project.members.map(item=>item.name) }}\n\n4. List milestones:\n{{ $json.milestone.map((item, index) => `\nMilestone: ${index+1}\n  - Title: ${item.title}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n  - Summary: ${item.summary}\n`).join('') }}\n\n5. List tasks:\n{{ $json.tasks.map((item, index) => `\nTask: ${index+1}\n  - Title: ${item.heading}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n`).join('') }}\n\n5. History chat messages:\n{{ $('Trigger').item.json.messages }}\n\n",
-        "options": {}
-      },
-      "id": "1a87b20e-42aa-417d-b5d4-f83322050dcc",
-      "name": "OpenAI3",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        1400,
-        1240
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "NuSZIBmfyaC1efAa",
-          "name": "AI_Agent_API"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
-          "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
-        },
-        "prompt": "define",
-        "text": "=You are Cmsmart AI Assistant\n\nOur customer is currently in need of support for an issue. Read this customer request: \"{{ $('Trigger').item.json.query }}\n\", and identify what they are looking for support for. And with the information I have provided below, respond appropriately.\n\nWrite a friendly, professional message that focuses on the issue they need support for.\n\nAsk the customer to provide details about the issue they need support for if they haven't already.\n\nOnce they have provided all the details, assure them that we will create a ticket to best assist them and encourage them to contact the agent listed in the ticket we just created for assistance. Tell them that they can comment directly on the ticket or email the agent to get assistance with the issue.\n\nREMEMBER, ALWAY without including the greeting or closing statement\n\nAt the end of the message, embed an object with the format: \"type\":\"enough\" (if the customer has provided enough information); \"type\":\"not enough\" (if the customer has not provided enough information and needs to ask more to clarify the issue)\n\nBelow is the information provided for you to analyze:\n\n1. The request of client: \n{{ $('Trigger').item.json.query }}\n\n2. Information of client\nclient name: {{ $json.client.name }}\n\n3. Information of project\n - project name: {{ $json.project.name }}\n - project summary: {{ $json.project.summary }}\n - start date: {{ $json.project.start_date }}\n - deadline: {{ $json.project.deadline }}\n - notes: {{ $json.project.notes }}\n - project admin: {{ $json.project.project_admin }}\n - project members {{ ', '+$json.project.members.map(item=>item.name) }}\n\n4. List milestones:\n{{ $json.milestone.map((item, index) => `\nMilestone: ${index+1}\n  - Title: ${item.title}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n  - Summary: ${item.summary}\n`).join('') }}\n\n5. List tasks:\n{{ $json.tasks.map((item, index) => `\nTask: ${index+1}\n  - Title: ${item.heading}\n  - Status: ${item.status}\n  - Start Date: ${item.start_date}\n  - Due Date: ${item.due_date}\n`).join('') }}\n\n6. List client invoice:\n{{ $json.invoices.map((item, index) => `\nInvoice: ${index+1}\n  - Invoice Number: ${item.invoice_number}\n  - Status: ${item.status}\n  - Project: ${item.project.name}\n  - Invoice Date: ${item.invoice_date}\n`).join('') }}\n\n\n7. History chat messages:\n{{ $('Trigger').item.json.messages }}\n\n",
-        "options": {}
-      },
-      "id": "1cf05a3c-e484-4fe4-a88a-3ef72ebcf755",
-      "name": "OpenAI4",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        1400,
-        1820
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "NuSZIBmfyaC1efAa",
-          "name": "AI_Agent_API"
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "Workflow API"
         }
       }
     }
   ],
   "pinData": {},
   "connections": {
-    "When clicking ‘Test workflow’": {
-      "main": [
-        [
-          {
-            "node": "MySQL Get Detail Messages",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "OpenAI": {
       "main": [
         [
@@ -3749,7 +3690,7 @@
       "main": [
         [
           {
-            "node": "Switch1",
+            "node": "Get User Facebook3",
             "type": "main",
             "index": 0
           }
@@ -3760,7 +3701,7 @@
       "main": [
         [
           {
-            "node": "Clear Row Message Data",
+            "node": "Post message lên workchat from admin7",
             "type": "main",
             "index": 0
           }
@@ -3826,7 +3767,7 @@
       "main": [
         [
           {
-            "node": "Messager Feature",
+            "node": "Code9",
             "type": "main",
             "index": 0
           }
@@ -3837,7 +3778,7 @@
       "main": [
         [
           {
-            "node": "Clear Row Message Data1",
+            "node": "Post message lên workchat from admin9",
             "type": "main",
             "index": 0
           }
@@ -3967,51 +3908,11 @@
         ]
       ]
     },
-    "Code3": {
-      "main": [
-        [
-          {
-            "node": "Switch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Switch": {
-      "main": [
-        [
-          {
-            "node": "Code",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "OpenAI Features",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Info Feature1": {
-      "main": [
-        [
-          {
-            "node": "Create Ticket",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Create Ticket": {
       "main": [
         [
           {
-            "node": "Messager Feature1",
+            "node": "Code7",
             "type": "main",
             "index": 0
           }
@@ -4033,7 +3934,7 @@
       "main": [
         [
           {
-            "node": "Clear Row Message Data3",
+            "node": "Post message lên workchat from admin1",
             "type": "main",
             "index": 0
           }
@@ -4044,7 +3945,7 @@
       "main": [
         [
           {
-            "node": "Clear Row Message Data2",
+            "node": "Post message lên workchat from admin",
             "type": "main",
             "index": 0
           }
@@ -4147,25 +4048,7 @@
       "main": [
         [
           {
-            "node": "Switch2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Switch2": {
-      "main": [
-        [
-          {
-            "node": "Code5",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "OpenAI Issue",
+            "node": "Get User Facebook4",
             "type": "main",
             "index": 0
           }
@@ -4176,7 +4059,7 @@
       "main": [
         [
           {
-            "node": "Messager Issue",
+            "node": "Code8",
             "type": "main",
             "index": 0
           }
@@ -4209,7 +4092,7 @@
       "main": [
         [
           {
-            "node": "Clear Row Message Data4",
+            "node": "Post message lên workchat from admin8",
             "type": "main",
             "index": 0
           }
@@ -4220,7 +4103,7 @@
       "main": [
         [
           {
-            "node": "Clear Row Message Data5",
+            "node": "Post message lên workchat from admin10",
             "type": "main",
             "index": 0
           }
@@ -4243,17 +4126,6 @@
         [
           {
             "node": "Get Info Issue",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Trigger": {
-      "main": [
-        [
-          {
-            "node": "OpenAI",
             "type": "main",
             "index": 0
           }
@@ -4326,90 +4198,6 @@
         ]
       ]
     },
-    "Switch1": {
-      "main": [
-        [
-          {
-            "node": "Code6",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "OpenAI Refund",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear Row Message Data": {
-      "main": [
-        [
-          {
-            "node": "Response",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear Row Message Data5": {
-      "main": [
-        [
-          {
-            "node": "Response5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear Row Message Data4": {
-      "main": [
-        [
-          {
-            "node": "Response4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear Row Message Data3": {
-      "main": [
-        [
-          {
-            "node": "Response3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear Row Message Data2": {
-      "main": [
-        [
-          {
-            "node": "Response2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear Row Message Data1": {
-      "main": [
-        [
-          {
-            "node": "Response1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Code": {
       "main": [
         [
@@ -4443,11 +4231,77 @@
         ]
       ]
     },
-    "OpenAI2": {
+    "OpenAI4": {
       "main": [
         [
           {
-            "node": "Code1",
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Info Feature1": {
+      "main": [
+        [
+          {
+            "node": "Create Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Get User Facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code7": {
+      "main": [
+        [
+          {
+            "node": "Messager Feature1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code8": {
+      "main": [
+        [
+          {
+            "node": "Messager Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code9": {
+      "main": [
+        [
+          {
+            "node": "Messager Feature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
             "type": "main",
             "index": 0
           }
@@ -4465,11 +4319,206 @@
         ]
       ]
     },
-    "OpenAI4": {
+    "Get User Facebook3": {
       "main": [
         [
           {
-            "node": "Code4",
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI Refund",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI Features",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Facebook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Facebook4": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin7": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin": {
+      "main": [
+        [
+          {
+            "node": "Response2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Response2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin8": {
+      "main": [
+        [
+          {
+            "node": "Response4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Response4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin9": {
+      "main": [
+        [
+          {
+            "node": "Response1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin1": {
+      "main": [
+        [
+          {
+            "node": "Response3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Response3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin10": {
+      "main": [
+        [
+          {
+            "node": "Response5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Response5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Code1",
             "type": "main",
             "index": 0
           }
@@ -4481,7 +4530,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "070fa4dc-f019-4373-a30f-9d0913fc1fc6",
+  "versionId": "70bfff2b-ad4c-4675-b819-cd30c93ba560",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"

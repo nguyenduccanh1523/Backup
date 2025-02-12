@@ -20,8 +20,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1700,
-        860
+        2860,
+        820
       ]
     },
     {
@@ -413,7 +413,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        720,
+        900,
         760
       ]
     },
@@ -434,7 +434,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        940,
+        1120,
         540
       ],
       "credentials": {
@@ -463,7 +463,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        1160,
+        1340,
         540
       ],
       "credentials": {
@@ -796,7 +796,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1560,
+        1740,
         540
       ]
     },
@@ -827,7 +827,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1800,
+        2200,
         540
       ]
     },
@@ -858,7 +858,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1220,
+        1400,
         860
       ]
     },
@@ -871,7 +871,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        960,
+        1140,
         860
       ]
     },
@@ -1114,7 +1114,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1360,
+        1540,
         540
       ]
     },
@@ -1145,6 +1145,106 @@
     },
     {
       "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Execute Workflow Trigger').item.json.conversation }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            },
+            {
+              "name": "fields",
+              "value": "participants,messages{id}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "3470e970-7192-4e94-b2c0-d56e55738050",
+      "name": "Get User Facebook3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        700,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook3').item.json.participants.data[0].email }}\",\n      \"body\": \"{{ $('Code6').item.json.output }}\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook3').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "40d339c7-cd77-467e-a270-0fe3e3406eb6",
+      "name": "Post message lên workchat from admin7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1800,
+        860
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook3').item.json.participants.data[0].email }}\",\n      \"body\": \"{{ $('Code7').item.json.output }}\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook3').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "10c46d46-ae49-46fb-bc49-4491dc843e66",
+      "name": "Post message lên workchat from admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1940,
+        540
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook3').item.json.participants.data[0].email }}\",\n      \"body\": \"🎉 Congratulations! Your project has been successfully created! \\n\\nYou can view and manage your project using the following link:\\n\\n🔗 [View Your Project](https://worksuite.cloodo.com/apps/work/project/{{ $('Create Project').item.json.data.id}})/  \\n\\nWe’re excited to see your project take shape. If you need any further assistance or updates, feel free to reach out! 🚀\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook3').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "f020df85-67ed-465b-8f5c-8e17f990bbb7",
+      "name": "Post message lên workchat from admin8",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2400,
+        540
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
         "promptType": "define",
         "text": "=parse the data below and return the results in JSON format including: name_project_create, project_summary_create, start_date_create, deadline_create, project_url_create. Leave blank any fields that are not present.\n\n{{ $json.query }}",
         "options": {}
@@ -1163,9 +1263,9 @@
         "resource": "assistant",
         "assistantId": {
           "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
           "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
+          "cachedResultName": "Cmsmart AI"
         },
         "prompt": "define",
         "text": "=Analyze the information provided and check if all the necessary details to create a new project are available. If any details are missing, return a friendly message with a list of missing information. If everything is provided, confirm the project creation with a friendly message.\n\nProject Details:\n- Project Name: {{ $json.name_project_create }}\n- Project Summary: {{ $json.project_summary_create }}\n- Start Date: {{ $json.start_date_create }} (if null, get today to default) (ALWAY format time to yyyy/MM/dd)\n- Deadline: {{ $json.deadline_create }} (not require) (ALWAY format time to yyyy/MM/dd)\n- Project URL: {{ $json.project_url_create }}\n\nInformation received from the client:\n\n{{ $('Execute Workflow Trigger').item.json.query }}\n\nResponse Logic:\n\nRequired Information:\n - Project Name\n - Project Summary\n\n1. If any information is missing:\n\n  Hello! I'm happy to help you create your project. It looks like we need a few more details to proceed with creating your project. Could you kindly provide the following information?\n   (Add bullet points or icons to the missing details, list only the missing details ):\n\n   - 📌 Project Name: The name of your project\n   - 📌 Project Summary: Some goals you want to accomplish in your project\n   \n   Once we have these details, we'll be all set to get started! Thanks so much for your cooperation!😊\n\n2. If all information is provided:\n\n   🎉Fantastic! All the information to create your project has been received. Here’s a quick overview of what we have:\n\n   - ✅ Project Name: {{ $json.name_project_create }}\n   - ✅ Project Summary: {{ $json.project_summary_create }}\n   - ✅ Project URL: {{ $json.project_url_create }}/   \n\n  We're excited to start working on your project! Let’s get going! 🚀\n\n\nExplanation:\n- Missing Information Response: The message uses a friendly tone with a stop icon (🛑) and clear bullet points for any missing details.\n- Complete Information Response: Once all information is available, the message confirms the details with a checkmark icon (✅) for clarity and a positive tone.\n- Required Fields: Only Project Name and Project Summary are checked for completeness.\n- Optional Fields: Start Date, Deadline, and Project URL are optional and default to provided or null values.\n- Friendly Tone: Maintains a positive and clear communication style for missing or complete responses.\n",
@@ -1181,8 +1281,8 @@
       ],
       "credentials": {
         "openAiApi": {
-          "id": "NuSZIBmfyaC1efAa",
-          "name": "AI_Agent_API"
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "Workflow API"
         }
       }
     }
@@ -1259,7 +1359,7 @@
       "main": [
         [
           {
-            "node": "Send link to project1",
+            "node": "Post message lên workchat from admin",
             "type": "main",
             "index": 0
           }
@@ -1270,7 +1370,7 @@
       "main": [
         [
           {
-            "node": "Response",
+            "node": "Post message lên workchat from admin8",
             "type": "main",
             "index": 0
           }
@@ -1281,7 +1381,7 @@
       "main": [
         [
           {
-            "node": "Response",
+            "node": "Post message lên workchat from admin7",
             "type": "main",
             "index": 0
           }
@@ -1350,6 +1450,71 @@
         ]
       ]
     },
+    "Get User Facebook3": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin7": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin": {
+      "main": [
+        [
+          {
+            "node": "Send link to project1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send link to project1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin8": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "AI Agent": {
       "main": [
         [
@@ -1365,7 +1530,7 @@
       "main": [
         [
           {
-            "node": "If",
+            "node": "Get User Facebook3",
             "type": "main",
             "index": 0
           }
@@ -1377,7 +1542,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "3abe07e4-c874-4706-a0b5-3932b1b18675",
+  "versionId": "6fd686d2-dbbc-4ff5-a0bd-ab5a19703ef7",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
