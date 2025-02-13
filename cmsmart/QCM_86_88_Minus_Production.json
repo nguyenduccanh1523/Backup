@@ -1,0 +1,6267 @@
+{
+  "name": "QCM 86-88 Minus Production",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1466ff8c-15f6-4bb0-a0b0-0b2e6a28fe4a",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1260,
+        2420
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/departments",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4e774340-4062-4ad4-bfec-62ad2bd0862a",
+      "name": "Get All Department",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1000,
+        2220
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/departments",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b5a921c6-6043-4df7-9257-3d9137a4d1fd",
+      "name": "Get All Department1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1000,
+        2420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/departments",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e51e1559-6390-4f90-852b-55b90240b739",
+      "name": "Get All Department2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1020,
+        2640
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "67bcfb2f-0e4f-41ab-ba2e-085c352339ab",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -500,
+        2420
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "7782dc1c-8889-4226-b761-1979f5994958",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        2420
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const allDepartment = $input.all()[0]?.json?.data[2]\nconst member = allDepartment?.member\nconsole.log('all: ', member)\n\nreturn{\n  name: allDepartment?.name,\n  member: member\n}\n"
+      },
+      "id": "acd9e3dc-9178-4f00-9ebc-60211e2f39d9",
+      "name": "GetMember",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -780,
+        2220
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const allDepartment = $input.all()[0]?.json?.data[2]\nconst member = allDepartment?.member\nconsole.log('all: ', member)\n\nreturn{\n  name: allDepartment?.name,\n  member: member\n}\n"
+      },
+      "id": "5c0552de-ee32-46db-aac6-c8c03e152d20",
+      "name": "GetMember1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -780,
+        2420
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const allDepartment = $input.all()[0]?.json?.data[2]\nconst member = allDepartment?.member\nconsole.log('all: ', member)\n\nreturn{\n  name: allDepartment?.name,\n  member: member\n}\n"
+      },
+      "id": "6126b526-cff9-4d47-8381-ac9f49a71ef2",
+      "name": "GetMember2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -780,
+        2640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let listMembers = []\n\n// Lấy các thành viên của ba công ty\nconst MemberCms = $input.all()[0]?.json?.data[0]?.member;\nconst MemberPrintCart = $input.all()[0]?.json?.data[1]?.member;\nconst MemberCloodo = $input.all()[0]?.json?.data[2]?.member;\n\n// Thêm tên công ty vào các thành viên\nMemberCms.forEach(member => {\n  member.companyName = 'CmsMart';// Tên công ty cho MemberCms\n  listMembers.push(member)\n});\n\nMemberPrintCart.forEach(member => {\n  member.companyName = 'PrintCart';  // Tên công ty cho MemberPrintCart\n  listMembers.push(member)\n});\n\nMemberCloodo.forEach(member => {\n  member.companyName = 'Cloodo';  // Tên công ty cho MemberCloodo\n  listMembers.push(member)\n});\n\n// Đếm số lượng công ty cho mỗi người theo 'name'\nconst nameCountMap = {};\n\n// Duyệt qua danh sách các thành viên và đếm số lượng công ty theo tên\nlistMembers.forEach(member => {\n  const name = member.name;\n\n  // Nếu tên chưa có trong map, khởi tạo giá trị với 0\n  if (!nameCountMap[name]) {\n    nameCountMap[name] = new Set();  // Sử dụng Set để đảm bảo mỗi công ty chỉ được đếm 1 lần\n  }\n\n  // Thêm tên công ty vào Set để đếm duy nhất\n  nameCountMap[name].add(member.companyName);\n});\n\n// Thêm số lượng công ty vào từng thành viên\nlistMembers.forEach(member => {\n  const name = member.name;\n  member.countCompany = nameCountMap[name].size; // Số lượng công ty mà thành viên tham gia\n});\n\n// Trả về các thành viên đã được cập nhật\nreturn listMembers;"
+      },
+      "id": "14fc5139-6e9b-44a4-9e6a-5550b0d6d111",
+      "name": "CompanyName",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        2420
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "CmsMart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CmsMart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "PrintCart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PrintCart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "Cloodo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cloodo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5125e6c7-e349-4b04-ab5f-e082825799b7",
+      "name": "Switch Company",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        720,
+        1780
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a395e6cf-a8f8-4cf2-a613-9edd97cf1099",
+      "name": "get Milestone",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        940,
+        1840
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c17c59b4-1c11-4564-bcf3-42e4ec4b067e",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1320,
+        1840
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "00046a6e-6e55-4203-a801-1572ff8a8de8",
+      "name": "Check create 7d",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        1840
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "emplooyee Cms"
+      },
+      "id": "9ed2b87d-7eb0-4c13-af4f-b368aadef776",
+      "name": "Stop and Error",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        800,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "emplooyee Printcart"
+      },
+      "id": "8f3a7bc7-8229-4a51-bfb6-4e11d7a4928b",
+      "name": "Stop and Error1",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        920,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.countCompany }}",
+                    "rightValue": 1,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "1"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ecaeec34-6fa8-41da-aeb6-827e62de92b3",
+                    "leftValue": "={{ $json.countCompany }}",
+                    "rightValue": 2,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "2"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8d73594f-9a0b-4b50-b347-ac7eb50f0f13",
+                    "leftValue": "={{ $json.countCompany }}",
+                    "rightValue": 3,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "3"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4065fa12-881b-4bdd-899b-fbf9ec101e6e",
+      "name": "Count Company",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        140,
+        2420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6e41004a-24bd-4475-9837-4c1b5e68d983",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "Vu Van Tuyen",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "a781e98a-3884-48fc-8383-6c03e33c4fc4",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "Nguyen Thanh Tung",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "83bde001-9b91-4bbc-965a-1b013442bf22",
+      "name": "Remove employee leave",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        1960
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6e41004a-24bd-4475-9837-4c1b5e68d983",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "Nguyen Duc Phat",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "316b304c-3113-43e6-abf1-687d70687f2f",
+      "name": "Remove employee leave1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        2420
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.name }}",
+                    "rightValue": "Vu Van Minh",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Vu Van Minh"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "dbe7be1f-5b60-42df-bca3-3dd1ab846db7",
+                    "leftValue": "={{ $json.name }}",
+                    "rightValue": "Vo Tuan Vu",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Vo Tuan Vu"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "3a1ebf8a-3f5c-44e3-b8eb-22452c6d8a32",
+                    "leftValue": "={{ $json.name }}",
+                    "rightValue": "Nguyen Ngoc Huy",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Nguyen Ngoc Huy"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "602b04f8-5e81-4b3d-8537-8435fd5ca9f0",
+                    "leftValue": "={{ $json.name }}",
+                    "rightValue": "Pham Ngoc Huy",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Pham Ngoc Huy"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8f2d3c75-6e15-44dd-955f-2462cea6fcf8",
+                    "leftValue": "={{ $json.name }}",
+                    "rightValue": "Do Hoang Nam",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Do Hoang Nam"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5ddab4fb-4552-442c-b985-ac486038e5f0",
+                    "leftValue": "={{ $json.name }}",
+                    "rightValue": "Hoang Anh Dung",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Hoang Anh Dung"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e4ebcd21-3054-433a-a04e-532ba93b1e19",
+                    "leftValue": "={{ $json.name }}",
+                    "rightValue": "Nguyen Duc Canh",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Nguyen Duc Canh"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b095ed39-6648-47e0-a4d3-6af3c0a5bf47",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2260,
+        2380
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b7a23ef3-ca11-4d57-afaf-5827f29c46a8",
+      "name": "get Milestone1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3640,
+        660
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8caae1fa-7e54-4327-b738-38e2591161aa",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4100,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "c8d0e151-e5e2-411c-9880-79b03a923108",
+      "name": "Check create 7d1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3900,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "69eb3282-6370-4b52-b2de-327e0d87b4b9",
+      "name": "get Milestone2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3640,
+        480
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b695ccaf-8fe0-42ab-a28b-ad4ae2386cc7",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4100,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "0a00ed9e-76ff-4bc5-9d43-d2f4cdfb0048",
+      "name": "Check create 7d2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3900,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8eca4340-21b4-4d05-899f-6d960fd26b6c",
+      "name": "get Milestone3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3640,
+        320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "94bc69d2-4348-45d0-b557-25be89edd061",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4100,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "ecb91c51-d785-4a15-82aa-e291790f46d1",
+      "name": "Check create 7d3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3900,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "CmsMart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CmsMart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "PrintCart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PrintCart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "Cloodo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cloodo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a3409e0d-e484-42b1-a0ec-3f6eb9fb259e",
+      "name": "Switch Company1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3360,
+        500
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a87e9430-545b-425d-a68c-7f884566b988",
+      "name": "get Milestone4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3620,
+        1200
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3773c259-80c2-4e42-9e9c-18929cc9059a",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4080,
+        1200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "b5f76ba5-4f6c-46f8-b5ef-5edc45cfc500",
+      "name": "Check create 7d4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3880,
+        1200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "37114167-0fb9-4905-b758-3d5f178b93a3",
+      "name": "get Milestone5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3620,
+        1020
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "51bcd1ac-e1c6-4c5a-a9f5-f3a16fab0b2a",
+      "name": "If5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4080,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "ff2a0f4b-4821-4ad0-917a-adde0bde4f9b",
+      "name": "Check create 7d5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3880,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3e9ce865-04b8-497a-930c-1e9c5b8b1132",
+      "name": "get Milestone6",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3620,
+        860
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2fe13f38-686b-402e-b19a-fcf015bf984c",
+      "name": "If6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4080,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "5ac2b120-3bae-4c97-b4c0-d91574264eb9",
+      "name": "Check create 7d6",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3880,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "CmsMart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CmsMart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "PrintCart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PrintCart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "Cloodo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cloodo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a251d21d-963b-4717-8890-5c29b4c9bdb7",
+      "name": "Switch Company2",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3320,
+        1020
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a0993422-6035-4527-bdff-ed279dde0574",
+      "name": "get Milestone7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3620,
+        1800
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "35cb8191-a707-46ad-b6b6-0f84e0a65d1b",
+      "name": "If7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4080,
+        1800
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "8a04ec3a-421d-4b24-8347-debb0fe00a9d",
+      "name": "Check create 7d7",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3880,
+        1800
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a560f56d-70f5-4dd6-adba-9dea1cfe4177",
+      "name": "get Milestone8",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3620,
+        1620
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0b928bf9-7dd8-4a91-b42f-ff8cdd5e9ec4",
+      "name": "If8",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4080,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "64ca6ab2-9263-4ded-9d65-de4244f01c75",
+      "name": "Check create 7d8",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3880,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1069a0a6-42a0-4ced-8a18-95683dcec3dc",
+      "name": "get Milestone9",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3620,
+        1460
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "414a7819-60a4-4b10-9557-7abd9a49700a",
+      "name": "If9",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4080,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "71a875fb-b845-4321-a678-9c081877a7f5",
+      "name": "Check create 7d9",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3880,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "CmsMart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CmsMart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "PrintCart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PrintCart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "Cloodo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cloodo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5957a88a-8b4d-4117-bcae-f1a1edfb10b9",
+      "name": "Switch Company3",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3320,
+        1620
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8a873401-d198-4b02-b126-d186765a02ba",
+      "name": "get Milestone10",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3640,
+        2400
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f4924ddc-5b2d-45e7-a536-fef3aca09152",
+      "name": "If10",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4100,
+        2400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "47ed059a-93e4-4006-923f-aa62942c38fc",
+      "name": "Check create 7d10",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3900,
+        2400
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cb3f045c-1a0e-449f-a9ce-611b29660148",
+      "name": "get Milestone11",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3640,
+        2220
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c541cf32-266b-4814-91a4-7ab0cd682249",
+      "name": "If11",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4100,
+        2220
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "4a72fa30-9319-4542-a042-3d1279728942",
+      "name": "Check create 7d11",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3900,
+        2220
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "687c2bab-cf6e-48d4-a426-536862ca6766",
+      "name": "get Milestone12",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3640,
+        2060
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a38bee9c-e234-45ba-b3a9-57cc66f6d596",
+      "name": "If12",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4100,
+        2060
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "bb9aae4b-6947-40ab-b472-c4966907ba53",
+      "name": "Check create 7d12",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3900,
+        2060
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "CmsMart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CmsMart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "PrintCart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PrintCart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "Cloodo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cloodo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "97e08a9c-3515-4d82-9cbf-8450528d59ca",
+      "name": "Switch Company4",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3340,
+        2220
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1171c84e-ff9c-4aeb-90ea-b6e3e1f0e699",
+      "name": "get Milestone13",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3600,
+        3020
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "09acf342-1820-47d6-b980-d06a24ec1ba6",
+      "name": "If13",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4060,
+        3020
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "b7a87881-88da-41f7-b0ba-de9a895dc223",
+      "name": "Check create 7d13",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3860,
+        3020
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "88bd0440-78c2-437a-93cb-dcf3f884ac2b",
+      "name": "get Milestone14",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3600,
+        2840
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8521e4be-76e9-482d-b130-3ba63bf1ef34",
+      "name": "If14",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4060,
+        2840
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "90363811-64b8-4c58-bffc-b2be7e60c73f",
+      "name": "Check create 7d14",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3860,
+        2840
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e7b43536-6059-45d0-b579-15cbff9110d9",
+      "name": "get Milestone15",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3600,
+        2680
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "94578acf-c86c-4ced-be67-3bc2ffeaa80b",
+      "name": "If15",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4060,
+        2680
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "429183b5-5103-4056-8b1d-5be396d3281c",
+      "name": "Check create 7d15",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3860,
+        2680
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "CmsMart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CmsMart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "PrintCart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PrintCart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "Cloodo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cloodo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "32ada976-2608-45fc-a955-83e3bbe935da",
+      "name": "Switch Company5",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3300,
+        2840
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "68c783ec-5bdf-458a-87be-8aa0afa27ed4",
+      "name": "get Milestone16",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3640,
+        3600
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b6a45714-d666-4e27-9a6c-347546259c6a",
+      "name": "If16",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4100,
+        3600
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "b8903e95-5af1-4102-9b81-548a78ca40f1",
+      "name": "Check create 7d16",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3900,
+        3600
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "073895f3-6d27-4911-bd67-e202b0d8a880",
+      "name": "get Milestone17",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3640,
+        3420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "bbbd3bd0-0cc6-4c2b-8cd5-e5963034b9db",
+      "name": "If17",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4100,
+        3420
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "84cd1698-e1ba-4b57-ade4-3522da9ec106",
+      "name": "Check create 7d17",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3900,
+        3420
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "34d34281-e316-4680-a744-6f29a2dc7dfa",
+      "name": "get Milestone18",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3640,
+        3260
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c3154330-c6d3-454f-b077-85e048ee98d8",
+      "name": "If18",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4100,
+        3260
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "838c556f-62c3-4899-8cc4-e85c610f78bc",
+      "name": "Check create 7d18",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3900,
+        3260
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "CmsMart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CmsMart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "PrintCart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PrintCart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "Cloodo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cloodo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "901a6a80-7e0d-4d70-897c-a4d6163232a1",
+      "name": "Switch Company6",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3340,
+        3420
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b600c50d-47a8-4032-b28b-05e139990024",
+      "name": "get Milestone19",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3700,
+        4180
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "638083b1-88d2-46e7-bea7-b68f8f77266c",
+      "name": "If19",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4160,
+        4180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "75f18ae9-d12b-4f7f-8169-9957001e1a9a",
+      "name": "Check create 7d19",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3960,
+        4180
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b5dfe36c-4b05-4fe0-9bc4-34785eb57e71",
+      "name": "get Milestone20",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3700,
+        4000
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8a06b403-cc8d-4ae2-b9ca-7c15b3089f47",
+      "name": "If20",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4160,
+        4000
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "36e3480f-0569-43d9-ad97-5eada8897e6a",
+      "name": "Check create 7d20",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3960,
+        4000
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1d90adb8-8e24-4890-9f6a-d577f35f2ea7",
+      "name": "get Milestone21",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3700,
+        3840
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9b9c11fc-3704-46a8-8e5f-c29a958bb169",
+      "name": "If21",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4160,
+        3840
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "30232d1a-7393-4d72-b7bf-1bc35ca5f8e8",
+      "name": "Check create 7d21",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3960,
+        3840
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "CmsMart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CmsMart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "PrintCart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PrintCart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "Cloodo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cloodo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1b946837-f41c-4371-824c-6b18fb911456",
+      "name": "Switch Company7",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3400,
+        4000
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "id": "0c746217-be48-4c34-b7bd-1b64e501e12e",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4540,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "id": "ca6a36b1-2173-4a63-903d-6230c5ba80ae",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4540,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "id": "e665cb79-31ff-4582-97c2-f4fd9251a083",
+      "name": "Merge3",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4560,
+        1520
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "id": "876c5cc2-f8a6-4827-966a-e6ac91f641d5",
+      "name": "Merge4",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4560,
+        2220
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "id": "c1fc1545-10eb-4d62-a287-730bb2a306cc",
+      "name": "Merge5",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4580,
+        2760
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "id": "4638308e-1a17-4f22-ad08-5f7f4d893ec7",
+      "name": "Merge6",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4580,
+        3340
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "id": "b7df6396-7a8d-4b0f-808f-0a146b71cf20",
+      "name": "Merge7",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4580,
+        3980
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6e41004a-24bd-4475-9837-4c1b5e68d983",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "Vu Duy The",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "90d76086-f108-426e-8446-821b24274328",
+      "name": "Remove employee leave2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        3320
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6315147f-d59b-4f32-81ab-e59f80f15ed9",
+      "name": "get Milestone22",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        740,
+        3520
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "631db622-09ac-481b-96d1-f117be005601",
+      "name": "If22",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        3520
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "82c0ab1a-3894-47b6-9219-24e29ab921ec",
+      "name": "Check create 7d22",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        3520
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6e312746-ff4f-4c8c-8af6-f7a2f4d1822a",
+      "name": "get Milestone23",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        740,
+        3340
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c425cb56-2b61-4d85-8d49-7cb6c4466f21",
+      "name": "If23",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        3340
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "2266b1b0-0f6e-4a8a-a40f-907c1b477066",
+      "name": "Check create 7d23",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        3340
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/milestones",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "597b47b1-406e-4397-8e3e-d7fd2943bb16",
+      "name": "get Milestone24",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        740,
+        3180
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isInLast7Days }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "69fedc75-b340-41b1-89bd-96715eb67372",
+      "name": "If24",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        3180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current date\nconst currentDate = new Date();\n\n// Define an empty array to hold the results\nlet result = [];\n\n// Loop through each item and check the 'created_at' field\n$input.all().forEach(item => {\n  const createdAt = new Date($input.all()[0]?.json?.data[0]?.created_at); // Parse 'created_at' to a Date object\n  \n  // Calculate the difference in days\n  const diffTime = currentDate - createdAt;\n  const diffDays = diffTime / (1000 * 3600 * 24); // Convert milliseconds to days\n\n  // Create an object with a boolean value based on the condition\n  const outputObject = {\n    ...item.json, // Include the original item data\n    isInLast7Days: diffDays <= 7 ? false : true, // Add a new field for the condition\n  };\n  \n  result.push(outputObject); // Push the result object into the array\n});\n\n// Return the array of objects\nreturn result;"
+      },
+      "id": "848b27a0-a6fb-4b26-979c-d93d6e7b23ab",
+      "name": "Check create 7d24",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        3180
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Merge8').item.json.data[0].agent.id }}",
+        "points": 3,
+        "note": "=QCM 86: {{ $('Merge8').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}"
+      },
+      "id": "8e6474a4-6bd7-412f-b97d-bc7f61f2b383",
+      "name": "Cloodo Point",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        3240
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "c5734e6a-b07d-4ff0-9df1-acbdce083269",
+      "name": "IF not found5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        3260
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 86: {{ $('Merge8').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}",
+        "max_limit_record": 50
+      },
+      "id": "a10f1506-734e-4865-8311-fa66113928f6",
+      "name": "Cloodo Point16",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        3260
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "CmsMart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CmsMart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "PrintCart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PrintCart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "Cloodo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cloodo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b9f6e3b4-97e6-428d-8013-c78f8aa6afd9",
+      "name": "Switch Company8",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        440,
+        3320
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "numberInputs": 3
+      },
+      "id": "b459cf93-4fcf-41d3-9f1b-3c0a4f9fe059",
+      "name": "Merge8",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1580,
+        3260
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Merge1').item.json.data[0].agent.id }}",
+        "points": 3,
+        "note": "=QCM 86: {{ $('Merge1').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}"
+      },
+      "id": "1b4aedfc-c51b-4b0f-93f1-73e098844580",
+      "name": "Cloodo Point1",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5300,
+        460
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "c79d7c68-09c6-4982-a60b-a0ef821e9d83",
+      "name": "IF not found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5060,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 86: {{ $('Merge1').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}",
+        "max_limit_record": 50
+      },
+      "id": "14787922-a268-4994-bd30-700b200bfc3a",
+      "name": "Cloodo Point17",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4860,
+        480
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Merge2').item.json.data[0].agent.id }}",
+        "points": 3,
+        "note": "=QCM 86: {{ $('Merge2').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}"
+      },
+      "id": "9af93511-eafc-432e-80fb-289ced3eb3d1",
+      "name": "Cloodo Point2",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5340,
+        900
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "ce915a14-faf9-469d-848b-cf588d95b15b",
+      "name": "IF not found6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5100,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 86: {{ $('Merge2').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}",
+        "max_limit_record": 50
+      },
+      "id": "a51a35ea-cb97-4fe4-96b8-73a112b80714",
+      "name": "Cloodo Point18",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4900,
+        920
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Merge3').item.json.data[0].agent.id }}",
+        "points": 3,
+        "note": "=QCM 86: {{ $('Merge3').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}"
+      },
+      "id": "bd5b119b-3fec-4a2f-ae2c-778b20ab8510",
+      "name": "Cloodo Point3",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5380,
+        1480
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "161b5bf2-f76f-4f2b-8579-a6bce3473d32",
+      "name": "IF not found7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5140,
+        1500
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 86: {{ $('Merge3').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}",
+        "max_limit_record": 50
+      },
+      "id": "5aa88e99-db2a-48b5-95e8-4db882431e86",
+      "name": "Cloodo Point19",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4940,
+        1500
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Merge4').item.json.data[0].agent.id }}",
+        "points": 3,
+        "note": "=QCM 86: {{ $('Merge4').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}"
+      },
+      "id": "4cb0f064-033f-46ac-bd22-996da6d1272c",
+      "name": "Cloodo Point4",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5260,
+        2200
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "7034ebeb-4618-4821-9f26-8170c51fa083",
+      "name": "IF not found8",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5020,
+        2220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 86: {{ $('Merge4').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}",
+        "max_limit_record": 50
+      },
+      "id": "99e03b68-61bd-430c-90af-1c00637e1ba8",
+      "name": "Cloodo Point20",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4820,
+        2220
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Merge5').item.json.data[0].agent.id }}",
+        "points": 3,
+        "note": "=QCM 86: {{ $('Merge5').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}"
+      },
+      "id": "775e3756-23e5-401b-9949-806d15b51cdd",
+      "name": "Cloodo Point5",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5320,
+        2720
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "7ca055ac-312d-4696-b52e-21f436fd9dc2",
+      "name": "IF not found9",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5080,
+        2740
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 86: {{ $('Merge5').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}",
+        "max_limit_record": 50
+      },
+      "id": "17119058-941e-4912-8b6c-d7a680fb0f61",
+      "name": "Cloodo Point21",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4880,
+        2740
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Merge6').item.json.data[0].agent.id }}",
+        "points": 3,
+        "note": "=QCM 86: {{ $('Merge6').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}"
+      },
+      "id": "61b108da-aa8e-4d21-9157-ea0810e93cad",
+      "name": "Cloodo Point6",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5360,
+        3320
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "77c44ef0-9203-4b43-b0c4-995b57563dac",
+      "name": "IF not found10",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5120,
+        3340
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 86: {{ $('Merge6').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}",
+        "max_limit_record": 50
+      },
+      "id": "c4849ce0-0d27-417a-bd19-28da87259756",
+      "name": "Cloodo Point22",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4920,
+        3340
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('Merge7').item.json.data[0].agent.id }}",
+        "points": 3,
+        "note": "=QCM 86: {{ $('Merge7').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}"
+      },
+      "id": "befc805c-87b5-4b4e-ae9b-54554709546b",
+      "name": "Cloodo Point7",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        5380,
+        3920
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "6db36404-8b41-4885-8b45-a2a3108017e1",
+      "name": "IF not found11",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5140,
+        3940
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 86: {{ $('Merge7').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}",
+        "max_limit_record": 50
+      },
+      "id": "eccf4fb9-b9a2-4296-9b41-75b1da597ff6",
+      "name": "Cloodo Point23",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        4940,
+        3940
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "Token is expired or incorrect"
+      },
+      "id": "439c088a-081c-4ad4-ab61-692de011799e",
+      "name": "Stop and Error5",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        5980,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c084ee-9110-4ac7-a165-223df2075781",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Token is expired or incorrect",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4e5ee41b-f10f-404d-a22b-2627f601f87e",
+      "name": "If25",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5680,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c084ee-9110-4ac7-a165-223df2075781",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Token is expired or incorrect",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "dce24213-3b37-4866-9164-4690553cebea",
+      "name": "If26",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5680,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Token is expired or incorrect"
+      },
+      "id": "04de786d-72f9-4962-bb2c-a53f942ed183",
+      "name": "Stop and Error6",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        5980,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Token is expired or incorrect"
+      },
+      "id": "5830945f-b034-4310-aeba-45aea5e07884",
+      "name": "Stop and Error7",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        5960,
+        1480
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c084ee-9110-4ac7-a165-223df2075781",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Token is expired or incorrect",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ff393f73-468b-416e-a8dd-2c7a515714a9",
+      "name": "If27",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5680,
+        1500
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Token is expired or incorrect"
+      },
+      "id": "c7dd1d50-da93-4e56-b0fa-24ea6cb87e70",
+      "name": "Stop and Error8",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        5920,
+        2180
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c084ee-9110-4ac7-a165-223df2075781",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Token is expired or incorrect",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "78caee5e-26c4-44b9-b5fd-013a6b0896af",
+      "name": "If28",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5620,
+        2200
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Token is expired or incorrect"
+      },
+      "id": "e233ad28-4f95-45d7-9b1f-33d88ec05796",
+      "name": "Stop and Error9",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        5940,
+        2720
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c084ee-9110-4ac7-a165-223df2075781",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Token is expired or incorrect",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d07133ca-4e15-4980-819f-1d48b6dbcc2b",
+      "name": "If29",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5640,
+        2740
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Token is expired or incorrect"
+      },
+      "id": "f6fc2685-ff97-46c6-b3c5-aedc6ed79bd9",
+      "name": "Stop and Error10",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        5940,
+        3300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c084ee-9110-4ac7-a165-223df2075781",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Token is expired or incorrect",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a2e5c565-f415-48c2-99eb-40fe851bc49f",
+      "name": "If30",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5640,
+        3320
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Token is expired or incorrect"
+      },
+      "id": "0ea396e1-7fe4-467b-9228-1089edbf692e",
+      "name": "Stop and Error11",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        5980,
+        3900
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c084ee-9110-4ac7-a165-223df2075781",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Token is expired or incorrect",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "157c8d43-4406-4dbd-8e81-22ebfbc95aec",
+      "name": "If31",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5680,
+        3920
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If1').item.json.data[0].agent.id }}",
+        "points": 3,
+        "note": "=QCM 86: {{ $('If1').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}"
+      },
+      "id": "7ae4698c-1ee1-42f9-8ef2-8465d8609121",
+      "name": "Cloodo Point8",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        2020,
+        1800
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "2bbb738d-6dd9-4218-a800-31313d0443f9",
+      "name": "IF not found1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        1820
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 86: {{ $('If1').item.json.data[0].agent.name }} -3 Point No Create Milestone on week From: {{$now.minus(7, 'days').format('yyyy-MM-dd')}} To: {{$now.format('yyyy-MM-dd')}}",
+        "max_limit_record": 50
+      },
+      "id": "62917574-902e-4dd8-b292-62c715619f41",
+      "name": "Cloodo Point24",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        1820
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "Token is expired or incorrect"
+      },
+      "id": "b94cbb6c-19f4-431a-aa69-aba351595458",
+      "name": "Stop and Error12",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        1780
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c084ee-9110-4ac7-a165-223df2075781",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Token is expired or incorrect",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "59b1089a-8447-474e-8318-b58ebd6d549d",
+      "name": "If32",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2180,
+        1800
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Token is expired or incorrect"
+      },
+      "id": "7eac6473-6dc1-49bd-bfb6-2459deb514bb",
+      "name": "Stop and Error13",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        2680,
+        3220
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c084ee-9110-4ac7-a165-223df2075781",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Token is expired or incorrect",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ac7b82b7-e6fd-46d5-bbc2-8becd76a910c",
+      "name": "If33",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2380,
+        3240
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get All Department",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get All Department1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get All Department2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Department": {
+      "main": [
+        [
+          {
+            "node": "GetMember",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Department1": {
+      "main": [
+        [
+          {
+            "node": "GetMember1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Department2": {
+      "main": [
+        [
+          {
+            "node": "GetMember2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "CompanyName",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetMember": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetMember1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "GetMember2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "CompanyName": {
+      "main": [
+        [
+          {
+            "node": "Count Company",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Company": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Count Company": {
+      "main": [
+        [
+          {
+            "node": "Remove employee leave",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Remove employee leave1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Remove employee leave2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove employee leave": {
+      "main": [
+        [
+          {
+            "node": "Switch Company",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove employee leave1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Switch Company1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch Company2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch Company3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch Company4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch Company5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch Company6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch Company7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone1": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone2": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d2": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone3": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d3": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Company1": {
+      "main": [
+        [
+          {
+            "node": "get Milestone3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone4": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d4": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone5": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d5": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone6": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d6": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Company2": {
+      "main": [
+        [
+          {
+            "node": "get Milestone6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone7": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d7": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone8": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d8": {
+      "main": [
+        [
+          {
+            "node": "If8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone9": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d9": {
+      "main": [
+        [
+          {
+            "node": "If9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Company3": {
+      "main": [
+        [
+          {
+            "node": "get Milestone9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone10": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d10": {
+      "main": [
+        [
+          {
+            "node": "If10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone11": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d11": {
+      "main": [
+        [
+          {
+            "node": "If11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone12": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d12": {
+      "main": [
+        [
+          {
+            "node": "If12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Company4": {
+      "main": [
+        [
+          {
+            "node": "get Milestone12",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone11",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone13": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d13": {
+      "main": [
+        [
+          {
+            "node": "If13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone14": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d14": {
+      "main": [
+        [
+          {
+            "node": "If14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone15": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d15": {
+      "main": [
+        [
+          {
+            "node": "If15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Company5": {
+      "main": [
+        [
+          {
+            "node": "get Milestone15",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone14",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone16": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d16": {
+      "main": [
+        [
+          {
+            "node": "If16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone17": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d17": {
+      "main": [
+        [
+          {
+            "node": "If17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone18": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d18": {
+      "main": [
+        [
+          {
+            "node": "If18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Company6": {
+      "main": [
+        [
+          {
+            "node": "get Milestone18",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone17",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone19": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d19",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d19": {
+      "main": [
+        [
+          {
+            "node": "If19",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone20": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d20": {
+      "main": [
+        [
+          {
+            "node": "If20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone21": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d21",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d21": {
+      "main": [
+        [
+          {
+            "node": "If21",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Company7": {
+      "main": [
+        [
+          {
+            "node": "get Milestone21",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone20",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone19",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If9": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If8": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If12": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If10": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If15": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If13": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If18": {
+      "main": [
+        [
+          {
+            "node": "Merge6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If17": {
+      "main": [
+        [
+          {
+            "node": "Merge6",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If21": {
+      "main": [
+        [
+          {
+            "node": "Merge7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If19": {
+      "main": [
+        [
+          {
+            "node": "Merge7",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "get Milestone22": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d22",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d22": {
+      "main": [
+        [
+          {
+            "node": "If22",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone23": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d23",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d23": {
+      "main": [
+        [
+          {
+            "node": "If23",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Milestone24": {
+      "main": [
+        [
+          {
+            "node": "Check create 7d24",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If24": {
+      "main": [
+        [
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check create 7d24": {
+      "main": [
+        [
+          {
+            "node": "If24",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove employee leave2": {
+      "main": [
+        [
+          {
+            "node": "Switch Company8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If23": {
+      "main": [
+        [
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Cloodo Point16": {
+      "main": [
+        [
+          {
+            "node": "IF not found5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Company8": {
+      "main": [
+        [
+          {
+            "node": "get Milestone24",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone23",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Milestone22",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge8": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If22": {
+      "main": [
+        [
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "IF not found5": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point17": {
+      "main": [
+        [
+          {
+            "node": "IF not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found6": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point18": {
+      "main": [
+        [
+          {
+            "node": "IF not found6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found7": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point19": {
+      "main": [
+        [
+          {
+            "node": "IF not found7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found8": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point20": {
+      "main": [
+        [
+          {
+            "node": "IF not found8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found9": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point21": {
+      "main": [
+        [
+          {
+            "node": "IF not found9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found10": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point22": {
+      "main": [
+        [
+          {
+            "node": "IF not found10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found11": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point23": {
+      "main": [
+        [
+          {
+            "node": "IF not found11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge7": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point23",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge6": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point22",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point21",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point19",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If25": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point1": {
+      "main": [
+        [
+          {
+            "node": "If25",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If26": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point2": {
+      "main": [
+        [
+          {
+            "node": "If26",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If27": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If28": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If29": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If30": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If31": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point7": {
+      "main": [
+        [
+          {
+            "node": "If31",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point6": {
+      "main": [
+        [
+          {
+            "node": "If30",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point5": {
+      "main": [
+        [
+          {
+            "node": "If29",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point4": {
+      "main": [
+        [
+          {
+            "node": "If28",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point3": {
+      "main": [
+        [
+          {
+            "node": "If27",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point8": {
+      "main": [
+        [
+          {
+            "node": "If32",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF not found1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point24": {
+      "main": [
+        [
+          {
+            "node": "IF not found1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If32": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point24",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If33": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo Point": {
+      "main": [
+        [
+          {
+            "node": "If33",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "92f15560-b7be-4811-bfb7-d2738dc8ba39",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "6TiAbIvI5iWklxFP",
+  "tags": []
+}
