@@ -1,0 +1,2717 @@
+{
+  "name": "Ticket from facebook",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "77c5adf9-7053-4b3d-a7c5-6a7d07574e40",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        60,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2060972300,
+          "mode": "list",
+          "cachedResultName": "client_message_cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2060972300"
+        },
+        "options": {}
+      },
+      "id": "bd2605ce-4c90-4d3e-b535-78ddfdc352eb",
+      "name": "Save messaage4",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        260,
+        800
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Giới hạn số lượng input items tối đa là 50\nconst limitedItems = $input.all().slice(0,100 );\n\n\n// Trả về danh sách các item đã giới hạn\nreturn limitedItems;\n"
+      },
+      "id": "bb05200c-534f-4b0c-ab62-c44c84081a85",
+      "name": "Take item",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0614ca61-ecd3-4185-bd93-cb34fe893c48",
+              "leftValue": "={{ $json.emailClient }}",
+              "rightValue": "@facebook.com",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "696b5a31-739a-4eb2-895b-b5102850ca60",
+      "name": "check mail facebook",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1580,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  let email = item?.json?.email;  // Lấy email từ item\n  \n  // Kiểm tra nếu email là một chuỗi chứa nhiều email (tách các email bằng dấu phẩy)\n  if (email) {\n    // Tách chuỗi email thành mảng nếu có dấu phẩy\n    const emailArray = email.split(',').map(e => e.trim());\n\n    // Lọc ra các email không có đuôi @cmsmart.net và giữ lại những email còn lại\n    const validEmails = emailArray.filter(e => !(e.endsWith('@cmsmart.net') || e.endsWith('@netbasejsc.com') || e === 'perlanguyen.ba@gmail.com'));\n    \n    // Nếu có email hợp lệ còn lại, gán vào item.json.emailClient\n    if (validEmails.length > 0) {\n      item.json.emailClient = validEmails.join(', ');  // Gán lại các email còn lại (nếu có)\n    } else {\n      // Nếu không có email hợp lệ, gán giá trị từ email_client_facebook\n      item.json.emailClient = item?.json?.email_client_facebook || null;\n    }\n  } else {\n    // Nếu không có email, gán giá trị từ email_client_facebook\n    item.json.emailClient = item?.json?.email_client_facebook || null;\n  }\n}\n\nreturn $input.all();\n"
+      },
+      "id": "c4d3e041-c7d6-459e-8d61-5143eb650385",
+      "name": "Filter email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "getmany",
+        "additionalFields": {
+          "searchLead": "={{ $json.emailClient }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "3902a6d5-755b-40cc-8d27-1fcf1d221270",
+      "name": "Cloodo CRM",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        340
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "getmany",
+        "additionalFields": {
+          "searchLead": "={{ $json.emailClient }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "e930ecd0-720d-4fe4-83e3-4d6824d5e0cb",
+      "name": "Cloodo CRM1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        1120
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2060972300,
+          "mode": "list",
+          "cachedResultName": "client_message_cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2060972300"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "conversation_id": "={{ $json.conversation_id }}",
+            "email_worksuit": "={{ $json.emailClient }}"
+          },
+          "matchingColumns": [
+            "conversation_id"
+          ],
+          "schema": [
+            {
+              "id": "conversation_id",
+              "displayName": "conversation_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "update_time",
+              "displayName": "update_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_client_message",
+              "displayName": "id_client_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_workchat",
+              "displayName": "id_workchat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_client_facebook",
+              "displayName": "name_client_facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_client_facebook",
+              "displayName": "email_client_facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message_worchat",
+              "displayName": "message_worchat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_worksuit",
+              "displayName": "email_worksuit",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f3980d3a-1c01-4963-97ed-78c676d03a9d",
+      "name": "Save messaage",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1360,
+        -20
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0381f91b-ba7b-4089-9205-37a8f597452a",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0519b3a0-ed5d-4b7f-884c-a893df131125",
+      "name": "check data clietn",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2260,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0381f91b-ba7b-4089-9205-37a8f597452a",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7c5c69a9-8b1d-41fb-8a15-a51626ce7235",
+      "name": "check data client",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1700,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/client-contacts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json^",
+        "body": "={\n    \"title\": \"Facebook\",\n    \"name\": \"{{ $('Filter email').item.json.name_client_facebook }}\",\n    \"email\": \"{{ $('Filter email').item.json.email_client_facebook }}\",\n    \"phone\": \"\",\n    \"user_id\": \"{{ $json.data[0].user.id }}\"\n}",
+        "options": {}
+      },
+      "id": "ca91159d-6982-47a0-8dad-67f0e99da535",
+      "name": "Update contact client3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2580,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "clientDetails",
+        "ID": "={{ $('check data clietn').item.json.data[0].user.id }}",
+        "requestOptions": {}
+      },
+      "id": "5d0fe479-bf50-4073-be56-8da0126208e7",
+      "name": "a Project client",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2780,
+        360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a6e0e782-0ba5-49e6-a503-2456e187fc89",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7f8beddb-5cb6-4de9-9388-118181e2b690",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3000,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *, (\n  SELECT COUNT(*) FROM user_chats WHERE (user_chats.from = 62844 AND user_chats.to = {{ $('Loop Over Items').item.json.id_workchat }}) OR  (user_chats.from = {{ $('Loop Over Items').item.json.id_workchat }} AND user_chats.to = 62844)\n) AS Total_Messages\nFROM user_chats\nWHERE \n  (user_chats.from = 62844 AND user_chats.to = {{ $('Loop Over Items').item.json.id_workchat }}) \n  OR \n  (user_chats.from = {{ $('Loop Over Items').item.json.id_workchat }} AND user_chats.to = 62844) ORDER BY user_chats.created_at DESC;",
+        "options": {}
+      },
+      "id": "ea709213-45dc-4c7d-9701-0e81e6febf96",
+      "name": "Get Detail Messages1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        3240,
+        340
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "SJei6ksLjiCIXFRS",
+          "name": "Worksuite database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "5c482422-7526-47bc-b9c6-76ca3dc4c8d2",
+      "name": "Aggregate1",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        3420,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Kiểm tra dữ liệu Aggregate1\nconst listMessages = $node['Aggregate1']?.json?.data || [];\nif (listMessages.length === 0) {\n  throw new Error(\"Node 'Aggregate1' không có dữ liệu hoặc không tồn tại.\");\n}\n\n// ID nhân viên của bạn\nconst employeeId = 62844;\n\n// Bắt đầu tạo nội dung tài liệu\nlet document = 'List Messages sent by client with admin: \\n';\n\n// Duyệt qua danh sách tin nhắn\nfor (const item of listMessages.reverse()) {\n  if (item?.from === employeeId) {\n    document += `Admin sent: ${item?.message} \\n\\n`;\n  } else {\n    document += `Client sent: ${item?.message} \\n\\n`;\n  }\n}\n\n// Tin nhắn cuối cùng gửi bởi khách hàng\nconst lastClientMessage = listMessages.find(\n  (item) => item.from !== employeeId\n)?.message || 'No messages from client';\n\n// Thêm thông tin tin nhắn cuối cùng của khách hàng vào tài liệu\ndocument += `\\n\\nLast message sent by client: ${lastClientMessage}`;\n\n// Kiểm tra dữ liệu từ node \"a Project client\"\nconst inputData = $node['a Project client']?.json?.data || [];\nif (inputData.length === 0) {\n  throw new Error(\"Node 'a Project client' không có dữ liệu hoặc không tồn tại.\");\n}\n\nlet agent = '';\nlet projectId = '';\n\nif (inputData.length === 1) {\n  // Nếu chỉ có một dự án, lấy thông tin thành viên đầu tiên\n  const projectMembers = inputData[0]?.projectMembers || [];\n  if (projectMembers.length > 0) {\n    agent = projectMembers[0]?.id; // Gán ID thành viên đầu tiên làm agent\n  }\n  projectId = inputData[0]?.id || ''; // Gán ID dự án\n} else {\n  // Nếu có nhiều dự án, để trống các giá trị\n  agent = '';\n  projectId = '';\n}\n\n// Log kết quả để debug\nconsole.log({ agent, projectId });\nconsole.log(document);\n\n// Trả về tài liệu đã tạo và thông tin agent, projectId\nreturn { messagesSent: document, agent, projectId };\n"
+      },
+      "id": "92cf253d-9975-44bc-a62a-504606c91534",
+      "name": "Get All Messages and id agent1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3620,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const inputStr = $input.item.json.output;\n\n// Remove the surrounding Markdown-style code block (```json ... ```)\nconst cleanedInput = inputStr.replace(/^```json|\\n```$/g, '').trim();\n\n// Remove newlines and excessive spaces\nconst formattedInput = cleanedInput.replace(/\\n/g, ' ').replace(/\\s+/g, ' ');\n\n// Remove any trailing comma in the JSON string (before the closing brace)\nconst validJson = formattedInput.replace(/,\\s*}$/g, '}');\n\n// Parse the cleaned-up string into a JSON object\nconst jsonObject = JSON.parse(validJson);\n\n\nreturn {jsonOutput: jsonObject};\n"
+      },
+      "id": "ec946468-a8f4-4b6d-9f0f-cea9dc4e2e1e",
+      "name": "Code Convert to JSON1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4220,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "18d839e2-523c-4fa2-822c-b556cf15f2d5",
+              "leftValue": "={{ $json.jsonOutput.type }}",
+              "rightValue": "clear issue",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "38a87dc3-ce38-44c3-ab91-0b5cc091207b",
+      "name": "check have issue1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4620,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"tags\": [],\n  \"project_id\": \"{{ $('Get All Messages and id agent1').item.json.projectId }}\",\n  \"user_id\": \"{{ $('Cloodo CRM').item.json.data[0].user.id }}\",\n  \"subject\": \"{{ $('check have issue1').item.json.jsonOutput.title }}\",\n  \"priority\": \"medium\",\n  \"agent_id\": \"2c991f1a-6665-4533-bfca-ac969f431eb2\",\n  \"type_id\": \"{{ $json.jsonOutput.type_ticket }}\",\n  \"channel_id\": \"931082dc-2e77-4c9a-86e6-b3c20a5c6b22\",\n  \"status\": \"open\",\n \"message\": \"{{ $json.jsonOutput.description }}\",\n  \"note\": \"{{ $('check have issue1').item.json.jsonOutput.note }}\",\n  \"ticket_files\": [],\n  \"created_at\": \"{{ $('Loop Over Items').item.json.update_time }}\"\n\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "2e252a02-92ce-4517-ac96-f1d3e6c066a0",
+      "name": "Create Ticket1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4580,
+        -300
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Define the list of IDs\nconst ids = ['61fd7c82-41d1-4cd6-b63d-85b927bb7dff', 'e669712f-22a2-4109-bc2c-92f947b85f58'];\n\n// Loop over input items and add a new field called 'myNewField' with a random ID\nfor (const item of $input.all()) {\n  // Select a random ID from the list\n  const randomId = ids[Math.floor(Math.random() * ids.length)];\n  \n  // Escape special characters in item.json.description\n  if (item.json.description) {\n    item.json.description = item.json.description.replace(/'/g, \"\\\\'\").replace(/\"/g, '\\\\\"');\n  }\n\n  // Add the random ID to the JSON\n  item.json.myNewField = randomId;\n}\n\n// Return the updated input array\nreturn $input.all();\n"
+      },
+      "id": "93cb3095-5fb6-459d-a064-5d2bad86c548",
+      "name": "Chọn ngẫu nhiên agent",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4900,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "018a1680-9549-4e25-9841-829461e018b7",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1720,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.data.id }}",
+        "requestOptions": {}
+      },
+      "id": "9795ed84-3a01-4cf5-9d8a-a455dcd52aaa",
+      "name": "Get Ticket",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        5040,
+        320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/ticket-replies",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"message\": \"<p><strong>Dear {{ $('Create Ticket').item.json.data.requester.name }},</strong></p><p>We hope you're doing well. We noticed that it has been a while since we last heard from you regarding your support ticket. To ensure efficiency and focus on active requests, we will be closing this ticket soon.</p><p><strong>If your issue has been resolved</strong>, no further action is needed.</p><p><strong>If you still require assistance</strong>, please reply to this email or reopen the ticket, and we’ll be happy to help.</p><h3><strong>Need Further Support?</strong></h3><p>If you have any additional questions or need further support in the future, feel free to contact us anytime. Our team is always here to assist you.</p><p>Thank you for choosing our services. We appreciate your time and trust.</p><p><strong>Best regards,</strong></p><p><strong>The Support Team</strong></p>\",\n  \"external_link\": \"\",\n  \"ticket_id\": \"{{ $('Create Ticket').item.json.data.id }}\"\n}\n",
+        "options": {}
+      },
+      "id": "485250af-548e-48f0-a108-3b8c6160f665",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5240,
+        320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "update",
+        "ID": "={{ $('Create Ticket').item.json.data.id }}",
+        "additionalFields": {
+          "statusId": "closed"
+        },
+        "requestOptions": {}
+      },
+      "id": "79530858-0628-447b-978f-e22658c35ecb",
+      "name": "Cloodo CRM2",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        5440,
+        320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v22.0/213439902114044/messages",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "recipient",
+              "value": "={\"id\":\"{{ $('Loop Over Items').item.json.id_client_message }}\"}"
+            },
+            {
+              "name": "messaging_type",
+              "value": "MESSAGE_TAG"
+            },
+            {
+              "name": "tag",
+              "value": "ACCOUNT_UPDATE"
+            },
+            {
+              "name": "message",
+              "value": "={\"text\":\"Dear {{ $('Loop Over Items').item.json.name_client_facebook }},\\n\\nWe hope you are doing well. We are reaching out regarding your support ticket {{ $('Get Ticket').item.json.data.ticket_number }}. Since there has been no further activity for an extended period, we have proceeded with closing the ticket.\\n\\nIf you still require assistance or have any concerns, please feel free to reach out to us. We are always happy to help!\\n\\nYou can access your account and submit a new request through our support portal:\\n🔗 https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Get Ticket').item.json.data.id }}\\n\\nYour login credentials:\\n- **Username:** {{ $('Get Ticket').item.json.data.requester.email }} \\n\\nIf you have forgotten your password or need to change it, you can reset it through the following link:\\n🔗 [Reset Password](https://worksuite.cloodo.com/forgot-password)\\n\\nFor any further inquiries, please do not hesitate to contact us.\\n\\nBest regards,\\nCmsmart Ecommerce\"}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "f7d33bfb-31d6-41f8-9e31-9b5d48098c37",
+      "name": "send fb",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5640,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2060972300,
+          "mode": "list",
+          "cachedResultName": "client_message_cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2060972300"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_client_message": "={{ $('Loop Over Items').item.json.id_client_message }}",
+            "status_ticket": "ok"
+          },
+          "matchingColumns": [
+            "id_client_message"
+          ],
+          "schema": [
+            {
+              "id": "conversation_id",
+              "displayName": "conversation_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "update_time",
+              "displayName": "update_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_client_message",
+              "displayName": "id_client_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_workchat",
+              "displayName": "id_workchat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_client_facebook",
+              "displayName": "name_client_facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_client_facebook",
+              "displayName": "email_client_facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message_worchat",
+              "displayName": "message_worchat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_worksuit",
+              "displayName": "email_worksuit",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status_ticket",
+              "displayName": "status_ticket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5e7d0d9e-b150-4f51-9c1f-ad510a0bbd7e",
+      "name": "Save messaage5",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        5860,
+        320
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9453be76-acac-4cc7-b680-2544ecf4fdf8",
+              "leftValue": "={{ $json.status_ticket }}",
+              "rightValue": "ok",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "378ec7d1-7165-409f-a137-49c87e6a74bc",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1180,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"tags\": [],\n  \"project_id\": \"{{ $('Get All Messages and id agent1').item.json.projectId }}\",\n  \"user_id\": \"{{ $('Cloodo CRM').item.json.data[0].user.id }}\",\n  \"subject\": \"{{ $('check have issue1').item.json.jsonOutput.title }}\",\n  \"priority\": \"medium\",\n  \"agent_id\": \"2c991f1a-6665-4533-bfca-ac969f431eb2\",\n  \"type_id\": \"{{ $json.jsonOutput.type_ticket }}\",\n  \"channel_id\": \"931082dc-2e77-4c9a-86e6-b3c20a5c6b22\",\n  \"status\": \"open\",\n \"message\": \"{{ $json.jsonOutput.description }}\",\n  \"note\": \"{{ $('check have issue1').item.json.jsonOutput.note }}\",\n  \"ticket_files\": [],\n  \"created_at\": \"{{ $('Loop Over Items').item.json.update_time }}\"\n\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "1a4b83e8-b315-4a41-9c4a-bf19b56a927d",
+      "name": "Create Ticket",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4840,
+        320
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"tags\": [],\n  \"project_id\": \"{{ $('Get All Messages and id agent1').item.json.projectId }}\",\n  \"user_id\": \"{{ $('Cloodo CRM').item.json.data[0].user.id }}\",\n  \"subject\": \"{{ $('check have issue1').item.json.jsonOutput.title }}\",\n  \"priority\": \"medium\",\n  \"agent_id\": \"2c991f1a-6665-4533-bfca-ac969f431eb2\",\n  \"type_id\": \"{{ $json.jsonOutput.type_ticket }}\",\n  \"channel_id\": \"931082dc-2e77-4c9a-86e6-b3c20a5c6b22\",\n  \"status\": \"open\",\n \"message\": \"{{ $json.jsonOutput.description }}\",\n  \"note\": \"{{ $('check have issue1').item.json.jsonOutput.note }}\",\n  \"ticket_files\": [],\n  \"created_at\": \"{{ $('Loop Over Items').item.json.update_time }}\"\n\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "1d1f75dc-87de-415c-a6b5-0945d6844cac",
+      "name": "Create Ticket2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4660,
+        -120
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v22.0/213439902114044/messages",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "recipient",
+              "value": "={\"id\":\"{{ $('Loop Over Items').item.json.id_client_message }}\"}"
+            },
+            {
+              "name": "messaging_type",
+              "value": "MESSAGE_TAG"
+            },
+            {
+              "name": "tag",
+              "value": "ACCOUNT_UPDATE"
+            },
+            {
+              "name": "message",
+              "value": "={\"text\":\"{{ $json.jsonOutput.description }}\"}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "e199875e-067c-4675-ba8e-fccb1c7d882d",
+      "name": "send fb1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4840,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2060972300,
+          "mode": "list",
+          "cachedResultName": "client_message_cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2060972300"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_client_message": "={{ $('Loop Over Items').item.json.id_client_message }}",
+            "status_ticket": "ok"
+          },
+          "matchingColumns": [
+            "id_client_message"
+          ],
+          "schema": [
+            {
+              "id": "conversation_id",
+              "displayName": "conversation_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "update_time",
+              "displayName": "update_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_client_message",
+              "displayName": "id_client_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_workchat",
+              "displayName": "id_workchat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_client_facebook",
+              "displayName": "name_client_facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_client_facebook",
+              "displayName": "email_client_facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message_worchat",
+              "displayName": "message_worchat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_worksuit",
+              "displayName": "email_worksuit",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status_ticket",
+              "displayName": "status_ticket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4a7c4bb0-a0a6-483a-bce6-995bc5e9a065",
+      "name": "Save messaage6",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        5060,
+        620
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let messagerAI = $node['Code Convert to JSON1']?.json?.jsonOutput?.description\n  messagerAI = messagerAI.replace(/\\n\\n/g, '\\\\n\\\\n');\n  messagerAI = messagerAI.replace(/\\n/g, '\\\\n');\n  messagerAI = messagerAI.replace(/<br><br>/g, '\\\\n');\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();\n"
+      },
+      "id": "14d89c92-af48-4ec5-81a3-e4507b1ce305",
+      "name": "Code8",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4420,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.emailClient }}",
+                    "rightValue": "@facebook.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notContains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "email"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e644adb6-1d64-4dce-8228-35d7c8bfe276",
+                    "leftValue": "={{ $json.emailClient }}",
+                    "rightValue": "@facebook.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "emailFacebook"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ddfe71ab-07a4-418f-a095-569cdcf6770e",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        920,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "create",
+        "projectName": "={{ $('Cloodo CRM').item.json.data[0].user.name }} Project",
+        "start_date": "={{ $now }}",
+        "user_id": "=[\"{{ $('Cloodo CRM').item.json.data[0].added_by.id }}\"]",
+        "additionalFields": {
+          "client_id": "=\"{{ $('Cloodo CRM').item.json.data[0].user.id }}\""
+        },
+        "requestOptions": {}
+      },
+      "id": "ee8a41fd-1cbd-4c06-853f-de0f69844d79",
+      "name": "Cloodo CRM3",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4180,
+        -360
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "12e4720b-3919-4684-8fa2-1031f30157b7",
+              "leftValue": "={{ $('Cloodo CRM').item.json.data[0].added_by.email }}",
+              "rightValue": "sales@cmsmart.net",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0971dcad-0052-4588-9e66-2214bb7a9b1a",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3880,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const strings = [\n  \"61fd7c82-41d1-4cd6-b63d-85b927bb7dff\",\n  \"e4eead4b-0a3c-4a42-88aa-90586f30bafd\",\n  \"b26c8a1a-2603-4d11-a92c-effccf6217db\"\n];\n\nlet index = $runIndex % strings.length;\nfor (const item of $input.all()) {\n  item.json.myNewField = strings[index];\n  index = (index + 1) % strings.length;\n}\nreturn $input.all();\n"
+      },
+      "id": "1b0314fb-bd91-4db6-914a-4c48bf09a444",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4000,
+        -480
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "create",
+        "projectName": "={{ $('Cloodo CRM').item.json.data[0].user.name }} Project",
+        "start_date": "={{ $now }}",
+        "user_id": "=[\"{{ $('Cloodo CRM').item.json.data[0].added_by.id }}\"]",
+        "additionalFields": {
+          "client_id": "=\"{{ $('Cloodo CRM').item.json.data[0].user.id }}\""
+        },
+        "requestOptions": {}
+      },
+      "id": "bc489a4e-f795-4da3-a3e8-4444ce01f3d9",
+      "name": "Cloodo CRM4",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4180,
+        -60
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
+          "mode": "list",
+          "cachedResultName": "Cmsmart AI"
+        },
+        "prompt": "define",
+        "text": "=You are a project assistant whom responsible for creating client-facing tickets based on provided chat or email content. \n\nAnalyze the following conversation messages between the client and admin. Focus on the most recent messages sent by the client, especially the last one, to determine the client's intent and construct a JSON object based on the following format:\n{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"note\":\"\",\n  \"type\":\"\",\n  \"type_ticket\"\n\n}\n\nInstructions:  \n1. title: Title of the problem the customer encountered:\n2. description: is a detailed description of the problem, \nThe description must include the following sections:\n\n2.1. Summary of Request: A concise overview of what the client is asking for, written in a client-friendly tone.\n2.2 Proposed Next Steps: Clearly outline what actions will be taken by the team and any required input from the client.\n2.3. Action Items: Break down actionable tasks for the internal team and the client.\n\nUse this format:\n\nSummary of Request\n[Summarize the client’s request in a professional and client-friendly tone.]\n\nProposed Next Steps\n[List the steps the team will take to address the request, as well as any input required from the client.]\n\nAction Items\nFor Our Team:\n[List specific tasks for the team to complete.]\nFor You:\n[List any actions required from the client, if applicable.]\n\nMake sure the ticket is clear, actionable, and formatted for both internal use and client review. Use professional and concise language throughout.\n\nSample Input:\n\"tung wants to add a 'Manage Cart' feature to the Auto Reply from WF 50 project.\"\n\nExpected Output:\nA complete ticket with all required sections and a professional tone, formatted as per the structure above.\n\nBase on summary problem provided and History chat messages, let create an object with subject anb message.\n3. note: additional notes, notes, further explanations of the problem and the last .\n4. Ensure the JSON is correctly formatted, valid, and accurately reflects the client’s most recent intent.   \n5. Do not include any explanation, only return the JSON object in the exact specified format.\n6. Remember alway Write description with format like a detail email profesional for our client (Dear [client name]) and focus on problem what client need to help, what client need to help. use html tag for text effect like <strong> for bold text .\n7. type is an analysis of whether the customer conversation has a clear issue if it is a \"clear issue\" or  \"not clear issue\", in which the not clear issue is the conversations such as greeting , unspecified problem...\n8. type_ticket : I have: \na7449e63-6ce3-4840-ab67-27298faf086f -> Product Enquiry,\n0c8ba87a-f6ae-44c2-9c4d-404c49ec255b -> Payment & Billing,\n00f4494e-68c5-4926-9ff1-3faafe812e94 -> Setup Assistance ,\n2b32b674-741a-4833-8328-925a48bef030 -> Feature Requests,\n4bbfa6dd-beb7-43af-926c-f736ca00bdd3 -> Project Maintenance ,\n28cab752-15e1-433e-8abf-609fde9b5b7f -> Renewal and Upsell ,\nf58a0a7e-9561-4cac-a326-6e0cfe93360b -> Onboarding and Training,\n6dc7b7c5-a130-4357-9d83-03030a8a134f -> Custom Development ,\n7abb55c6-8135-44db-b99a-8cabd31aeab0 -> Business Meeting,\n89050de5-8c35-4947-92d2-2c108b32aaa4 -> Extra Service ,\n\n\nare the ids are the names of the ticket types, please classify that content by the ticket type name whichever is appropriate and give me that type of ticket\nCategorization rules:  \n\n1. Product Inquiry  \n   - Keywords: Form requests, new client messages, pricing, product details, compatibility, feature comparisons, demos, trials.  \n   - Client Context: Questions from new or potential clients about product features, compatibility, pricing, or demo requests.  \n   - Examples:  \n     - \"What’s the cost of the Printshop Premium package?\"  \n     - \"Can I see a demo of the Product Designer tool?\"  \n\n2. Payment & Billing  \n   - Keywords: Cancel subscription, refund request, renewal inquiries, invoices, payment errors, prorated upgrades/downgrades.  \n   - Client Context: Issues related to payments, subscriptions, or invoices from clients.  \n   - Examples:  \n     - \"How can I get a refund for my subscription?\"  \n     - \"I need to renew my license for another year.\"  \n\n3. Setup Assistance  \n   - Keywords: Installation, download issues, free plugins, domain setup, hosting issues, product configuration, API setup.  \n   - Client Context: Clients seeking help with the initial setup of a system, plugin, or eCommerce platform.  \n   - Examples:  \n     - \"Help me set up my domain and hosting.\"  \n     - \"I need assistance installing free plugins.\"  \n\n4. Feature Request  \n   - Keywords: Add feature, new functionality, expand capabilities, request enhancement, tool improvement, custom modules.  \n   - Client Context: Clients requesting new features or enhancements for existing tools.  \n   - Examples:  \n     - \"Can you add a one-click checkout feature?\"  \n     - \"I’d like a feature for advanced reporting.\"  \n\n5. Project Maintenance  \n   - Keywords: Bug fix, performance issues, general support requests, system downtime, error reports, minor improvements.  \n   - Client Context: Ongoing support requests from existing clients for bugs, performance optimization, or fixes.  \n   - Examples:  \n     - \"Fix the 500 error on the homepage.\"  \n     - \"The checkout page isn’t working properly.\"  \n\n6. Renewal and Upsell  \n   - Keywords: Contract renewal, subscription upsell, add-on features, expanding services.  \n   - Client Context: Clients looking to renew contracts, subscriptions, or add additional services.  \n   - Examples:  \n     - \"I’d like to renew my subscription for another year.\"  \n     - \"Can you provide an upsell package for advanced analytics?\"  \n\n7. Onboarding and Training  \n   - Keywords: Training session, onboarding assistance, platform overview, user training.  \n   - Client Context: New clients needing guidance to get started with a product or service.  \n   - Examples:  \n     - \"Can you guide me through the platform setup?\"  \n     - \"We need training for our team on the new software.\"  \n\n8. Custom Development  \n   - Keywords: Bespoke features, tailor-made solutions, custom-built modules, specific functionality.  \n   - Client Context: Clients requesting customized solutions tailored to their specific business needs.  \n   - Examples:  \n     - \"We need a custom-built module for order tracking.\"  \n     - \"Can you create a feature that integrates with our existing CRM?\"  \n\n9. Business Meeting  \n   - Keywords: Scheduling meetings, meeting memo, project discussions, progress updates.  \n   - Client Context: Coordination and scheduling of meetings between clients and team members.  \n   - Examples:  \n     - \"Let’s schedule a meeting to discuss the project roadmap.\"  \n     - \"We need to have a progress review with your team next week.\"  \n\n10. Extra Service  \n    - Keywords: Additional service, beyond scope, add-on requests, non-standard service.  \n    - Client Context: Clients requesting extra services beyond what is included in their plan.  \n    - Examples:  \n      - \"Can you provide a custom report for our sales data?\"  \n      - \"We’d like additional security monitoring for our servers.\"  \n\nHere are the history conversation messages: \n\nInformation of client\nclient name: {{ $('Loop Over Items').item.json.name_client_facebook }}\nproject name : {{ $('a Project client').item.json.data[0].name }}\nSummary problem:\n{{ $json.messagesSent }}\n\nALWAYS respond only with the correctly formatted JSON object.",
+        "options": {}
+      },
+      "id": "9a47f3c6-0fa8-4af0-a7b2-326306baca6e",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        3840,
+        340
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "Workflow API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b2975c80-1168-4367-b2cb-00ba425ebcdb",
+      "name": "Loop Over Items1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1320,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "create",
+        "name": "={{ $json.name_client_facebook }}",
+        "passwordClinet": "=j*tC53v4d5tM",
+        "clientEmail": "={{ $json.email_client_facebook }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "id": "70d480b7-5f20-486e-8e22-398f967f92fd",
+      "name": "Cloodo CRM5",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1900,
+        1540
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/client-contacts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json^",
+        "body": "={\n    \"title\": \"Facebook\",\n    \"name\": \"{{ $('Loop Over Items1').item.json.name_client_facebook }}\",\n    \"email\": \"{{ $('Loop Over Items1').item.json.email_client_facebook }}\",\n    \"phone\": \"\",\n    \"user_id\": \"{{ $json.data[0].user.id }}\"\n}",
+        "options": {}
+      },
+      "id": "f20552d8-ac76-44fc-908f-995642402e4b",
+      "name": "Update contact client",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1960,
+        1020
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *, (\n  SELECT COUNT(*) FROM user_chats WHERE (user_chats.from = 62844 AND user_chats.to = {{ $('Loop Over Items1').item.json.id_workchat }}) OR  (user_chats.from = {{ $('Loop Over Items1').item.json.id_workchat }} AND user_chats.to = 62844)\n) AS Total_Messages\nFROM user_chats\nWHERE \n  (user_chats.from = 62844 AND user_chats.to = {{ $('Loop Over Items1').item.json.id_workchat }}) \n  OR \n  (user_chats.from = {{ $('Loop Over Items1').item.json.id_workchat }} AND user_chats.to = 62844) ORDER BY user_chats.created_at DESC;",
+        "options": {}
+      },
+      "id": "b7c77b40-c956-45cb-ad77-99d30b684be7",
+      "name": "Get Detail Messages",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        2460,
+        1020
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "SJei6ksLjiCIXFRS",
+          "name": "Worksuite database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "7c6310ad-5d44-4caa-ba66-3205b5332ea9",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Kiểm tra dữ liệu Aggregate1\nconst listMessages = $node['Aggregate']?.json?.data || [];\nif (listMessages.length === 0) {\n  throw new Error(\"Node 'Aggregate1' không có dữ liệu hoặc không tồn tại.\");\n}\n\n// ID nhân viên của bạn\nconst employeeId = 62844;\n\n// Bắt đầu tạo nội dung tài liệu\nlet document = 'List Messages sent by client with admin: \\n';\n\n// Duyệt qua danh sách tin nhắn\nfor (const item of listMessages.reverse()) {\n  if (item?.from === employeeId) {\n    document += `Admin sent: ${item?.message} \\n\\n`;\n  } else {\n    document += `Client sent: ${item?.message} \\n\\n`;\n  }\n}\n\n// Tin nhắn cuối cùng gửi bởi khách hàng\nconst lastClientMessage = listMessages.find(\n  (item) => item.from !== employeeId\n)?.message || 'No messages from client';\n\n// Thêm thông tin tin nhắn cuối cùng của khách hàng vào tài liệu\ndocument += `\\n\\nLast message sent by client: ${lastClientMessage}`;\n\n// Kiểm tra dữ liệu từ node \"a Project client\"\nconst inputData = $node['a Project client']?.json?.data || [];\nif (inputData.length === 0) {\n  throw new Error(\"Node 'a Project client' không có dữ liệu hoặc không tồn tại.\");\n}\n\nlet agent = '';\nlet projectId = '';\n\nif (inputData.length === 1) {\n  // Nếu chỉ có một dự án, lấy thông tin thành viên đầu tiên\n  const projectMembers = inputData[0]?.projectMembers || [];\n  if (projectMembers.length > 0) {\n    agent = projectMembers[0]?.id; // Gán ID thành viên đầu tiên làm agent\n  }\n  projectId = inputData[0]?.id || ''; // Gán ID dự án\n} else {\n  // Nếu có nhiều dự án, để trống các giá trị\n  agent = '';\n  projectId = '';\n}\n\n// Log kết quả để debug\nconsole.log({ agent, projectId });\nconsole.log(document);\n\n// Trả về tài liệu đã tạo và thông tin agent, projectId\nreturn { messagesSent: document, agent, projectId };\n"
+      },
+      "id": "49e81838-f682-4949-aded-433ca4540480",
+      "name": "Get All Messages and id agent",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2840,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const inputStr = $input.item.json.output;\n\n// Remove the surrounding Markdown-style code block (```json ... ```)\nconst cleanedInput = inputStr.replace(/^```json|\\n```$/g, '').trim();\n\n// Remove newlines and excessive spaces\nconst formattedInput = cleanedInput.replace(/\\n/g, ' ').replace(/\\s+/g, ' ');\n\n// Remove any trailing comma in the JSON string (before the closing brace)\nconst validJson = formattedInput.replace(/,\\s*}$/g, '}');\n\n// Parse the cleaned-up string into a JSON object\nconst jsonObject = JSON.parse(validJson);\n\n\nreturn {jsonOutput: jsonObject};\n"
+      },
+      "id": "c90d28cb-40bd-4ea5-a472-14c23aca6c9d",
+      "name": "Code Convert to JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3440,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "18d839e2-523c-4fa2-822c-b556cf15f2d5",
+              "leftValue": "={{ $json.jsonOutput.type }}",
+              "rightValue": "clear issue",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6bcff16e-464e-4764-a463-331ee988426b",
+      "name": "check have issue",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3840,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "ID": "={{ $json.data.id }}",
+        "requestOptions": {}
+      },
+      "id": "d94e9cb8-7b3e-4ac6-aa57-12602dad6032",
+      "name": "Get Ticket1",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4260,
+        1000
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/ticket-replies",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"message\": \"<p><strong>Dear {{ $('Create Ticket3').item.json.data.requester.name }},</strong></p><p>We hope you're doing well. We noticed that it has been a while since we last heard from you regarding your support ticket. To ensure efficiency and focus on active requests, we will be closing this ticket soon.</p><p><strong>If your issue has been resolved</strong>, no further action is needed.</p><p><strong>If you still require assistance</strong>, please reply to this email or reopen the ticket, and we’ll be happy to help.</p><h3><strong>Need Further Support?</strong></h3><p>If you have any additional questions or need further support in the future, feel free to contact us anytime. Our team is always here to assist you.</p><p>Thank you for choosing our services. We appreciate your time and trust.</p><p><strong>Best regards,</strong></p><p><strong>The Support Team</strong></p>\",\n  \"external_link\": \"\",\n  \"ticket_id\": \"{{ $('Create Ticket3').item.json.data.id }}\"\n}\n",
+        "options": {}
+      },
+      "id": "52a96b45-8aa6-48d1-b663-612ddf342f61",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4460,
+        1000
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "update",
+        "ID": "={{ $('Create Ticket3').item.json.data.id }}",
+        "additionalFields": {
+          "statusId": "closed"
+        },
+        "requestOptions": {}
+      },
+      "id": "08f0d8bb-6c09-400f-bb61-8b98fc258566",
+      "name": "Cloodo CRM7",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        4660,
+        1000
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v22.0/213439902114044/messages",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "recipient",
+              "value": "={\"id\":\"{{ $('Loop Over Items1').item.json.id_client_message }}\"}"
+            },
+            {
+              "name": "messaging_type",
+              "value": "MESSAGE_TAG"
+            },
+            {
+              "name": "tag",
+              "value": "ACCOUNT_UPDATE"
+            },
+            {
+              "name": "message",
+              "value": "={\"text\":\"Dear {{ $('Loop Over Items1').item.json.name_client_facebook }},\\n\\nWe hope you are well. We are reaching out to you regarding your support request {{ $('Get Ticket1').item.json.data.ticket_number }}. Due to a long period of inactivity, we have closed the request.\\n\\nIf you still need assistance or have any questions, please contact us. We are always happy to help!\\n\\nYou can access your account and submit a new request through our support portal:\\n🔗 https://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $('Get Ticket1').item.json.data.id }}\\n\\nThis is a project management and ticket management website with your clients. us\\n\\nYour login information:\\n- **Username:** {{ $('Get Ticket1').item.json.data.requester.email }}\\n- **Password:** j*tC53v4d5tM \\n\\nWhen logging in, you need to change your email information as well as your password to facilitate your work:\\n🔗 [Reset Password](https://worksuite.cloudo.com/forgot-password)\\n\\nIf you have any other questions, please contact us.\\n\\nBest regards,\\nCmsmart Ecommerce\"}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "a1138ec9-faea-45d5-97cc-9346da630008",
+      "name": "send fb2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5080,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2060972300,
+          "mode": "list",
+          "cachedResultName": "client_message_cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2060972300"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_client_message": "={{ $('Loop Over Items1').item.json.id_client_message }}",
+            "status_ticket": "ok"
+          },
+          "matchingColumns": [
+            "id_client_message"
+          ],
+          "schema": [
+            {
+              "id": "conversation_id",
+              "displayName": "conversation_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "update_time",
+              "displayName": "update_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_client_message",
+              "displayName": "id_client_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_workchat",
+              "displayName": "id_workchat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_client_facebook",
+              "displayName": "name_client_facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_client_facebook",
+              "displayName": "email_client_facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message_worchat",
+              "displayName": "message_worchat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_worksuit",
+              "displayName": "email_worksuit",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status_ticket",
+              "displayName": "status_ticket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f9364cd1-6bfb-47f7-8f82-55228c31a149",
+      "name": "Save messaage7",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        5300,
+        1000
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"tags\": [],\n  \"project_id\": \"{{ $('Get All Messages and id agent').item.json.projectId }}\",\n  \"user_id\": \"{{ $('Cloodo CRM1').item.json.data[0].user.id }}\",\n  \"subject\": \"{{ $('check have issue').item.json.jsonOutput.title }}\",\n  \"priority\": \"medium\",\n  \"agent_id\": \"2c991f1a-6665-4533-bfca-ac969f431eb2\",\n  \"type_id\": \"{{ $json.jsonOutput.type_ticket }}\",\n  \"channel_id\": \"931082dc-2e77-4c9a-86e6-b3c20a5c6b22\",\n  \"status\": \"open\",\n \"message\": \"{{ $json.jsonOutput.description }}\",\n  \"note\": \"{{ $('check have issue').item.json.jsonOutput.note }}\",\n  \"ticket_files\": [],\n  \"created_at\": \"{{ $('Loop Over Items1').item.json.update_time }}\"\n\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "af80aae1-0aac-43a5-a71d-aedca1b6d784",
+      "name": "Create Ticket3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4060,
+        1000
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v22.0/213439902114044/messages",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "recipient",
+              "value": "={\"id\":\"{{ $('Loop Over Items1').item.json.id_client_message }}\"}"
+            },
+            {
+              "name": "messaging_type",
+              "value": "MESSAGE_TAG"
+            },
+            {
+              "name": "tag",
+              "value": "ACCOUNT_UPDATE"
+            },
+            {
+              "name": "message",
+              "value": "={\"text\":\"{{ $json.jsonOutput.description }}\"}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "c519b7aa-eea3-44f9-b262-48d09df9a768",
+      "name": "send fb3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4060,
+        1300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2060972300,
+          "mode": "list",
+          "cachedResultName": "client_message_cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2060972300"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_client_message": "={{ $('Loop Over Items1').item.json.id_client_message }}",
+            "status_ticket": "ok"
+          },
+          "matchingColumns": [
+            "id_client_message"
+          ],
+          "schema": [
+            {
+              "id": "conversation_id",
+              "displayName": "conversation_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "update_time",
+              "displayName": "update_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_client_message",
+              "displayName": "id_client_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_workchat",
+              "displayName": "id_workchat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name_client_facebook",
+              "displayName": "name_client_facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_client_facebook",
+              "displayName": "email_client_facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message_worchat",
+              "displayName": "message_worchat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_worksuit",
+              "displayName": "email_worksuit",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status_ticket",
+              "displayName": "status_ticket",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a4d5d82a-174a-4fdc-bd8a-0635bbeb3817",
+      "name": "Save messaage8",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        4280,
+        1300
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let messagerAI = $node['Code Convert to JSON']?.json?.jsonOutput?.description\n  messagerAI = messagerAI.replace(/\\n\\n/g, '\\\\n\\\\n');\n  messagerAI = messagerAI.replace(/\\n/g, '\\\\n');\n  messagerAI = messagerAI.replace(/<br><br>/g, '\\\\n');\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();\n"
+      },
+      "id": "feb15deb-ae48-48eb-83c1-2a41db92d128",
+      "name": "Code9",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3640,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "project",
+        "operation": "create",
+        "projectName": "={{ $('Cloodo CRM1').item.json.data[0].user.name }} Project",
+        "start_date": "={{ $now }}",
+        "user_id": "=[\"{{ $('Cloodo CRM1').item.json.data[0].added_by.id }}\"]",
+        "additionalFields": {
+          "client_id": "=\"{{ $('Cloodo CRM1').item.json.data[0].user.id }}\""
+        },
+        "requestOptions": {}
+      },
+      "id": "0e709820-a82e-4bd4-90d6-b174f851c721",
+      "name": "Create Project",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        2220,
+        1020
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
+          "mode": "list",
+          "cachedResultName": "Cmsmart AI"
+        },
+        "prompt": "define",
+        "text": "=You are a project assistant whom responsible for creating client-facing tickets based on provided chat or email content. \n\nAnalyze the following conversation messages between the client and admin. Focus on the most recent messages sent by the client, especially the last one, to determine the client's intent and construct a JSON object based on the following format:\n{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"note\":\"\",\n  \"type\":\"\",\n  \"type_ticket\"\n\n}\n\nInstructions:  \n1. title: Title of the problem the customer encountered:\n2. description: is a detailed description of the problem, \nThe description must include the following sections:\n\n2.1. Summary of Request: A concise overview of what the client is asking for, written in a client-friendly tone.\n2.2 Proposed Next Steps: Clearly outline what actions will be taken by the team and any required input from the client.\n2.3. Action Items: Break down actionable tasks for the internal team and the client.\n\nUse this format:\n\nSummary of Request\n[Summarize the client’s request in a professional and client-friendly tone.]\n\nProposed Next Steps\n[List the steps the team will take to address the request, as well as any input required from the client.]\n\nAction Items\nFor Our Team:\n[List specific tasks for the team to complete.]\nFor You:\n[List any actions required from the client, if applicable.]\n\nMake sure the ticket is clear, actionable, and formatted for both internal use and client review. Use professional and concise language throughout.\n\nSample Input:\n\"tung wants to add a 'Manage Cart' feature to the Auto Reply from WF 50 project.\"\n\nExpected Output:\nA complete ticket with all required sections and a professional tone, formatted as per the structure above.\n\nBase on summary problem provided and History chat messages, let create an object with subject anb message.\n3. note: additional notes, notes, further explanations of the problem and the last .\n4. Ensure the JSON is correctly formatted, valid, and accurately reflects the client’s most recent intent.   \n5. Do not include any explanation, only return the JSON object in the exact specified format.\n6. Remember alway Write description with format like a detail email profesional for our client (Dear [client name]) and focus on problem what client need to help, what client need to help. use html tag for text effect like <strong> for bold text .\n7. type is an analysis of whether the customer conversation has a clear issue if it is a \"clear issue\" or  \"not clear issue\", in which the not clear issue is the conversations such as greeting , unspecified problem...\n8. type_ticket : I have: \na7449e63-6ce3-4840-ab67-27298faf086f -> Product Enquiry,\n0c8ba87a-f6ae-44c2-9c4d-404c49ec255b -> Payment & Billing,\n00f4494e-68c5-4926-9ff1-3faafe812e94 -> Setup Assistance ,\n2b32b674-741a-4833-8328-925a48bef030 -> Feature Requests,\n4bbfa6dd-beb7-43af-926c-f736ca00bdd3 -> Project Maintenance ,\n28cab752-15e1-433e-8abf-609fde9b5b7f -> Renewal and Upsell ,\nf58a0a7e-9561-4cac-a326-6e0cfe93360b -> Onboarding and Training,\n6dc7b7c5-a130-4357-9d83-03030a8a134f -> Custom Development ,\n7abb55c6-8135-44db-b99a-8cabd31aeab0 -> Business Meeting,\n89050de5-8c35-4947-92d2-2c108b32aaa4 -> Extra Service ,\n\n\nare the ids are the names of the ticket types, please classify that content by the ticket type name whichever is appropriate and give me that type of ticket\nCategorization rules:  \n\n1. Product Inquiry  \n   - Keywords: Form requests, new client messages, pricing, product details, compatibility, feature comparisons, demos, trials.  \n   - Client Context: Questions from new or potential clients about product features, compatibility, pricing, or demo requests.  \n   - Examples:  \n     - \"What’s the cost of the Printshop Premium package?\"  \n     - \"Can I see a demo of the Product Designer tool?\"  \n\n2. Payment & Billing  \n   - Keywords: Cancel subscription, refund request, renewal inquiries, invoices, payment errors, prorated upgrades/downgrades.  \n   - Client Context: Issues related to payments, subscriptions, or invoices from clients.  \n   - Examples:  \n     - \"How can I get a refund for my subscription?\"  \n     - \"I need to renew my license for another year.\"  \n\n3. Setup Assistance  \n   - Keywords: Installation, download issues, free plugins, domain setup, hosting issues, product configuration, API setup.  \n   - Client Context: Clients seeking help with the initial setup of a system, plugin, or eCommerce platform.  \n   - Examples:  \n     - \"Help me set up my domain and hosting.\"  \n     - \"I need assistance installing free plugins.\"  \n\n4. Feature Request  \n   - Keywords: Add feature, new functionality, expand capabilities, request enhancement, tool improvement, custom modules.  \n   - Client Context: Clients requesting new features or enhancements for existing tools.  \n   - Examples:  \n     - \"Can you add a one-click checkout feature?\"  \n     - \"I’d like a feature for advanced reporting.\"  \n\n5. Project Maintenance  \n   - Keywords: Bug fix, performance issues, general support requests, system downtime, error reports, minor improvements.  \n   - Client Context: Ongoing support requests from existing clients for bugs, performance optimization, or fixes.  \n   - Examples:  \n     - \"Fix the 500 error on the homepage.\"  \n     - \"The checkout page isn’t working properly.\"  \n\n6. Renewal and Upsell  \n   - Keywords: Contract renewal, subscription upsell, add-on features, expanding services.  \n   - Client Context: Clients looking to renew contracts, subscriptions, or add additional services.  \n   - Examples:  \n     - \"I’d like to renew my subscription for another year.\"  \n     - \"Can you provide an upsell package for advanced analytics?\"  \n\n7. Onboarding and Training  \n   - Keywords: Training session, onboarding assistance, platform overview, user training.  \n   - Client Context: New clients needing guidance to get started with a product or service.  \n   - Examples:  \n     - \"Can you guide me through the platform setup?\"  \n     - \"We need training for our team on the new software.\"  \n\n8. Custom Development  \n   - Keywords: Bespoke features, tailor-made solutions, custom-built modules, specific functionality.  \n   - Client Context: Clients requesting customized solutions tailored to their specific business needs.  \n   - Examples:  \n     - \"We need a custom-built module for order tracking.\"  \n     - \"Can you create a feature that integrates with our existing CRM?\"  \n\n9. Business Meeting  \n   - Keywords: Scheduling meetings, meeting memo, project discussions, progress updates.  \n   - Client Context: Coordination and scheduling of meetings between clients and team members.  \n   - Examples:  \n     - \"Let’s schedule a meeting to discuss the project roadmap.\"  \n     - \"We need to have a progress review with your team next week.\"  \n\n10. Extra Service  \n    - Keywords: Additional service, beyond scope, add-on requests, non-standard service.  \n    - Client Context: Clients requesting extra services beyond what is included in their plan.  \n    - Examples:  \n      - \"Can you provide a custom report for our sales data?\"  \n      - \"We’d like additional security monitoring for our servers.\"  \n\nHere are the history conversation messages: \n\nInformation of client\nclient name: {{ $('Loop Over Items1').item.json.name_client_facebook }}\nproject name : {{ $('Create Project').item.json.data[0].name }}\nSummary problem:\n{{ $json.messagesSent }}\n\nALWAYS respond only with the correctly formatted JSON object.",
+        "options": {}
+      },
+      "id": "c38e61a8-3026-4b42-8816-60c0873305b5",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        3060,
+        1020
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "Workflow API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "client",
+        "operation": "update",
+        "ID": "={{ $json.data[0].user.id }}",
+        "additionalFields": {
+          "name": "={{ $('Loop Over Items1').item.json.name_client_facebook }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "4a2f9766-af66-4e0f-90c4-cf344a32c0c7",
+      "name": "Cloodo CRM6",
+      "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
+      "typeVersion": 1,
+      "position": [
+        1960,
+        1180
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloodo.com/link_account_fb.php",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $('Loop Over Items1').item.json.email_client_facebook }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "8bd36b2f-f049-44e3-ac16-886a33af3a81",
+      "name": "getLink",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4880,
+        1000
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Save messaage4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save messaage4": {
+      "main": [
+        [
+          {
+            "node": "Take item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take item": {
+      "main": [
+        [
+          {
+            "node": "Filter email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter email": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM": {
+      "main": [
+        [
+          {
+            "node": "check data clietn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM1": {
+      "main": [
+        [
+          {
+            "node": "check data client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update contact client3": {
+      "main": [
+        [
+          {
+            "node": "a Project client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "a Project client": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Detail Messages1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Get All Messages and id agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Messages and id agent1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Convert to JSON1": {
+      "main": [
+        [
+          {
+            "node": "Code8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check data clietn": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update contact client3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Get Detail Messages1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check have issue1": {
+      "main": [
+        [
+          {
+            "node": "Create Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send fb1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM2": {
+      "main": [
+        [
+          {
+            "node": "send fb",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send fb": {
+      "main": [
+        [
+          {
+            "node": "Save messaage5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save messaage5": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Ticket": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send fb1": {
+      "main": [
+        [
+          {
+            "node": "Save messaage6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code8": {
+      "main": [
+        [
+          {
+            "node": "check have issue1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cloodo CRM4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Code Convert to JSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Cloodo CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update contact client": {
+      "main": [
+        [
+          {
+            "node": "Create Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Detail Messages": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Get All Messages and id agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Messages and id agent": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Convert to JSON": {
+      "main": [
+        [
+          {
+            "node": "Code9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check have issue": {
+      "main": [
+        [
+          {
+            "node": "Create Ticket3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send fb3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ticket1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Cloodo CRM7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloodo CRM7": {
+      "main": [
+        [
+          {
+            "node": "getLink",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send fb2": {
+      "main": [
+        [
+          {
+            "node": "Save messaage7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Ticket3": {
+      "main": [
+        [
+          {
+            "node": "Get Ticket1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send fb3": {
+      "main": [
+        [
+          {
+            "node": "Save messaage8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code9": {
+      "main": [
+        [
+          {
+            "node": "check have issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Project": {
+      "main": [
+        [
+          {
+            "node": "Get Detail Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Code Convert to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check data client": {
+      "main": [
+        [
+          {
+            "node": "Update contact client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getLink": {
+      "main": [
+        [
+          {
+            "node": "send fb2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1a905e4b-c812-47ae-9386-81e82860bb07",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "dILhubsCZGXohMHt",
+  "tags": []
+}
