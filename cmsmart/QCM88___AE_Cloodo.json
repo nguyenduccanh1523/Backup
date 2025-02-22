@@ -1,5 +1,5 @@
 {
-  "name": "QCM88 - AE Cloodo",
+  "name": "QCM88 AE Cloodo",
   "nodes": [
     {
       "parameters": {
@@ -17,13 +17,13 @@
         },
         "options": {}
       },
-      "id": "771706bb-24c1-4295-88ef-47b2374d8fc3",
+      "id": "7e2e1268-ed21-400d-bc5c-fa734aa70921",
       "name": "Get All Department",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1560,
-        280
+        -7780,
+        2420
       ],
       "credentials": {
         "cloodoApi": {
@@ -48,13 +48,13 @@
         },
         "options": {}
       },
-      "id": "4915437d-76e0-4031-8f63-c1aa401fe523",
+      "id": "5a20674d-973a-49a0-ab3c-af59f93e462c",
       "name": "Get All Department1",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1560,
-        480
+        -7780,
+        2620
       ],
       "credentials": {
         "cloodoApi": {
@@ -79,13 +79,13 @@
         },
         "options": {}
       },
-      "id": "d97fba17-1909-4936-bec3-5e1c4918e7d1",
+      "id": "b72d77a6-f4de-4e05-860a-a7ad5f71a44f",
       "name": "Get All Department2",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1580,
-        700
+        -7800,
+        2840
       ],
       "credentials": {
         "cloodoApi": {
@@ -98,13 +98,13 @@
       "parameters": {
         "numberInputs": 3
       },
-      "id": "2cbb77e4-a740-40e7-9aac-5c7be434d916",
+      "id": "78da244f-8f22-4fe8-9136-3ca67b6089b9",
       "name": "Merge",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        -1060,
-        480
+        -7280,
+        2620
       ]
     },
     {
@@ -112,65 +112,65 @@
         "aggregate": "aggregateAllItemData",
         "options": {}
       },
-      "id": "76998f51-f76c-4709-8edf-f214dab4b65b",
+      "id": "ac1b75a3-b2d6-4e11-a1c5-fc85b02f905d",
       "name": "Aggregate",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        -840,
-        480
+        -7060,
+        2620
       ]
     },
     {
       "parameters": {
         "jsCode": "const allDepartment = $input.all()[0]?.json?.data[2]\nconst member = allDepartment?.member\n  \n\nreturn{\n  name: allDepartment?.name,\n  member: member\n}\n"
       },
-      "id": "d4767b56-4ae7-4511-a8f2-5e355caf8da0",
+      "id": "41902565-2ddd-4c41-8946-f989f801994a",
       "name": "GetMember",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1340,
-        280
+        -7560,
+        2420
       ]
     },
     {
       "parameters": {
         "jsCode": "const allDepartment = $input.all()[0]?.json?.data[2]\nconst member = allDepartment?.member\n                     \n\nreturn{\n  name: allDepartment?.name,\n  member: member\n}\n"
       },
-      "id": "45c80e29-4aa9-4289-9987-1a72c681f4f9",
+      "id": "5a261863-7822-4e58-87b8-441ea052b727",
       "name": "GetMember1",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1340,
-        480
+        -7560,
+        2620
       ]
     },
     {
       "parameters": {
         "jsCode": "const allDepartment = $input.all()[0]?.json?.data[2]\nconst member = allDepartment?.member\n\nreturn{\n  name: allDepartment?.name,\n  member: member\n}\n"
       },
-      "id": "2b4e88e7-2df4-432d-9f4e-3455f55ddf4c",
+      "id": "767a059a-2277-40e4-ab95-779d5ef0eda3",
       "name": "GetMember2",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1340,
-        700
+        -7560,
+        2840
       ]
     },
     {
       "parameters": {
         "jsCode": "let listMembers = []\n\n// Lấy các thành viên của ba công ty\nconst MemberCms = $input.all()[0]?.json?.data[0]?.member;\nconst MemberPrintCart = $input.all()[0]?.json?.data[1]?.member;\nconst MemberCloodo = $input.all()[0]?.json?.data[2]?.member;\n\n// Thêm tên công ty vào các thành viên\nMemberCms.forEach(member => {\n  member.companyName = 'CmsMart';// Tên công ty cho MemberCms\n  listMembers.push(member)\n});\n\nMemberPrintCart.forEach(member => {\n  member.companyName = 'PrintCart';  // Tên công ty cho MemberPrintCart\n  listMembers.push(member)\n});\n\nMemberCloodo.forEach(member => {\n  member.companyName = 'Cloodo';  // Tên công ty cho MemberCloodo\n  listMembers.push(member)\n});\n\n// Đếm số lượng công ty cho mỗi người theo 'name'\nconst nameCountMap = {};\n\n// Duyệt qua danh sách các thành viên và đếm số lượng công ty theo tên\nlistMembers.forEach(member => {\n  const name = member.name;\n\n  // Nếu tên chưa có trong map, khởi tạo giá trị với 0\n  if (!nameCountMap[name]) {\n    nameCountMap[name] = new Set();  // Sử dụng Set để đảm bảo mỗi công ty chỉ được đếm 1 lần\n  }\n\n  // Thêm tên công ty vào Set để đếm duy nhất\n  nameCountMap[name].add(member.companyName);\n});\n\n// Thêm số lượng công ty vào từng thành viên\nlistMembers.forEach(member => {\n  const name = member.name;\n  member.countCompany = nameCountMap[name].size; // Số lượng công ty mà thành viên tham gia\n});\n\n// Trả về các thành viên đã được cập nhật\nreturn listMembers;"
       },
-      "id": "2461af06-1ef7-46ee-8075-2eba4bde02e0",
+      "id": "1961fa85-901a-437f-9d2f-3ea7626339b7",
       "name": "CompanyName",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -660,
-        480
+        -6880,
+        2620
       ]
     },
     {
@@ -252,13 +252,13 @@
         },
         "options": {}
       },
-      "id": "84518694-8d13-4ed1-8bb1-31c48bf47ee1",
+      "id": "f3229092-f53d-46f3-ac2c-409a557a6c16",
       "name": "Count Company",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -420,
-        480
+        -6640,
+        2620
       ]
     },
     {
@@ -285,13 +285,13 @@
         },
         "options": {}
       },
-      "id": "2a6f6071-2edd-4577-9991-a2a258340c63",
+      "id": "1aa50da1-c9aa-4059-8eec-bc2c6e197216",
       "name": "Remove employee leave1",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2440,
-        480
+        -3780,
+        2620
       ]
     },
     {
@@ -475,13 +475,13 @@
         },
         "options": {}
       },
-      "id": "6c9f6605-173d-4ab0-aec6-cc5dc4602538",
+      "id": "57c4c010-afe8-4627-9a7c-19dc3e299d99",
       "name": "Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        2900,
-        420
+        -3320,
+        2560
       ]
     },
     {
@@ -565,13 +565,13 @@
         },
         "options": {}
       },
-      "id": "94587968-5ab0-4b26-9d84-2cf1ff802cc6",
+      "id": "9aa68a9a-709c-41d6-86fc-d8a74ea9b971",
       "name": "Switch Company1",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        3940,
-        -900
+        -2280,
+        1240
       ],
       "executeOnce": false
     },
@@ -582,13 +582,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If104').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "981f8f4d-613c-4063-89fd-c8fe6ca25b88",
+      "id": "85996310-7b37-4466-adef-22d8f4492f12",
       "name": "Cloodo Point17",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6520,
-        -580
+        300,
+        1560
       ],
       "credentials": {
         "cloodoApi2": {
@@ -608,13 +608,13 @@
           ]
         }
       },
-      "id": "0e96b147-d38d-4ab9-9353-007411437f4e",
+      "id": "29e4734e-799f-4d8a-8357-a593df3f268c",
       "name": "IF not found31",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6280,
-        -560
+        60,
+        1580
       ]
     },
     {
@@ -623,13 +623,13 @@
         "keyword": "=QCM 88: {{ $('If104').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "72b63729-5f11-4f99-a06d-eb09371b2910",
+      "id": "947b548f-ecaf-4cf6-a084-44a39502b945",
       "name": "Cloodo Point54",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6080,
-        -560
+        -140,
+        1580
       ],
       "credentials": {
         "cloodoApi2": {
@@ -642,13 +642,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "12120fcd-55a5-4b39-865c-4d2c80184a19",
+      "id": "17966e15-f260-40c5-9c78-3a18ffd0ac40",
       "name": "Stop and Error35",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        6940,
-        -600
+        720,
+        1540
       ]
     },
     {
@@ -676,13 +676,13 @@
         },
         "options": {}
       },
-      "id": "04cb1e21-a16a-4c34-911a-4e44ddaaef61",
+      "id": "fecbb012-11ca-451f-b184-1c18b09804a4",
       "name": "If52",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6680,
-        -580
+        460,
+        1560
       ]
     },
     {
@@ -710,26 +710,26 @@
         },
         "options": {}
       },
-      "id": "986ad4f6-ac1d-4428-8694-3bb2f21c17ff",
+      "id": "b74fb352-e74b-4ea7-a55e-0b503fcf2ba1",
       "name": "If53",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4840,
-        -1100
+        -1380,
+        1040
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
-      "id": "056f3de9-b458-48f6-881a-18c8ecf52b60",
+      "id": "2e09fdae-4f99-49d5-98db-d167f019ce40",
       "name": "Check create 7d41",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4600,
-        -1100
+        -1620,
+        1040
       ]
     },
     {
@@ -756,13 +756,13 @@
         },
         "options": {}
       },
-      "id": "53119805-e7a1-4e8a-ba3a-73f89590c0bb",
+      "id": "18c4f022-8f46-43f8-91ba-b6cb4931663c",
       "name": "get Timelog22",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4380,
-        -1100
+        -1840,
+        1040
       ],
       "credentials": {
         "cloodoApi": {
@@ -796,26 +796,26 @@
         },
         "options": {}
       },
-      "id": "c3eb867b-5445-466f-a885-f75c8ab60a71",
+      "id": "b2e62f9a-a82c-4f56-9c78-7c7d74763633",
       "name": "If54",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4840,
-        -880
+        -1380,
+        1260
       ]
     },
     {
       "parameters": {
         "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
       },
-      "id": "5f9b7bfe-2a34-4951-926c-ad65d8d7a326",
+      "id": "7318c546-8a5e-480f-88dc-9f94e09663a3",
       "name": "Check create 7d42",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4600,
-        -880
+        -1620,
+        1260
       ]
     },
     {
@@ -842,13 +842,13 @@
         },
         "options": {}
       },
-      "id": "4fbfaafb-36c3-4d22-96c5-7497e8403f56",
+      "id": "a2d7af47-52e9-49f3-aefb-946e8e65d871",
       "name": "get Timelog23",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4380,
-        -880
+        -1840,
+        1260
       ],
       "credentials": {
         "cloodoApi": {
@@ -882,26 +882,26 @@
         },
         "options": {}
       },
-      "id": "27556bab-230a-466a-bbee-344e475f0658",
+      "id": "0a3e8dc2-d279-4443-87ab-339cf2c8adda",
       "name": "If104",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4820,
-        -660
+        -1400,
+        1480
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
-      "id": "49d5b07d-653c-4b31-b41e-1761cd6a823b",
+      "id": "4bfdef29-44e0-4f3a-8957-c8857aab4186",
       "name": "Check create 7d43",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4580,
-        -660
+        -1640,
+        1480
       ]
     },
     {
@@ -928,13 +928,13 @@
         },
         "options": {}
       },
-      "id": "9fa25333-c2e1-4813-ab2f-9dfc0982863e",
+      "id": "a67b81c6-5ee8-4170-9321-e4cc1a5fba99",
       "name": "get Timelog24",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4360,
-        -660
+        -1860,
+        1480
       ],
       "credentials": {
         "cloodoApi": {
@@ -947,13 +947,13 @@
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $('If104').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 360, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "6d5f7f4b-52c5-4b49-97c6-6d0d6391c091",
+      "id": "bf3c5838-29a5-46bd-8c7c-a9b7a969562e",
       "name": "Code13",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5760,
-        -1200
+        -460,
+        940
       ]
     },
     {
@@ -981,13 +981,13 @@
         },
         "options": {}
       },
-      "id": "b715a9c4-60ab-40b1-9123-279ced21bdff",
+      "id": "c761cbe7-2f9f-44f2-9839-2258004b20ef",
       "name": "If105",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5960,
-        -1200
+        -260,
+        940
       ]
     },
     {
@@ -997,13 +997,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If105').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "878d6933-3c4d-4d8f-a8e8-d7eb76e83a97",
+      "id": "809b17a4-7f19-4bc5-885b-1fcd8f0c00ba",
       "name": "Cloodo Point18",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6680,
-        -1260
+        460,
+        880
       ],
       "credentials": {
         "cloodoApi2": {
@@ -1023,13 +1023,13 @@
           ]
         }
       },
-      "id": "33cb225f-18e7-4e1a-b47c-24b04098864f",
+      "id": "630c31db-ddd5-4e80-99af-394a2b42027d",
       "name": "IF not found32",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6440,
-        -1240
+        220,
+        900
       ]
     },
     {
@@ -1038,13 +1038,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "6c785afa-09c9-4a87-94e4-0d28613ae58e",
+      "id": "99800330-e720-4bf7-8de1-c6d6f4f54717",
       "name": "Cloodo Point55",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6260,
-        -1240
+        40,
+        900
       ],
       "credentials": {
         "cloodoApi2": {
@@ -1057,13 +1057,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "537da131-6e46-4fa3-ba61-7f862d9d39ab",
+      "id": "b732d8ef-95f7-43f0-9042-e6edf7db61bc",
       "name": "Stop and Error36",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        7180,
-        -1280
+        960,
+        860
       ]
     },
     {
@@ -1091,26 +1091,26 @@
         },
         "options": {}
       },
-      "id": "5c72ae51-6678-4263-a71e-580f6f325f92",
+      "id": "3aeba922-8a32-4a43-8976-94f9345d01c4",
       "name": "If106",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6840,
-        -1260
+        620,
+        880
       ]
     },
     {
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $input.all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 240, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "ed7e7864-efaf-48c9-8e8e-534e0edc7cb7",
+      "id": "ec0981a6-6da3-4933-bf17-9f554504e5e5",
       "name": "Code14",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5320,
-        -1620
+        -900,
+        520
       ]
     },
     {
@@ -1138,13 +1138,13 @@
         },
         "options": {}
       },
-      "id": "2940860b-9cb2-4878-9ab2-7bc3b4db0289",
+      "id": "b3353a75-2998-4238-941c-fb1639d7e7e3",
       "name": "If107",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5580,
-        -1620
+        -640,
+        520
       ]
     },
     {
@@ -1154,13 +1154,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If107').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "a2048111-afc1-48f0-a593-b2777727ab25",
+      "id": "55f16ef4-6e85-44db-844d-14d77539ec25",
       "name": "Cloodo Point19",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6260,
-        -1660
+        40,
+        480
       ],
       "credentials": {
         "cloodoApi2": {
@@ -1180,13 +1180,13 @@
           ]
         }
       },
-      "id": "42b67a0e-f3fe-4b5f-8e03-7d872a853d27",
+      "id": "6286afe7-04ac-4007-ae5b-ce6b1b16bc35",
       "name": "IF not found33",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6020,
-        -1640
+        -200,
+        500
       ]
     },
     {
@@ -1195,13 +1195,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "b7805b5e-0ba6-4408-a959-ac7c89a88a6a",
+      "id": "055df702-bc59-4801-a00b-c0532778434f",
       "name": "Cloodo Point56",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        5820,
-        -1640
+        -400,
+        500
       ],
       "credentials": {
         "cloodoApi2": {
@@ -1214,13 +1214,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "b7000bc3-63cc-49db-b05d-54ad063612aa",
+      "id": "098aff88-d5f5-45b6-be8b-0a6707074e34",
       "name": "Stop and Error37",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        6680,
-        -1680
+        460,
+        460
       ]
     },
     {
@@ -1248,13 +1248,13 @@
         },
         "options": {}
       },
-      "id": "1b49da9f-a15d-4863-9c5c-691f0298f284",
+      "id": "e6f4ac80-e302-4ba0-891c-5781355da261",
       "name": "If108",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6420,
-        -1660
+        200,
+        480
       ]
     },
     {
@@ -1262,13 +1262,13 @@
         "mode": "chooseBranch",
         "useDataOfInput": 2
       },
-      "id": "dd2f2596-2587-40ed-9687-9ff3e93c70e5",
+      "id": "6c89dc70-4832-45d5-b0fa-8aa6248fc94a",
       "name": "Merge15",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        5820,
-        -560
+        -400,
+        1580
       ]
     },
     {
@@ -1352,13 +1352,13 @@
         },
         "options": {}
       },
-      "id": "f391f5a4-1528-4855-8d2d-7e9dace17fd4",
+      "id": "b8be3920-6015-4a48-a0e5-94b4084c6cdf",
       "name": "Switch Company4",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        3680,
-        320
+        -2540,
+        2460
       ],
       "executeOnce": false
     },
@@ -1443,13 +1443,13 @@
         },
         "options": {}
       },
-      "id": "73e8978d-9cbc-4781-9920-ad36a15a4518",
+      "id": "873ebd4b-e47a-4cf8-9bd7-4af6bc2009f2",
       "name": "Switch Company5",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        3940,
-        1680
+        -2280,
+        3820
       ],
       "executeOnce": false
     },
@@ -1460,13 +1460,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If64').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "3715cbf9-2569-4f68-a84d-08da258b3991",
+      "id": "5e4003be-b2eb-4c01-b05e-44d09a3580f2",
       "name": "Cloodo Point12",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6340,
-        760
+        120,
+        2900
       ],
       "credentials": {
         "cloodoApi2": {
@@ -1486,13 +1486,13 @@
           ]
         }
       },
-      "id": "aeb0e6cd-bfb3-4f4c-969b-15d146930871",
+      "id": "09f5bbf9-f8da-4d32-999e-7040a288ca81",
       "name": "IF not found14",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6100,
-        780
+        -120,
+        2920
       ]
     },
     {
@@ -1501,13 +1501,13 @@
         "keyword": "=QCM 88: {{ $('If64').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "aa2b2f8d-b89b-4aa2-9560-5c15278eec03",
+      "id": "3bfc1ad1-6b99-4ca9-b5b0-cc4642f09151",
       "name": "Cloodo Point28",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        5900,
-        780
+        -320,
+        2920
       ],
       "credentials": {
         "cloodoApi2": {
@@ -1520,13 +1520,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "ba8e0cb9-0ae5-4481-9f78-ec78088215e9",
+      "id": "5ef5e419-dacf-418f-a20a-e376fd411db0",
       "name": "Stop and Error17",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        6760,
-        740
+        540,
+        2880
       ]
     },
     {
@@ -1554,13 +1554,13 @@
         },
         "options": {}
       },
-      "id": "53fa5aed-1ef6-460c-aabd-dea3efdc79e2",
+      "id": "ab484029-df49-4caf-abfd-e216eb24661a",
       "name": "If49",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6500,
-        760
+        280,
+        2900
       ]
     },
     {
@@ -1588,26 +1588,26 @@
         },
         "options": {}
       },
-      "id": "381d0bf5-de29-4e05-871a-1807399f13a4",
+      "id": "d44fd8a7-b850-4221-ad8d-3cda38510168",
       "name": "If50",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4540,
-        180
+        -1680,
+        2320
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
-      "id": "126f47e8-79b0-4d8f-a23e-46148adaf474",
+      "id": "4574c4e6-e2b4-4ac2-8ba6-c8e86035abc9",
       "name": "Check create 7d38",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4300,
-        180
+        -1920,
+        2320
       ]
     },
     {
@@ -1634,13 +1634,13 @@
         },
         "options": {}
       },
-      "id": "fa0d1563-8625-4b78-9789-401c7c81a1c0",
+      "id": "5e21539a-7852-4dbe-97f7-df9ebf5b5642",
       "name": "get Timelog4",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4080,
-        180
+        -2140,
+        2320
       ],
       "credentials": {
         "cloodoApi": {
@@ -1674,26 +1674,26 @@
         },
         "options": {}
       },
-      "id": "696b2dba-ed4c-4984-8d00-a523587bfd76",
+      "id": "7a2b05a5-42e0-450c-9abd-3a1d5f9b4f9f",
       "name": "If51",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4540,
-        400
+        -1680,
+        2540
       ]
     },
     {
       "parameters": {
         "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
       },
-      "id": "42ace144-c8c0-4cf4-a099-e04c9c41b6fe",
+      "id": "8d7f4742-de37-4e01-ae2f-f9fa591f5a98",
       "name": "Check create 7d39",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4300,
-        400
+        -1920,
+        2540
       ]
     },
     {
@@ -1720,13 +1720,13 @@
         },
         "options": {}
       },
-      "id": "3cf0e717-5c8b-47c7-aef6-3869ea8021a6",
+      "id": "62d399db-c61f-4300-b90d-a7d9f80efac4",
       "name": "get Timelog5",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4080,
-        400
+        -2140,
+        2540
       ],
       "credentials": {
         "cloodoApi": {
@@ -1760,26 +1760,26 @@
         },
         "options": {}
       },
-      "id": "0caca9e6-8e67-4626-8193-a40e09b51935",
+      "id": "85adeadd-276c-4961-b499-c1b5f366037a",
       "name": "If64",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4520,
-        620
+        -1700,
+        2760
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
-      "id": "6d17395e-c36d-4739-9f13-b92c10ad2e26",
+      "id": "0303a608-46f3-4166-83ac-50fa689de5ad",
       "name": "Check create 7d40",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4280,
-        620
+        -1940,
+        2760
       ]
     },
     {
@@ -1806,13 +1806,13 @@
         },
         "options": {}
       },
-      "id": "d762edfc-4b7c-47a1-bda9-32f582471681",
+      "id": "7949df15-9009-4c9c-b687-a528aed3571d",
       "name": "get Timelog6",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4060,
-        620
+        -2160,
+        2760
       ],
       "credentials": {
         "cloodoApi": {
@@ -1825,13 +1825,13 @@
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $('If64').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 360, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "51a7cfe0-7b8a-4dee-9318-080835f81fa8",
+      "id": "4d12014b-c7bb-4b6a-8e60-03aa2c6ec09f",
       "name": "Code2",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5660,
-        180
+        -560,
+        2320
       ]
     },
     {
@@ -1859,13 +1859,13 @@
         },
         "options": {}
       },
-      "id": "1b1a1b7b-a53b-4d39-9561-2d1609fcc5d0",
+      "id": "265d094a-4c35-434f-b027-666011bb687f",
       "name": "If65",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5920,
-        180
+        -300,
+        2320
       ]
     },
     {
@@ -1875,13 +1875,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If65').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "3a962cfb-9ba5-47f2-bbd2-99f44515a1f8",
+      "id": "e2c25630-8b86-4870-a7dd-26853d1a8aa7",
       "name": "Cloodo Point13",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6600,
-        140
+        380,
+        2280
       ],
       "credentials": {
         "cloodoApi2": {
@@ -1901,13 +1901,13 @@
           ]
         }
       },
-      "id": "c93a37bc-b701-4a07-9436-9390f951831d",
+      "id": "8e0b31cb-d9c1-44e9-b482-c71aa9a428e3",
       "name": "IF not found15",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6360,
-        160
+        140,
+        2300
       ]
     },
     {
@@ -1916,13 +1916,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "5c1a4c0e-e1bf-4b91-9eaf-48c7c44326fa",
+      "id": "ac7ede94-94ca-4768-a75f-c41f0f8d3d85",
       "name": "Cloodo Point29",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6200,
-        160
+        -20,
+        2300
       ],
       "credentials": {
         "cloodoApi2": {
@@ -1935,13 +1935,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "1b8393ab-b3b1-4365-aa37-f66150fa18de",
+      "id": "9c8bc57b-818b-4981-a785-eb88c97e7198",
       "name": "Stop and Error18",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        7020,
-        120
+        800,
+        2260
       ]
     },
     {
@@ -1969,26 +1969,26 @@
         },
         "options": {}
       },
-      "id": "6bbb8251-e54e-4d4c-ad37-0a3a1dd945f3",
+      "id": "d1df58aa-068d-48e0-82a8-c830ad98c5b6",
       "name": "If66",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6760,
-        140
+        540,
+        2280
       ]
     },
     {
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $input.all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 240, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "f3d4affb-328b-4e29-a394-60fb716afccf",
+      "id": "a29e3c93-e839-455f-8fc6-bf2ceb3d4e6b",
       "name": "Code3",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5000,
-        -40
+        -1220,
+        2100
       ]
     },
     {
@@ -2016,13 +2016,13 @@
         },
         "options": {}
       },
-      "id": "93f7d1b2-ed76-4bbf-94c2-951a77b72f19",
+      "id": "1d58fad7-a0fe-4810-a8a4-a8333bcef074",
       "name": "If67",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5260,
-        -40
+        -960,
+        2100
       ]
     },
     {
@@ -2032,13 +2032,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If67').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "bd10a6bc-935b-4cd2-910a-3e0c36c86c7c",
+      "id": "8d339629-77dd-4e04-8a62-a92fd0daf7c4",
       "name": "Cloodo Point14",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        5940,
-        -80
+        -280,
+        2060
       ],
       "credentials": {
         "cloodoApi2": {
@@ -2058,13 +2058,13 @@
           ]
         }
       },
-      "id": "70f3abe7-97ac-4a47-be15-a0cbc64e456e",
+      "id": "161470f1-28de-4c0d-9b0c-badb4cce8c64",
       "name": "IF not found16",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        5700,
-        -60
+        -520,
+        2080
       ]
     },
     {
@@ -2073,13 +2073,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "2395bb78-6a5a-40da-b244-e2baa661766f",
+      "id": "89089668-9675-4b7d-b07c-32df70e8a4e3",
       "name": "Cloodo Point30",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        5500,
-        -60
+        -720,
+        2080
       ],
       "credentials": {
         "cloodoApi2": {
@@ -2092,13 +2092,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "7157a772-f5fe-4726-bc2a-5b8ee8c168a7",
+      "id": "a4c0fc89-5641-4f1d-b4bc-39e2857c19f6",
       "name": "Stop and Error19",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        6360,
-        -100
+        140,
+        2040
       ]
     },
     {
@@ -2126,13 +2126,13 @@
         },
         "options": {}
       },
-      "id": "b8792ee7-cde0-4787-9792-e7cb6d6c3b09",
+      "id": "64201e7d-cd38-47ef-b814-73ca01294958",
       "name": "If68",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6100,
-        -80
+        -120,
+        2060
       ]
     },
     {
@@ -2140,13 +2140,13 @@
         "mode": "chooseBranch",
         "useDataOfInput": 2
       },
-      "id": "473d7e42-09d7-4cc7-907e-f7221cb06ec1",
+      "id": "8404f5e7-b62a-47f9-b6fa-054a0555dce8",
       "name": "Merge9",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        5520,
-        780
+        -700,
+        2920
       ]
     },
     {
@@ -2156,13 +2156,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If69').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "da3b0f39-1e34-4896-8e15-b753b1321b28",
+      "id": "a9401688-97a3-4670-b4da-589c84c92e67",
       "name": "Cloodo Point15",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6940,
-        1920
+        720,
+        4060
       ],
       "credentials": {
         "cloodoApi2": {
@@ -2182,13 +2182,13 @@
           ]
         }
       },
-      "id": "250447ec-8792-439c-af83-01751cf2cdac",
+      "id": "aa5681e9-dbc0-4e2d-8dd9-a0f07e2b73f4",
       "name": "IF not found17",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6700,
-        1940
+        480,
+        4080
       ]
     },
     {
@@ -2197,13 +2197,13 @@
         "keyword": "=QCM 88: {{ $('If69').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "ba718308-5797-4691-b2f1-1a8e874583de",
+      "id": "da69d7bf-0655-417e-8943-435e5d0f5ecf",
       "name": "Cloodo Point31",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6500,
-        1940
+        280,
+        4080
       ],
       "credentials": {
         "cloodoApi2": {
@@ -2216,13 +2216,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "7d8491a2-6e32-4a06-a995-9878b84ac68d",
+      "id": "3ef887ed-4ca3-42d2-ae1c-a81f6c70887e",
       "name": "Stop and Error20",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        7360,
-        1900
+        1140,
+        4040
       ]
     },
     {
@@ -2250,13 +2250,13 @@
         },
         "options": {}
       },
-      "id": "91d56237-33f9-44f8-b104-f8293eeaa00e",
+      "id": "5d4dd6c8-e4cd-4ce2-8330-67859db1418e",
       "name": "If60",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7100,
-        1920
+        880,
+        4060
       ]
     },
     {
@@ -2284,26 +2284,26 @@
         },
         "options": {}
       },
-      "id": "e61520c1-f09c-4065-b95b-242c0b4ba92e",
+      "id": "39c21bba-5147-4f4d-b7cf-2e0dffadfc9b",
       "name": "If61",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4980,
-        1440
+        -1240,
+        3580
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
-      "id": "843fc8a2-7c6a-4e3a-ac32-5c4f5889afb3",
+      "id": "6b7fbb7a-ca88-4b83-b7a2-0cdf30ed7e85",
       "name": "Check create 7d50",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4740,
-        1440
+        -1480,
+        3580
       ]
     },
     {
@@ -2330,13 +2330,13 @@
         },
         "options": {}
       },
-      "id": "1493b90a-e596-46f5-a756-2b04aa8e21c9",
+      "id": "ef465a86-99c7-4a0e-a5e7-0424f3f8c773",
       "name": "get Timelog7",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4520,
-        1440
+        -1700,
+        3580
       ],
       "credentials": {
         "cloodoApi": {
@@ -2370,26 +2370,26 @@
         },
         "options": {}
       },
-      "id": "7dea03be-bc95-42c3-93ba-0c0fdf8bae9f",
+      "id": "e54883ac-9a86-4d9f-8309-024c4b90acc4",
       "name": "If62",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4980,
-        1660
+        -1240,
+        3800
       ]
     },
     {
       "parameters": {
         "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
       },
-      "id": "002942a3-406b-47e5-ac7e-55b35a6d2770",
+      "id": "5904daa6-d67e-44cb-8069-9f9f81a14f50",
       "name": "Check create 7d51",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4740,
-        1660
+        -1480,
+        3800
       ]
     },
     {
@@ -2416,13 +2416,13 @@
         },
         "options": {}
       },
-      "id": "d2f677cb-e2f0-4fbf-b9f8-6646ee1cd4bd",
+      "id": "f30940b6-af3f-45a3-8e41-9453536bda78",
       "name": "get Timelog8",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4520,
-        1660
+        -1700,
+        3800
       ],
       "credentials": {
         "cloodoApi": {
@@ -2456,26 +2456,26 @@
         },
         "options": {}
       },
-      "id": "67f6d620-6d26-47d9-b0c1-ffc457d15913",
+      "id": "d5ff0e92-8e73-4cab-9f74-f0a72cc1a9f6",
       "name": "If69",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4960,
-        1880
+        -1260,
+        4020
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
-      "id": "b24ebd7e-71fe-4a7c-8389-e6e0b9e07c19",
+      "id": "df08e7b3-b8d3-4c9e-8a44-79af0a597771",
       "name": "Check create 7d52",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4720,
-        1880
+        -1500,
+        4020
       ]
     },
     {
@@ -2502,13 +2502,13 @@
         },
         "options": {}
       },
-      "id": "62fbcefa-fd31-4b90-a92e-621f92750221",
+      "id": "4682b435-68c7-4bd9-8cb3-69d512d1cd18",
       "name": "get Timelog9",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4500,
-        1880
+        -1720,
+        4020
       ],
       "credentials": {
         "cloodoApi": {
@@ -2521,13 +2521,13 @@
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $('If69').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 360, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "854b286d-1482-4005-b515-b4b0d6d15f67",
+      "id": "93ce6c69-e3de-49ab-a02e-b6d43891ff1e",
       "name": "Code",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5940,
-        1420
+        -280,
+        3560
       ]
     },
     {
@@ -2555,13 +2555,13 @@
         },
         "options": {}
       },
-      "id": "ac248be5-908f-46c9-87c2-77b9c9fd9d6a",
+      "id": "34c4d9b6-9430-4489-a262-c74686a8ce4f",
       "name": "If70",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6200,
-        1420
+        -20,
+        3560
       ]
     },
     {
@@ -2571,13 +2571,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If70').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "8c6326ec-1db1-4483-ab24-990836f6826a",
+      "id": "2215c147-a963-4a81-8476-bda8b13fe203",
       "name": "Cloodo Point20",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6880,
-        1380
+        660,
+        3520
       ],
       "credentials": {
         "cloodoApi2": {
@@ -2597,13 +2597,13 @@
           ]
         }
       },
-      "id": "aa288ec6-d6bd-44cb-a563-28db6dba7cc7",
+      "id": "ec52214e-a0ea-4808-b49e-f345c046440a",
       "name": "IF not found18",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6640,
-        1400
+        420,
+        3540
       ]
     },
     {
@@ -2612,13 +2612,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "ee187adf-336c-472c-825b-334e6a547980",
+      "id": "0b3420ca-1d09-492c-a47c-4558ba488020",
       "name": "Cloodo Point32",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6480,
-        1400
+        260,
+        3540
       ],
       "credentials": {
         "cloodoApi2": {
@@ -2631,13 +2631,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "6db4a45e-74bc-467c-9a10-723cabdca89f",
+      "id": "db17f080-1e7a-4fb9-b15b-ddf59395436a",
       "name": "Stop and Error21",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        7300,
-        1360
+        1080,
+        3500
       ]
     },
     {
@@ -2665,26 +2665,26 @@
         },
         "options": {}
       },
-      "id": "16b94576-aa53-4655-a86f-ab80dcf670f3",
+      "id": "07f1c85e-08f5-416a-8b79-bf1394536320",
       "name": "If71",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7040,
-        1380
+        820,
+        3520
       ]
     },
     {
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $input.all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 240, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "ec0390f1-58a8-4871-8479-768cb9f86cf4",
+      "id": "e46a3295-b22c-426d-ac85-5369179f81c3",
       "name": "Code4",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5720,
-        1180
+        -500,
+        3320
       ]
     },
     {
@@ -2712,13 +2712,13 @@
         },
         "options": {}
       },
-      "id": "17e06084-17f4-4786-b2da-d17ef350d55a",
+      "id": "44b318ba-979f-4fcd-bad5-0d9971ba605d",
       "name": "If72",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5980,
-        1180
+        -240,
+        3320
       ]
     },
     {
@@ -2728,227 +2728,12 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If72').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "9e3fad6f-7045-4e66-b768-5e7bb375f304",
+      "id": "395a84de-7ce6-4984-bfb6-f8aa0908fdc2",
       "name": "Cloodo Point21",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6660,
-        1140
-      ],
-      "credentials": {
-        "cloodoApi2": {
-          "id": "uYFtcIGXdFXgli6w",
-          "name": "Cloodo account test"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "number": [
-            {
-              "value1": "={{ $json.total_records }}",
-              "operation": "equal"
-            }
-          ]
-        }
-      },
-      "id": "fc8fb430-97f6-4c0d-b847-16e702e4a5df",
-      "name": "IF not found19",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        6420,
-        1160
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
-        "max_limit_record": 50
-      },
-      "id": "ee0fa3ef-0ba3-40a1-ba81-0f90bf671989",
-      "name": "Cloodo Point33",
-      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
-      "typeVersion": 1,
-      "position": [
-        6220,
-        1160
-      ],
-      "credentials": {
-        "cloodoApi2": {
-          "id": "uYFtcIGXdFXgli6w",
-          "name": "Cloodo account test"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "errorMessage": "Token is expired or incorrect"
-      },
-      "id": "86628ec4-e24b-456e-8057-73e55e4f0505",
-      "name": "Stop and Error22",
-      "type": "n8n-nodes-base.stopAndError",
-      "typeVersion": 1,
-      "position": [
-        7080,
-        1120
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "74c084ee-9110-4ac7-a165-223df2075781",
-              "leftValue": "={{ $json.message }}",
-              "rightValue": "Token is expired or incorrect",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "bb7bba5c-219f-4625-8001-7a17eebb7b31",
-      "name": "If73",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        6820,
-        1140
-      ]
-    },
-    {
-      "parameters": {
-        "mode": "chooseBranch",
-        "useDataOfInput": 2
-      },
-      "id": "11fc9f27-4211-462a-a0d2-d4f97533b056",
-      "name": "Merge10",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [
-        6100,
-        1960
-      ]
-    },
-    {
-      "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.companyName }}",
-                    "rightValue": "CmsMart",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "CmsMart"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
-                    "leftValue": "={{ $json.companyName }}",
-                    "rightValue": "PrintCart",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "PrintCart"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
-                    "leftValue": "={{ $json.companyName }}",
-                    "rightValue": "Cloodo",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "Cloodo"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "24c959da-1a5b-4210-9be2-43a90f60eb8f",
-      "name": "Switch Company7",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.2,
-      "position": [
-        3660,
-        2740
-      ],
-      "executeOnce": false
-    },
-    {
-      "parameters": {
-        "operation": "minus",
-        "user_id": "={{ $('If84').item.json.id }}",
-        "points": 3,
-        "note": "=QCM 88: {{ $('If84').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
-      },
-      "id": "2e165110-1b9d-49d1-95b7-9db15b4088fa",
-      "name": "Cloodo Point27",
-      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
-      "typeVersion": 1,
-      "position": [
-        6720,
+        440,
         3280
       ],
       "credentials": {
@@ -2969,27 +2754,27 @@
           ]
         }
       },
-      "id": "c0d6cde7-6215-4e8e-87ce-a312bf4a29e9",
-      "name": "IF not found23",
+      "id": "7e79aab0-eb01-4e21-ba38-53ac950437ff",
+      "name": "IF not found19",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6480,
+        200,
         3300
       ]
     },
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $('If84').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "8fd11991-0a82-446a-8833-7172c494277c",
-      "name": "Cloodo Point37",
+      "id": "df3d896e-0416-4cf6-8063-a800c44c79f6",
+      "name": "Cloodo Point33",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6280,
+        0,
         3300
       ],
       "credentials": {
@@ -3003,12 +2788,12 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "8a12be8c-6068-41b9-8ff0-8772c951355d",
-      "name": "Stop and Error26",
+      "id": "bc645741-0848-4358-9342-adcf3f51e7fa",
+      "name": "Stop and Error22",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        7140,
+        860,
         3260
       ]
     },
@@ -3037,585 +2822,27 @@
         },
         "options": {}
       },
-      "id": "21c6fede-9d79-4f2d-936f-666e50cfc945",
-      "name": "If81",
+      "id": "547cff66-c9d6-4b1a-8e7c-853d7388afba",
+      "name": "If73",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6880,
+        600,
         3280
       ]
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
-              "leftValue": "={{ $json.success }}",
-              "rightValue": "f",
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
+        "mode": "chooseBranch",
+        "useDataOfInput": 2
       },
-      "id": "40b72339-2d65-4242-bfef-972063fcae74",
-      "name": "If82",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
+      "id": "d0080ea0-f92c-4c2f-806e-2a06e6623d0e",
+      "name": "Merge10",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
       "position": [
-        4700,
-        2620
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
-      },
-      "id": "4e3db6dd-cecc-476b-8484-eb63ec8f7e61",
-      "name": "Check create 7d56",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        4460,
-        2620
-      ]
-    },
-    {
-      "parameters": {
-        "url": "https://erp-amz.cloodo.com/v4/time-logs",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "cloodoApi",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "sort",
-              "value": "desc"
-            },
-            {
-              "name": "page",
-              "value": "1"
-            },
-            {
-              "name": "user_id",
-              "value": "={{ $json.id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "ac60353c-a9d1-480f-9ce6-9e11986d25db",
-      "name": "get Timelog13",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        4240,
-        2620
-      ],
-      "credentials": {
-        "cloodoApi": {
-          "id": "nP7U7wKTbfdSeafq",
-          "name": "Cmsmart Worksuite account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
-              "leftValue": "={{ $json.success }}",
-              "rightValue": "f",
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
-      },
-      "id": "b4208906-f5ec-41ed-87cc-bc8dfd4d045a",
-      "name": "If83",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        4700,
-        2840
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
-      },
-      "id": "cf1edef8-7429-4038-9431-5cdbe6f0ff8d",
-      "name": "Check create 7d57",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        4460,
-        2840
-      ]
-    },
-    {
-      "parameters": {
-        "url": "https://erp-amz.cloodo.com/v4/time-logs",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "cloodoApi",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "sort",
-              "value": "desc"
-            },
-            {
-              "name": "page",
-              "value": "1"
-            },
-            {
-              "name": "user_id",
-              "value": "={{ $json.id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "73309e2f-9348-489d-998b-17eb3115edf5",
-      "name": "get Timelog14",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        4240,
-        2840
-      ],
-      "credentials": {
-        "cloodoApi": {
-          "id": "2JLk7qrN3C3j9tZ9",
-          "name": "PrintCart Cloodo account "
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
-              "leftValue": "={{ $json.success }}",
-              "rightValue": "f",
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
-      },
-      "id": "17f4ca2a-acac-43fd-b3e5-b7ba39fa58c4",
-      "name": "If84",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        4680,
-        3060
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
-      },
-      "id": "2a50a879-3f94-439b-8ea0-ed239a99fa2a",
-      "name": "Check create 7d58",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        4440,
-        3060
-      ]
-    },
-    {
-      "parameters": {
-        "url": "https://erp-amz.cloodo.com/v4/time-logs",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "cloodoApi",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "sort",
-              "value": "desc"
-            },
-            {
-              "name": "page",
-              "value": "1"
-            },
-            {
-              "name": "user_id",
-              "value": "={{ $json.id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "c5fa777e-e023-4dc0-9e91-29e2eefbee17",
-      "name": "get Timelog15",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        4220,
-        3060
-      ],
-      "credentials": {
-        "cloodoApi": {
-          "id": "43DhmNb5GSwDy5id",
-          "name": "Cloodo Worksuite Account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "// Lấy danh sách items từ input\nconst items = $('If84').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 360, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
-      },
-      "id": "5a7ff91e-07f8-4ebc-b768-16543e93310f",
-      "name": "Code7",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        6020,
-        2640
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
-              "leftValue": "={{ $json.isboolen }}",
-              "rightValue": "f",
-              "operator": {
-                "type": "boolean",
-                "operation": "false",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
-      },
-      "id": "68bd149f-2f71-4037-98ad-8ab975e7f95c",
-      "name": "If85",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        6280,
-        2640
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "minus",
-        "user_id": "={{ $('If85').item.json.id }}",
-        "points": 3,
-        "note": "=QCM 88: {{ $('If85').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
-      },
-      "id": "b0439cab-7d40-4f11-bab2-4462c42b9aa2",
-      "name": "Cloodo Point38",
-      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
-      "typeVersion": 1,
-      "position": [
-        6940,
-        2600
-      ],
-      "credentials": {
-        "cloodoApi2": {
-          "id": "uYFtcIGXdFXgli6w",
-          "name": "Cloodo account test"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "number": [
-            {
-              "value1": "={{ $json.total_records }}",
-              "operation": "equal"
-            }
-          ]
-        }
-      },
-      "id": "449599e0-5a39-4aec-821f-c874683314e0",
-      "name": "IF not found24",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        6700,
-        2620
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
-        "max_limit_record": 50
-      },
-      "id": "eda76fbe-5b36-43d8-ab22-52c8e3172583",
-      "name": "Cloodo Point39",
-      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
-      "typeVersion": 1,
-      "position": [
-        6540,
-        2620
-      ],
-      "credentials": {
-        "cloodoApi2": {
-          "id": "uYFtcIGXdFXgli6w",
-          "name": "Cloodo account test"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "errorMessage": "Token is expired or incorrect"
-      },
-      "id": "1e264ede-61e6-4724-82f9-1adf9becbb0a",
-      "name": "Stop and Error27",
-      "type": "n8n-nodes-base.stopAndError",
-      "typeVersion": 1,
-      "position": [
-        7360,
-        2580
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "74c084ee-9110-4ac7-a165-223df2075781",
-              "leftValue": "={{ $json.message }}",
-              "rightValue": "Token is expired or incorrect",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "8c47e78c-cd30-48d6-afae-90b2deefc799",
-      "name": "If86",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        7100,
-        2600
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "// Lấy danh sách items từ input\nconst items = $input.all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 240, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
-      },
-      "id": "4f578e37-73ae-4646-b773-44c4e3efb278",
-      "name": "Code8",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        5520,
-        2400
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
-              "leftValue": "={{ $json.isboolen }}",
-              "rightValue": "f",
-              "operator": {
-                "type": "boolean",
-                "operation": "false",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
-      },
-      "id": "703f60fb-2c23-4bc0-8e50-39ad9ce052d6",
-      "name": "If87",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        5780,
-        2400
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "minus",
-        "user_id": "={{ $('If87').item.json.id }}",
-        "points": 3,
-        "note": "=QCM 88: {{ $('If87').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
-      },
-      "id": "8cec6b16-27dc-4748-9a01-1d066b618f46",
-      "name": "Cloodo Point40",
-      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
-      "typeVersion": 1,
-      "position": [
-        6480,
-        2360
-      ],
-      "credentials": {
-        "cloodoApi2": {
-          "id": "uYFtcIGXdFXgli6w",
-          "name": "Cloodo account test"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "number": [
-            {
-              "value1": "={{ $json.total_records }}",
-              "operation": "equal"
-            }
-          ]
-        }
-      },
-      "id": "e396c2e5-fc7a-41af-a3e0-e7cbad6f2a18",
-      "name": "IF not found25",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        6240,
-        2380
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
-        "max_limit_record": 50
-      },
-      "id": "878ed5e5-20f5-4429-88a2-1a4877407a8b",
-      "name": "Cloodo Point41",
-      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
-      "typeVersion": 1,
-      "position": [
-        6040,
-        2380
-      ],
-      "credentials": {
-        "cloodoApi2": {
-          "id": "uYFtcIGXdFXgli6w",
-          "name": "Cloodo account test"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "errorMessage": "Token is expired or incorrect"
-      },
-      "id": "50f852ef-1139-44df-baa5-58625b0aa3b3",
-      "name": "Stop and Error28",
-      "type": "n8n-nodes-base.stopAndError",
-      "typeVersion": 1,
-      "position": [
-        6900,
-        2340
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "74c084ee-9110-4ac7-a165-223df2075781",
-              "leftValue": "={{ $json.message }}",
-              "rightValue": "Token is expired or incorrect",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "275f475b-891d-43d6-8108-907b8cf8f97d",
-      "name": "If88",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        6640,
-        2360
+        -120,
+        4100
       ]
     },
     {
@@ -3699,39 +2926,812 @@
         },
         "options": {}
       },
-      "id": "e316141c-e2f1-48ec-b853-f4485afdb0dc",
+      "id": "462efd0f-5b04-443a-b417-dfc8f0ac5c83",
+      "name": "Switch Company7",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -2560,
+        4880
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If84').item.json.id }}",
+        "points": 3,
+        "note": "=QCM 88: {{ $('If84').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+      },
+      "id": "409bbdc5-a2cc-446d-9e90-b3e05b357f2e",
+      "name": "Cloodo Point27",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        500,
+        5420
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "uYFtcIGXdFXgli6w",
+          "name": "Cloodo account test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "795d59be-01bc-4c19-925d-52d88fa48d77",
+      "name": "IF not found23",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        260,
+        5440
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 88: {{ $('If84').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "max_limit_record": 50
+      },
+      "id": "c7ceeddf-e0ff-4930-96c1-9be1fa600908",
+      "name": "Cloodo Point37",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        60,
+        5440
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "uYFtcIGXdFXgli6w",
+          "name": "Cloodo account test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "Token is expired or incorrect"
+      },
+      "id": "a3b0eb73-d674-4c19-9a69-00eb64227f95",
+      "name": "Stop and Error26",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        920,
+        5400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c084ee-9110-4ac7-a165-223df2075781",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Token is expired or incorrect",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e4a9ee83-ef5e-4e13-bc78-024b8356f685",
+      "name": "If81",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        5420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "6e5d2778-c7dd-4a70-9865-69d117202f7a",
+      "name": "If82",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1520,
+        4760
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
+      },
+      "id": "999e570e-92c7-4465-a942-b59cd756fdf9",
+      "name": "Check create 7d56",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1760,
+        4760
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/time-logs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "user_id",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e41bcf70-127b-4d9d-a127-e29dd7bafe53",
+      "name": "get Timelog13",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1980,
+        4760
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "6979a9a3-7fb2-4956-bca6-b80c4f82370b",
+      "name": "If83",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1520,
+        4980
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
+      },
+      "id": "bd12c524-da62-4d2c-a52b-cfbdb1f19429",
+      "name": "Check create 7d57",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1760,
+        4980
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/time-logs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "user_id",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5be08110-7d42-44de-994a-eb9fc4697c06",
+      "name": "get Timelog14",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1980,
+        4980
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "2JLk7qrN3C3j9tZ9",
+          "name": "PrintCart Cloodo account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "dd8b9f4a-2187-450a-b848-f4d3914fe640",
+      "name": "If84",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1540,
+        5200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
+      },
+      "id": "9a5870b9-2448-4d30-a4fc-4476a141afdc",
+      "name": "Check create 7d58",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1780,
+        5200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp-amz.cloodo.com/v4/time-logs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "sort",
+              "value": "desc"
+            },
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "user_id",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2d0d9808-33eb-4f00-88ae-6385c49a9180",
+      "name": "get Timelog15",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2000,
+        5200
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "43DhmNb5GSwDy5id",
+          "name": "Cloodo Worksuite Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy danh sách items từ input\nconst items = $('If84').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 360, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
+      },
+      "id": "b67b7bd5-e898-45f4-abd0-4fb22572b6e5",
+      "name": "Code7",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        4780
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isboolen }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "e6aac45d-ba01-4341-aa90-70bd81c10c4f",
+      "name": "If85",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        60,
+        4780
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If85').item.json.id }}",
+        "points": 3,
+        "note": "=QCM 88: {{ $('If85').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+      },
+      "id": "1adf9992-4b9f-4504-a30d-cc2e0d5fc0c7",
+      "name": "Cloodo Point38",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        720,
+        4740
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "uYFtcIGXdFXgli6w",
+          "name": "Cloodo account test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "bfe44afc-e6e7-4fb7-ab45-91b8a81f5b79",
+      "name": "IF not found24",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        480,
+        4760
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "max_limit_record": 50
+      },
+      "id": "80658542-5c62-4d2d-99e4-d39bd721accd",
+      "name": "Cloodo Point39",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        320,
+        4760
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "uYFtcIGXdFXgli6w",
+          "name": "Cloodo account test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "Token is expired or incorrect"
+      },
+      "id": "9b5626ed-4bbd-487a-b7ba-a41774d82c7b",
+      "name": "Stop and Error27",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        4720
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c084ee-9110-4ac7-a165-223df2075781",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Token is expired or incorrect",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "fb8d92c6-6841-406d-a08f-a405dd388981",
+      "name": "If86",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        4740
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy danh sách items từ input\nconst items = $input.all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 240, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
+      },
+      "id": "3614996e-a3e4-469a-92aa-fa467ab44b8e",
+      "name": "Code8",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -700,
+        4540
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf4064cd-bc8b-4efb-a3d3-052edd4e4a15",
+              "leftValue": "={{ $json.isboolen }}",
+              "rightValue": "f",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "5e1e5cd8-5e9a-4a9d-91ac-153063a3e87f",
+      "name": "If87",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -440,
+        4540
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "minus",
+        "user_id": "={{ $('If87').item.json.id }}",
+        "points": 3,
+        "note": "=QCM 88: {{ $('If87').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+      },
+      "id": "f35e9ea1-1d0b-4306-98ec-e208bed0b66d",
+      "name": "Cloodo Point40",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        260,
+        4500
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "uYFtcIGXdFXgli6w",
+          "name": "Cloodo account test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.total_records }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "7ff76eba-0420-4ceb-bbdd-7de007429020",
+      "name": "IF not found25",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        20,
+        4520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "max_limit_record": 50
+      },
+      "id": "9134e2b2-72ea-466d-9e68-6cc8110cf224",
+      "name": "Cloodo Point41",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        4520
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "uYFtcIGXdFXgli6w",
+          "name": "Cloodo account test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "Token is expired or incorrect"
+      },
+      "id": "52338a03-ef79-4358-86a6-a72e49525144",
+      "name": "Stop and Error28",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        680,
+        4480
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74c084ee-9110-4ac7-a165-223df2075781",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Token is expired or incorrect",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d7de2a22-a2bb-4bc9-afc2-72f4490edeab",
+      "name": "If88",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        4500
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "CmsMart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CmsMart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "PrintCart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PrintCart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "Cloodo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cloodo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "646a1657-8948-498a-9517-6c2234da81b6",
       "name": "Switch Company",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        480,
-        -1180
+        -5740,
+        960
       ]
     },
     {
       "parameters": {
         "errorMessage": "emplooyee Cms"
       },
-      "id": "e5959fac-36f8-4307-8499-8f7f49c3eb62",
+      "id": "66c4ca69-696e-49bc-bd53-7e9db6e2396b",
       "name": "Stop and Error",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        560,
-        -1500
+        -5660,
+        640
       ]
     },
     {
       "parameters": {
         "errorMessage": "emplooyee Printcart"
       },
-      "id": "95513ace-3abb-49b6-b96b-f3b856f27188",
+      "id": "5e612343-232e-48b8-8a19-6c2df2941b7e",
       "name": "Stop and Error1",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        680,
-        -1340
+        -5540,
+        800
       ]
     },
     {
@@ -3769,13 +3769,13 @@
         },
         "options": {}
       },
-      "id": "ec59de69-65ad-4239-b136-9524f17b3035",
+      "id": "e8b08aef-5a50-4c99-8f0a-77ee44c19779",
       "name": "Remove employee leave",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -80,
-        -20
+        -6300,
+        2120
       ]
     },
     {
@@ -3834,13 +3834,13 @@
         },
         "options": {}
       },
-      "id": "964f75d5-b9ee-42d9-afc2-09d16dc484b3",
+      "id": "32ba0935-5d4a-4a72-a0e0-71cd8999ea19",
       "name": "Switch1",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        240,
-        -460
+        -5980,
+        1680
       ]
     },
     {
@@ -3924,39 +3924,39 @@
         },
         "options": {}
       },
-      "id": "734043af-b083-4a2d-8b6f-2fb57617fb58",
+      "id": "10d77cc2-ef81-4c8f-9c8f-f63e58ba47c3",
       "name": "Switch Company9",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        440,
-        -180
+        -5780,
+        1960
       ]
     },
     {
       "parameters": {
         "errorMessage": "emplooyee Cms"
       },
-      "id": "e6a6b65f-c0fb-4680-ae43-53e785c81eb8",
+      "id": "a59db8c3-1c5e-46aa-841d-82265704fd7b",
       "name": "Stop and Error2",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        520,
-        -500
+        -5700,
+        1640
       ]
     },
     {
       "parameters": {
         "errorMessage": "emplooyee Printcart"
       },
-      "id": "ed2d9a88-0f60-43c8-a890-5e98542696d8",
+      "id": "efe8033e-ac7a-4461-9916-96e1a7310a48",
       "name": "Stop and Error3",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        640,
-        -340
+        -5580,
+        1800
       ]
     },
     {
@@ -3966,13 +3966,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('Merge16').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "655a5e7e-6458-41c2-bf20-f78ba92e9f21",
+      "id": "0e5f6296-81d0-4fa8-b63a-d7ce96c42559",
       "name": "Cloodo Point24",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2560,
-        -1020
+        -3660,
+        1120
       ],
       "credentials": {
         "cloodoApi2": {
@@ -3992,13 +3992,13 @@
           ]
         }
       },
-      "id": "5c073b45-3bc5-4f83-b162-5bfab1354fc6",
+      "id": "6996fed8-a760-4311-9529-73e05a31b1a3",
       "name": "IF not found34",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2320,
-        -1000
+        -3900,
+        1140
       ]
     },
     {
@@ -4007,13 +4007,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "e529d859-e8b8-44d7-aada-e9d93e6262a1",
+      "id": "e53001ba-84c8-4998-909f-8ba4ef30b074",
       "name": "Cloodo Point57",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2120,
-        -1000
+        -4100,
+        1140
       ],
       "credentials": {
         "cloodoApi2": {
@@ -4026,13 +4026,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "8e21f4a6-d405-4370-aeb9-92deb864d7de",
+      "id": "3e9099c1-7388-4c40-a729-f32cd63e95fe",
       "name": "Stop and Error38",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        2980,
-        -1040
+        -3240,
+        1100
       ]
     },
     {
@@ -4060,13 +4060,13 @@
         },
         "options": {}
       },
-      "id": "3c2e1686-a546-4689-823f-4da33a7d7a7a",
+      "id": "efe357fa-6c00-486f-90e4-bb59faada7fc",
       "name": "If55",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2740,
-        -1000
+        -3480,
+        1140
       ]
     },
     {
@@ -4094,26 +4094,26 @@
         },
         "options": {}
       },
-      "id": "4d91b589-6b71-4fb9-ab5a-1ac61725eacc",
+      "id": "32475066-b62d-44ca-89f9-e42798d9b249",
       "name": "If109",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1280,
-        -1140
+        -4940,
+        1000
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
-      "id": "828148d6-99cf-4b1d-bb7c-3babb1cb4e05",
+      "id": "046d226c-4971-4d52-8f70-a0d9572222f1",
       "name": "Check create 7d44",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1040,
-        -1140
+        -5180,
+        1000
       ]
     },
     {
@@ -4140,13 +4140,13 @@
         },
         "options": {}
       },
-      "id": "f893ed8b-fcd9-4171-8f98-f1289e38418e",
+      "id": "2d56f1cc-4ea1-4b14-b6a3-60f314783919",
       "name": "get Timelog25",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        820,
-        -1140
+        -5400,
+        1000
       ],
       "credentials": {
         "cloodoApi": {
@@ -4159,13 +4159,13 @@
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $('If109').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 360, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "28e738df-85eb-4af4-836c-fd7054f88081",
+      "id": "4bd1a7fa-7284-4fe9-a511-a4f9ce31a3ee",
       "name": "Code15",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2080,
-        -1460
+        -4140,
+        680
       ]
     },
     {
@@ -4193,13 +4193,13 @@
         },
         "options": {}
       },
-      "id": "104ed43b-da1d-4832-b2c3-386e47e3920a",
+      "id": "20bbff06-35d6-4a9d-8715-4e9643f7902b",
       "name": "If110",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2240,
-        -1460
+        -3980,
+        680
       ]
     },
     {
@@ -4209,13 +4209,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If110').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "2104e233-ee66-4fc8-8a9b-b0c2c297218a",
+      "id": "d46cc666-69ff-4987-a4ca-3e7e8d3e565d",
       "name": "Cloodo Point25",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2860,
-        -1500
+        -3360,
+        640
       ],
       "credentials": {
         "cloodoApi2": {
@@ -4235,13 +4235,13 @@
           ]
         }
       },
-      "id": "8c50a4f6-6a8b-45bf-ba20-5fb067da45ec",
+      "id": "90f85083-282f-46b8-9cb3-95d70f65dcb8",
       "name": "IF not found35",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2620,
-        -1480
+        -3600,
+        660
       ]
     },
     {
@@ -4250,13 +4250,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "8c4e587d-59ae-446c-99e3-73850ed4ea5c",
+      "id": "bdcf5fe5-26a8-4c20-b9e8-a00d44a4a94d",
       "name": "Cloodo Point58",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2460,
-        -1480
+        -3760,
+        660
       ],
       "credentials": {
         "cloodoApi2": {
@@ -4269,13 +4269,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "d53f107d-9546-491f-accb-6d2b590eb05b",
+      "id": "0a99014b-8ddf-46f6-839e-37494f09f23a",
       "name": "Stop and Error39",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3280,
-        -1520
+        -2940,
+        620
       ]
     },
     {
@@ -4303,13 +4303,13 @@
         },
         "options": {}
       },
-      "id": "f779c9f6-176f-4a47-a381-ff80eab86ff8",
+      "id": "bd660776-288b-4a33-adfa-f34c78de081a",
       "name": "If111",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3020,
-        -1500
+        -3200,
+        640
       ]
     },
     {
@@ -4319,13 +4319,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If114').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "9e716802-6c1a-48dd-8d9e-974ccd424591",
+      "id": "509d5b04-17d4-4238-9193-168c95204e19",
       "name": "Cloodo Point59",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2360,
-        -20
+        -3860,
+        2120
       ],
       "credentials": {
         "cloodoApi2": {
@@ -4345,13 +4345,13 @@
           ]
         }
       },
-      "id": "489cffd5-eecc-4c41-be79-af5606ad4600",
+      "id": "02910228-26cc-45db-94cf-4d19ced51adb",
       "name": "IF not found36",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2120,
-        0
+        -4100,
+        2140
       ]
     },
     {
@@ -4360,13 +4360,13 @@
         "keyword": "=QCM 88: {{ $('If114').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "30e3d921-2c35-4753-a7d7-2a9859704192",
+      "id": "cb2c2401-3852-4172-a52f-1ee3694b9578",
       "name": "Cloodo Point60",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        1920,
-        0
+        -4300,
+        2140
       ],
       "credentials": {
         "cloodoApi2": {
@@ -4379,13 +4379,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "7b76bf67-6acc-4ab9-b68b-c0d11918a91a",
+      "id": "5bc17980-a8e2-4726-8ccd-1b8ae38a4cf0",
       "name": "Stop and Error40",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        2780,
-        -40
+        -3440,
+        2100
       ]
     },
     {
@@ -4413,13 +4413,13 @@
         },
         "options": {}
       },
-      "id": "465496d9-0876-4586-8a07-e69e97efac4c",
+      "id": "18d321ee-657d-4a48-8f3a-9423b792db3f",
       "name": "If112",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2520,
-        -20
+        -3700,
+        2120
       ]
     },
     {
@@ -4447,26 +4447,26 @@
         },
         "options": {}
       },
-      "id": "ff8ce597-29ec-47fe-99d5-ed02df487013",
+      "id": "ad5e34c5-4732-4f73-8dc8-a9ee7ea3f7e0",
       "name": "If114",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1140,
-        -100
+        -5080,
+        2040
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h GMT+7)\nconst startOfTodayGMT7 = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0); \nstartOfTodayGMT7.setHours(startOfTodayGMT7.getHours() - 7); // Điều chỉnh sang 0h GMT+7\n\n// Tính thời điểm bắt đầu của ngày mai (0h GMT+7)\nconst startOfTomorrowGMT7 = new Date(startOfTodayGMT7);\nstartOfTomorrowGMT7.setDate(startOfTomorrowGMT7.getDate() + 1); // Ngày mai 0h GMT+7\n\n// Debug kiểm tra thời gian\n// console.log('Start of Today (GMT+7):', startOfTodayGMT7);\n// console.log('Start of Tomorrow (GMT+7):', startOfTomorrowGMT7);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' nằm trong ngày hôm nay (GMT+7)\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuẩn hóa định dạng start_time nếu cần\n  if (startTimeString && startTimeString.includes('.')) {\n    startTimeString = startTimeString.split('.')[0] + 'Z'; // Loại bỏ phần sau dấu '.' và thêm 'Z'\n  }\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Chuyển đổi startDate sang GMT+7\n    const startDateGMT7 = new Date(startDate.getTime() + 7 * 60 * 60 * 1000);\n    // console.log('startDateGMT7 ', startDateGMT7)\n\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm nay (GMT+7)\n    const isStartTimeToday = startDateGMT7 >= startOfTodayGMT7 && startDateGMT7 < startOfTomorrowGMT7;\n\n    // Nếu 'start_time' thuộc ngày hôm nay, thêm vào mảng kết quả\n    if (isStartTimeToday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}\n"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
-      "id": "dc954739-12ef-4086-b05e-f683d14b8488",
+      "id": "cec60da1-9f8b-43a4-8881-00fbad2b0e0d",
       "name": "Check create 7d46",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        900,
-        -100
+        -5320,
+        2040
       ]
     },
     {
@@ -4493,13 +4493,13 @@
         },
         "options": {}
       },
-      "id": "fec497db-6b62-4b8e-93a1-3273e871ce2f",
+      "id": "d2c38d22-f4fc-4094-8bd2-7869ed938d2d",
       "name": "get Timelog27",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        680,
-        -100
+        -5540,
+        2040
       ],
       "credentials": {
         "cloodoApi": {
@@ -4512,13 +4512,13 @@
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $('If114').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 240, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "a039f575-dfdd-4495-8358-e823ab5240ad",
+      "id": "f3f52d41-cf3e-484b-ad77-19d63ec343f6",
       "name": "Code16",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1820,
-        -480
+        -4400,
+        1660
       ]
     },
     {
@@ -4546,13 +4546,13 @@
         },
         "options": {}
       },
-      "id": "35f38f56-934b-43e7-8e6c-a7aa7ec4e107",
+      "id": "2b968405-b005-42ae-8778-6771157350ec",
       "name": "If115",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2020,
-        -480
+        -4200,
+        1660
       ]
     },
     {
@@ -4562,13 +4562,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If115').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "35aba90b-52a2-4655-b29e-14bc28e05702",
+      "id": "759cdb47-ebb3-4535-9938-d7fadbf8d781",
       "name": "Cloodo Point61",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2700,
-        -520
+        -3520,
+        1620
       ],
       "credentials": {
         "cloodoApi2": {
@@ -4588,13 +4588,13 @@
           ]
         }
       },
-      "id": "0130f698-d1a9-4078-b84c-097dcb212e1f",
+      "id": "2c698899-d453-4e34-9a29-e283fca3f4be",
       "name": "IF not found37",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2460,
-        -500
+        -3760,
+        1640
       ]
     },
     {
@@ -4603,13 +4603,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "b52ebf7a-f6e2-4c6e-9844-c30ea53cb5f6",
+      "id": "4293d6a3-b1e8-4a0a-a903-b712cd768523",
       "name": "Cloodo Point62",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2300,
-        -500
+        -3920,
+        1640
       ],
       "credentials": {
         "cloodoApi2": {
@@ -4622,13 +4622,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "af1c9a98-64f1-4b4a-8ffb-c8ab265b612a",
+      "id": "467c40e1-9c2e-4949-bc8d-3f717bf16303",
       "name": "Stop and Error41",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3120,
-        -540
+        -3100,
+        1600
       ]
     },
     {
@@ -4656,13 +4656,13 @@
         },
         "options": {}
       },
-      "id": "629d3bf7-0580-417c-a192-22fc3013e4e9",
+      "id": "f051c90f-cbae-46ad-9f4e-d7203d5a35b5",
       "name": "If116",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2860,
-        -520
+        -3360,
+        1620
       ]
     },
     {
@@ -4697,13 +4697,13 @@
           }
         }
       },
-      "id": "d14c44db-f3e7-47c1-a05f-887209c19b67",
+      "id": "05060497-6fbe-496d-b91f-616eb507cbd9",
       "name": "Check Leave Single",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1400,
-        20
+        -4820,
+        2160
       ],
       "credentials": {
         "cloodoApi": {
@@ -4737,13 +4737,13 @@
         },
         "options": {}
       },
-      "id": "1380ea08-59c7-493f-b7bb-758b34b19ee5",
+      "id": "a3b2f02f-2d9b-47c8-a26a-494cafaad70f",
       "name": "If1",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1620,
-        20
+        -4600,
+        2160
       ]
     },
     {
@@ -4778,13 +4778,13 @@
           }
         }
       },
-      "id": "a0416089-8a05-4b13-9c7d-26a00d3480e4",
+      "id": "81265245-68f0-4f34-a54c-91b8462dc88e",
       "name": "Check Leave halfday",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1400,
-        -220
+        -4820,
+        1920
       ],
       "credentials": {
         "cloodoApi": {
@@ -4818,26 +4818,26 @@
         },
         "options": {}
       },
-      "id": "aa2f9c84-0445-4959-ae05-0493cbeb9e7c",
+      "id": "9533895b-5669-4337-a57a-a8885ad25a91",
       "name": "If2",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1580,
-        -220
+        -4640,
+        1920
       ]
     },
     {
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $('If114').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 180, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "645e11c0-7a48-4b02-9c8e-347c11ed3438",
+      "id": "bb22911c-d0dd-4cd5-bdc7-c4d266c29cc3",
       "name": "Code17",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1820,
-        -240
+        -4400,
+        1900
       ]
     },
     {
@@ -4865,13 +4865,13 @@
         },
         "options": {}
       },
-      "id": "fc5b7795-c87e-435c-8617-424426570bd8",
+      "id": "012ed3f0-7915-4857-97cd-b738b6aa400b",
       "name": "If117",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2020,
-        -240
+        -4200,
+        1900
       ]
     },
     {
@@ -4881,13 +4881,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If117').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "43d249ab-2094-4507-ba0a-c17ec52845ef",
+      "id": "186b88f8-3636-429d-8eef-a3e24c3531b8",
       "name": "Cloodo Point63",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2700,
-        -280
+        -3520,
+        1860
       ],
       "credentials": {
         "cloodoApi2": {
@@ -4907,13 +4907,13 @@
           ]
         }
       },
-      "id": "97d92d8d-cd49-43b7-b1dd-2713517db16c",
+      "id": "b320d29a-94f0-48b7-8831-09d7bcb70a21",
       "name": "IF not found38",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2460,
-        -260
+        -3760,
+        1880
       ]
     },
     {
@@ -4922,13 +4922,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "af063a1d-a22f-4f6c-9148-eac8906fa0ab",
+      "id": "c53b8ff2-d14f-4f7e-9d3b-ece7730877b3",
       "name": "Cloodo Point64",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2300,
-        -260
+        -3920,
+        1880
       ],
       "credentials": {
         "cloodoApi2": {
@@ -4941,13 +4941,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "398068eb-4474-4ae0-90f8-f58a46e19566",
+      "id": "320f0450-3d2f-4cf2-b2ad-853c1a953b61",
       "name": "Stop and Error42",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3120,
-        -300
+        -3100,
+        1840
       ]
     },
     {
@@ -4975,13 +4975,13 @@
         },
         "options": {}
       },
-      "id": "fcf6c10d-9fcf-4981-9536-8ccc5bbe07c9",
+      "id": "6204e43c-3b91-49c6-bdc6-9c28523194a7",
       "name": "If118",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2860,
-        -280
+        -3360,
+        1860
       ]
     },
     {
@@ -5016,13 +5016,13 @@
           }
         }
       },
-      "id": "95a67f0b-c3ac-49dc-9ff8-7665e5e6fa52",
+      "id": "acd4ebf0-a5a8-4d35-b4f1-762b2798b53d",
       "name": "Check Leave Single1",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1620,
-        -1020
+        -4600,
+        1120
       ],
       "credentials": {
         "cloodoApi": {
@@ -5056,13 +5056,13 @@
         },
         "options": {}
       },
-      "id": "4f36747a-b52b-420d-9512-6ac11571b7ee",
+      "id": "717492e9-b833-4943-b05e-4e39d234bf6d",
       "name": "If3",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1840,
-        -1020
+        -4380,
+        1120
       ]
     },
     {
@@ -5097,13 +5097,13 @@
           }
         }
       },
-      "id": "ad4a1ef0-57c3-4528-8990-cc71a6842b69",
+      "id": "a6ce0171-e21d-4317-b3f4-2f20e25b6f3e",
       "name": "Check Leave halfday1",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1640,
-        -1300
+        -4580,
+        840
       ],
       "credentials": {
         "cloodoApi": {
@@ -5137,26 +5137,26 @@
         },
         "options": {}
       },
-      "id": "48852ff4-e080-4c7d-8d67-fe3037b48dc9",
+      "id": "4847f56d-6d0e-40a3-8cb8-8ed18b6fe450",
       "name": "If4",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1820,
-        -1300
+        -4400,
+        840
       ]
     },
     {
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $('If109').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 180, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "8302c9af-f275-4e22-aedd-da27069c5318",
+      "id": "247cf212-1fa1-4451-adb4-714898ba5bcc",
       "name": "Code18",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2060,
-        -1200
+        -4160,
+        940
       ]
     },
     {
@@ -5184,13 +5184,13 @@
         },
         "options": {}
       },
-      "id": "f471c65c-ac49-4b26-8726-f895af863538",
+      "id": "b547f207-0f83-44c3-9878-4fcecf74d5e0",
       "name": "If113",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2220,
-        -1200
+        -4000,
+        940
       ]
     },
     {
@@ -5200,13 +5200,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If113').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "665cd65a-39be-4ef9-a85f-9ced676ed27a",
+      "id": "b604448b-bc6b-4887-9e4d-a83acd622a88",
       "name": "Cloodo Point65",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2840,
-        -1240
+        -3380,
+        900
       ],
       "credentials": {
         "cloodoApi2": {
@@ -5226,13 +5226,13 @@
           ]
         }
       },
-      "id": "c0162db6-6804-4ef6-9e51-af7885f574f7",
+      "id": "7606b6ef-e60d-44af-a49b-f5f03adfdb25",
       "name": "IF not found39",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2600,
-        -1220
+        -3620,
+        920
       ]
     },
     {
@@ -5241,13 +5241,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "f81b8036-bc9c-46a6-9c0a-3997e0306645",
+      "id": "d7a4acff-ca04-427a-921c-df97785af9d5",
       "name": "Cloodo Point66",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        2440,
-        -1220
+        -3780,
+        920
       ],
       "credentials": {
         "cloodoApi2": {
@@ -5260,13 +5260,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "a1e11aab-8a74-449a-96dd-892395431c91",
+      "id": "2f4a7084-d6dd-47a2-a5df-37180c1bf0b9",
       "name": "Stop and Error43",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3260,
-        -1260
+        -2960,
+        880
       ]
     },
     {
@@ -5294,13 +5294,13 @@
         },
         "options": {}
       },
-      "id": "f216dd7c-e781-461e-a272-358deb0f8292",
+      "id": "6a1eef52-c883-4c65-89c5-da4b0e0e5c59",
       "name": "If119",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3000,
-        -1240
+        -3220,
+        900
       ]
     },
     {
@@ -5335,13 +5335,13 @@
           }
         }
       },
-      "id": "76bad2c1-fb94-47c7-b41c-a2bd172568c5",
+      "id": "99dbb1ff-1d80-4b5f-b6d0-ec64ea86bbfc",
       "name": "Check Leave Single2",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5220,
-        3380
+        -1000,
+        5520
       ],
       "credentials": {
         "cloodoApi": {
@@ -5375,13 +5375,13 @@
         },
         "options": {}
       },
-      "id": "9d644f0c-7f7b-4116-92e0-58bdbd49781f",
+      "id": "49ea2ca7-f2cf-449e-9ecc-7e5406bf8ec6",
       "name": "If",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5440,
-        3380
+        -780,
+        5520
       ]
     },
     {
@@ -5416,13 +5416,13 @@
           }
         }
       },
-      "id": "50f32d32-7c92-4827-98a6-e840f24089e9",
+      "id": "55e07144-c2aa-4849-bdd4-6558ebe69e12",
       "name": "Check Leave Single3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5220,
-        3120
+        -1000,
+        5260
       ],
       "credentials": {
         "cloodoApi": {
@@ -5456,13 +5456,13 @@
         },
         "options": {}
       },
-      "id": "59207794-e9e5-4a3a-9a95-b091beeb985d",
+      "id": "c0b5e672-3da8-46dd-be56-6fd6c317ef86",
       "name": "If5",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5440,
-        3120
+        -780,
+        5260
       ]
     },
     {
@@ -5470,13 +5470,13 @@
         "mode": "chooseBranch",
         "useDataOfInput": 2
       },
-      "id": "6883806f-8c66-4435-bceb-0f6615b257b8",
+      "id": "64e31591-22e7-4df6-9ceb-af2ca11d1cd1",
       "name": "Merge12",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        6000,
-        3300
+        -220,
+        5440
       ]
     },
     {
@@ -5511,13 +5511,13 @@
           }
         }
       },
-      "id": "2f0ceeec-4bd4-48a0-b804-6b3e6b1caf25",
+      "id": "a74741ab-6a11-43da-a568-ba5ea1780079",
       "name": "Check Leave halfday2",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5440,
-        2780
+        -780,
+        4920
       ],
       "credentials": {
         "cloodoApi": {
@@ -5551,26 +5551,26 @@
         },
         "options": {}
       },
-      "id": "9cf6b9c3-1672-4ab4-9b03-4782562aad83",
+      "id": "6f4cbc13-d963-4603-834a-fe645965bdbc",
       "name": "If6",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5620,
-        2780
+        -600,
+        4920
       ]
     },
     {
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $('If84').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 180, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "0537682f-5b12-4727-8121-17435defca43",
+      "id": "4d6e82a3-b3aa-4d2b-9818-67c2e635bd0e",
       "name": "Code9",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6040,
-        2880
+        -180,
+        5020
       ]
     },
     {
@@ -5598,13 +5598,13 @@
         },
         "options": {}
       },
-      "id": "1835fcb7-c00c-4096-94d8-53f1216dd882",
+      "id": "015e0f07-66ba-433b-ad1b-aef1328d0ca6",
       "name": "If89",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6300,
-        2880
+        80,
+        5020
       ]
     },
     {
@@ -5614,13 +5614,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If89').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "350f4a3e-30ee-4506-b203-1ed7b4785468",
+      "id": "85025ef2-bf0a-4b02-bf26-1c28cfd3e10f",
       "name": "Cloodo Point",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6960,
-        2840
+        740,
+        4980
       ],
       "credentials": {
         "cloodoApi2": {
@@ -5640,13 +5640,13 @@
           ]
         }
       },
-      "id": "4f49fa37-e6ce-4afe-827d-97b2bc22294e",
+      "id": "a7a0f423-d136-4401-8848-2171510e7f50",
       "name": "IF not found",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6720,
-        2860
+        500,
+        5000
       ]
     },
     {
@@ -5655,13 +5655,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "d6adab74-4838-4edc-9b0e-36d8ece339a2",
+      "id": "cd1857ea-7049-4776-8dd0-ff9ac17af31c",
       "name": "Cloodo Point42",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6560,
-        2860
+        340,
+        5000
       ],
       "credentials": {
         "cloodoApi2": {
@@ -5674,13 +5674,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "ba165899-34b5-4090-9927-41ec07c6f0f4",
+      "id": "41499630-880a-43b1-89b8-ca9ddc1a78c1",
       "name": "Stop and Error29",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        7380,
-        2820
+        1160,
+        4960
       ]
     },
     {
@@ -5708,13 +5708,13 @@
         },
         "options": {}
       },
-      "id": "f91650bc-08ce-4c15-af5e-561deab15c1e",
+      "id": "3a9e908b-1aa4-4da1-a5d5-2cacca3fc27c",
       "name": "If90",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7120,
-        2840
+        900,
+        4980
       ]
     },
     {
@@ -5749,13 +5749,13 @@
           }
         }
       },
-      "id": "3e0b5b2b-9cce-4d63-a46f-fe8d36783ad3",
+      "id": "bb49d736-b9f0-4f0d-86d5-a88a91aa662f",
       "name": "Check Leave Single4",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4920,
-        900
+        -1300,
+        3040
       ],
       "credentials": {
         "cloodoApi": {
@@ -5789,13 +5789,13 @@
         },
         "options": {}
       },
-      "id": "a6a3fe85-7658-4cab-9beb-fa3615ad3cf8",
+      "id": "b8173176-fc48-4f3c-bfff-868ac9b41a91",
       "name": "If7",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5140,
-        900
+        -1080,
+        3040
       ]
     },
     {
@@ -5830,13 +5830,13 @@
           }
         }
       },
-      "id": "ad6299c5-cfcf-4923-ae77-1f20cda70518",
+      "id": "8c5e8bb6-e1e8-4186-b1d2-fc6b4516281a",
       "name": "Check Leave Single5",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4920,
-        640
+        -1300,
+        2780
       ],
       "credentials": {
         "cloodoApi": {
@@ -5870,13 +5870,13 @@
         },
         "options": {}
       },
-      "id": "89585468-0c0c-4ac2-892c-4684aa42a826",
+      "id": "7a7d0c4f-bfea-4463-a938-b77a213cc58d",
       "name": "If8",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5140,
-        640
+        -1080,
+        2780
       ]
     },
     {
@@ -5911,13 +5911,13 @@
           }
         }
       },
-      "id": "9f0c4e98-5111-4610-9792-187574c95dd5",
+      "id": "122ccf4e-2e27-4e8a-a8e6-c15c143dc8cc",
       "name": "Check Leave halfday3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5100,
-        360
+        -1120,
+        2500
       ],
       "credentials": {
         "cloodoApi": {
@@ -5951,26 +5951,26 @@
         },
         "options": {}
       },
-      "id": "7fd66aa0-5a3a-4d6b-ae11-086958520339",
+      "id": "ec6faa50-8943-4f69-94ad-a8d9e6933ae9",
       "name": "If9",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5280,
-        360
+        -940,
+        2500
       ]
     },
     {
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $('If64').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 180, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "cfa717ea-ec4e-4998-912b-cabd9ea02d3d",
+      "id": "68b9a13e-d0a0-4c82-ab61-3e108f0fca0b",
       "name": "Code5",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5660,
-        440
+        -560,
+        2580
       ]
     },
     {
@@ -5998,13 +5998,13 @@
         },
         "options": {}
       },
-      "id": "c3ba0938-7a95-4c61-9e4e-e23108b42df2",
+      "id": "83cb4b7c-a213-4bea-b72e-39d0912da8b3",
       "name": "If74",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5880,
-        440
+        -340,
+        2580
       ]
     },
     {
@@ -6014,13 +6014,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If74').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "35aa1296-5b3c-4af4-be3c-881da435e144",
+      "id": "01d9c9ca-2a3c-43c7-80b2-0dabdc5bcbba",
       "name": "Cloodo Point16",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6560,
-        400
+        340,
+        2540
       ],
       "credentials": {
         "cloodoApi2": {
@@ -6040,13 +6040,13 @@
           ]
         }
       },
-      "id": "38e593cc-9f9f-4374-88cc-3e54eb8ebadf",
+      "id": "aaab6ba7-43e6-42ca-a423-b1fc342557bf",
       "name": "IF not found20",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6320,
-        420
+        100,
+        2560
       ]
     },
     {
@@ -6055,13 +6055,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "c63b9ef7-14e3-4287-a3af-a8ef9cbbe03c",
+      "id": "845adfab-d81b-4931-8899-fb9a035e31de",
       "name": "Cloodo Point34",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6160,
-        420
+        -60,
+        2560
       ],
       "credentials": {
         "cloodoApi2": {
@@ -6074,13 +6074,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "74763902-fd2a-4128-84ee-bfa80e58fb74",
+      "id": "bcc69f31-9991-49b4-8680-88c3d2bbfe46",
       "name": "Stop and Error23",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        7020,
-        380
+        800,
+        2520
       ]
     },
     {
@@ -6108,13 +6108,13 @@
         },
         "options": {}
       },
-      "id": "0050680f-fe6a-4618-b2ad-3789b0001328",
+      "id": "56aee95e-fc10-4c3c-b58a-12f41c64db58",
       "name": "If75",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6760,
-        400
+        540,
+        2540
       ]
     },
     {
@@ -6149,13 +6149,13 @@
           }
         }
       },
-      "id": "929f3b48-9fd9-4b94-9ccb-1a4ba419bc55",
+      "id": "e016c61c-5fef-41b2-8418-0e4ec8538cc5",
       "name": "Check Leave Single6",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5520,
-        2000
+        -700,
+        4140
       ],
       "credentials": {
         "cloodoApi": {
@@ -6189,13 +6189,13 @@
         },
         "options": {}
       },
-      "id": "50157362-6e29-4dd1-8e6c-df41fe0b02a3",
+      "id": "6037353a-21c1-47f9-a570-c0c4228477e3",
       "name": "If10",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5740,
-        2000
+        -480,
+        4140
       ]
     },
     {
@@ -6230,13 +6230,13 @@
           }
         }
       },
-      "id": "dc664e25-1b43-462f-9ae4-c22adf440489",
+      "id": "fd93f6a7-4c00-4b59-9af5-20a120e20189",
       "name": "Check Leave Single7",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5520,
-        1840
+        -700,
+        3980
       ],
       "credentials": {
         "cloodoApi": {
@@ -6270,13 +6270,13 @@
         },
         "options": {}
       },
-      "id": "c915b267-1ff5-4e69-8ff8-cf48aefd0377",
+      "id": "b9bd1958-da9b-4dc7-80a8-12127abdc68e",
       "name": "If11",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5740,
-        1840
+        -480,
+        3980
       ]
     },
     {
@@ -6311,13 +6311,13 @@
           }
         }
       },
-      "id": "6bdb12f8-cc80-4eb0-8b11-55c16af4c7c5",
+      "id": "b2ef8d36-6d43-481a-8f2f-f050f91b183a",
       "name": "Check Leave halfday4",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5420,
-        1560
+        -800,
+        3700
       ],
       "credentials": {
         "cloodoApi": {
@@ -6351,26 +6351,26 @@
         },
         "options": {}
       },
-      "id": "833b0db0-d855-4347-9877-a51a7a58af34",
+      "id": "9dd02f92-aa34-4960-a478-644ab4e0c25b",
       "name": "If12",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5600,
-        1560
+        -620,
+        3700
       ]
     },
     {
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $('If69').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 180, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "77842d28-9247-45b4-bfb9-fa689c0a2600",
+      "id": "c1a91535-a88b-45bc-bd14-3d3ede041104",
       "name": "Code1",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5940,
-        1620
+        -280,
+        3760
       ]
     },
     {
@@ -6398,13 +6398,13 @@
         },
         "options": {}
       },
-      "id": "0d0406b3-6469-4270-b63b-84e046a2deca",
+      "id": "c67bb785-fee5-4ede-bb45-0860e53b6555",
       "name": "If76",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6200,
-        1640
+        -20,
+        3780
       ]
     },
     {
@@ -6414,13 +6414,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If76').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "b2842960-7106-410b-9efa-0be59a9ab74e",
+      "id": "1fb1c50c-47d1-42f7-b303-f4192caa543e",
       "name": "Cloodo Point1",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6900,
-        1600
+        680,
+        3740
       ],
       "credentials": {
         "cloodoApi2": {
@@ -6440,13 +6440,13 @@
           ]
         }
       },
-      "id": "c97c3926-8f0e-4725-8731-0828d9376be2",
+      "id": "2e8c5643-2b3b-4f10-94b2-15e6c7c9338d",
       "name": "IF not found1",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6660,
-        1620
+        440,
+        3760
       ]
     },
     {
@@ -6455,13 +6455,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "c0dd7c2c-0c80-4cfd-b325-77899d520e2b",
+      "id": "277c7dc2-784c-42ca-be08-7aca9c7a2756",
       "name": "Cloodo Point43",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6500,
-        1620
+        280,
+        3760
       ],
       "credentials": {
         "cloodoApi2": {
@@ -6474,13 +6474,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "049af4bb-dbf4-43b9-a4a9-472a3c7a9b74",
+      "id": "aa0d5e11-99b0-4ed8-a9b7-b3aa88949a4b",
       "name": "Stop and Error30",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        7320,
-        1580
+        1100,
+        3720
       ]
     },
     {
@@ -6508,13 +6508,13 @@
         },
         "options": {}
       },
-      "id": "bdc4097b-2f34-484e-b1f1-0eb00fd839bb",
+      "id": "eb0e5084-c7c2-48c5-8b22-c86dabe4e771",
       "name": "If91",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7060,
-        1600
+        840,
+        3740
       ]
     },
     {
@@ -6549,13 +6549,13 @@
           }
         }
       },
-      "id": "95b248a8-eba0-41db-a985-c105e1b2cff1",
+      "id": "a4a36162-b1dc-4efb-84a4-329f9f23c357",
       "name": "Check Leave Single8",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5220,
-        -440
+        -1000,
+        1700
       ],
       "credentials": {
         "cloodoApi": {
@@ -6589,13 +6589,13 @@
         },
         "options": {}
       },
-      "id": "541c43cd-fcc9-4c3a-81d5-ef7577cf60ca",
+      "id": "84a5bd77-02d1-4313-8990-90cae905d086",
       "name": "If13",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5440,
-        -440
+        -780,
+        1700
       ]
     },
     {
@@ -6630,13 +6630,13 @@
           }
         }
       },
-      "id": "3bd9658d-2e20-457e-b81b-94fe000a63b5",
+      "id": "276cf432-95da-4e3a-9ba0-01e023a87334",
       "name": "Check Leave Single9",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5220,
-        -700
+        -1000,
+        1440
       ],
       "credentials": {
         "cloodoApi": {
@@ -6670,13 +6670,13 @@
         },
         "options": {}
       },
-      "id": "f83b85bf-876f-42e7-a19e-7bbca100c67b",
+      "id": "b3b32a5d-8f47-4d25-a9ae-d544cc6fde1c",
       "name": "If14",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5440,
-        -700
+        -780,
+        1440
       ]
     },
     {
@@ -6711,13 +6711,13 @@
           }
         }
       },
-      "id": "733c299e-6919-4cec-ab9f-15f11021c277",
+      "id": "807af5c7-df68-49b1-b9ba-6faae19066b4",
       "name": "Check Leave halfday5",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5320,
-        -960
+        -900,
+        1180
       ],
       "credentials": {
         "cloodoApi": {
@@ -6751,26 +6751,26 @@
         },
         "options": {}
       },
-      "id": "5feb1de0-b319-48f6-9391-d9b45ee42a49",
+      "id": "126c55c0-63c8-4bd7-80ae-d5c8dad29ec1",
       "name": "If15",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5500,
-        -960
+        -720,
+        1180
       ]
     },
     {
       "parameters": {
         "jsCode": "// Lấy danh sách items từ input\nconst items = $('If104').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 180, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
-      "id": "0ec3b183-42a6-4100-8b05-5d5a26ce6a15",
+      "id": "3616522a-1b92-41cf-b5a4-cfce9d99926d",
       "name": "Code19",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5760,
-        -860
+        -460,
+        1280
       ]
     },
     {
@@ -6798,13 +6798,13 @@
         },
         "options": {}
       },
-      "id": "7f65fed9-e609-468c-b600-decc1f264db1",
+      "id": "19bce661-6678-417e-9b5b-12d7e8f29a89",
       "name": "If120",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5960,
-        -860
+        -260,
+        1280
       ]
     },
     {
@@ -6814,13 +6814,13 @@
         "points": 3,
         "note": "=QCM 88: {{ $('If120').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
       },
-      "id": "4e4d16d3-6ad9-47ea-b7d2-e84519197e4d",
+      "id": "74aaf057-bf20-4285-addd-59c95a642b95",
       "name": "Cloodo Point22",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6700,
-        -900
+        480,
+        1240
       ],
       "credentials": {
         "cloodoApi2": {
@@ -6840,13 +6840,13 @@
           ]
         }
       },
-      "id": "4e94d5e5-2136-48c1-a206-e1b5d84ad53b",
+      "id": "800f37f8-ceb1-4e7f-a5d2-3dacd39d4e4d",
       "name": "IF not found40",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6460,
-        -880
+        240,
+        1260
       ]
     },
     {
@@ -6855,13 +6855,13 @@
         "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
-      "id": "521eddce-c718-49a2-afde-109bc547dc97",
+      "id": "2c5c9c22-2d0c-42f5-b19b-a3bccc6d762a",
       "name": "Cloodo Point67",
       "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
       "typeVersion": 1,
       "position": [
-        6280,
-        -880
+        60,
+        1260
       ],
       "credentials": {
         "cloodoApi2": {
@@ -6874,13 +6874,13 @@
       "parameters": {
         "errorMessage": "Token is expired or incorrect"
       },
-      "id": "56481e4a-043d-4d83-95ad-e6b40cce4efb",
+      "id": "c48ec1d5-0aa8-4da9-9ecf-2bf885c03663",
       "name": "Stop and Error44",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        7200,
-        -920
+        980,
+        1220
       ]
     },
     {
@@ -6908,13 +6908,13 @@
         },
         "options": {}
       },
-      "id": "fd5fae62-d2b0-4668-aa8b-59ac0ace2702",
+      "id": "e23b1fee-ecc9-458f-9c9e-bfb18f99023e",
       "name": "If121",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6860,
-        -900
+        640,
+        1240
       ]
     },
     {
@@ -6931,13 +6931,13 @@
           ]
         }
       },
-      "id": "5e35751d-2b6c-4f13-a785-f05d664f8b01",
+      "id": "9b89cb31-11a7-4e0c-bc4b-859d583c7d1e",
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -2020,
-        300
+        -8240,
+        2440
       ]
     },
     {
@@ -6954,13 +6954,13 @@
           ]
         }
       },
-      "id": "ef12e064-8e80-4241-ac67-3830acd7119c",
+      "id": "bfdd6c88-8e21-4522-b383-acda02822d48",
       "name": "Schedule Trigger1",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -2020,
-        700
+        -8240,
+        2840
       ]
     },
     {
@@ -6968,13 +6968,13 @@
         "content": "## 6pm and 9pm\n",
         "height": 80
       },
-      "id": "b21f1bd1-dfd3-4d9e-9f29-08b42945a163",
+      "id": "06be7094-2b1a-47d4-be59-23d139fa0aaf",
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2400,
-        500
+        -8620,
+        2640
       ]
     }
   ],
@@ -9557,15 +9557,15 @@
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "b356d316-dd36-4e5b-991a-781c82edf223",
+  "versionId": "a24b2920-087c-46ff-be89-a9c3f13ddccd",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
   },
-  "id": "TOsU0vMdnwmDcp7j",
+  "id": "xjvv57yeaeeeqC19",
   "tags": []
 }
