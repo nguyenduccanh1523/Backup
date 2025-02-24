@@ -1,0 +1,1047 @@
+{
+  "name": "Data messager lên workchat",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "6ce43f13-ef14-47fa-aee6-df95edeb0d80",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Get Id Store').item.json.data[0].id }}/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            },
+            {
+              "name": "fields",
+              "value": "messages{id,message,from,to}"
+            },
+            {
+              "name": "limit",
+              "value": "25"
+            },
+            {
+              "name": "after",
+              "value": "={{ $json.next }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "fd4de9f7-e5c9-4991-9ad6-8e8390f632c6",
+      "name": "Get Detail list Chat User",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1480,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.next }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "63b68cd7-530d-490b-82bd-777ad7be2bc2",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const after = item?.json?.paging?.next;\n  console.log('after', after);\n\n  if (after && after.includes(\"after=\")) {\n    const valueAfterEqual = after.split(\"after=\")[1];\n    item.json.next = valueAfterEqual;\n\n    //Kiểm tra dữ liệu trả về từ Get Id Store\n    if ($node[\"Get Id Store\"]?.json?.data && $node[\"Get Id Store\"].json.data.length > 0) {\n      item.json.conver = $node[\"Get Id Store\"]?.json?.data[0]?.id; // Lấy ID từ data[0]\n    } else {\n      console.log('No data found in Get Id Store');\n    }\n  } else {\n    item.json.next = null; // Nếu không có 'after=', gán null vào next\n     if ($node[\"Get Id Store\"]?.json?.data && $node[\"Get Id Store\"].json.data.length > 0) {\n      item.json.conver = $node[\"Get Id Store\"]?.json?.data[0]?.id;\n     }\n  }\n}\n\nreturn $input.all();"
+      },
+      "id": "aad10f2b-577f-4a50-b827-fa2641cc0ca2",
+      "name": "Take Page Next",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return null;"
+      },
+      "id": "30165bc7-3c8a-404a-a9f8-46cd0da56fc3",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2800,
+        900
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "668d9514-7629-44c6-a001-e1f7fe42e920",
+      "name": "Split Out3",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v21.0/213439902114044/conversations",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "platform",
+              "value": "MESSENGER"
+            },
+            {
+              "name": "user_id",
+              "value": "={{ $json.id_client_message }}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "6889d3c9-fded-4de8-a5f6-5db5c44ec8d6",
+      "name": "Get Id Store",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1240,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            },
+            {
+              "name": "fields",
+              "value": "id,message,from,to"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "4a860c1e-fdc0-42fd-a5d2-0a101370f565",
+      "name": "Get messages according to id",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2220,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2060972300,
+          "mode": "list",
+          "cachedResultName": "client_message_cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2060972300"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_workchat": "={{ $('Merge1').item.json.idf }}",
+            "conversation_id": "={{ $('Get Id Store').item.json.data[0].id }}",
+            "message_worchat": "yes"
+          },
+          "matchingColumns": [
+            "conversation_id"
+          ],
+          "schema": [
+            {
+              "id": "conversation_id",
+              "displayName": "conversation_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "update_time",
+              "displayName": "update_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_client_message",
+              "displayName": "id_client_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_workchat",
+              "displayName": "id_workchat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name_client_facebook",
+              "displayName": "name_client_facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_client_facebook",
+              "displayName": "email_client_facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message_worchat",
+              "displayName": "message_worchat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9f1c9e69-a31f-49a7-b609-8dd50cb13642",
+      "name": "update email3",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        4220,
+        880
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2060972300,
+          "mode": "list",
+          "cachedResultName": "client_message_cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2060972300"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "specifyRange",
+              "firstDataRow": 4
+            }
+          }
+        }
+      },
+      "id": "e99d4040-25ad-4fb7-982b-feb2fc29d6a4",
+      "name": "Save messaage4",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1240,
+        400
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7f85a865-1234-4c0a-b52c-42428bff62a0",
+      "name": "Loop Over Items1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        960,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"{{ $json.from.email }}\",\n      \"to\": \"{{ $json.to.data[0].email }}\",\n      \"body\": \"{{ $json.output }}\",\n      \"fromMe\": false,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $json.to.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "a1cd18eb-3be8-4a67-865a-6cbbc6a93396",
+      "name": "Post message lên workchat from client",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3500,
+        640
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"{{ $json.from.email }}\",\n      \"to\": \"{{ $json.to.data[0].email }}\",\n      \"body\": \"{{ $json.output }}\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $json.to.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "077eca0b-6ae9-420b-8f54-5e0b6c4f00ad",
+      "name": "Post message lên workchat from admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3480,
+        400
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *, (\n  SELECT COUNT(*) FROM user_chats WHERE (user_chats.from = 59563 AND user_chats.to = 60258) OR  (user_chats.from = 60258 AND user_chats.to = 59563)\n) AS Total_Messages\nFROM user_chats\nWHERE \n  (user_chats.from = 59563 AND user_chats.to = 60258) \n  OR \n  (user_chats.from = 60258 AND user_chats.to = 59563) ORDER BY user_chats.created_at DESC;\n",
+        "options": {}
+      },
+      "id": "3e328962-ac4c-4962-86fa-b29ec53c0de5",
+      "name": "MySQL Get Detail Messages",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        460
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "SJei6ksLjiCIXFRS",
+          "name": "Worksuite database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  let messagerAI = item?.json?.message;\n\n  // Escape ký tự xuống dòng\n  messagerAI = messagerAI.replace(/\\n\\n/g, '\\\\n\\\\n'); // Thay thế \\n\\n thành \\\\n\\\\n\n  messagerAI = messagerAI.replace(/\\n/g, '\\\\n'); // Thay thế \\n thành \\\\n\n  \n  // Escape dấu ngoặc kép trong chuỗi\n  messagerAI = messagerAI.replace(/\"/g, '\\\\\"'); // Thay thế dấu \" bằng \\\"\n\n  // Lưu kết quả vào output\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();"
+      },
+      "id": "12b26c5f-d7fb-456b-8623-e96968faa9db",
+      "name": "Code3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  let messagerAI = item?.json?.message;\n\n  // Escape ký tự xuống dòng\n  messagerAI = messagerAI.replace(/\\n\\n/g, '\\\\n\\\\n'); // Thay thế \\n\\n thành \\\\n\\\\n\n  messagerAI = messagerAI.replace(/\\n/g, '\\\\n'); // Thay thế \\n thành \\\\n\n  \n  // Escape dấu ngoặc kép trong chuỗi\n  messagerAI = messagerAI.replace(/\"/g, '\\\\\"'); // Thay thế dấu \" bằng \\\"\n\n  // Lưu kết quả vào output\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();"
+      },
+      "id": "ecb54d32-6447-4719-bd90-9dc3f13950f3",
+      "name": "Code4",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3200,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5a0eadc0-dfdf-4dee-accc-ff507426ee30",
+              "leftValue": "={{ $json.name_client_facebook }}",
+              "rightValue": "Facebook user",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "442cd5be-2113-4722-b1d1-d602192191ae",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        380,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2060972300,
+          "mode": "list",
+          "cachedResultName": "client_message_cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2060972300"
+        }
+      },
+      "id": "10ff1b62-711c-4771-bda4-62cd691dd47e",
+      "name": "Save messaage",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        560,
+        460
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "37039df8-105d-4699-9474-b745964760eb",
+              "leftValue": "={{ $json.data.length }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "216df88f-22b0-425d-8f1b-bf6d7d1be5fc",
+              "leftValue": "={{ $json.data.map(item => item.to.name) }}",
+              "rightValue": "Cmsmart Ecommerce",
+              "operator": {
+                "type": "array",
+                "operation": "notContains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "ad8dd635-53d6-4d7a-b9aa-1c7841d7a297",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2760,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.from.name }}",
+                    "rightValue": "Cmsmart Ecommerce",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cmsmart Ecommerce"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "4835b3b7-1f5e-4fc5-8081-51287f125ed7",
+                    "leftValue": "={{ $json.from.name }}",
+                    "rightValue": "Cmsmart Ecommerce",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Client"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "975914b8-fde8-41b8-97ef-73c994bb4758",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2820,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "2f9160ba-4313-43b5-a8a9-bc9bb6278747",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2520,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2060972300,
+          "mode": "list",
+          "cachedResultName": "client_message_cms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=2060972300"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "specifyRange",
+              "firstDataRow": 900
+            }
+          }
+        }
+      },
+      "id": "738e2178-f44b-4d61-9b87-af8676722941",
+      "name": "Save messaage5",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        800
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b339d252-ba3d-4490-94b6-1db015412748",
+              "leftValue": "={{ $json.id_workchat }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cadeb2a1-9cd4-400a-98d2-d55ab1ecde67",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        600,
+        800
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "useDataOfInput": 2
+      },
+      "id": "54060c8d-6a92-4768-b6ea-ed7222a932aa",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3780,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "id": "3cf6b498-8c80-4fd1-b27c-7c4d9a5aa5e5",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3940,
+        880
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Save messaage5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Detail list Chat User": {
+      "main": [
+        [
+          {
+            "node": "Take Page Next",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Get Detail list Chat User",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Page Next": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "Get messages according to id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Id Store": {
+      "main": [
+        [
+          {
+            "node": "Get Detail list Chat User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get messages according to id": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get Id Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from client": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Post message lên workchat from admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "Post message lên workchat from client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Save messaage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save messaage5": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update email3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "update email3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "814653e0-f9c6-4efa-b695-8a186116d636",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "PgViMIBLePztB48D",
+  "tags": []
+}
