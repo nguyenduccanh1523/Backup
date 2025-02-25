@@ -1,0 +1,1291 @@
+{
+  "name": "AI Messager - Reply V1",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "a4825536-4c20-466e-bfa2-6922e5055c36",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        1540
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.data[0].id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "messages{id,message,from,to}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "9c550ac3-3fbb-4bbd-8fb0-38657341f53c",
+      "name": "Get Detail list Chat User6",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        1940
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v21.0/213439902114044/conversations",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "platform",
+              "value": "MESSENGER"
+            },
+            {
+              "name": "user_id",
+              "value": "={{ $json.body.senderId }}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "7c51c40d-d80f-4d57-9b7c-ce29d12100c8",
+      "name": "HTTP Request5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        40,
+        1940
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4d2c20e6-0727-4f45-a578-0e63ea7d8ece",
+              "leftValue": "={{ $json.messages.data[0].from.name }}",
+              "rightValue": "Cmsmart Ecommerce",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ac50b6ab-3d9e-409f-abaf-d2508c4cb97e",
+      "name": "check cms send",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        1340
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"{{ $json.inf.from.email }}\",\n      \"to\": \"{{ $json.inf.to.data[0].email }}\",\n      \"body\": \"{{ $json.output }}\",\n      \"fromMe\": false,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $json.inf.to.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "686b32f8-b86d-4206-b359-e323c76a22ae",
+      "name": "Post message lên workchat from client",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        980,
+        1500
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "let info = $input.all()[0].json.messages?.data[1]\nlet message =  $input.all()[0].json.messages?.data[1]?.message\nconsole.log('arg: ', message)\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nreturn {\n  inf: info,\n  output: message\n};"
+      },
+      "id": "38b66bce-e8e5-4078-ba8c-41d4e10f2ddb",
+      "name": "Code14",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        740,
+        1500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"{{ $json.inf.from.email }}\",\n      \"to\": \"{{ $json.inf.to.data[0].email }}\",\n      \"body\": \"{{ $json.output }}\",\n      \"fromMe\": false,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $json.inf.from.name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "14415542-4c07-4b2f-843b-14144031a209",
+      "name": "Post message lên workchat from client1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        980,
+        1220
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "let info = $input.all()[0].json.messages?.data[0]\nlet message =  $input.all()[0].json.messages?.data[0]?.message\nconsole.log('arg: ', message)\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nreturn {\n  inf: info,\n  output: message\n};"
+      },
+      "id": "94ae25f6-9824-4253-bef9-37b11367a6f0",
+      "name": "Code15",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        740,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *, (\n  SELECT COUNT(*) FROM user_chats WHERE (user_chats.from = 62844 AND user_chats.to = {{ $('MySQL Get Info Client6').item.json.id }}) OR  (user_chats.from = {{ $('MySQL Get Info Client6').item.json.id }} AND user_chats.to = 62844)\n) AS Total_Messages\nFROM user_chats\nWHERE \n  (user_chats.from = 62844 AND user_chats.to = {{ $('MySQL Get Info Client6').item.json.id }}) \n  OR \n  (user_chats.from = {{ $('MySQL Get Info Client6').item.json.id }} AND user_chats.to = 62844) ORDER BY user_chats.created_at DESC;\n",
+        "options": {}
+      },
+      "id": "c5c3d987-7e91-449e-8c35-8732e1848f57",
+      "name": "MySQL Get Detail Messages5",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        2440,
+        1920
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "SJei6ksLjiCIXFRS",
+          "name": "Worksuite database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "46f472be-d110-4d7e-b926-f9bac4dfd063",
+      "name": "Aggregate16",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a4bb989a-d243-4888-87d3-773e405fa336",
+              "leftValue": "={{ $json.from.id }}",
+              "rightValue": "112710510078308",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "264909f4-3c00-4597-af3f-e4ba4208da7d",
+              "leftValue": "={{ new Date($json.created_time.replace(' ', 'T').replace('+0000', '+07:00')).getTime() }}",
+              "rightValue": "={{ new Date(Date.now() - 0.4 * 60 * 1000).getTime() }}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a7384606-7efa-4549-a148-557fde39dc13",
+      "name": "Last send by client3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        340,
+        2260
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "8c475b16-dc98-41f8-a765-1f0fdd83ffe5",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        1860
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return{\n\n\n    \"headers\": {\n      \"host\": \"workflow.cloodo.com\",\n      \"user-agent\": \"axios/1.7.9\",\n      \"content-length\": \"67\",\n      \"accept\": \"application/json, text/plain, */*\",\n      \"accept-encoding\": \"gzip, compress, deflate, br\",\n      \"content-type\": \"application/json\",\n      \"x-forwarded-for\": \"207.244.255.94\",\n      \"x-forwarded-host\": \"workflow.cloodo.com\",\n      \"x-forwarded-port\": \"443\",\n      \"x-forwarded-proto\": \"https\",\n      \"x-forwarded-server\": \"40c48caec682\",\n      \"x-real-ip\": \"207.244.255.94\"\n    },\n    \"params\": {},\n    \"query\": {},\n    \"body\": {\n      \"senderId\": \"9328599640527653\",\n      \"message\": \"pricing\",\n      \"imageUrl\": null\n    },\n    \"webhookUrl\": \"https://workflow.cloodo.com/webhook/SJ2Az23OeQTAADDE/webhook/facebook\",\n    \"executionMode\": \"production\"\n\n\n}"
+      },
+      "id": "d19532c2-a5eb-4d4c-8d5c-cdb4cd2d5ad1",
+      "name": "Execute Workflow Trigger1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -340,
+        1860
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 972471998,
+          "mode": "list",
+          "cachedResultName": "Track Messenger",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=972471998"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "09a71604-8958-4ffe-a51c-01d2df1c2454",
+      "name": "Track",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1020,
+        1940
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "76f5fe63-01a0-4657-8308-70a6d4a78d1f",
+              "leftValue": "={{ (new Date().getTime() - new Date($('Track').item.json.Note.split('On')[1].replace(' | ', ' ')).getTime() >= 3600000).toNumber() }}\n",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "0cb8c3ff-d799-4d03-8430-b73d38aa7665",
+      "name": "If Reply after 1 hour1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1560,
+        2060
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 972471998,
+          "mode": "list",
+          "cachedResultName": "Track Messenger",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=972471998"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('MySQL Get Info Client6').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "start_session",
+              "displayName": "start_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_chat _at",
+              "displayName": "last_chat _at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3eaf6455-e88d-497d-b125-85fe75c2f421",
+      "name": "Track1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1500,
+        2300
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Note }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Empty Note"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "21cbbca0-9939-4248-b234-eb29b3f37487",
+                    "leftValue": "={{ $json.Note }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Have Note"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "76f2efaf-96d1-40c1-9f20-6b104d14e97a",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1260,
+        1940
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM users WHERE users.email = {{ $('Get Detail Last list Chat User').item.json.from.email ? `\"${$('Get Detail Last list Chat User').item.json.from.email}\"` : '\" \"' }}\n",
+        "options": {}
+      },
+      "id": "1b30e3c2-e4f3-4f06-beb7-eb4c462daccb",
+      "name": "MySQL Get Info Client6",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        1940
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "SJei6ksLjiCIXFRS",
+          "name": "Worksuite database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.messages.data[0].id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            },
+            {
+              "name": "fields",
+              "value": "id,message,from,to,created_time"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "818ea477-7499-4427-aa7d-f19456d1b5ef",
+      "name": "Get Detail Last list Chat User",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        540,
+        1940
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM users WHERE users.email = {{ $('Get Detail Last list Chat User1').item.json.from.email ? `\"${$('Get Detail Last list Chat User1').item.json.from.email}\"` : '\" \"' }}\n",
+        "options": {}
+      },
+      "id": "351b6fe0-e956-4f22-8d6a-591ac1b5ec5e",
+      "name": "MySQL Get Info Client7",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.2,
+      "position": [
+        2200,
+        1920
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "SJei6ksLjiCIXFRS",
+          "name": "Worksuite database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Get Detail list Chat User6').item.json.messages.data[0].id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            },
+            {
+              "name": "fields",
+              "value": "id,message,from,to,created_time"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "d8293a5e-94db-47c1-aadb-b90a02550228",
+      "name": "Get Detail Last list Chat User1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1820,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let messagerAI = $node['OpenAI CMS1']?.json?.output\n  messagerAI = messagerAI.replace(/\\n\\n/g, '\\\\n\\\\n');\n  messagerAI = messagerAI.replace(/\\n/g, '\\\\n');\n  messagerAI = messagerAI.replace(/###/g, '');\n  messagerAI = messagerAI.replace(/\\**/g, '');\n  messagerAI = messagerAI.replace(/\"/g, '');\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();"
+      },
+      "id": "cc8dd5d3-de02-4d95-9cfa-828a9906ef1e",
+      "name": "Get Info Issue3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3280,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/213439902114044/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Get User Facebook2').item.json.participants.data[0].id }}\"\n  },\n  \"messaging_type\": \"MESSAGE_TAG\",\n  \"tag\": \"ACCOUNT_UPDATE\",\n  \"message\": {\n    \"text\": \"{{ $json.output }}\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "ac82c72d-7da0-463a-bdd5-8f8c331518dc",
+      "name": "send welcome3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3480,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook2').item.json.participants.data[0].email }}\",\n      \"body\": \"{{ $('Get Info Issue3').item.json.message }}\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook2').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "3f4a8ae1-ca50-490a-9414-6d89b5dc4f41",
+      "name": "Post message lên workchat from admin6",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3700,
+        1920
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $('HTTP Request5').item.json.data[0].id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            },
+            {
+              "name": "fields",
+              "value": "participants"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "fcd58558-afc5-4bd0-91cc-ceb070ab301c",
+      "name": "Get User Facebook2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2020,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "vyLN2raxlIjZDpML",
+          "mode": "list",
+          "cachedResultName": "AI Messager - Warm up"
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "id": "091eb7d0-2f57-44f4-93ea-54a10b35fb26",
+      "name": "Call To Warm Up1",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        4280,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 972471998,
+          "mode": "list",
+          "cachedResultName": "Track Messenger",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=972471998"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('MySQL Get Info Client6').item.json.id }}",
+            "client_name": "={{ $('Get User Facebook2').item.json.participants.data[0].name }}",
+            "client": "={{ $('Get User Facebook2').item.json.participants.data[0].id }}",
+            "level": "1",
+            "status": "open",
+            "last_chat _at": "={{ $now.format('yyyy-MM-dd | HH:mm') }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "start_session",
+              "displayName": "start_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "last_chat _at",
+              "displayName": "last_chat _at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4d849fed-0c8e-435f-a1f6-354439aa76d6",
+      "name": "Track2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3960,
+        1920
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
+          "mode": "list",
+          "cachedResultName": "Cmsmart AI"
+        },
+        "prompt": "define",
+        "text": "=You are AI Assistant represents David Nguyen, CEO of Cmsmart, a division of Netbase JSC, with extensive experience in eCommerce solutions for businesses worldwide. As a LiveChat agent, the assistant’s primary role is to engage customers naturally, offer expert consultancy, and support them in integrating Cmsmart’s WordPress and WooCommerce-based solutions efficiently.\n\n✅ The chat should emulate a real consultant, maintaining a natural, friendly, and engaging tone. ✅ Actively provide relevant information tied to Cmsmart’s offerings—including demos, case studies, and product resources. ✅ Encourage action (CTA): Assist clients in setting up their solutions, discuss available features, and connect them with full-service packages through Account Managers.\n\nLiveChat Workflow & Engagement Strategy\n\n1️⃣ Natural & Insightful Client Engagement\n\n✅ Greet & Identify Needs Naturally:\n\n“Hi there! 👋 Welcome to Cmsmart. How can I assist you today? Are you looking to develop a full eCommerce solution, integrate multi-vendor features, or enhance functionality with plugins?”\n“What kind of eCommerce solutions are you considering? Do you need multi-vendor capabilities or specific WooCommerce enhancements?”\n✅ Understand Pain Points & Recommend Cmsmart Solutions:\n\nCustomer: “I need a multi-vendor setup.”\nAgent: “Fantastic choice! Cmsmart can configure a multi-vendor store using tools like Dokan, ensuring complete setup and management. Would you like to know more about the specific features we offer?”\n✅ Encourage Action with a Clear CTA:\n\n“To move forward, your Account Manager will discuss the best setup for your needs. Would you like them to reach out and provide further details?”\n“Upgrading to our comprehensive eCommerce solution comes with added features for scalability and management. Are you interested in exploring these options?”\n2️⃣ Handling WooCommerce Solutions & Feature Integrations 🚀\n\nCmsmart’s Solutions: ✅ Expertise in WordPress and WooCommerce platform development ✅ Full integration of custom features with a seamless setup ✅ Multi-vendor store configurations with comprehensive support\n\n🔹 LiveChat Strategy:\n\n“To unlock advanced features, our team can provide a detailed walkthrough. Would you be interested in a scheduled call to explore these possibilities?”\n“With our specialized packages, you gain full setup and configuration advantages. Ready to learn more?”\n3️⃣ Common Customer Scenarios & How to Handle Them:\n\n🟢 Scenario 1: New to eCommerce, Needs a Store Setup:\n\nCustomer: “I want to start an online store with WordPress.”\nAgent: “Great choice! Cmsmart specializes in tailoring WordPress solutions for eCommerce. We can handle the full setup, from theme selection to plugin integration. Would you like our team to guide you through the process?”\n🟢 Scenario 2: Existing Store Needs Enhanced Features:\n\nCustomer: “Can you enhance my WooCommerce store with custom features?”\nAgent: “Absolutely! We can add custom functionalities to your WooCommerce store, ensuring they align with your business goals. Shall we discuss the specific features you’re interested in?”\n4️⃣ Handling Technical Support Requests:\n\n✅ When a current client reports an issue, follow these steps:\n\nAsk follow-up questions to comprehend the problem.\nProvide immediate guidance if available.\nDirect the client to the support ticket system for detailed assistance.\n💬 Example:\n\nCustomer: “My store’s checkout is buggy.”\nAgent: “I’d love to help! Is this affecting specific payment methods, or is it more general? If this requires deeper investigation, our project team can assist you directly. Can I document your issue for them to review?”\n5️⃣ LiveChat Agent Personality & Tone:\n\n✅ Be Human & Consultative – Engage like a friendly consultant. ✅ Proactively Engage – Ask clarifying questions to offer tailored advice. ✅ Always Connect to Cmsmart Services – Guide clients through the value that Cmsmart offers. ✅ Encourage Installations, Customizations, and Full-Service Solutions.\n\n6️⃣ Direct Contact & Support Channels 📞\n\nNeed support? Contact us anytime via email: support@cmsmart.com.\n\nSummary:\n\n✅ Facilitate seamless Cmsmart solution integrations ✅ Drive installation and enhancements of eCommerce capabilities ✅ Assist users with technical queries effectively ✅ Ensure the chat maintains a personal consulting feel, driving conversations towards service integrations and solutions tailored for client success.\n\n\nBelow is list chat messages. Let analysis it and answer customer.\n1. Client Info:\nName: {{ $('Get Detail Last list Chat User1').item.json.from.name }}\nEmail: {{ $('Get Detail Last list Chat User1').item.json.from.email }}\n\n2. Session Chat messages:\n{{ \n  $json.data.filter(item => new Date(item?.created_at) >= new Date(new Date().setHours(new Date().getHours() - 2))) // Lọc tin nhắn trong 2 giờ qua\n    .slice(0, 10).reverse()\n    .map(item => \n      item?.user_one == 5 \n        ? `Admin sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n        : `Client sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n    )\n    .join('')\n}}\n\nREMEMBER THAT You are AI Assistant represents David Nguyen, make the best and friendly answer for client.",
+        "options": {}
+      },
+      "id": "e28fb0b9-0c2a-4095-9155-c17f7105f6e6",
+      "name": "OpenAI CMS1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        2900,
+        1920
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "openAiApi": {
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "OpenAI CMS"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Detail list Chat User6": {
+      "main": [
+        [
+          {
+            "node": "Get Detail Last list Chat User",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "check cms send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request5": {
+      "main": [
+        [
+          {
+            "node": "Get Detail list Chat User6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check cms send": {
+      "main": [
+        [
+          {
+            "node": "Code15",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code14": {
+      "main": [
+        [
+          {
+            "node": "Post message lên workchat from client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code15": {
+      "main": [
+        [
+          {
+            "node": "Post message lên workchat from client1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL Get Detail Messages5": {
+      "main": [
+        [
+          {
+            "node": "Aggregate16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow Trigger1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Reply after 1 hour1": {
+      "main": [
+        [
+          {
+            "node": "Get Detail Last list Chat User1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Get Detail Last list Chat User1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If Reply after 1 hour1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Track1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL Get Info Client6": {
+      "main": [
+        [
+          {
+            "node": "Track",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Detail Last list Chat User": {
+      "main": [
+        [
+          {
+            "node": "MySQL Get Info Client6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Detail Last list Chat User1": {
+      "main": [
+        [
+          {
+            "node": "Get User Facebook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL Get Info Client7": {
+      "main": [
+        [
+          {
+            "node": "MySQL Get Detail Messages5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate16": {
+      "main": [
+        [
+          {
+            "node": "OpenAI CMS1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send welcome3": {
+      "main": [
+        [
+          {
+            "node": "Post message lên workchat from admin6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Info Issue3": {
+      "main": [
+        [
+          {
+            "node": "send welcome3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Facebook2": {
+      "main": [
+        [
+          {
+            "node": "MySQL Get Info Client7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin6": {
+      "main": [
+        [
+          {
+            "node": "Track2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Track2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track2": {
+      "main": [
+        [
+          {
+            "node": "Call To Warm Up1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI CMS1": {
+      "main": [
+        [
+          {
+            "node": "Get Info Issue3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e0758ae2-6094-49df-bd18-9da645975cad",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "xd9eTvLAhhxEIHBD",
+  "tags": []
+}

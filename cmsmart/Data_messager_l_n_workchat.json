@@ -93,8 +93,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2800,
-        900
+        2820,
+        1140
       ],
       "alwaysOutputData": true
     },
@@ -196,7 +196,7 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "id_workchat": "={{ $('Merge1').item.json.idf }}",
+            "id_workchat": "={{ $('Aggregate1').item.json.idf[0] }}",
             "conversation_id": "={{ $('Get Id Store').item.json.data[0].id }}",
             "message_worchat": "yes"
           },
@@ -303,8 +303,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        4220,
-        880
+        4640,
+        1340
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -664,7 +664,7 @@
           "dataLocationOnSheet": {
             "values": {
               "rangeDefinition": "specifyRange",
-              "firstDataRow": 900
+              "firstDataRow": 3190
             }
           }
         }
@@ -722,16 +722,22 @@
     },
     {
       "parameters": {
-        "mode": "chooseBranch",
-        "useDataOfInput": 2
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "idf"
+            }
+          ]
+        },
+        "options": {}
       },
-      "id": "54060c8d-6a92-4768-b6ea-ed7222a932aa",
-      "name": "Merge1",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
+      "id": "fb8e8ef4-9ab7-495d-80f9-18e18dde2aea",
+      "name": "Aggregate1",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
       "position": [
-        3780,
-        520
+        4080,
+        900
       ]
     },
     {
@@ -743,7 +749,34 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        3940,
+        4400,
+        1320
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "useDataOfInput": 2
+      },
+      "id": "54060c8d-6a92-4768-b6ea-ed7222a932aa",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3740,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "id": "bc340f73-44ce-44cc-8f8a-5b7b57ddc2d7",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3840,
         880
       ]
     }
@@ -786,6 +819,11 @@
             "node": "Code1",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
           }
         ]
       ]
@@ -871,16 +909,16 @@
       "main": [
         [
           {
-            "node": "Merge1",
+            "node": "Merge2",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ],
         [
           {
-            "node": "Merge1",
+            "node": "Merge2",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ]
       ]
@@ -940,22 +978,16 @@
       "main": [
         [
           {
-            "node": "Merge1",
+            "node": "Merge2",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ]
       ]
     },
     "Switch": {
       "main": [
-        [
-          {
-            "node": "Code3",
-            "type": "main",
-            "index": 0
-          }
-        ],
+        [],
         [
           {
             "node": "Code4",
@@ -999,18 +1031,7 @@
         ]
       ]
     },
-    "update email3": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge1": {
+    "Aggregate1": {
       "main": [
         [
           {
@@ -1031,13 +1052,46 @@
           }
         ]
       ]
+    },
+    "update email3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "814653e0-f9c6-4efa-b695-8a186116d636",
+  "versionId": "4e21f4bb-faf6-46c6-acce-9619dbe50bcf",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"

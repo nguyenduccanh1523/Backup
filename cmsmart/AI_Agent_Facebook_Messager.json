@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -3700,
-        -1660
+        420,
+        -2280
       ]
     },
     {
@@ -33,10 +33,118 @@
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        -3620,
-        -1400
+        540,
+        -1760
       ],
       "id": "1439f0e6-5b3c-4755-a9e2-f5479a3ce32c"
+    },
+    {
+      "parameters": {
+        "jsCode": "return{\n\n\n    \"headers\": {\n      \"host\": \"workflow.cloodo.com\",\n      \"user-agent\": \"axios/1.7.9\",\n      \"content-length\": \"67\",\n      \"accept\": \"application/json, text/plain, */*\",\n      \"accept-encoding\": \"gzip, compress, deflate, br\",\n      \"content-type\": \"application/json\",\n      \"x-forwarded-for\": \"207.244.255.94\",\n      \"x-forwarded-host\": \"workflow.cloodo.com\",\n      \"x-forwarded-port\": \"443\",\n      \"x-forwarded-proto\": \"https\",\n      \"x-forwarded-server\": \"40c48caec682\",\n      \"x-real-ip\": \"207.244.255.94\"\n    },\n    \"params\": {},\n    \"query\": {},\n    \"body\": {\n      \"senderId\": \"9328599640527653\",\n      \"message\": \"pricing\",\n      \"imageUrl\": null\n    },\n    \"webhookUrl\": \"https://workflow.cloodo.com/webhook/SJ2Az23OeQTAADDE/webhook/facebook\",\n    \"executionMode\": \"production\"\n\n\n}"
+      },
+      "id": "d6ec3343-460d-4f44-a839-2d9146caf24c",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        -2280
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## {{ $json.body.senderId }}\n",
+        "width": 318.78827753313925
+      },
+      "id": "be9dfa19-348a-48e2-ba25-6825b9c74d57",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        860,
+        -2660
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "id": "eb8248b2-903d-4e95-a914-116691927115",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        760,
+        -1760
+      ],
+      "webhookId": "bcb53c9d-04ed-436e-a2c8-6e09fc7991dd",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.data[0].id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "messages{id,message,from,to}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "41a0a7b0-cf4b-449d-bda9-1489a4be20cc",
+      "name": "Get Detail list Chat User6",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1180,
+        -1760
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v21.0/213439902114044/conversations",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "platform",
+              "value": "MESSENGER"
+            },
+            {
+              "name": "user_id",
+              "value": "={{ $json.body.senderId }}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "4c4bfdaf-898f-4363-b56e-f47d7a166a81",
+      "name": "HTTP Request5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        980,
+        -1760
+      ]
     },
     {
       "parameters": {
@@ -60,13 +168,13 @@
           }
         }
       },
-      "id": "5b799cbb-010e-4b89-89ab-aac5d9b5568d",
+      "id": "7a4ecc9c-d929-465e-a838-0762476e7c70",
       "name": "Get Detail Last list Chat User",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -2600,
-        -1400
+        1460,
+        -1760
       ]
     },
     {
@@ -102,85 +210,13 @@
         },
         "options": {}
       },
-      "id": "f3e0edeb-d09a-4a4f-bd99-57497ecff684",
+      "id": "d1657159-6c85-411f-9e46-07bdca96ca6c",
       "name": "Last send by client",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -2400,
-        -1400
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "return{\n\n\n\n    \"headers\": {\n      \"host\": \"workflow.cloodo.com\",\n      \"user-agent\": \"axios/1.7.9\",\n      \"content-length\": \"83\",\n      \"accept\": \"application/json, text/plain, */*\",\n      \"accept-encoding\": \"gzip, compress, deflate, br\",\n      \"content-type\": \"application/json\",\n      \"x-forwarded-for\": \"207.244.255.94\",\n      \"x-forwarded-host\": \"workflow.cloodo.com\",\n      \"x-forwarded-port\": \"443\",\n      \"x-forwarded-proto\": \"https\",\n      \"x-forwarded-server\": \"40c48caec682\",\n      \"x-real-ip\": \"207.244.255.94\"\n    },\n    \"params\": {},\n    \"query\": {},\n    \"body\": {\n      \"senderId\": \"9542976809102959\",\n      \"message\": \"I am making this website https://thanhluanuniform.com, now it seems that it is obsolete and discovered errors that are not optimal\",\n      \"imageUrl\": null\n    },\n    \"webhookUrl\": \"https://workflow.cloodo.com/webhook/SJ2Az23OeQTAADDE/webhook/facebook\",\n    \"executionMode\": \"production\"\n\n\n}"
-      },
-      "id": "d6ec3343-460d-4f44-a839-2d9146caf24c",
-      "name": "Execute Workflow Trigger",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -3520,
-        -1660
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## {{ $json.body.senderId }}\n",
-        "width": 318.78827753313925
-      },
-      "id": "be9dfa19-348a-48e2-ba25-6825b9c74d57",
-      "name": "Sticky Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -3240,
-        -1660
-      ]
-    },
-    {
-      "parameters": {
-        "amount": 10
-      },
-      "id": "eb8248b2-903d-4e95-a914-116691927115",
-      "name": "Wait",
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        -3400,
-        -1400
-      ],
-      "webhookId": "bcb53c9d-04ed-436e-a2c8-6e09fc7991dd"
-    },
-    {
-      "parameters": {
-        "url": "=https://graph.facebook.com/v21.0/{{ $json.data[0].id }}",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "fields",
-              "value": "messages{id,message,from,to}"
-            },
-            {
-              "name": "access_token",
-              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
-            }
-          ]
-        },
-        "options": {
-          "redirect": {
-            "redirect": {}
-          }
-        }
-      },
-      "id": "41a0a7b0-cf4b-449d-bda9-1489a4be20cc",
-      "name": "Get Detail list Chat User6",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -2980,
-        -1400
+        1660,
+        -1760
       ]
     },
     {
@@ -207,13 +243,13 @@
         },
         "options": {}
       },
-      "id": "4f6818d1-d8cf-4231-8b54-293cef3060c2",
+      "id": "02d9e1a9-8164-411e-a4fe-d4c57238ea2d",
       "name": "Get Tracked2",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1380,
-        -1460
+        4940,
+        -1760
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -225,50 +261,15 @@
     },
     {
       "parameters": {
-        "url": "https://graph.facebook.com/v21.0/213439902114044/conversations",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "platform",
-              "value": "MESSENGER"
-            },
-            {
-              "name": "user_id",
-              "value": "={{ $json.body.senderId }}"
-            },
-            {
-              "name": "access_token",
-              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
-            }
-          ]
-        },
-        "options": {
-          "redirect": {
-            "redirect": {}
-          }
-        }
-      },
-      "id": "4c4bfdaf-898f-4363-b56e-f47d7a166a81",
-      "name": "HTTP Request5",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -3180,
-        -1400
-      ]
-    },
-    {
-      "parameters": {
         "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let messagerAI = $node['OpenAI1']?.json?.output\n  messagerAI = messagerAI.replace(/\\n\\n/g, '\\\\n\\\\n');\n  messagerAI = messagerAI.replace(/\\n/g, '\\\\n');\n  messagerAI = messagerAI.replace(/\"/g, '');\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();"
       },
-      "id": "36d3112c-84d2-4fa0-9a98-28e0ab0fd8c9",
+      "id": "0aca86ae-6217-420d-89e1-4db11d16223e",
       "name": "Code8",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2000,
-        -2480
+        5720,
+        -2940
       ]
     },
     {
@@ -293,13 +294,13 @@
           }
         }
       },
-      "id": "c7abf3e9-e813-40dc-8030-fcd7def9e055",
+      "id": "f4636b62-444f-477d-b530-fe14dc447ac2",
       "name": "send welcome2",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2460,
-        -2480
+        6180,
+        -2940
       ]
     },
     {
@@ -324,13 +325,13 @@
           }
         }
       },
-      "id": "9141c34d-8354-42af-992e-38ccf2c8ef8e",
+      "id": "1a0dbe3a-9cce-42ea-8989-8dd8435a8c00",
       "name": "remind mail",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2600,
-        -1820
+        6320,
+        -2280
       ]
     },
     {
@@ -343,13 +344,13 @@
         },
         "requestOptions": {}
       },
-      "id": "ea154943-e1c9-451e-b824-35608e318c06",
+      "id": "54265e0a-6a87-4a9f-a7c5-7bf5308e0cdb",
       "name": "Get CLient CMS By Email",
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        2340,
-        -2180
+        6060,
+        -2640
       ],
       "credentials": {
         "cloodoApi": {
@@ -370,13 +371,13 @@
         },
         "requestOptions": {}
       },
-      "id": "351da351-a936-472f-b5f3-b15d58097d86",
+      "id": "96fea83a-4ab3-4cc3-8357-03a6f80ed9e4",
       "name": "Cloodo CRM Create New Client",
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        2820,
-        -2260
+        6540,
+        -2720
       ],
       "credentials": {
         "cloodoApi": {
@@ -397,13 +398,13 @@
         },
         "requestOptions": {}
       },
-      "id": "ed2f0531-b4e9-4f0c-870e-800487bc9564",
+      "id": "c2afd64c-e862-43e5-8f09-6c51ef977848",
       "name": "Create Project1",
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        3020,
-        -2260
+        6740,
+        -2720
       ],
       "credentials": {
         "cloodoApi": {
@@ -434,13 +435,13 @@
           }
         }
       },
-      "id": "d05ec4ef-efaa-43f6-9858-c354122a49e4",
+      "id": "af801487-0b3b-43e6-b5cc-b7264bf9772a",
       "name": "send create account",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3380,
-        -2260
+        7100,
+        -2720
       ]
     },
     {
@@ -455,13 +456,13 @@
         "body": "={\n    \"title\": \"Facebook\",\n    \"name\": \"{{ $('Get User Facebook').item.json.participants.data[0].name }}\",\n    \"email\": \"{{ $('Get User Facebook').item.json.participants.data[0].email }}\",\n    \"phone\": \"\",\n    \"user_id\": \"{{ $('Cloodo CRM Create New Client').item.json.data.user.id }}\"\n}",
         "options": {}
       },
-      "id": "7fabefcd-a538-4e33-aadc-a32b66ed53e0",
+      "id": "3ff02e21-fb3d-4961-8b09-77a8f48fd99f",
       "name": "Update contact client2",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3200,
-        -2260
+        6920,
+        -2720
       ],
       "credentials": {
         "cloodoApi": {
@@ -472,13 +473,13 @@
     },
     {
       "parameters": {},
-      "id": "1537c675-c37f-4cd5-9f27-bb46698b3290",
+      "id": "a8d5a4a9-82dd-46cf-b34a-811eae87892c",
       "name": "No Operation, do nothing1",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        4060,
-        -2060
+        7780,
+        -2520
       ]
     },
     {
@@ -493,13 +494,13 @@
         "body": "={\n    \"title\": \"Facebook\",\n    \"name\": \"{{ $('Get User Facebook').item.json.participants.data[0].name }}\",\n    \"email\": \"{{ $('Get User Facebook').item.json.participants.data[0].email }}\",\n    \"phone\": \"\",\n    \"user_id\": \"{{ $json.data[0].user.id }}\"\n}",
         "options": {}
       },
-      "id": "16ffdae0-bfb0-466e-b2f2-6c3de1a5df85",
+      "id": "7a8760f2-caaf-4206-b88a-4efeb68ee679",
       "name": "Update contact client3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2820,
-        -2060
+        6540,
+        -2520
       ],
       "credentials": {
         "cloodoApi": {
@@ -530,13 +531,13 @@
           }
         }
       },
-      "id": "a470d264-38c8-4ee1-accb-aa37f54fecd3",
+      "id": "d8e3e2c4-c966-4d07-b0e5-a3a1b266d5ff",
       "name": "send received email",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3060,
-        -2060
+        6780,
+        -2520
       ]
     },
     {
@@ -763,13 +764,13 @@
         },
         "options": {}
       },
-      "id": "a037441e-3147-491d-bcae-9d4d2f366267",
+      "id": "56d7daa6-70e6-4b9b-bcab-afb7cc3c0a16",
       "name": "Append1",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        3560,
-        -2260
+        7280,
+        -2720
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -1003,13 +1004,13 @@
         },
         "options": {}
       },
-      "id": "9a2b921f-740c-47ea-9151-b83fce467613",
+      "id": "06ad404a-6a91-46fa-a0bd-b66d20cf6bbe",
       "name": "Append3",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        3260,
-        -2060
+        6980,
+        -2520
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -1023,13 +1024,13 @@
       "parameters": {
         "jsCode": "for (const item of $('Aggregate14').all()) {\n  const mail = item?.json?.data[0]?.message;\n  console.log('arg', mail);\n\n  // Biểu thức chính quy kiểm tra email\n  const emailRegex = /\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b/\n  const foundEmail = mail ? mail.match(emailRegex) : null;\n\n  // Nếu có email thì gán vào myNewField, không thì trả về null\n  item.json.Email = foundEmail ? foundEmail[0] : null;\n}\n\nreturn $('Aggregate14').all();"
       },
-      "id": "8770a023-5a34-4a35-9868-e8d38979eb70",
+      "id": "7211ce64-f5b2-4239-9d44-5541c84ff5ad",
       "name": "Take mail1",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1560,
-        -2100
+        5280,
+        -2560
       ]
     },
     {
@@ -1057,13 +1058,13 @@
         },
         "options": {}
       },
-      "id": "17332a80-4fdd-4169-8be0-3657258c41ee",
+      "id": "d0ce4c65-6287-4819-bcd9-332f0fe5c057",
       "name": "mail1",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1760,
-        -2100
+        5480,
+        -2560
       ]
     },
     {
@@ -1074,13 +1075,13 @@
         },
         "requestOptions": {}
       },
-      "id": "c5c224e7-1b29-4d28-862e-753a8aef1996",
+      "id": "bdbf476a-591b-486e-be89-6be164632517",
       "name": "Get Project CMS By Client",
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        1940,
-        -1460
+        5340,
+        -1760
       ],
       "credentials": {
         "cloodoApi": {
@@ -1114,13 +1115,13 @@
         },
         "options": {}
       },
-      "id": "7eaa7e2f-60ac-4081-9d2d-7ae0d46a759c",
+      "id": "ab5c1c93-4d57-45cb-8360-c0e9d63d971e",
       "name": "Check Client Not Tracked Before",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2220,
-        -800
+        5600,
+        -1100
       ]
     },
     {
@@ -1133,13 +1134,13 @@
         },
         "requestOptions": {}
       },
-      "id": "af21f3f5-3e48-4190-a199-f2a464d1a2ac",
+      "id": "07310a11-3d31-47e1-b6ce-62e32cb17f71",
       "name": "Get CLient CMS By Email1",
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        1700,
-        -1460
+        5140,
+        -1760
       ],
       "credentials": {
         "cloodoApi": {
@@ -1166,19 +1167,19 @@
           "values": [
             {
               "lookupColumn": "id",
-              "lookupValue": "={{ $('Check mail2').item.json.id }}"
+              "lookupValue": "={{ $('Update Follow').item.json.id }}"
             }
           ]
         },
         "options": {}
       },
-      "id": "ce8290ce-5828-4071-befa-46fc6a8d8747",
+      "id": "d6926b9e-d643-4c97-8d3d-e8fa5400dc33",
       "name": "Get Tracked3",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        2160,
-        -1460
+        5540,
+        -1760
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -1192,13 +1193,13 @@
       "parameters": {
         "errorMessage": "err"
       },
-      "id": "b91f7a96-f4df-4c4f-8126-aad7663f9f3a",
+      "id": "0003e0d7-0728-479c-8e51-6bfd6fb2d141",
       "name": "Stop and Error1",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        1640,
-        -360
+        5260,
+        -660
       ]
     },
     {
@@ -1223,13 +1224,13 @@
           }
         }
       },
-      "id": "fe1bc3aa-d2b7-441f-b69d-cb20699c4f2f",
+      "id": "0e6b8cf4-46ff-43b5-9412-04d6aeee8300",
       "name": "send welcome",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4160,
-        -1360
+        7540,
+        -1660
       ]
     },
     {
@@ -1454,13 +1455,13 @@
         },
         "options": {}
       },
-      "id": "298093c7-14a0-45c5-bb8b-ef525853a1d4",
+      "id": "e567abe0-c149-4135-8fd7-41fcb0eac1d7",
       "name": "UP Level 1 - open1",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        4380,
-        -1360
+        7760,
+        -1660
       ],
       "alwaysOutputData": true,
       "disabled": true
@@ -1487,37 +1488,37 @@
           }
         }
       },
-      "id": "6462ba2c-d3ac-4528-9489-217cb92353d8",
+      "id": "fc39c268-60c9-43af-8fb5-7180f9bfe93e",
       "name": "send welcome1",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4440,
-        -1140
+        7920,
+        -1440
       ]
     },
     {
       "parameters": {},
-      "id": "fafbba9c-d7f6-4c60-8976-9d40189f9ed2",
+      "id": "acbe6d4b-d1b0-4b1f-9e2a-8ceb5adf8a9b",
       "name": "No Operation, do nothing",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        5580,
-        -1360
+        9220,
+        -1660
       ]
     },
     {
       "parameters": {
         "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let messagerAI = $node['OpenAI']?.json?.output\n  messagerAI = messagerAI.replace(/\\n\\n/g, '\\\\n\\\\n');\n  messagerAI = messagerAI.replace(/\\n/g, '\\\\n');\n  messagerAI = messagerAI.replace(/###/g, '');\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();"
       },
-      "id": "8d7e4f39-e75e-42dd-b6c9-60c2af1c9231",
+      "id": "3646da64-7689-4f02-99c3-141f34fcc5c1",
       "name": "Code9",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4420,
-        -1140
+        7720,
+        -1440
       ]
     },
     {
@@ -1532,13 +1533,13 @@
         },
         "requestOptions": {}
       },
-      "id": "4644998c-54a4-4923-badc-4b585d32ab92",
+      "id": "f1ca23fa-86c7-4dfb-9b4a-d26cde4ebcb2",
       "name": "Create Project2",
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        2760,
-        520
+        6140,
+        220
       ],
       "credentials": {
         "cloodoApi": {
@@ -1561,13 +1562,13 @@
         },
         "requestOptions": {}
       },
-      "id": "a8717d46-c1cb-4350-915f-679525536b7a",
+      "id": "1fdac3aa-6e6b-4203-bdc7-4997509cedfc",
       "name": "Create Task Take Care1",
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        2980,
-        520
+        6360,
+        220
       ],
       "credentials": {
         "cloodoApi": {
@@ -1598,13 +1599,13 @@
           }
         }
       },
-      "id": "e0153196-ddc2-4d4d-85ae-1862ff6e107f",
+      "id": "fd959a89-6351-4643-ac29-4560162e506a",
       "name": "Require Project",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3200,
-        520
+        6580,
+        220
       ]
     },
     {
@@ -1829,13 +1830,13 @@
         },
         "options": {}
       },
-      "id": "208c65a3-37d3-4ee5-974c-7c7ab92585fd",
+      "id": "d18d119a-80b9-4392-b4ae-44677d177b36",
       "name": "UP Level  2 create project1",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        3420,
-        520
+        6800,
+        220
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -1851,13 +1852,13 @@
         "ID": "={{ $json.data[0].user.id }}",
         "requestOptions": {}
       },
-      "id": "5b445312-35b6-4514-a172-aa0535970a4b",
+      "id": "83d59753-3594-435e-84d7-5891f39909ba",
       "name": "Get list project",
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        4820,
-        200
+        8200,
+        -100
       ],
       "credentials": {
         "cloodoApi": {
@@ -1870,13 +1871,13 @@
       "parameters": {
         "jsCode": "let result = [];\n\n// Lặp qua tất cả các phần tử trong Switch2\nfor (const item of $('Switch6').all()) {\n  // Kiểm tra nếu item.json có tồn tại và là đối tượng hợp lệ\n  if (item.json && typeof item.json === 'object' && item.json !== null) {\n    console.log('Valid json object:', item.json); // Log ra json hợp lệ\n\n    // Kiểm tra nếu list_id_project có tồn tại và là chuỗi\n    if (typeof item.json.list_id_project === 'string') {\n      try {\n        // Chuyển chuỗi thành mảng\n        const list = JSON.parse(item.json.list_id_project);\n\n        // Lặp qua các giá trị trong mảng list_id_project và thêm từng phần tử vào kết quả\n        for (const i of list) {\n          result.push(i); // Thêm phần tử vào mảng kết quả\n        }\n      } catch (error) {\n        console.error('Error parsing list_id_project:', error);\n      }\n    } else {\n      console.log('list_id_project is not a string or is missing:', item.json);\n    }\n\n    // Thêm cột 'results' vào item\n    item.json.project_list_id = result; // Gán mảng 'result' vào cột 'results' trong item\n  } else {\n    // Log ra nếu json không hợp lệ\n    console.log('Invalid json or json is null:', item);\n  }\n}\n\nconsole.log('Updated Items:', $('Switch6').all()); // Hiển thị dữ liệu sau khi thêm cột 'results'\n\n// Trả về dữ liệu đã được thêm cột 'results'\nreturn $('Switch6').all(); \n"
       },
-      "id": "00469284-d038-4d95-9075-f1fb40095ae7",
+      "id": "ca20ceed-e86c-4133-8398-4cfb68256b0f",
       "name": "Code get list pro",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4320,
-        580
+        7700,
+        280
       ]
     },
     {
@@ -1886,13 +1887,13 @@
         "ID": "={{ $json.project_list_id }}",
         "requestOptions": {}
       },
-      "id": "efabd8e8-fb4f-4f12-af1a-94628ff6fa55",
+      "id": "616e7966-f68a-4e60-971a-6953f0cf5d36",
       "name": "Get list project1",
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        4120,
-        -180
+        7500,
+        -480
       ],
       "credentials": {
         "cloodoApi": {
@@ -1905,13 +1906,13 @@
       "parameters": {
         "jsCode": "let result = [];\n\n// Lặp qua tất cả các phần tử trong Switch2\nfor (const item of $('Switch6').all()) {\n  // Kiểm tra nếu item.json có tồn tại và là đối tượng hợp lệ\n  if (item.json && typeof item.json === 'object' && item.json !== null) {\n    console.log('Valid json object:', item.json); // Log ra json hợp lệ\n\n    // Kiểm tra nếu list_id_project có tồn tại và là chuỗi\n    if (typeof item.json.list_id_project === 'string') {\n      try {\n        // Chuyển chuỗi thành mảng\n        const list = JSON.parse(item.json.list_id_project);\n\n        // Lặp qua các giá trị trong mảng list_id_project và thêm từng phần tử vào kết quả\n        for (const i of list) {\n          result.push(i); // Thêm phần tử vào mảng kết quả\n        }\n      } catch (error) {\n        console.error('Error parsing list_id_project:', error);\n      }\n    } else {\n      console.log('list_id_project is not a string or is missing:', item.json);\n    }\n\n    // Thêm cột 'results' vào item\n    item.json.project_list_id = result; // Gán mảng 'result' vào cột 'results' trong item\n  } else {\n    // Log ra nếu json không hợp lệ\n    console.log('Invalid json or json is null:', item);\n  }\n}\n\nconsole.log('Updated Items:', $('Switch6').all()); // Hiển thị dữ liệu sau khi thêm cột 'results'\n\n// Trả về dữ liệu đã được thêm cột 'results'\nreturn $('Switch6').all(); \n"
       },
-      "id": "f7da6b47-fbf8-46f8-aac5-488a1112d855",
+      "id": "f2ea81da-c804-4c82-92a2-8ddc92854b3c",
       "name": "Code get list pro1",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3700,
-        -180
+        7080,
+        -480
       ]
     },
     {
@@ -2143,13 +2144,13 @@
         },
         "options": {}
       },
-      "id": "1459f23f-dea3-402e-beb2-3cfa0a85eb39",
+      "id": "88dbc963-edd7-4cd9-a1ed-dd18776f06e4",
       "name": "UP Level 3 - ask_project2",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        2940,
-        -60
+        6320,
+        -360
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -2241,13 +2242,13 @@
         },
         "options": {}
       },
-      "id": "10951c9c-4242-457f-9e1c-3cdd64949c0d",
+      "id": "a33134ae-69fa-4ffc-b971-9af3ec18c431",
       "name": "Switch Quantity Project2",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        2560,
-        -240
+        5940,
+        -540
       ]
     },
     {
@@ -2268,18 +2269,18 @@
         },
         "requestOptions": {}
       },
-      "id": "213c7422-53b7-40fe-b6ec-e4d530c01692",
+      "id": "c4f44e72-9aee-48ad-9f88-3d0b1995df64",
       "name": "OpenAI6",
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1.1,
       "position": [
-        5040,
-        200
+        8420,
+        -100
       ],
       "credentials": {
         "openAiApi": {
           "id": "wXCGwiut9MvtTGmk",
-          "name": "Workflow API"
+          "name": "OpenAI CMS"
         }
       }
     },
@@ -2507,13 +2508,13 @@
           "useAppend": true
         }
       },
-      "id": "88c3d6b3-17ef-4405-a3f7-89f8ee52841d",
+      "id": "d0c0bcff-320e-47cb-941e-207ae7692f82",
       "name": "UP Level 3 - confirm_project",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        5700,
-        200
+        9080,
+        -100
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -2527,13 +2528,13 @@
       "parameters": {
         "jsCode": "let project =[]\nconst nameProjectFind = $input.all()[0].json.message.content.trim()\nfor (const item of $('Get list project').all()[0]?.json?.data) {\n  if(nameProjectFind == item?.name){\n     let projectItem ={\n    id: item?.id,\n    name: item?.name\n  }\n  project.push(projectItem)\n    break\n  }\n \n}\n\nreturn {projectFound: project};"
       },
-      "id": "ff4f31f4-7467-4830-b4af-3a28e4b83d20",
+      "id": "bd2561e5-143b-4763-bc2f-7a4a4dc8cb76",
       "name": "Get Project support1",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5240,
-        200
+        8620,
+        -100
       ]
     },
     {
@@ -2558,13 +2559,13 @@
           }
         }
       },
-      "id": "b55316f9-4966-4225-b775-eb651c49c109",
+      "id": "bce5cdf6-0454-421e-ad20-45ab0eddd01e",
       "name": "send message6",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5460,
-        200
+        8840,
+        -100
       ]
     },
     {
@@ -2572,13 +2573,13 @@
         "fieldToSplitOut": "project_list_id",
         "options": {}
       },
-      "id": "1f79b060-e066-4bbb-a4ee-81cde31dc5e0",
+      "id": "31325992-8cf6-4a52-9d9b-ca75976a28b0",
       "name": "Split Out7",
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        4620,
-        580
+        8000,
+        280
       ]
     },
     {
@@ -2586,13 +2587,13 @@
         "fieldToSplitOut": "project_list_id",
         "options": {}
       },
-      "id": "dd01375a-0d6b-4e61-b786-fec9c023e316",
+      "id": "216ae2ef-e195-4c95-aa20-d51a9a02969a",
       "name": "Split Out8",
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        3920,
-        -180
+        7300,
+        -480
       ]
     },
     {
@@ -2619,13 +2620,13 @@
         },
         "options": {}
       },
-      "id": "89353306-5e34-4e04-bf9f-6870b40d58e1",
+      "id": "5c10089c-e0ba-48b6-881c-541e0cfe400f",
       "name": "Get Tracked4",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        3140,
-        -60
+        6520,
+        -360
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -2637,13 +2638,13 @@
     },
     {
       "parameters": {},
-      "id": "6947eb23-d758-4d24-acf0-446034d49751",
+      "id": "5a523ed7-f29a-4b87-b003-c73f70d56c27",
       "name": "No Operation, do nothing2",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        6140,
-        -500
+        9760,
+        -800
       ]
     },
     {
@@ -2708,13 +2709,13 @@
         },
         "options": {}
       },
-      "id": "c94ed32d-f287-4341-b97e-8474788fb346",
+      "id": "005ecaa8-aa8e-47c2-af25-6dda6e32aebc",
       "name": "Edit Fields1",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4000,
-        -820
+        7380,
+        -1120
       ]
     },
     {
@@ -2727,13 +2728,13 @@
         },
         "requestOptions": {}
       },
-      "id": "e148b137-74fe-4ced-ab08-a5905dad7358",
+      "id": "40bdac6b-074c-4e6d-9552-2f8e4ba045ff",
       "name": "Cloodo Milestone1",
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        3800,
-        -820
+        7180,
+        -1120
       ],
       "credentials": {
         "cloodoApi": {
@@ -2747,18 +2748,18 @@
         "model": "gpt-4o",
         "options": {}
       },
-      "id": "447a1898-ebee-4ca6-bcac-2a0bd06cb588",
+      "id": "6569fac6-974f-4b3a-ac9e-d3ad278f495b",
       "name": "OpenAI Chat Model1",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1,
       "position": [
-        3740,
-        -540
+        7340,
+        -820
       ],
       "credentials": {
         "openAiApi": {
           "id": "wXCGwiut9MvtTGmk",
-          "name": "Workflow API"
+          "name": "OpenAI CMS"
         }
       }
     },
@@ -2767,13 +2768,13 @@
         "sessionIdType": "customKey",
         "sessionKey": "=8db38109-d083-45b4-8cb4-60f16cd5bbf9"
       },
-      "id": "255c49e8-6b89-4982-8cbe-3d1ce34c4308",
+      "id": "98fe4877-d719-46d7-83bf-04721f5c8947",
       "name": "Window Buffer Memory1",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        3860,
-        -480
+        7460,
+        -780
       ]
     },
     {
@@ -2807,13 +2808,13 @@
           ]
         }
       },
-      "id": "315591e8-2a04-45e6-a486-aab748f711bf",
+      "id": "a2abf7c0-b6ed-402b-8927-9c1480a03ad6",
       "name": "create_new_project1",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 1.2,
       "position": [
-        4000,
-        -400
+        7600,
+        -700
       ]
     },
     {
@@ -2847,13 +2848,13 @@
           ]
         }
       },
-      "id": "07c3fd98-04d0-40ee-9660-c89177fbdfc9",
+      "id": "61e18c42-6feb-429d-ab83-d1428e25d280",
       "name": "resolve_problem_ticket1",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 1.2,
       "position": [
-        4320,
-        -400
+        7920,
+        -700
       ]
     },
     {
@@ -2883,13 +2884,13 @@
           ]
         }
       },
-      "id": "8fb3258a-9fb9-4193-8ede-0ace053f8c4e",
+      "id": "76fcb939-b3e3-4cbd-b03e-bf2b67f81733",
       "name": "ask_info_project1",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 1.2,
       "position": [
-        4180,
-        -380
+        7780,
+        -680
       ]
     },
     {
@@ -2927,13 +2928,13 @@
           ]
         }
       },
-      "id": "6d0c4821-c083-4aaf-9eb1-0e3e8b53a525",
+      "id": "1d883b4e-b5f6-4db2-a00a-d8a6d20ecd1c",
       "name": "take_care_client1",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 1.2,
       "position": [
-        4460,
-        -440
+        8080,
+        -740
       ]
     },
     {
@@ -2967,13 +2968,13 @@
           ]
         }
       },
-      "id": "f1ac4e93-0de1-4c0d-afea-8c14beef9076",
+      "id": "58e7c507-8021-4120-9e0e-35fb198929e0",
       "name": "summary_chat_session1",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 1.2,
       "position": [
-        4600,
-        -500
+        8220,
+        -800
       ]
     },
     {
@@ -2998,13 +2999,13 @@
           }
         }
       },
-      "id": "0c5a257c-cf7a-4d3e-9691-91138ddbf81a",
+      "id": "b5c16774-5548-434b-9ccb-b0bf43790dc6",
       "name": "send message7",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5660,
-        -840
+        9280,
+        -1140
       ]
     },
     {
@@ -3031,13 +3032,13 @@
         },
         "options": {}
       },
-      "id": "d2493520-61e9-4c3d-9885-9340c8120f1f",
+      "id": "58cf4c5b-a18d-4049-a89a-4368962916e4",
       "name": "Last send by Client2",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4840,
-        -820
+        8460,
+        -1120
       ]
     },
     {
@@ -3062,26 +3063,26 @@
           }
         }
       },
-      "id": "8953cdd7-f549-44d2-b7a5-923c7fabf305",
+      "id": "a013866d-e604-4b14-ade2-aaed6db00c3c",
       "name": "Get Detail list Chat User11",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4640,
-        -820
+        8260,
+        -1120
       ]
     },
     {
       "parameters": {
         "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let messagerAI = $node['AI Agent1']?.json?.output\n  messagerAI = messagerAI.replace(/\\n\\n/g, '\\\\n\\\\n');\n  messagerAI = messagerAI.replace(/\\n/g, '\\\\n');\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();"
       },
-      "id": "2c1b3049-b040-4fb8-bc31-99297a390b90",
+      "id": "3543ff3f-d6a3-404f-84c5-905f34a6d067",
       "name": "Code13",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5460,
-        -840
+        9080,
+        -1140
       ]
     },
     {
@@ -3090,29 +3091,14 @@
         "text": "=ALWAYS use plain text and simple bullet points if need for clear and friendly communication. Do not apply any text effects, such as bold, italics, or headings. Keep the message simple, straightforward, and easy to read.\n\nAct as LiveChat AI Assistant \n\nUse the data i provide dynamically below in a way that helps analyze the client's needs and deliver personalized responses, but without directly repeating the data back to the client. You must leverage the information you've supplied to inform its conversation flow and provide insightful, helpful responses based on the client's context.\n\nInformation about client project\nProject name: {{ $json.project.name }}\nProject status: {{ $json.project.status }}\nStart date: {{ $json.project.start_date }}\nDeadline: {{ $json.project.deadline }}\nProject members: {{ $json.project.members.map(item=> item.name) }}\n\nInformation about client:\nName: {{ $json.client.name }}\nEmail: {{ $json.client.email }}\nMobile: {{ $json.client.mobile }}\n\n\nHistory chat messages:\n{{ $json.messagesSent }}\n\n\nAI Assistant Prompt with Contextual Analysis:\nGreeting the Client:\n\n\"Hello! 👋 Welcome to [Company Name]. I’m [Your AI Assistant Name], and I’m here to assist you today. How can I help you?\"\n\n(If the client hasn’t initiated the conversation yet, this greeting will prompt them to describe their needs or project.)\n\n1. If the Client Wants to Create a New Project:\nLet call to create_new_project tools\n\n2. If the Client Needs Support with a Ticket:\nLet call to resolve_problem_ticket tools\n\n3. If the Client Asks About Their Project Information (Milestones, Status, Tasks):\nLet call to ask_info_project tools\n\n4. If the Client Wants to Add a New Feature:\nLet call to take_care_client tools\n\n5. If the Client Requests a Refund or invoice:\nLet call to take_care_client tools\n\n6. Handling Last Message from Client:\nBased on your most recent message, I can see that you’re asking about [issue or request]. Let’s address that right away!\n\nFor example, if the client’s last message is about needing help with a project feature or milestone, the AI would respond:\n\n\"I noticed you're asking about [Milestone X]. Let me help you with that! Could you confirm if you're looking for updates on this milestone or if you need assistance with a specific task related to it?\"\n\n8. Wrapping Up the Chat:\n\"Thank you for sharing all of this information with me! I’ll make sure everything is updated and will send you an email confirmation shortly.\n\nIs there anything else I can assist you with while we’re still chatting?\"\n\n9. Closing the Chat:\nLet call to summary_chat_session tools\n\n\nHow the AI Uses Your Data Dynamically:\nHistory Chat Messages:\n\nThe AI reviews the client’s past messages and uses them to tailor the conversation. For example, if the client mentioned a problem earlier, the AI might start by asking if the issue has been resolved or needs further assistance.\nClient Project Information:\n\nThe AI will dynamically access the project’s name, status, and milestones (e.g., “Your project [Project Name] is currently in [Current Status] and includes milestones like [Milestone 1, Milestone 2]”). This contextualizes the conversation, allowing the AI to give specific advice or updates based on the project’s current phase.\nClient’s Last Message:\n\nThe AI will analyze the last message from the client and build the conversation around it, ensuring that it stays relevant to their current needs (e.g., \"I see you're asking about [specific feature or issue], let me help you with that!\").\n\nFinal Notes:\nStart with a friendly greeting whenever a new conversation begins.\nAsk for relevant details based on what the client needs (creating a project, ticket support, project information, new features, or refunds).\nUse the project information you provide dynamically to craft responses, ensuring that you don’t repeat the data back verbatim but use it to inform the conversation.\n\nALWAYS use plain text with simple bullet points for clear and friendly communication. Do not apply any text effects, such as bold, italics, or headings. Keep the message simple, straightforward, and easy to read.",
         "options": {}
       },
-      "id": "0e4ddaae-80be-4537-9730-93e4fdd526f6",
+      "id": "c1eb59f2-5b98-4906-946f-853041f74a2b",
       "name": "AI Agent1",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
       "position": [
-        4040,
-        -820
+        7620,
+        -1100
       ]
-    },
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "facebook",
-        "options": {}
-      },
-      "name": "Webhook",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1,
-      "position": [
-        -3860,
-        -1400
-      ],
-      "id": "39a170d6-3c0c-4dcf-9567-ec0809c3e79e"
     },
     {
       "parameters": {
@@ -3138,13 +3124,13 @@
         },
         "options": {}
       },
-      "id": "09746f2a-d77c-42c9-b617-b505eb851746",
+      "id": "0e1ad4d4-12b9-460d-a3da-f2e4d15752db",
       "name": "check cms send",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -2700,
-        -1900
+        1380,
+        -2340
       ]
     },
     {
@@ -3160,13 +3146,13 @@
           }
         }
       },
-      "id": "8f87d2d8-f39d-4bfd-82e1-0608ee0562fd",
+      "id": "9f3a75fc-b29b-4d92-8a67-5bef9e0accfb",
       "name": "Post message lên workchat from client",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -2240,
-        -1740
+        1840,
+        -2180
       ],
       "onError": "continueErrorOutput"
     },
@@ -3174,13 +3160,13 @@
       "parameters": {
         "jsCode": "let info = $input.all()[0].json.messages?.data[1]\nlet message =  $input.all()[0].json.messages?.data[1]?.message\nconsole.log('arg: ', message)\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nreturn {\n  inf: info,\n  output: message\n};"
       },
-      "id": "9ef13a05-d445-4652-ab04-b41f253d4169",
+      "id": "b6c55ce7-5621-40c6-9387-14dc0161d503",
       "name": "Code14",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2480,
-        -1740
+        1600,
+        -2180
       ]
     },
     {
@@ -3196,13 +3182,13 @@
           }
         }
       },
-      "id": "cfcd72b1-c267-4566-9c7c-6e5051a54b06",
+      "id": "c29ca6d5-a47a-4151-be0d-ca600dfcee97",
       "name": "Post message lên workchat from client1",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -2240,
-        -2020
+        1840,
+        -2460
       ],
       "onError": "continueErrorOutput"
     },
@@ -3210,13 +3196,13 @@
       "parameters": {
         "jsCode": "let info = $input.all()[0].json.messages?.data[0]\nlet message =  $input.all()[0].json.messages?.data[0]?.message\nconsole.log('arg: ', message)\nmessage = message.replace(/\\*/g, '')\nmessage = message.replace(/\\n\\n/g, '\\\\n\\\\n');\nmessage = message.replace(/\\n/g, '\\\\n');\nmessage = message.replace(/\"/g, '');\nreturn {\n  inf: info,\n  output: message\n};"
       },
-      "id": "1a1b8595-3f88-4903-aa96-0f91ccf583db",
+      "id": "ca2acc05-9a08-4e2e-b67c-a65516185027",
       "name": "Code15",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2480,
-        -2020
+        1600,
+        -2460
       ]
     },
     {
@@ -3225,13 +3211,13 @@
         "query": "SELECT *, (\n  SELECT COUNT(*) FROM user_chats WHERE (user_chats.from = 62844 AND user_chats.to = {{ $('MySQL Get Info Client').item.json.id }}) OR  (user_chats.from = {{ $('MySQL Get Info Client').item.json.id }} AND user_chats.to = 62844)\n) AS Total_Messages\nFROM user_chats\nWHERE \n  (user_chats.from = 62844 AND user_chats.to = {{ $('MySQL Get Info Client').item.json.id }}) \n  OR \n  (user_chats.from = {{ $('MySQL Get Info Client').item.json.id }} AND user_chats.to = 62844) ORDER BY user_chats.created_at DESC;\n",
         "options": {}
       },
-      "id": "750bc411-775b-45e9-a81b-753619f0a3d4",
+      "id": "76f576e5-5ffd-4e3a-affd-590c94b01c2e",
       "name": "MySQL Get Detail Messages",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        2740,
-        -1360
+        6120,
+        -1660
       ],
       "credentials": {
         "mySql": {
@@ -3246,13 +3232,13 @@
         "query": "SELECT * FROM users WHERE users.email = {{ $('Last send by client').item.json.from.email ? `\"${$('Last send by client').item.json.from.email}\"` : '\" \"' }}\n",
         "options": {}
       },
-      "id": "dc9ba00d-931b-4c55-b08a-970a42cd4192",
+      "id": "dae319b3-78a6-4106-a3b0-c0e5b722a350",
       "name": "MySQL Get Info Client",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        2560,
-        -1360
+        5940,
+        -1660
       ],
       "credentials": {
         "mySql": {
@@ -3266,26 +3252,26 @@
         "aggregate": "aggregateAllItemData",
         "options": {}
       },
-      "id": "4ce51908-ff22-49ab-818a-01dfb42c1bd6",
+      "id": "f9c4f18f-9ab0-49cb-89d8-b7549963312d",
       "name": "Aggregate13",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        2940,
-        -1360
+        6320,
+        -1660
       ]
     },
     {
       "parameters": {
         "jsCode": "const listMessages = $node['Aggregate13']?.json?.data\nlet document =''\ndocument+='List Messages sent by client with admin: \\n'\nfor (const item of listMessages.slice(0,20).reverse()) {\n  document+= `${item?.user_one == 62844 ? 'Admin send: ' : 'Client sent: '} ${item?.message} \\nTime Send: ${item?.created_at} \\n\\n`\n}\n\n// document+=`\\n\\n Last message sent by client: ${listMessages[listMessages.length-1].message}`\nconsole.log(document)\nreturn {messagesSent: document};"
       },
-      "id": "daa29dd6-986a-41d9-b28c-82d856a00fcf",
+      "id": "b576ea63-7af9-4c38-bbf4-8297a7f524e3",
       "name": "Get All Messages7",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3120,
-        -1360
+        6500,
+        -1660
       ]
     },
     {
@@ -3294,13 +3280,13 @@
         "query": "SELECT *, (\n  SELECT COUNT(*) FROM user_chats WHERE (user_chats.from = 62844 AND user_chats.to = {{ $('MySQL Get Info Client2').item.json.id }}) OR  (user_chats.from = {{ $('MySQL Get Info Client2').item.json.id }} AND user_chats.to = 62844)\n) AS Total_Messages\nFROM user_chats\nWHERE \n  (user_chats.from = 62844 AND user_chats.to = {{ $('MySQL Get Info Client2').item.json.id }}) \n  OR \n  (user_chats.from = {{ $('MySQL Get Info Client2').item.json.id }} AND user_chats.to = 62844) ORDER BY user_chats.created_at DESC;\n",
         "options": {}
       },
-      "id": "cb26434b-06b1-4fe0-8851-41d85955e6f8",
+      "id": "97c802ea-014f-45d6-b95d-582318e5e080",
       "name": "MySQL Get Detail Messages2",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        340,
-        -2160
+        4060,
+        -2620
       ],
       "credentials": {
         "mySql": {
@@ -3315,13 +3301,13 @@
         "query": "SELECT * FROM users WHERE users.email = {{ $('Last send by client').item.json.from.email ? `\"${$('Last send by client').item.json.from.email}\"` : '\" \"' }}\n",
         "options": {}
       },
-      "id": "9320bfe2-c521-450f-b887-a4a8644c616b",
+      "id": "b69cc5b6-d22a-45aa-a3a1-ab44a929d30d",
       "name": "MySQL Get Info Client2",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        160,
-        -2160
+        3880,
+        -2620
       ],
       "credentials": {
         "mySql": {
@@ -3335,26 +3321,26 @@
         "aggregate": "aggregateAllItemData",
         "options": {}
       },
-      "id": "8931f19f-2b39-43e2-9a3b-230aed6c42e1",
+      "id": "b5f8bb46-a957-4c64-bd87-05bbab966107",
       "name": "Aggregate14",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        560,
-        -2160
+        4280,
+        -2620
       ]
     },
     {
       "parameters": {
         "jsCode": "const listMessages = $node['Aggregate14']?.json?.data\nlet document =''\ndocument+='List Messages sent by client with admin: \\n'\nfor (const item of listMessages.slice(0,5).reverse()) {\n  document+= `${item?.user_one == 62844 ? 'Admin send: ' : 'Client sent: '} ${item?.message} \\nTime Send: ${item?.created_at} \\n\\n`\n}\n\n// document+=`\\n\\n Last message sent by client: ${listMessages[listMessages.length-1].message}`\nconsole.log(document)\nreturn {messagesSent: document};"
       },
-      "id": "8d305b3b-130d-4380-88b7-7760e86f1e3a",
+      "id": "45434dce-4ad2-4be0-b4ab-511d8c23e471",
       "name": "Get All Messages8",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        760,
-        -2160
+        4480,
+        -2620
       ]
     },
     {
@@ -3413,13 +3399,13 @@
         },
         "options": {}
       },
-      "id": "75345625-9f0a-433b-b17b-971112aa34de",
+      "id": "bf19102f-5698-4465-88f6-f5fa593fa591",
       "name": "Switch3",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        1320,
-        -2160
+        5040,
+        -2620
       ]
     },
     {
@@ -3428,13 +3414,13 @@
         "query": "SELECT * FROM users WHERE users.id = {{ $('Aggregate14').item.json.data[0].user_one ? `\"${$('Aggregate14').item.json.data[0].user_one}\"` : '\" \"' }}\n",
         "options": {}
       },
-      "id": "06b141d5-fc9d-4cad-9cf4-5b319cbf927e",
+      "id": "c4c2589d-c7e1-45f3-85f6-34f2be0b1d9e",
       "name": "MySQL Get Info Client3",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        2220,
-        -2480
+        5940,
+        -2940
       ],
       "credentials": {
         "mySql": {
@@ -3456,13 +3442,13 @@
           }
         }
       },
-      "id": "529f605a-a4b1-41fe-809a-e85e080225ab",
+      "id": "444fe774-1ae4-44e0-8efe-98e717b76fb5",
       "name": "Post message lên workchat from admin",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2760,
-        -2480
+        6480,
+        -2940
       ],
       "onError": "continueErrorOutput"
     },
@@ -3488,13 +3474,13 @@
           }
         }
       },
-      "id": "4dbec356-5b9b-4370-975d-4f0e2cac69eb",
+      "id": "ec43a09d-e7f4-41e1-ad19-3d2acde916c0",
       "name": "Get User Facebook",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2100,
-        -2180
+        5820,
+        -2640
       ]
     },
     {
@@ -3519,13 +3505,13 @@
           }
         }
       },
-      "id": "1cb4d520-2b42-4c91-8533-4689f327bbf3",
+      "id": "b4cf7b3b-034a-47dd-a7dd-e4f4a35167e7",
       "name": "Get User Facebook1",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2120,
-        -1860
+        5840,
+        -2320
       ]
     },
     {
@@ -3583,13 +3569,13 @@
         },
         "options": {}
       },
-      "id": "4c135a4f-bad8-4715-b2c6-c1dea6539fa1",
+      "id": "3dfdc159-418d-4a9a-bdab-d84c92dde661",
       "name": "Switch4",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        2560,
-        -2180
+        6280,
+        -2640
       ]
     },
     {
@@ -3605,13 +3591,13 @@
           }
         }
       },
-      "id": "dfd1b30e-68f1-44f3-9929-e19ab56b752b",
+      "id": "f44144a1-2b46-46fd-981e-6d32cfa2af46",
       "name": "Post message lên workchat from admin1",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3120,
-        -1840
+        6840,
+        -2300
       ],
       "onError": "continueErrorOutput"
     },
@@ -3628,13 +3614,13 @@
           }
         }
       },
-      "id": "e502e878-e3cc-4fbe-91dd-c755c301a0ae",
+      "id": "1bd4577c-1605-40c8-9b1e-802eb8222d1c",
       "name": "Post message lên workchat from admin2",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3760,
-        -2260
+        7480,
+        -2720
       ],
       "onError": "continueErrorOutput"
     },
@@ -3651,13 +3637,13 @@
           }
         }
       },
-      "id": "3e35b017-131b-42c1-a52c-bf4df755ffb7",
+      "id": "62e52556-8586-490e-89a8-793d5cf7265f",
       "name": "Post message lên workchat from admin3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3480,
-        -2060
+        7200,
+        -2520
       ],
       "onError": "continueErrorOutput"
     },
@@ -3683,13 +3669,13 @@
           }
         }
       },
-      "id": "e4ada8f7-2037-466e-b800-2c27040cf424",
+      "id": "ec065640-f390-4a24-8cf7-d32e9f03f8b7",
       "name": "Get User Facebook2",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3680,
-        -1360
+        7060,
+        -1660
       ]
     },
     {
@@ -3705,13 +3691,13 @@
           }
         }
       },
-      "id": "a2123906-877a-4cba-bac1-f33a3f4b94fe",
+      "id": "25d118cb-b963-4a44-9704-d166d5a09478",
       "name": "Post message lên workchat from admin4",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4720,
-        -1360
+        8100,
+        -1660
       ],
       "onError": "continueErrorOutput"
     },
@@ -3728,13 +3714,13 @@
           }
         }
       },
-      "id": "539d252b-040b-41cb-a23f-2b10490c9874",
+      "id": "201d0a9b-f2ee-4239-bab4-4b6b57620c34",
       "name": "Post message lên workchat from admin5",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4740,
-        -1140
+        8400,
+        -1460
       ],
       "onError": "continueErrorOutput"
     },
@@ -3819,26 +3805,26 @@
         },
         "options": {}
       },
-      "id": "34fe3333-c08a-42ec-9fb7-89aab911c94e",
+      "id": "42d426e7-0f70-4bf9-89bf-785a4e60d644",
       "name": "Switch5",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        3880,
-        -1360
+        7260,
+        -1660
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let messagerAI = $node['OpenAI5']?.json?.output\n  messagerAI = messagerAI.replace(/\\n\\n/g, '\\\\n\\\\n');\n  messagerAI = messagerAI.replace(/\\n/g, '\\\\n');\n  messagerAI = messagerAI.replace(/###/g, '');\n  messagerAI = messagerAI.replace(/\\**/g, '');\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let messagerAI = $node['OpenAI5']?.json?.output\n  messagerAI = messagerAI.replace(/\\n\\n/g, '\\\\n\\\\n');\n  messagerAI = messagerAI.replace(/\\n/g, '\\\\n');\n  messagerAI = messagerAI.replace(/###/g, '');\n  messagerAI = messagerAI.replace(/\\**/g, '');\n  messagerAI = messagerAI.replace(/\"/g, '');\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();"
       },
-      "id": "91e961a0-62b6-4702-87ca-c0332c498b77",
+      "id": "a95c8e48-f903-4e44-83e8-b57760126ec9",
       "name": "Get Info Issue",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4460,
-        -1600
+        7840,
+        -1900
       ]
     },
     {
@@ -3863,13 +3849,13 @@
           }
         }
       },
-      "id": "f8f9f78e-10c1-48ba-ba04-e548dc6e02c6",
+      "id": "edcfabc3-9343-4530-b468-e6a1f8709947",
       "name": "send welcome3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4700,
-        -1600
+        8120,
+        -1940
       ]
     },
     {
@@ -3885,13 +3871,13 @@
           }
         }
       },
-      "id": "309b34ff-30b8-43a5-a69e-97ad37d8398e",
+      "id": "e9452217-07be-4189-888e-662e47a91765",
       "name": "Post message lên workchat from admin6",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5000,
-        -1600
+        8380,
+        -2080
       ],
       "onError": "continueErrorOutput"
     },
@@ -3908,13 +3894,13 @@
         "text": "=You are a customer request analyst and an administrator named Cmsmart Ecommerce is talking to a customer in a friendly manner. The customer has given a request in the message below and the problem is not clear, analyze it according to the following requirements:\n- Analyze the customer's problem\n- Restate the customer's problem\n- Ask the customer to provide more missing information\nThen combine the above ideas and reply to the customer with a short message combining the above ideas in a friendly manner.\nHere is the message information you need to analyze to send a message to the customer:\n{{ $('Get All Messages7').item.json.messagesSent }}",
         "options": {}
       },
-      "id": "8de4874e-db3e-49e0-bfe1-987a1b7d7a12",
+      "id": "2106f9fe-0812-4dff-a93d-20194bac7969",
       "name": "OpenAI",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        4020,
-        -1140
+        7400,
+        -1440
       ],
       "credentials": {
         "openAiApi": {
@@ -3929,13 +3915,13 @@
         "query": "SELECT *, (\n  SELECT COUNT(*) FROM user_chats WHERE (user_chats.from = 62844 AND user_chats.to = {{ $('MySQL Get Info Client4').item.json.id }}) OR  (user_chats.from = {{ $('MySQL Get Info Client4').item.json.id }} AND user_chats.to = 62844)\n) AS Total_Messages\nFROM user_chats\nWHERE \n  (user_chats.from = 62844 AND user_chats.to = {{ $('MySQL Get Info Client4').item.json.id }}) \n  OR \n  (user_chats.from = {{ $('MySQL Get Info Client4').item.json.id }} AND user_chats.to = 62844) ORDER BY user_chats.created_at DESC;\n",
         "options": {}
       },
-      "id": "97d21ec7-c707-45e1-a443-3371dc88262c",
+      "id": "889e8a34-9c19-4e35-87d6-d58c151746ee",
       "name": "MySQL Get Detail Messages3",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        3200,
-        -820
+        6580,
+        -1120
       ],
       "credentials": {
         "mySql": {
@@ -3950,13 +3936,13 @@
         "query": "SELECT * FROM users WHERE users.email = {{ $('Last send by client').item.json.from.email ? `\"${$('Last send by client').item.json.from.email}\"` : '\" \"' }}\n",
         "options": {}
       },
-      "id": "977dd7b2-be17-49f2-b531-0e10ec16e613",
+      "id": "a3a19229-ff73-4147-b7e0-42b6e7721884",
       "name": "MySQL Get Info Client4",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        2980,
-        -820
+        6360,
+        -1120
       ],
       "credentials": {
         "mySql": {
@@ -3970,26 +3956,26 @@
         "aggregate": "aggregateAllItemData",
         "options": {}
       },
-      "id": "5fb6ba8e-6edb-4ff4-af9b-88c1bc4d64f5",
+      "id": "0ceacd57-6848-443f-96c3-c1a3d0c55371",
       "name": "Aggregate15",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        3420,
-        -820
+        6800,
+        -1120
       ]
     },
     {
       "parameters": {
         "jsCode": "const listMessages = $node['Aggregate15']?.json?.data\nlet document =''\ndocument+='List Messages sent by client with admin: \\n'\nfor (const item of listMessages.reverse()) {\n  document+= `${item?.user_one == 62844 ? 'Admin send: ' : 'Client sent: '} ${item?.message} \\nTime Send: ${item?.created_at} \\n\\n`\n}\n\n// document+=`\\n\\n Last message sent by client: ${listMessages[listMessages.length-1].message}`\nconsole.log(document)\nreturn {messagesSent: document};"
       },
-      "id": "5b64fdb7-6839-4df9-97ba-66eab8a28ac0",
+      "id": "33f09e7e-8533-4b51-89a3-f00724ef7372",
       "name": "Get All Messages9",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3600,
-        -820
+        6980,
+        -1120
       ]
     },
     {
@@ -4014,42 +4000,14 @@
           }
         }
       },
-      "id": "9e618865-1697-474d-a6f8-887225be371f",
+      "id": "e188bc8a-fbe2-4359-b2b0-aacaea83f6ea",
       "name": "Get User Facebook3",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4420,
-        -820
+        8040,
+        -1120
       ]
-    },
-    {
-      "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_AVeiW0a2XaMvsu5SwqARpYN6",
-          "mode": "list",
-          "cachedResultName": "Cmsmart Admin - AI Assistant"
-        },
-        "prompt": "define",
-        "text": "=ALWAYS use plain text and simple bullet points if clear and friendly communication is required. Do not apply any text effects such as bold, italics or headings. Keep the message simple, easy to understand and read.\n\nAct as a LiveChat AI Assistant\n\nUse the data I provide below dynamically in a way that helps analyze the customer's needs and provide personalized responses, but do not directly repeat the data to the customer. You must leverage the information you have provided to inform the conversation flow and provide useful, insightful responses based on the customer's context.\n\nClient Project Information\nProject Name: {{ $('Edit Fields1').item.json.project.name }}\nProject Status: {{ $('Edit Fields1').item.json.project.status }}\nStart Date: {{ $('Edit Fields1').item.json.project.start_date }}\nDeadline: {{ $('Edit Fields1').item.json.project.deadline }}\nProject Members: {{ $('Edit Fields1').item.json.project.members.map(item=> item.name) }}\n\nClient Information:\nName: {{ $('Edit Fields1').item.json.client.name }}\nEmail: {{ $('Edit Fields1').item.json.client.email }}\nMobile: {{ $('Edit Fields1').item.json.client.mobile }}\n\nHistorical chat messages:\n{{ $('Edit Fields1').item.json.messagesSent }}\n\nRespond to the customer's question. Focus on the last message the customer sent to give the best answer to the customer\n\nFinal notes:\nStart with a friendly greeting whenever a new conversation begins.\nAsk for relevant details based on the customer's needs (project creation, support ticket, project information, new features, or refund).\nUse the project information you provide dynamically to create a response, making sure you don't repeat the data verbatim but use it to inform the conversation.\n\nALWAYS use plain text with simple bullet points to communicate clearly and friendly. Do not apply any text effects, such as bold, italics, or titles. Keep the message simple, clear, and easy to read.\nAvoid phrases that suggest you are an AI Assistant",
-        "options": {}
-      },
-      "id": "2b5e5c0d-4253-47ef-b701-7553836beecf",
-      "name": "OpenAI7",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        5060,
-        -840
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "NuSZIBmfyaC1efAa",
-          "name": "AI_Agent_API"
-        }
-      }
     },
     {
       "parameters": {
@@ -4064,13 +4022,13 @@
           }
         }
       },
-      "id": "bf186d78-0ccc-4787-9606-a6fd4788e110",
+      "id": "1742fd08-85d9-4d13-b0fe-2ad178586300",
       "name": "Post message lên workchat from admin7",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5860,
-        -840
+        9480,
+        -1140
       ],
       "onError": "continueErrorOutput"
     },
@@ -4080,13 +4038,13 @@
         "query": "SELECT *, (\n  SELECT COUNT(*) FROM user_chats WHERE (user_chats.from = 62844 AND user_chats.to = {{ $('MySQL Get Info Client5').item.json.id }}) OR  (user_chats.from = {{ $('MySQL Get Info Client5').item.json.id }} AND user_chats.to = 62844)\n) AS Total_Messages\nFROM user_chats\nWHERE \n  (user_chats.from = 62844 AND user_chats.to = {{ $('MySQL Get Info Client5').item.json.id }}) \n  OR \n  (user_chats.from = {{ $('MySQL Get Info Client5').item.json.id }} AND user_chats.to = 62844) ORDER BY user_chats.created_at DESC;\n",
         "options": {}
       },
-      "id": "4068fb48-5c81-4867-a0de-dabca857b641",
+      "id": "7a663ac9-93ee-49e0-b97b-2035a22edaaa",
       "name": "MySQL Get Detail Messages4",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        3940,
-        200
+        7320,
+        -100
       ],
       "credentials": {
         "mySql": {
@@ -4101,13 +4059,13 @@
         "query": "SELECT * FROM users WHERE users.email = {{ $('Last send by client').item.json.from.email ? `\"${$('Last send by client').item.json.from.email}\"` : '\" \"' }}\n",
         "options": {}
       },
-      "id": "7bc4fc9e-8a37-4378-b92a-7c988a75c060",
+      "id": "7f8ba721-9534-40cc-b94b-5b197da1ad02",
       "name": "MySQL Get Info Client5",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        3680,
-        200
+        7060,
+        -100
       ],
       "credentials": {
         "mySql": {
@@ -4121,26 +4079,26 @@
         "aggregate": "aggregateAllItemData",
         "options": {}
       },
-      "id": "92bf1d80-a019-41af-a62e-eadffccf3481",
+      "id": "4b8dd66c-6d27-4a58-8c42-2b3ade36fe9f",
       "name": "Aggregate",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        4180,
-        200
+        7560,
+        -100
       ]
     },
     {
       "parameters": {
         "jsCode": "const listMessages = $node['Aggregate']?.json?.data\nlet document =''\ndocument+='List Messages sent by client with admin: \\n'\nfor (const item of listMessages.slice(0,30).reverse()) {\n  document+= `${item?.user_one == 62844 ? 'Admin send: ' : 'Client sent: '} ${item?.message} \\nTime Send: ${item?.created_at} \\n\\n`\n}\n\n// document+=`\\n\\n Last message sent by client: ${listMessages[listMessages.length-1].message}`\nconsole.log(document)\nreturn {messagesSent: document};"
       },
-      "id": "f062b64b-799e-467a-bd63-c6ea82d2d869",
+      "id": "6c5a2557-d4e0-4225-be94-af844ff5b089",
       "name": "Get All Messages",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4380,
-        200
+        7760,
+        -100
       ]
     },
     {
@@ -4165,13 +4123,13 @@
           }
         }
       },
-      "id": "23e601b0-186b-4cf0-b581-3a8a19e2475d",
+      "id": "aa2e152c-650e-40f9-993e-3d0abd91cd39",
       "name": "Get User Facebook4",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3640,
-        520
+        7020,
+        220
       ]
     },
     {
@@ -4187,13 +4145,13 @@
           }
         }
       },
-      "id": "944b636f-3207-4d03-a7ae-8b375093ca06",
+      "id": "5b802250-4ba0-44ed-b53c-6b7e46bbe2fa",
       "name": "Post message lên workchat from admin8",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3840,
-        520
+        7220,
+        220
       ],
       "onError": "continueErrorOutput"
     },
@@ -4219,13 +4177,13 @@
           }
         }
       },
-      "id": "9bb06f0b-f873-44d3-a21b-ee2ba95d9330",
+      "id": "83657e09-40fb-4764-853a-141278df2a36",
       "name": "Get User Facebook5",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5900,
-        200
+        9280,
+        -100
       ]
     },
     {
@@ -4241,13 +4199,13 @@
           }
         }
       },
-      "id": "af6e3d5a-2370-45ac-8280-f71d2e2b440e",
+      "id": "4c143291-8613-48ec-ab54-4ff3cf7f34cc",
       "name": "Post message lên workchat from admin9",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        6100,
-        200
+        9480,
+        -100
       ],
       "onError": "continueErrorOutput"
     },
@@ -4257,13 +4215,13 @@
         "query": "SELECT *, (\n  SELECT COUNT(*) FROM user_chats WHERE (user_chats.from = 62844 AND user_chats.to = {{ $('MySQL Get Info Client6').item.json.id }}) OR  (user_chats.from = {{ $('MySQL Get Info Client6').item.json.id }} AND user_chats.to = 62844)\n) AS Total_Messages\nFROM user_chats\nWHERE \n  (user_chats.from = 62844 AND user_chats.to = {{ $('MySQL Get Info Client6').item.json.id }}) \n  OR \n  (user_chats.from = {{ $('MySQL Get Info Client6').item.json.id }} AND user_chats.to = 62844) ORDER BY user_chats.created_at DESC;\n",
         "options": {}
       },
-      "id": "0b5b0762-3abe-4576-b84f-0c03d566d4f1",
+      "id": "4e4af34f-c58d-4cbf-9825-7d7ca03e8668",
       "name": "MySQL Get Detail Messages5",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        -1860,
-        -1420
+        2200,
+        -1780
       ],
       "credentials": {
         "mySql": {
@@ -4278,13 +4236,13 @@
         "query": "SELECT * FROM users WHERE users.email = {{ $('Last send by client').item.json.from.email ? `\"${$('Last send by client').item.json.from.email}\"` : '\" \"' }}\n",
         "options": {}
       },
-      "id": "5acee783-0424-4aab-bfb3-3d1e6b468614",
+      "id": "1ac88fa9-d38c-4e8b-9d28-487d07deb2fb",
       "name": "MySQL Get Info Client6",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        -2100,
-        -1420
+        1960,
+        -1780
       ],
       "credentials": {
         "mySql": {
@@ -4372,26 +4330,26 @@
         },
         "options": {}
       },
-      "id": "1da1b8fa-4d5e-46eb-94db-56895f802ac8",
+      "id": "acafc909-6136-4b28-b235-e79ecc98e875",
       "name": "Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -1100,
-        -1420
+        2960,
+        -1780
       ]
     },
     {
       "parameters": {
         "jsCode": "const content = $input.all()[0].json.output;\n\n// Function to format text\nconst formatText = (text) => {\n    return text\n        .replace(/\\n/g, '<br>')  // Replace newlines with <br>\n        .replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')  // Bold (**text**)\n        .replace(/\\*(.*?)\\*/g, '<em>$1</em>')  // Italic (*text*)\n        .replace(/###\\s*(.*?)(\\n|$)/g, '<strong>$1</strong><br>')  // H3 (### text)\n        .replace(/\\[([^\\]]+)\\]\\((https?:\\/\\/[^\\)]+)\\)/g, '<a href=\"$2\" target=\"_blank\">$1</a>');  // Convert [text](link) to <a>\n};\n\n// Process content\nconst formattedContent = formatText(content);\n\n// Return as an object\nreturn {\n    formatted: formattedContent\n};\n"
       },
-      "id": "68dca30e-c24f-46aa-a6db-5fb5c5366feb",
+      "id": "56d08bcc-72da-49a8-8aed-2f83c7fcc518",
       "name": "Get Info Issue1",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -640,
-        -1060
+        3520,
+        -1360
       ]
     },
     {
@@ -4399,13 +4357,13 @@
         "aggregate": "aggregateAllItemData",
         "options": {}
       },
-      "id": "d25e57c9-3e68-45ac-a161-b5d5491fec8d",
+      "id": "7fd860b6-4ca6-4da6-b484-d724c9d123be",
       "name": "Aggregate16",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        -1660,
-        -1420
+        2400,
+        -1780
       ]
     },
     {
@@ -4430,13 +4388,13 @@
           }
         }
       },
-      "id": "9cdc454d-1823-4047-ab46-07ad9b5f5203",
+      "id": "4aedadc7-e38f-45ee-aa16-7d4bfbbb6fd4",
       "name": "send welcome4",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -180,
-        -1080
+        3880,
+        -1360
       ]
     },
     {
@@ -4452,27 +4410,27 @@
           }
         }
       },
-      "id": "144c3012-0c06-4713-bd2f-92b7213bd6fe",
+      "id": "78e84d13-7902-4522-a160-d51532d366d5",
       "name": "Post message lên workchat from admin10",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        80,
-        -1080
+        4080,
+        -1360
       ],
       "onError": "continueErrorOutput"
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let messagerAI = $node['Get Info Issue1']?.json?.formatted\n  messagerAI = messagerAI.replace(/<br>/g, '\\\\n');\n  messagerAI = messagerAI.replace(/<em>/g, '');\nmessagerAI = messagerAI.replace(/<strong>/g, '**');\n  messagerAI = messagerAI.replace(/<\\/strong>/g, '**');\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let messagerAI = $node['Get Info Issue1']?.json?.formatted\n  messagerAI = messagerAI.replace(/<br>/g, '\\\\n');\n  messagerAI = messagerAI.replace(/<em>/g, '');\n  messagerAI = messagerAI.replace(/<a>/g, '');\n  messagerAI = messagerAI.replace(/<\\/a>/g, '');\n  messagerAI = messagerAI.replace(/\"/g, '');\n   messagerAI = messagerAI.replace(/<a/g, '');\n   messagerAI = messagerAI.replace(/href=/g, '');\nmessagerAI = messagerAI.replace(/<strong>/g, '**');\n  messagerAI = messagerAI.replace(/<\\/strong>/g, '**');\n  item.json.output = messagerAI;\n}\n\nreturn $input.all();"
       },
-      "id": "a0950d3c-f9bc-4d5e-a588-1641d4d6df93",
+      "id": "890eacf3-324c-475f-888a-4fb85daa4118",
       "name": "Code",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -460,
-        -1060
+        3680,
+        -1360
       ]
     },
     {
@@ -4500,13 +4458,13 @@
         },
         "options": {}
       },
-      "id": "52e4f905-cf1c-4f96-8096-826d2e002616",
+      "id": "d21fdf50-e3fb-4073-9edb-72320d2c97b5",
       "name": "If",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -600,
-        -1440
+        3460,
+        -1800
       ]
     },
     {
@@ -4533,13 +4491,13 @@
         },
         "options": {}
       },
-      "id": "0aae3984-628e-41f6-8f32-d44a34a4d3ab",
+      "id": "925e92b5-5fc6-47cc-a1ca-1dda4ef8273b",
       "name": "Get Data Old Check",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -800,
-        -1440
+        3260,
+        -1800
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -4567,12 +4525,12 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "id": "={{ $json.id_client_message }}",
+            "id": "={{ $json.id_client_message || $json.id}}",
             "Company": "Cmsmart Ecommerce",
-            "client": "={{ $json.id_client_message }}",
-            "client_name": "={{ $json.name_client_facebook }}",
-            "mailFacebook": "={{ $json.email_client_facebook }}",
-            "email": "={{ $json.email_worksuit }}"
+            "client": "={{ $json.id_client_message || $json.client }}",
+            "client_name": "={{ $json.name_client_facebook || $json.client_name }}",
+            "mailFacebook": "={{ $json.email_client_facebook || $json.mailFacebook}}",
+            "email": "={{ $json.email_worksuit || $json.email }}"
           },
           "matchingColumns": [
             "id"
@@ -4768,13 +4726,13 @@
         },
         "options": {}
       },
-      "id": "087c2d21-8822-4a45-8900-85353ddccfa6",
+      "id": "289563b2-10ab-489e-a55c-3d9557221063",
       "name": "Update Follow",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1120,
-        -1460
+        4740,
+        -1760
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -4783,70 +4741,6 @@
           "name": "Canh Google Sheets"
         }
       }
-    },
-    {
-      "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.email_worksuit }}",
-                    "rightValue": "@facebook.com",
-                    "operator": {
-                      "type": "string",
-                      "operation": "contains"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "worksuit facebook"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "3554cbff-6398-49f0-91e0-05414af04904",
-                    "leftValue": "={{ $json.email_worksuit }}",
-                    "rightValue": "@facebook.com",
-                    "operator": {
-                      "type": "string",
-                      "operation": "notContains"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "worksuit email"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "40b3adac-2250-485d-86fa-c89f4ec20a85",
-      "name": "Check mail old facebook",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.2,
-      "position": [
-        420,
-        -1480
-      ]
     },
     {
       "parameters": {
@@ -4866,18 +4760,18 @@
         },
         "options": {}
       },
-      "id": "a888be91-5aed-4e4e-b7fe-ac59d692ecd8",
+      "id": "512eae38-ecba-4023-ba2a-dae3d165954a",
       "name": "OpenAI3",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        3320,
-        -1360
+        6700,
+        -1660
       ],
       "credentials": {
         "openAiApi": {
           "id": "wXCGwiut9MvtTGmk",
-          "name": "Workflow API"
+          "name": "OpenAI CMS"
         }
       }
     },
@@ -4894,18 +4788,18 @@
         "text": "=You are an assistant of Cmsmart and you have been provided with most of the products as well as the prices of each item of each product of Cmsmart. Your job is in the following chat messages between customers and administrators. Focus on the most recent messages sent by customers, especially the last message, to determine the customer's intention. And with the data you have, provide information to customers in the most effective way.\n\nHere are the chat messages in history:\n\n{{ $('Get All Messages7').item.json.messagesSent }}\n\nWith the above data, only get the last information, see that information based on Cmsmart data\nThere is no general response to get the data about Cmsmart that you are provided\n\nSwitch to message format with Customer {{ $json.participants.data[0].name }} is canh and Sincerely Cmsmart Administrator\n\nReturn only starting from Dear and ending with Best Regard",
         "options": {}
       },
-      "id": "c2173e1b-40bc-47ff-96d9-18b25f8eafdf",
+      "id": "e27fa988-581d-48dd-b2cb-2a6c17d37826",
       "name": "OpenAI5",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        4040,
-        -1600
+        7420,
+        -1900
       ],
       "credentials": {
         "openAiApi": {
           "id": "wXCGwiut9MvtTGmk",
-          "name": "Workflow API"
+          "name": "OpenAI CMS"
         }
       }
     },
@@ -4966,13 +4860,13 @@
         },
         "options": {}
       },
-      "id": "8fcd41fa-5916-4d53-8c6a-90c115fe03ae",
+      "id": "4e03b91a-079c-49ce-b559-df2a71afdee4",
       "name": "Switch6",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        3360,
-        -60
+        6740,
+        -360
       ]
     },
     {
@@ -4984,46 +4878,18 @@
         },
         "requestOptions": {}
       },
-      "id": "4ef9211c-e631-44f7-a48f-67ed415c39e9",
+      "id": "e41db649-bf2e-4037-9a5b-109ad58af51f",
       "name": "Cloodo CRM",
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        4600,
-        200
+        7980,
+        -100
       ],
       "credentials": {
         "cloodoApi": {
           "id": "nP7U7wKTbfdSeafq",
           "name": "Cmsmart Worksuite account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
-          "mode": "list",
-          "cachedResultName": "Cmsmart AI"
-        },
-        "prompt": "define",
-        "text": "=Analyze the following chat messages between the customer and the administrator. Focus on the most recent messages sent by the customer, especially the last message, to determine the customer's intent. And with the data you have, provide information to the customer in the most effective way.\n\nHere are the chat messages in history:\n\n1. Customer Request:\n\nList the messages sent by the customer to the administrator:\n\nCustomer sent: I need support\nTime sent: 2025-02-10 17:46:50\n\nAdmin sent: Hello,\n\nThank you for contacting Cmsmart Ecommerce. I understand that you are looking for support and I am here to assist you.\n\nCan you please provide more details about the specific support you need? For example, are you having difficulty with a specific product, service, or technical issue? Any additional information will help ensure we address your concern effectively.\n\nAlso, may I request your email address to keep your records accurate and ensure follow-up communications are sent to you in a timely manner?\n\nBest regards,\nPrintcart\nTime Sent: 2025-02-10 18:08:32\n\nCustomer Sent: thanhtung2432004@gmail.com\nTime Sent: 2025-02-10 18:11:57\n\nAdmin Sent: Thank you for your detailed information. We have received your information successfully and everything seems to be fine.\n\nTo assist you further, could you please clarify the issue you are experiencing? Please provide as much detail as possible so we can address this issue effectively.\n\nWe are here to help and we look forward to hearing from you.\nTime sent: 2025-02-11 10:12:26\n\nCustomer sent: I need information about Cmsmart Ecommerce\nTime sent: 2025-02-12 09:55:04\n\nCustomer sent: I need information about Cmsmart Ecommerce\nTime sent: 2025-02-12 10:03:47\n\nCustomer sent: I need information about Cmsmart Ecommerce\nTime sent: 2025-02-12 10:36:31\n\nCustomer sent: I need information about Cmsmart Ecommerce\nTime sent: 2025-02-12 11:32:51\n\nCustomer sent: I need information about Cmsmart Ecommerce\nTime sent: 2025-02-12 11:36:37\n\nAdministrator value is: Hello,\n\nThank you for contacting Cmsmart Ecommerce. It appears that you are looking for information about our company. In order to better assist you, please indicate what type of information you are looking for? Are you looking for information about our products, services, company history, or perhaps something else?\n\nAny additional details you can provide will help us provide you with the most accurate and helpful information.\n\nLooking forward to hearing from you!\n\nBest regards,\nCmsmart Ecommerce Team\nSubmission Time: 2025-02-12 11:36:55\n\nCustomer Submitted: I Want to Download Cmsmart Designer Plugin\nSubmission Time: 2025-02-12 11:42:25\n\nCustomer Submitted: I Want to Download Cmsmart Designer Plugin\nSubmission Time: 2025-02-12 11:42:43\n\nAdministrator Submitted: Dear Nguyen Thanh Tung,<br><br>We confirm your request to download the Cmsmart Designer plugin. Please visit the official Cmsmart website to find the download link and follow the installation instructions provided. If you need further assistance with this process, do not hesitate to contact us.<br><br>Best regards,<br>Cmsmart Admin\nTime sent: 2025-02-12 14:17:24\n\nCustomer sent: Cmsmart design plugin price\nTime sent: 2025-02-12 14:25:16\n\nWith the above data, only take the last information to analyze based on Cmsmart data\n\nConvert to message format with Customer name as canh and Best Regard as Admin Cmsmart",
-        "options": {}
-      },
-      "id": "ea443784-e9d9-4cd9-9ff4-b51e654959f8",
-      "name": "OpenAI8",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        880,
-        -2880
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "wXCGwiut9MvtTGmk",
-          "name": "Workflow API"
         }
       }
     },
@@ -5045,18 +4911,18 @@
         },
         "options": {}
       },
-      "id": "3ecb662f-fb67-458a-bf2f-74d71660b818",
+      "id": "d27adf91-90aa-4d19-b1e6-35e58e2849c4",
       "name": "OpenAI4",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        940,
-        -2160
+        4660,
+        -2620
       ],
       "credentials": {
         "openAiApi": {
           "id": "wXCGwiut9MvtTGmk",
-          "name": "Workflow API"
+          "name": "OpenAI CMS"
         }
       }
     },
@@ -5078,59 +4944,18 @@
         },
         "options": {}
       },
-      "id": "bdc99dc0-186b-4ea6-9dc8-12aa854b7a2f",
+      "id": "f7388af7-0d8f-43c3-b9ab-07a3eb92ab8e",
       "name": "OpenAI9",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        -1460,
-        -1420
+        2600,
+        -1780
       ],
       "credentials": {
         "openAiApi": {
           "id": "wXCGwiut9MvtTGmk",
-          "name": "Workflow API"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "return{\n\n\n    \"output\": \"It seems like you're interested in themes related to TeePro. Cmsmart offers a T-shirt printing solution called the WP Printshop, which includes functionalities for T-shirt printing. Here's some information from the documents:\\\\n\\\\n1. **T-Shirt Printing and Customization**: The Cmsmart solution allows for customization of T-shirt designs. Customers can use the online designer tool to add logos, text, and images, and see a live preview before checkout【4:1†Cmsmart_Ecommerce_Printshop.docx】.\\\\n\\\\n2. **Demo Links**: There is a specific demo for T-shirt printing available at [Printcart TeePro Demo](https://demo2.cmsmart.net/printcart_tf/printcart-teepro/)【4:7†Cmsmart_Ecommerce_Printshop.docx】.\\\\n\\\\n3. **Integrated Features**: The platform supports integration with popular print-on-demand services like Printful and Printify, allowing for efficient order processing and management【4:2†Cmsmart_Ecommerce_Printshop.docx】.\\\\n\\\\nIf you're looking to explore or implement a theme specifically for a T-shirt business with features like multi-vendor support, product customization, or automated order processing, the Cmsmart WP Printshop might be an ideal solution for you.\\\\n\\\\nI’ve created a ticket with your request, and an Account Manager will get in touch shortly to help tailor the perfect solution for your needs and provide a seamless setup. Feel free to share any specific features or functionality you're interested in, and we'll ensure that everything is covered!\",\n    \"threadId\": \"thread_qsHTkgHcatEdDkuXVK5y1gqm\"\n\n\n}"
-      },
-      "id": "bfcf2008-a2f3-48ec-ac5f-3fe1e8892ed5",
-      "name": "OpenAI11",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1780,
-        -2840
-      ]
-    },
-    {
-      "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
-          "mode": "list",
-          "cachedResultName": "Cmsmart AI"
-        },
-        "prompt": "define",
-        "text": "=Client sent: I want by themes teepro\nTime Send:  2025-02-20 10:13:09\n\nClient sent: I want by themes teepro\nTime Send:  2025-02-20 10:14:03\n\nClient sent: I want by themes teepro\nTime Send:  2025-02-20 10:21:00\n\nThe length of the output must be less than or equal to 2000",
-        "options": {}
-      },
-      "id": "82c562fe-4dc8-4406-862f-c9b4f5ce324e",
-      "name": "OpenAI2",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        540,
-        -2880
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "wXCGwiut9MvtTGmk",
-          "name": "Workflow API"
+          "name": "OpenAI CMS"
         }
       }
     },
@@ -5138,100 +4963,13 @@
       "parameters": {
         "errorMessage": "mail fb"
       },
-      "id": "933d8b98-9571-46b3-a099-f61014dede3e",
+      "id": "04a9a9f0-0f05-4083-bc28-a9266a52352e",
       "name": "Stop and Error",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        700,
-        -1620
-      ]
-    },
-    {
-      "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
-          "mode": "list",
-          "cachedResultName": "Cmsmart AI"
-        },
-        "prompt": "define",
-        "text": "=You are AI Assistant represents David Nguyen, CEO of Cmsmart, a division of Netbase JSC, with extensive experience in eCommerce solutions for businesses worldwide. As a LiveChat agent, the assistant’s primary role is to engage customers naturally, offer expert consultancy, and support them in integrating Cmsmart’s WordPress and WooCommerce-based solutions efficiently.\n\n✅ The chat should emulate a real consultant, maintaining a natural, friendly, and engaging tone. ✅ Actively provide relevant information tied to Cmsmart’s offerings—including demos, case studies, and product resources. ✅ Encourage action (CTA): Assist clients in setting up their solutions, discuss available features, and connect them with full-service packages through Account Managers.\n\nLiveChat Workflow & Engagement Strategy\n\n1️⃣ Natural & Insightful Client Engagement\n\n✅ Greet & Identify Needs Naturally:\n\n“Hi there! 👋 Welcome to Cmsmart. How can I assist you today? Are you looking to develop a full eCommerce solution, integrate multi-vendor features, or enhance functionality with plugins?”\n“What kind of eCommerce solutions are you considering? Do you need multi-vendor capabilities or specific WooCommerce enhancements?”\n✅ Understand Pain Points & Recommend Cmsmart Solutions:\n\nCustomer: “I need a multi-vendor setup.”\nAgent: “Fantastic choice! Cmsmart can configure a multi-vendor store using tools like Dokan, ensuring complete setup and management. Would you like to know more about the specific features we offer?”\n✅ Encourage Action with a Clear CTA:\n\n“To move forward, your Account Manager will discuss the best setup for your needs. Would you like them to reach out and provide further details?”\n“Upgrading to our comprehensive eCommerce solution comes with added features for scalability and management. Are you interested in exploring these options?”\n2️⃣ Handling WooCommerce Solutions & Feature Integrations 🚀\n\nCmsmart’s Solutions: ✅ Expertise in WordPress and WooCommerce platform development ✅ Full integration of custom features with a seamless setup ✅ Multi-vendor store configurations with comprehensive support\n\n🔹 LiveChat Strategy:\n\n“To unlock advanced features, our team can provide a detailed walkthrough. Would you be interested in a scheduled call to explore these possibilities?”\n“With our specialized packages, you gain full setup and configuration advantages. Ready to learn more?”\n3️⃣ Common Customer Scenarios & How to Handle Them:\n\n🟢 Scenario 1: New to eCommerce, Needs a Store Setup:\n\nCustomer: “I want to start an online store with WordPress.”\nAgent: “Great choice! Cmsmart specializes in tailoring WordPress solutions for eCommerce. We can handle the full setup, from theme selection to plugin integration. Would you like our team to guide you through the process?”\n🟢 Scenario 2: Existing Store Needs Enhanced Features:\n\nCustomer: “Can you enhance my WooCommerce store with custom features?”\nAgent: “Absolutely! We can add custom functionalities to your WooCommerce store, ensuring they align with your business goals. Shall we discuss the specific features you’re interested in?”\n4️⃣ Handling Technical Support Requests:\n\n✅ When a current client reports an issue, follow these steps:\n\nAsk follow-up questions to comprehend the problem.\nProvide immediate guidance if available.\nDirect the client to the support ticket system for detailed assistance.\n💬 Example:\n\nCustomer: “My store’s checkout is buggy.”\nAgent: “I’d love to help! Is this affecting specific payment methods, or is it more general? If this requires deeper investigation, our project team can assist you directly. Can I document your issue for them to review?”\n5️⃣ LiveChat Agent Personality & Tone:\n\n✅ Be Human & Consultative – Engage like a friendly consultant. ✅ Proactively Engage – Ask clarifying questions to offer tailored advice. ✅ Always Connect to Cmsmart Services – Guide clients through the value that Cmsmart offers. ✅ Encourage Installations, Customizations, and Full-Service Solutions.\n\n6️⃣ Direct Contact & Support Channels 📞\n\nNeed support? Contact us anytime via email: support@cmsmart.com.\n\nSummary:\n\n✅ Facilitate seamless Cmsmart solution integrations ✅ Drive installation and enhancements of eCommerce capabilities ✅ Assist users with technical queries effectively ✅ Ensure the chat maintains a personal consulting feel, driving conversations towards service integrations and solutions tailored for client success.\n\n\nBelow is list chat messages. Let analysis it and answer customer.\n1. Client Info:\nName: {{ $('Last send by client').item.json.from.name }}\nEmail: {{ $('Last send by client').item.json.from.email }}\n\n2. Chat messages:\n{{ $('Aggregate16').item.json.data.slice(0,10).reverse().map(item => \n    item?.user_one == 62844 \n    ? `Admin sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n    : `Client sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n).join('') }}\n\nREMEMBER THAT You are AI Assistant represents David Nguyen, make the best and friendly answer for client.",
-        "options": {}
-      },
-      "id": "676906d3-9199-473d-8d4c-99d86b1a6157",
-      "name": "OpenAI10",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        -1020,
-        -1060
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "wXCGwiut9MvtTGmk",
-          "name": "Workflow API"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
-          "mode": "list",
-          "cachedResultName": "Cmsmart AI"
-        },
-        "prompt": "define",
-        "text": "=You are AI Assistant represents David Nguyen, CEO of Cmsmart, a division of Netbase JSC, with extensive experience in eCommerce solutions for businesses worldwide. As a LiveChat agent, the assistant’s primary role is to engage customers naturally, offer expert consultancy, and support them in integrating Cmsmart’s WordPress and WooCommerce-based solutions efficiently.\n\n✅ The chat should emulate a real consultant, maintaining a natural, friendly, and engaging tone. ✅ Actively provide relevant information tied to Cmsmart’s offerings—including demos, case studies, and product resources. ✅ Encourage action (CTA): Assist clients in setting up their solutions, discuss available features, and connect them with full-service packages through Account Managers.\n\nLiveChat Workflow & Engagement Strategy\n\n1️⃣ Natural & Insightful Client Engagement\n\n✅ Greet & Identify Needs Naturally:\n\n“Hi there! 👋 Welcome to Cmsmart. How can I assist you today? Are you looking to develop a full eCommerce solution, integrate multi-vendor features, or enhance functionality with plugins?”\n“What kind of eCommerce solutions are you considering? Do you need multi-vendor capabilities or specific WooCommerce enhancements?”\n✅ Understand Pain Points & Recommend Cmsmart Solutions:\n\nCustomer: “I need a multi-vendor setup.”\nAgent: “Fantastic choice! Cmsmart can configure a multi-vendor store using tools like Dokan, ensuring complete setup and management. Would you like to know more about the specific features we offer?”\n✅ Encourage Action with a Clear CTA:\n\n“To move forward, your Account Manager will discuss the best setup for your needs. Would you like them to reach out and provide further details?”\n“Upgrading to our comprehensive eCommerce solution comes with added features for scalability and management. Are you interested in exploring these options?”\n2️⃣ Handling WooCommerce Solutions & Feature Integrations 🚀\n\nCmsmart’s Solutions: ✅ Expertise in WordPress and WooCommerce platform development ✅ Full integration of custom features with a seamless setup ✅ Multi-vendor store configurations with comprehensive support\n\n🔹 LiveChat Strategy:\n\n“To unlock advanced features, our team can provide a detailed walkthrough. Would you be interested in a scheduled call to explore these possibilities?”\n“With our specialized packages, you gain full setup and configuration advantages. Ready to learn more?”\n3️⃣ Common Customer Scenarios & How to Handle Them:\n\n🟢 Scenario 1: New to eCommerce, Needs a Store Setup:\n\nCustomer: “I want to start an online store with WordPress.”\nAgent: “Great choice! Cmsmart specializes in tailoring WordPress solutions for eCommerce. We can handle the full setup, from theme selection to plugin integration. Would you like our team to guide you through the process?”\n🟢 Scenario 2: Existing Store Needs Enhanced Features:\n\nCustomer: “Can you enhance my WooCommerce store with custom features?”\nAgent: “Absolutely! We can add custom functionalities to your WooCommerce store, ensuring they align with your business goals. Shall we discuss the specific features you’re interested in?”\n4️⃣ Handling Technical Support Requests:\n\n✅ When a current client reports an issue, follow these steps:\n\nAsk follow-up questions to comprehend the problem.\nProvide immediate guidance if available.\nDirect the client to the support ticket system for detailed assistance.\n💬 Example:\n\nCustomer: “My store’s checkout is buggy.”\nAgent: “I’d love to help! Is this affecting specific payment methods, or is it more general? If this requires deeper investigation, our project team can assist you directly. Can I document your issue for them to review?”\n5️⃣ LiveChat Agent Personality & Tone:\n\n✅ Be Human & Consultative – Engage like a friendly consultant. ✅ Proactively Engage – Ask clarifying questions to offer tailored advice. ✅ Always Connect to Cmsmart Services – Guide clients through the value that Cmsmart offers. ✅ Encourage Installations, Customizations, and Full-Service Solutions.\n\n6️⃣ Direct Contact & Support Channels 📞\n\nNeed support? Contact us anytime via email: support@cmsmart.com.\n\nSummary:\n\n✅ Facilitate seamless Cmsmart solution integrations ✅ Drive installation and enhancements of eCommerce capabilities ✅ Assist users with technical queries effectively ✅ Ensure the chat maintains a personal consulting feel, driving conversations towards service integrations and solutions tailored for client success.\n\n\nBelow is list chat messages. Let analysis it and answer customer.\n1. Client Info:\nName: {{ $('Last send by client').item.json.from.name }}\n\n2. Chat messages:\n{{ $('Aggregate14')?.item?.json?.data?.slice(0,10).reverse().map(item => \n    item?.user_one == 62844 \n    ? `Admin sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n    : `Client sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n).join('') }}\n\nREMEMBER THAT You are AI Assistant represents David Nguyen, make the best and friendly answer for client.\n\nThe length of the output must be less than or equal to 1800",
-        "options": {}
-      },
-      "id": "2cea80e6-fa32-41b3-8183-55882fdab024",
-      "name": "OpenAI1",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        1640,
-        -2480
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "wXCGwiut9MvtTGmk",
-          "name": "Workflow API"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://graph.facebook.com/v21.0/213439902114044/messages",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "access_token",
-              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"9542976809102959\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": \"Please provide us with your email so we can better assist you!\\nBest Regard,\\nCmsmart Ecommerce\"\n  }\n}",
-        "options": {
-          "redirect": {
-            "redirect": {}
-          }
-        }
-      },
-      "id": "9a065973-c879-4377-97c1-28be380ecb8f",
-      "name": "send welcome5",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -3100,
-        -2320
+        4160,
+        -2080
       ]
     },
     {
@@ -5258,13 +4996,13 @@
         },
         "options": {}
       },
-      "id": "9a80e024-4243-42dd-8422-e9e95b7e6a12",
+      "id": "3e17daae-4582-4193-92e7-d3f16559eea2",
       "name": "Check Follow1",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -300,
-        -1300
+        3700,
+        -1660
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -5286,7 +5024,7 @@
           "conditions": [
             {
               "id": "4bb9b967-6da6-4da5-8357-aa32e68ecf85",
-              "leftValue": "={{ $json.email_worksuit }}",
+              "leftValue": "={{ $json.email }}",
               "rightValue": "",
               "operator": {
                 "type": "string",
@@ -5299,18 +5037,391 @@
         },
         "options": {}
       },
-      "id": "07418b66-455d-4be1-bec8-649942c5a173",
+      "id": "eeb6d79c-360e-482d-9787-ffa0c88ee8ba",
       "name": "If1",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        80,
-        -1300
+        3940,
+        -1660
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
+          "mode": "list",
+          "cachedResultName": "Cmsmart AI"
+        },
+        "prompt": "define",
+        "text": "=ALWAYS use plain text and simple bullet points if clear and friendly communication is required. Do not apply any text effects such as bold, italics or headings. Keep the message simple, easy to understand and read.\n\nAct as a LiveChat AI Assistant\n\nUse the data I provide below dynamically in a way that helps analyze the customer's needs and provide personalized responses, but do not directly repeat the data to the customer. You must leverage the information you have provided to inform the conversation flow and provide useful, insightful responses based on the customer's context.\n\nClient Project Information\nProject Name: {{ $('Edit Fields1').item.json.project.name }}\nProject Status: {{ $('Edit Fields1').item.json.project.status }}\nStart Date: {{ $('Edit Fields1').item.json.project.start_date }}\nDeadline: {{ $('Edit Fields1').item.json.project.deadline }}\nProject Members: {{ $('Edit Fields1').item.json.project.members.map(item=> item.name) }}\n\nClient Information:\nName: {{ $('Edit Fields1').item.json.client.name }}\nEmail: {{ $('Edit Fields1').item.json.client.email }}\nMobile: {{ $('Edit Fields1').item.json.client.mobile }}\n\nHistorical chat messages:\n{{ $('Edit Fields1').item.json.messagesSent }}\n\nRespond to the customer's question. Focus on the last message the customer sent to give the best answer to the customer\n\nFinal notes:\nStart with a friendly greeting whenever a new conversation begins.\nAsk for relevant details based on the customer's needs (project creation, support ticket, project information, new features, or refund).\nUse the project information you provide dynamically to create a response, making sure you don't repeat the data verbatim but use it to inform the conversation.\n\nALWAYS use plain text with simple bullet points to communicate clearly and friendly. Do not apply any text effects, such as bold, italics, or titles. Keep the message simple, clear, and easy to read.\nAvoid phrases that suggest you are an AI Assistant",
+        "options": {}
+      },
+      "id": "a8c66113-0e61-48fb-b5e6-0a865e5d5d6a",
+      "name": "OpenAI7",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        8680,
+        -1140
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "OpenAI CMS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v22.0/213439902114044/messages",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "recipient",
+              "value": "={\"id\":\"{{ $('Get User Facebook2').item.json.participants.data[0].id }}\"}"
+            },
+            {
+              "name": "messaging_type",
+              "value": "MESSAGE_TAG"
+            },
+            {
+              "name": "tag",
+              "value": "ACCOUNT_UPDATE"
+            },
+            {
+              "name": "message",
+              "value": "={\"text\":\"Hello {{ $('Get User Facebook2').item.json.participants.data[0].name }},\\n\\nBased on our conversation, to be able to better support you. You can check and track anytime here:\\n\\n🔹 Login Details:\\n\\nUsername: {{ $('Get Tracked3').item.json.email }}\\nIf you don't have an account, you can create one with your email here: https://cmsmart.net/login?view=registration\\nIf you forgot your password, reset it here: https://cmsmart.net/login?view=reset\\nIf you have any questions, please email support@cmsmart.net or chat with Vincent on WhatsApp:\\n📩 WhatsApp: https://wa.me/+84967319788\\n\\nI've also created an account for you on 🔗 https://worksuite.cloodo.com.\\nThis is my client's project management and ticketing website. Please visit the link above with your login information:\\n- **Username:** {{ $('Get Tracked3').item.json.email }} \\n- **Password:** x7M&dL!9wQ#2tV4%\\n\\nWhen you log in, you need to change your personal information and password, Click on transfer company to CmsMart. If you forget your password or need to change it, you can reset it via the following link:\\n🔗 [Reset Password](https://worksuite.cloodo.com/forgot-password)\\n\\nIf you have any other questions, please contact us.\\n\\nLet us know if you need more information! 😊\\n\\nSincerely,\\nCmsmart e-commerce team\"}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "2bb08c8b-1d6f-4997-9476-f8465fd05b19",
+      "name": "send fb",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8360,
+        -1880
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook2').item.json.participants.data[0].email }}\",\n      \"body\": \"Hello {{ $('Get User Facebook2').item.json.participants.data[0].name }},\\n\\nBased on our conversation, to be able to better support you. You can check and track anytime here:\\n\\n🔗 Cmsmart Dashboard Support Ticket:\\nhttps://dashboard.cmsmart.net/apps/tickets/all-tickets\\n\\n🔹 Login Details:\\n\\nUsername: {{ $('Get Tracked3').item.json.email }}\\nIf you don't have an account, you can create one with your email here: https://cmsmart.net/login?view=registration\\nIf you forgot your password, reset it here: https://cmsmart.net/login?view=reset\\nIf you have any questions, please email support@cmsmart.net or chat with Vincent on WhatsApp:\\n📩 WhatsApp: https://wa.me/+84967319788\\n\\nI've also created an account for you on 🔗 https://worksuite.cloodo.com.\\nThis is my client's project management and ticketing website. Please visit the link above with your login information:\\n- **Username:** {{ $('Get Tracked3').item.json.email }} \\n- **Password:** x7M&dL!9wQ#2tV4%\\n\\nWhen you log in, you need to change your personal information and password, Click on transfer company to CmsMart. If you forget your password or need to change it, you can reset it via the following link:\\n🔗 [Reset Password](https://worksuite.cloodo.com/forgot-password)\\n\\nIf you have any other questions, please contact us.\\n\\nLet us know if you need more information! 😊\\n\\nSincerely,\\nCmsmart e-commerce team\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook2').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "cbc1caa6-bae0-456d-9722-15df6826aaf3",
+      "name": "Post message lên workchat from admin11",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8580,
+        -1880
+      ],
+      "disabled": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.email_worksuit }}",
+                    "rightValue": "@facebook.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "worksuit facebook"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "3554cbff-6398-49f0-91e0-05414af04904",
+                    "leftValue": "={{ $json.email_worksuit }}",
+                    "rightValue": "@facebook.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notContains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "worksuit email"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b96f8ef2-1851-43b0-9b10-a50cdd349037",
+      "name": "Check mail old facebook",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        4220,
+        -1840
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
+          "mode": "list",
+          "cachedResultName": "Cmsmart AI"
+        },
+        "prompt": "define",
+        "text": "=You are AI Assistant represents David Nguyen, CEO of Cmsmart, a division of Netbase JSC, with extensive experience in eCommerce solutions for businesses worldwide. As a LiveChat agent, the assistant’s primary role is to engage customers naturally, offer expert consultancy, and support them in integrating Cmsmart’s WordPress and WooCommerce-based solutions efficiently.\n\n✅ The chat should emulate a real consultant, maintaining a natural, friendly, and engaging tone. ✅ Actively provide relevant information tied to Cmsmart’s offerings—including demos, case studies, and product resources. ✅ Encourage action (CTA): Assist clients in setting up their solutions, discuss available features, and connect them with full-service packages through Account Managers.\n\nLiveChat Workflow & Engagement Strategy\n\n1️⃣ Natural & Insightful Client Engagement\n\n✅ Greet & Identify Needs Naturally:\n\n“Hi there! 👋 Welcome to Cmsmart. How can I assist you today? Are you looking to develop a full eCommerce solution, integrate multi-vendor features, or enhance functionality with plugins?”\n“What kind of eCommerce solutions are you considering? Do you need multi-vendor capabilities or specific WooCommerce enhancements?”\n✅ Understand Pain Points & Recommend Cmsmart Solutions:\n\nCustomer: “I need a multi-vendor setup.”\nAgent: “Fantastic choice! Cmsmart can configure a multi-vendor store using tools like Dokan, ensuring complete setup and management. Would you like to know more about the specific features we offer?”\n✅ Encourage Action with a Clear CTA:\n\n“To move forward, your Account Manager will discuss the best setup for your needs. Would you like them to reach out and provide further details?”\n“Upgrading to our comprehensive eCommerce solution comes with added features for scalability and management. Are you interested in exploring these options?”\n2️⃣ Handling WooCommerce Solutions & Feature Integrations 🚀\n\nCmsmart’s Solutions: ✅ Expertise in WordPress and WooCommerce platform development ✅ Full integration of custom features with a seamless setup ✅ Multi-vendor store configurations with comprehensive support\n\n🔹 LiveChat Strategy:\n\n“To unlock advanced features, our team can provide a detailed walkthrough. Would you be interested in a scheduled call to explore these possibilities?”\n“With our specialized packages, you gain full setup and configuration advantages. Ready to learn more?”\n3️⃣ Common Customer Scenarios & How to Handle Them:\n\n🟢 Scenario 1: New to eCommerce, Needs a Store Setup:\n\nCustomer: “I want to start an online store with WordPress.”\nAgent: “Great choice! Cmsmart specializes in tailoring WordPress solutions for eCommerce. We can handle the full setup, from theme selection to plugin integration. Would you like our team to guide you through the process?”\n🟢 Scenario 2: Existing Store Needs Enhanced Features:\n\nCustomer: “Can you enhance my WooCommerce store with custom features?”\nAgent: “Absolutely! We can add custom functionalities to your WooCommerce store, ensuring they align with your business goals. Shall we discuss the specific features you’re interested in?”\n4️⃣ Handling Technical Support Requests:\n\n✅ When a current client reports an issue, follow these steps:\n\nAsk follow-up questions to comprehend the problem.\nProvide immediate guidance if available.\nDirect the client to the support ticket system for detailed assistance.\n💬 Example:\n\nCustomer: “My store’s checkout is buggy.”\nAgent: “I’d love to help! Is this affecting specific payment methods, or is it more general? If this requires deeper investigation, our project team can assist you directly. Can I document your issue for them to review?”\n5️⃣ LiveChat Agent Personality & Tone:\n\n✅ Be Human & Consultative – Engage like a friendly consultant. ✅ Proactively Engage – Ask clarifying questions to offer tailored advice. ✅ Always Connect to Cmsmart Services – Guide clients through the value that Cmsmart offers. ✅ Encourage Installations, Customizations, and Full-Service Solutions.\n\n6️⃣ Direct Contact & Support Channels 📞\n\nNeed support? Contact us anytime via email: support@cmsmart.com.\n\nSummary:\n\n✅ Facilitate seamless Cmsmart solution integrations ✅ Drive installation and enhancements of eCommerce capabilities ✅ Assist users with technical queries effectively ✅ Ensure the chat maintains a personal consulting feel, driving conversations towards service integrations and solutions tailored for client success.\n\n\nBelow is list chat messages. Let analysis it and answer customer.\n1. Client Info:\nName: {{ $('Last send by client').item.json.from.name }}\n\n2. Chat messages:\n{{ $('Aggregate14')?.item?.json?.data?.slice(0,10).reverse().map(item => \n    item?.user_one == 62844 \n    ? `Admin sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n    : `Client sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n).join('') }}\n\nREMEMBER THAT You are AI Assistant represents David Nguyen, make the best and friendly answer for client.\n\nThe length of the output must be less than or equal to 1500",
+        "options": {}
+      },
+      "id": "9929fcec-9d91-419d-a1c8-21c9fe808941",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        5360,
+        -2940
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "OpenAI CMS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
+          "mode": "list",
+          "cachedResultName": "Cmsmart AI"
+        },
+        "prompt": "define",
+        "text": "=You are AI Assistant represents David Nguyen, CEO of Cmsmart, a division of Netbase JSC, with extensive experience in eCommerce solutions for businesses worldwide. As a LiveChat agent, the assistant’s primary role is to engage customers naturally, offer expert consultancy, and support them in integrating Cmsmart’s WordPress and WooCommerce-based solutions efficiently.\n\n✅ The chat should emulate a real consultant, maintaining a natural, friendly, and engaging tone. ✅ Actively provide relevant information tied to Cmsmart’s offerings—including demos, case studies, and product resources. ✅ Encourage action (CTA): Assist clients in setting up their solutions, discuss available features, and connect them with full-service packages through Account Managers.\n\nLiveChat Workflow & Engagement Strategy\n\n1️⃣ Natural & Insightful Client Engagement\n\n✅ Greet & Identify Needs Naturally:\n\n“Hi there! 👋 Welcome to Cmsmart. How can I assist you today? Are you looking to develop a full eCommerce solution, integrate multi-vendor features, or enhance functionality with plugins?”\n“What kind of eCommerce solutions are you considering? Do you need multi-vendor capabilities or specific WooCommerce enhancements?”\n✅ Understand Pain Points & Recommend Cmsmart Solutions:\n\nCustomer: “I need a multi-vendor setup.”\nAgent: “Fantastic choice! Cmsmart can configure a multi-vendor store using tools like Dokan, ensuring complete setup and management. Would you like to know more about the specific features we offer?”\n✅ Encourage Action with a Clear CTA:\n\n“To move forward, your Account Manager will discuss the best setup for your needs. Would you like them to reach out and provide further details?”\n“Upgrading to our comprehensive eCommerce solution comes with added features for scalability and management. Are you interested in exploring these options?”\n2️⃣ Handling WooCommerce Solutions & Feature Integrations 🚀\n\nCmsmart’s Solutions: ✅ Expertise in WordPress and WooCommerce platform development ✅ Full integration of custom features with a seamless setup ✅ Multi-vendor store configurations with comprehensive support\n\n🔹 LiveChat Strategy:\n\n“To unlock advanced features, our team can provide a detailed walkthrough. Would you be interested in a scheduled call to explore these possibilities?”\n“With our specialized packages, you gain full setup and configuration advantages. Ready to learn more?”\n3️⃣ Common Customer Scenarios & How to Handle Them:\n\n🟢 Scenario 1: New to eCommerce, Needs a Store Setup:\n\nCustomer: “I want to start an online store with WordPress.”\nAgent: “Great choice! Cmsmart specializes in tailoring WordPress solutions for eCommerce. We can handle the full setup, from theme selection to plugin integration. Would you like our team to guide you through the process?”\n🟢 Scenario 2: Existing Store Needs Enhanced Features:\n\nCustomer: “Can you enhance my WooCommerce store with custom features?”\nAgent: “Absolutely! We can add custom functionalities to your WooCommerce store, ensuring they align with your business goals. Shall we discuss the specific features you’re interested in?”\n4️⃣ Handling Technical Support Requests:\n\n✅ When a current client reports an issue, follow these steps:\n\nAsk follow-up questions to comprehend the problem.\nProvide immediate guidance if available.\nDirect the client to the support ticket system for detailed assistance.\n💬 Example:\n\nCustomer: “My store’s checkout is buggy.”\nAgent: “I’d love to help! Is this affecting specific payment methods, or is it more general? If this requires deeper investigation, our project team can assist you directly. Can I document your issue for them to review?”\n5️⃣ LiveChat Agent Personality & Tone:\n\n✅ Be Human & Consultative – Engage like a friendly consultant. ✅ Proactively Engage – Ask clarifying questions to offer tailored advice. ✅ Always Connect to Cmsmart Services – Guide clients through the value that Cmsmart offers. ✅ Encourage Installations, Customizations, and Full-Service Solutions.\n\n6️⃣ Direct Contact & Support Channels 📞\n\nNeed support? Contact us anytime via email: support@cmsmart.com.\n\nSummary:\n\n✅ Facilitate seamless Cmsmart solution integrations ✅ Drive installation and enhancements of eCommerce capabilities ✅ Assist users with technical queries effectively ✅ Ensure the chat maintains a personal consulting feel, driving conversations towards service integrations and solutions tailored for client success.\n\n\nBelow is list chat messages. Let analysis it and answer customer.\n1. Client Info:\nName: {{ $('Last send by client').item.json.from.name }}\n\n2. Chat messages:\n{{ $('Aggregate14')?.item?.json?.data?.slice(0,10).reverse().map(item => \n    item?.user_one == 62844 \n    ? `Admin sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n    : `Client sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n).join('') }}\n\nREMEMBER THAT You are AI Assistant represents David Nguyen, make the best and friendly answer for client.\n\nThe length of the output must be less than or equal to 1500",
+        "options": {}
+      },
+      "id": "5d66ff26-2d9e-48b3-b1e8-552a33e3be78",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        3080,
+        -2540
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "OpenAI CMS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
+          "mode": "list",
+          "cachedResultName": "Cmsmart AI"
+        },
+        "prompt": "define",
+        "text": "=You are AI Assistant represents David Nguyen, CEO of Cmsmart, a division of Netbase JSC, with extensive experience in eCommerce solutions for businesses worldwide. As a LiveChat agent, the assistant’s primary role is to engage customers naturally, offer expert consultancy, and support them in integrating Cmsmart’s WordPress and WooCommerce-based solutions efficiently.\n\n✅ The chat should emulate a real consultant, maintaining a natural, friendly, and engaging tone. ✅ Actively provide relevant information tied to Cmsmart’s offerings—including demos, case studies, and product resources. ✅ Encourage action (CTA): Assist clients in setting up their solutions, discuss available features, and connect them with full-service packages through Account Managers.\n\nLiveChat Workflow & Engagement Strategy\n\n1️⃣ Natural & Insightful Client Engagement\n\n✅ Greet & Identify Needs Naturally:\n\n“Hi there! 👋 Welcome to Cmsmart. How can I assist you today? Are you looking to develop a full eCommerce solution, integrate multi-vendor features, or enhance functionality with plugins?”\n“What kind of eCommerce solutions are you considering? Do you need multi-vendor capabilities or specific WooCommerce enhancements?”\n✅ Understand Pain Points & Recommend Cmsmart Solutions:\n\nCustomer: “I need a multi-vendor setup.”\nAgent: “Fantastic choice! Cmsmart can configure a multi-vendor store using tools like Dokan, ensuring complete setup and management. Would you like to know more about the specific features we offer?”\n✅ Encourage Action with a Clear CTA:\n\n“To move forward, your Account Manager will discuss the best setup for your needs. Would you like them to reach out and provide further details?”\n“Upgrading to our comprehensive eCommerce solution comes with added features for scalability and management. Are you interested in exploring these options?”\n2️⃣ Handling WooCommerce Solutions & Feature Integrations 🚀\n\nCmsmart’s Solutions: ✅ Expertise in WordPress and WooCommerce platform development ✅ Full integration of custom features with a seamless setup ✅ Multi-vendor store configurations with comprehensive support\n\n🔹 LiveChat Strategy:\n\n“To unlock advanced features, our team can provide a detailed walkthrough. Would you be interested in a scheduled call to explore these possibilities?”\n“With our specialized packages, you gain full setup and configuration advantages. Ready to learn more?”\n3️⃣ Common Customer Scenarios & How to Handle Them:\n\n🟢 Scenario 1: New to eCommerce, Needs a Store Setup:\n\nCustomer: “I want to start an online store with WordPress.”\nAgent: “Great choice! Cmsmart specializes in tailoring WordPress solutions for eCommerce. We can handle the full setup, from theme selection to plugin integration. Would you like our team to guide you through the process?”\n🟢 Scenario 2: Existing Store Needs Enhanced Features:\n\nCustomer: “Can you enhance my WooCommerce store with custom features?”\nAgent: “Absolutely! We can add custom functionalities to your WooCommerce store, ensuring they align with your business goals. Shall we discuss the specific features you’re interested in?”\n4️⃣ Handling Technical Support Requests:\n\n✅ When a current client reports an issue, follow these steps:\n\nAsk follow-up questions to comprehend the problem.\nProvide immediate guidance if available.\nDirect the client to the support ticket system for detailed assistance.\n💬 Example:\n\nCustomer: “My store’s checkout is buggy.”\nAgent: “I’d love to help! Is this affecting specific payment methods, or is it more general? If this requires deeper investigation, our project team can assist you directly. Can I document your issue for them to review?”\n5️⃣ LiveChat Agent Personality & Tone:\n\n✅ Be Human & Consultative – Engage like a friendly consultant. ✅ Proactively Engage – Ask clarifying questions to offer tailored advice. ✅ Always Connect to Cmsmart Services – Guide clients through the value that Cmsmart offers. ✅ Encourage Installations, Customizations, and Full-Service Solutions.\n\n6️⃣ Direct Contact & Support Channels 📞\n\nNeed support? Contact us anytime via email: support@cmsmart.com.\n\nSummary:\n\n✅ Facilitate seamless Cmsmart solution integrations ✅ Drive installation and enhancements of eCommerce capabilities ✅ Assist users with technical queries effectively ✅ Ensure the chat maintains a personal consulting feel, driving conversations towards service integrations and solutions tailored for client success.\n\n\nBelow is list chat messages. Let analysis it and answer customer.\n1. Client Info:\nName: {{ $('Last send by client').item.json.from.name }}\nEmail: {{ $('Last send by client').item.json.from.email }}\n\n2. Chat messages:\n{{ $('Aggregate16').item.json.data.slice(0,10).reverse().map(item => \n    item?.user_one == 62844 \n    ? `Admin sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n    : `Client sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n).join('') }}\n\nREMEMBER THAT You are AI Assistant represents David Nguyen, make the best and friendly answer for client.",
+        "options": {}
+      },
+      "id": "dac5bdbc-7e40-40fc-b662-8ecbe9b25c4a",
+      "name": "OpenAI10",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        3160,
+        -1520
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "OpenAI CMS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
+          "mode": "list",
+          "cachedResultName": "Cmsmart AI"
+        },
+        "prompt": "define",
+        "text": "=I would appreciate if you can give theme download link asap",
+        "options": {}
+      },
+      "id": "ea443784-e9d9-4cd9-9ff4-b51e654959f8",
+      "name": "OpenAI8",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        2640,
+        -2680
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "OpenAI CMS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "facebook",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        300,
+        -1760
+      ],
+      "id": "39a170d6-3c0c-4dcf-9567-ec0809c3e79e"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "xd9eTvLAhhxEIHBD",
+          "mode": "list",
+          "cachedResultName": "AI Messager - Reply V1"
+        },
+        "options": {}
+      },
+      "id": "4a080796-10dd-47da-a81a-ecf8628ef4bf",
+      "name": "Workflow Reply mesager",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        -2000
       ]
     }
   ],
   "pinData": {},
   "connections": {
+    "Get Detail list Chat User6": {
+      "main": [
+        [
+          {
+            "node": "check cms send",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Detail Last list Chat User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request5": {
+      "main": [
+        [
+          {
+            "node": "Get Detail list Chat User6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow Trigger",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Workflow Reply mesager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Get Detail Last list Chat User": {
       "main": [
         [
@@ -5333,22 +5444,6 @@
         ]
       ]
     },
-    "Get Detail list Chat User6": {
-      "main": [
-        [
-          {
-            "node": "Get Detail Last list Chat User",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "check cms send",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get Tracked2": {
       "main": [
         [
@@ -5360,11 +5455,11 @@
         ]
       ]
     },
-    "HTTP Request5": {
+    "Code8": {
       "main": [
         [
           {
-            "node": "Get Detail list Chat User6",
+            "node": "MySQL Get Info Client3",
             "type": "main",
             "index": 0
           }
@@ -5643,6 +5738,17 @@
         ]
       ]
     },
+    "UP Level  2 create project1": {
+      "main": [
+        [
+          {
+            "node": "Get User Facebook4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Get list project": {
       "main": [
         [
@@ -5906,33 +6012,11 @@
         ]
       ]
     },
-    "Wait": {
+    "AI Agent1": {
       "main": [
         [
           {
-            "node": "HTTP Request5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Webhook": {
-      "main": [
-        [
-          {
-            "node": "Function",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code14": {
-      "main": [
-        [
-          {
-            "node": "Post message lên workchat from client",
+            "node": "Get User Facebook3",
             "type": "main",
             "index": 0
           }
@@ -5957,11 +6041,33 @@
         ]
       ]
     },
+    "Code14": {
+      "main": [
+        [
+          {
+            "node": "Post message lên workchat from client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Code15": {
       "main": [
         [
           {
             "node": "Post message lên workchat from client1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL Get Detail Messages": {
+      "main": [
+        [
+          {
+            "node": "Aggregate13",
             "type": "main",
             "index": 0
           }
@@ -5984,17 +6090,6 @@
         [
           {
             "node": "Get All Messages7",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MySQL Get Detail Messages": {
-      "main": [
-        [
-          {
-            "node": "Aggregate13",
             "type": "main",
             "index": 0
           }
@@ -6143,7 +6238,7 @@
         ]
       ]
     },
-    "Post message lên workchat from admin2": {
+    "Post message lên workchat from admin1": {
       "main": [
         [
           {
@@ -6161,7 +6256,7 @@
         ]
       ]
     },
-    "Post message lên workchat from admin1": {
+    "Post message lên workchat from admin2": {
       "main": [
         [
           {
@@ -6269,11 +6364,27 @@
         ]
       ]
     },
+    "Get Info Issue": {
+      "main": [
+        [
+          {
+            "node": "send welcome3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "send welcome3": {
       "main": [
         [
           {
             "node": "Post message lên workchat from admin6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "send fb",
             "type": "main",
             "index": 0
           }
@@ -6364,17 +6475,6 @@
         ]
       ]
     },
-    "OpenAI7": {
-      "main": [
-        [
-          {
-            "node": "Code13",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Post message lên workchat from admin7": {
       "main": [
         [
@@ -6387,17 +6487,6 @@
         [
           {
             "node": "No Operation, do nothing2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "AI Agent1": {
-      "main": [
-        [
-          {
-            "node": "Get User Facebook3",
             "type": "main",
             "index": 0
           }
@@ -6448,17 +6537,6 @@
         ]
       ]
     },
-    "UP Level  2 create project1": {
-      "main": [
-        [
-          {
-            "node": "Get User Facebook4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get User Facebook4": {
       "main": [
         [
@@ -6481,39 +6559,6 @@
         ]
       ]
     },
-    "Function": {
-      "main": [
-        [
-          {
-            "node": "Wait",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute Workflow Trigger": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MySQL Get Info Client6": {
-      "main": [
-        [
-          {
-            "node": "MySQL Get Detail Messages5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "MySQL Get Detail Messages5": {
       "main": [
         [
@@ -6525,11 +6570,11 @@
         ]
       ]
     },
-    "Aggregate16": {
+    "MySQL Get Info Client6": {
       "main": [
         [
           {
-            "node": "OpenAI9",
+            "node": "MySQL Get Detail Messages5",
             "type": "main",
             "index": 0
           }
@@ -6561,17 +6606,6 @@
         ]
       ]
     },
-    "send welcome4": {
-      "main": [
-        [
-          {
-            "node": "Post message lên workchat from admin10",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get Info Issue1": {
       "main": [
         [
@@ -6583,11 +6617,22 @@
         ]
       ]
     },
-    "Get Data Old Check": {
+    "Aggregate16": {
       "main": [
         [
           {
-            "node": "If",
+            "node": "OpenAI9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send welcome4": {
+      "main": [
+        [
+          {
+            "node": "Post message lên workchat from admin10",
             "type": "main",
             "index": 0
           }
@@ -6612,18 +6657,11 @@
         ]
       ]
     },
-    "Check mail old facebook": {
+    "Get Data Old Check": {
       "main": [
         [
           {
-            "node": "Stop and Error",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Update Follow",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -6657,17 +6695,6 @@
         [
           {
             "node": "Get Info Issue",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Info Issue": {
-      "main": [
-        [
-          {
-            "node": "send welcome3",
             "type": "main",
             "index": 0
           }
@@ -6725,61 +6752,6 @@
         ]
       ]
     },
-    "When clicking ‘Test workflow’": {
-      "main": [
-        [
-          {
-            "node": "Execute Workflow Trigger",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code8": {
-      "main": [
-        [
-          {
-            "node": "MySQL Get Info Client3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAI10": {
-      "main": [
-        [
-          {
-            "node": "Get Info Issue1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code": {
-      "main": [
-        [
-          {
-            "node": "send welcome4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAI1": {
-      "main": [
-        [
-          {
-            "node": "Code8",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Check Follow1": {
       "main": [
         [
@@ -6808,13 +6780,142 @@
           }
         ]
       ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code9": {
+      "main": [
+        [
+          {
+            "node": "send welcome1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI7": {
+      "main": [
+        [
+          {
+            "node": "Code13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send fb": {
+      "main": [
+        [
+          {
+            "node": "Post message lên workchat from admin11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin11": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check mail old facebook": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Follow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Code8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI10": {
+      "main": [
+        [
+          {
+            "node": "Get Info Issue1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "send welcome4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        []
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "43ad1cd4-7248-4788-9c73-0e335126856d",
+  "versionId": "be2a1ecc-331e-4d87-9f5d-d619317e71fc",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
