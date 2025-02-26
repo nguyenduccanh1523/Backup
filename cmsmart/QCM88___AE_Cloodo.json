@@ -486,101 +486,10 @@
     },
     {
       "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.companyName }}",
-                    "rightValue": "CmsMart",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "CmsMart"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
-                    "leftValue": "={{ $json.companyName }}",
-                    "rightValue": "PrintCart",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "PrintCart"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
-                    "leftValue": "={{ $json.companyName }}",
-                    "rightValue": "Cloodo",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "Cloodo"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "9aa68a9a-709c-41d6-86fc-d8a74ea9b971",
-      "name": "Switch Company1",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.2,
-      "position": [
-        -2280,
-        1240
-      ],
-      "executeOnce": false
-    },
-    {
-      "parameters": {
         "operation": "minus",
-        "user_id": "={{ $('If104').item.json.id }}",
+        "user_id": "={{ $('Switch Company1').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If104').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('Switch Company1').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "85996310-7b37-4466-adef-22d8f4492f12",
       "name": "Cloodo Point17",
@@ -620,7 +529,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $('If104').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $('Switch Company1').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "947b548f-ecaf-4cf6-a084-44a39502b945",
@@ -893,7 +802,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate() - 1 ); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
       "id": "4bfdef29-44e0-4f3a-8957-c8857aab4186",
       "name": "Check create 7d43",
@@ -995,7 +904,7 @@
         "operation": "minus",
         "user_id": "={{ $('If105').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If105').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If105').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "809b17a4-7f19-4bc5-885b-1fcd8f0c00ba",
       "name": "Cloodo Point18",
@@ -1035,7 +944,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "99800330-e720-4bf7-8de1-c6d6f4f54717",
@@ -1259,20 +1168,6 @@
     },
     {
       "parameters": {
-        "mode": "chooseBranch",
-        "useDataOfInput": 2
-      },
-      "id": "6c89dc70-4832-45d5-b0fa-8aa6248fc94a",
-      "name": "Merge15",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [
-        -400,
-        1580
-      ]
-    },
-    {
-      "parameters": {
         "rules": {
           "values": [
             {
@@ -1458,7 +1353,7 @@
         "operation": "minus",
         "user_id": "={{ $('If64').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If64').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If64').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "5e4003be-b2eb-4c01-b05e-44d09a3580f2",
       "name": "Cloodo Point12",
@@ -1498,7 +1393,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $('If64').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $('If64').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "3bfc1ad1-6b99-4ca9-b5b0-cc4642f09151",
@@ -1771,7 +1666,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate() - 1 ); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
       "id": "0303a608-46f3-4166-83ac-50fa689de5ad",
       "name": "Check create 7d40",
@@ -1873,7 +1768,7 @@
         "operation": "minus",
         "user_id": "={{ $('If65').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If65').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If65').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "e2c25630-8b86-4870-a7dd-26853d1a8aa7",
       "name": "Cloodo Point13",
@@ -1913,7 +1808,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "ac7ede94-94ca-4768-a75f-c41f0f8d3d85",
@@ -2154,7 +2049,7 @@
         "operation": "minus",
         "user_id": "={{ $('If69').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If69').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If69').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "a9401688-97a3-4670-b4da-589c84c92e67",
       "name": "Cloodo Point15",
@@ -2194,7 +2089,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $('If69').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $('If69').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "da69d7bf-0655-417e-8943-435e5d0f5ecf",
@@ -2467,7 +2362,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate() - 1 ); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
       "id": "df08e7b3-b8d3-4c9e-8a44-79af0a597771",
       "name": "Check create 7d52",
@@ -2569,7 +2464,7 @@
         "operation": "minus",
         "user_id": "={{ $('If70').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If70').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If70').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "2215c147-a963-4a81-8476-bda8b13fe203",
       "name": "Cloodo Point20",
@@ -2609,7 +2504,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "0b3420ca-1d09-492c-a47c-4558ba488020",
@@ -2941,7 +2836,7 @@
         "operation": "minus",
         "user_id": "={{ $('If84').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If84').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If84').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "409bbdc5-a2cc-446d-9e90-b3e05b357f2e",
       "name": "Cloodo Point27",
@@ -2981,7 +2876,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $('If84').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $('If84').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "c7ceeddf-e0ff-4930-96c1-9be1fa600908",
@@ -3254,7 +3149,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate() - 1 ); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
       "id": "9a5870b9-2448-4d30-a4fc-4476a141afdc",
       "name": "Check create 7d58",
@@ -3356,7 +3251,7 @@
         "operation": "minus",
         "user_id": "={{ $('If85').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If85').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If85').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "1adf9992-4b9f-4504-a30d-cc2e0d5fc0c7",
       "name": "Cloodo Point38",
@@ -3396,7 +3291,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "80658542-5c62-4d2d-99e4-d39bd721accd",
@@ -3962,9 +3857,9 @@
     {
       "parameters": {
         "operation": "minus",
-        "user_id": "={{ $('Merge16').item.json.id }}",
+        "user_id": "={{ $('If109').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('Merge16').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If109').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "0e5f6296-81d0-4fa8-b63a-d7ce96c42559",
       "name": "Cloodo Point24",
@@ -4004,7 +3899,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "e53001ba-84c8-4998-909f-8ba4ef30b074",
@@ -4105,7 +4000,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate() - 1 ); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
       "id": "046d226c-4971-4d52-8f70-a0d9572222f1",
       "name": "Check create 7d44",
@@ -4207,7 +4102,7 @@
         "operation": "minus",
         "user_id": "={{ $('If110').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If110').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If110').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "d46cc666-69ff-4987-a4ca-3e7e8d3e565d",
       "name": "Cloodo Point25",
@@ -4247,7 +4142,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "bdcf5fe5-26a8-4c20-b9e8-a00d44a4a94d",
@@ -4317,7 +4212,7 @@
         "operation": "minus",
         "user_id": "={{ $('If114').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If114').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If114').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "509d5b04-17d4-4238-9193-168c95204e19",
       "name": "Cloodo Point59",
@@ -4357,7 +4252,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $('If114').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $('If114').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "cb2c2401-3852-4172-a52f-1ee3694b9578",
@@ -4458,7 +4353,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate()); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
+        "jsCode": "// Lấy ngày hiện tại\nconst currentDate = new Date();\n\n// Tính thời điểm bắt đầu của ngày hôm nay (0h UTC)\nconst startOfTodayUTC = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0));\n\n// Tính thời điểm bắt đầu của ngày hôm qua (0h UTC)\nconst startOfYesterdayUTC = new Date(startOfTodayUTC);\nstartOfYesterdayUTC.setUTCDate(startOfYesterdayUTC.getUTCDate() - 1 ); // Lùi về ngày hôm qua\n\n// Debug kiểm tra thời gian\n// console.log('Start of Yesterday (UTC):', startOfYesterdayUTC);\n// console.log('Start of Today (UTC):', startOfTodayUTC);\n\n// Khởi tạo mảng trống để lưu kết quả\nlet result = [];\n\n// Lặp qua từng item trong 'data' và lọc những item có 'start_time' thuộc ngày hôm qua\n$input.all()[0]?.json?.data?.forEach(item => {\n  let startTimeString = item?.start_time; // Lấy giá trị 'start_time' dưới dạng chuỗi\n\n  // Chuyển đổi 'start_time' sang đối tượng Date\n  const startDate = startTimeString ? new Date(startTimeString) : null;\n\n  if (!isNaN(startDate)) { // Kiểm tra nếu 'start_time' hợp lệ\n    // Kiểm tra nếu 'start_time' nằm trong ngày hôm qua (UTC)\n    const isStartTimeYesterday = startDate >= startOfYesterdayUTC && startDate < startOfTodayUTC;\n\n    // Nếu 'start_time' thuộc ngày hôm qua, thêm vào mảng kết quả\n    if (isStartTimeYesterday) {\n      result.push(item); // Đẩy trực tiếp item vào mảng kết quả\n    }\n  }\n});\n\n// Kiểm tra kết quả và trả về\nif (result.length > 0) {\n  // Nếu có item, trả về danh sách và true\n  return {\n    success: true,\n    items: result\n  };\n} else {\n  // Nếu không có item, trả về false kèm ID và tên user đầu tiên\n  return {\n    success: false,\n    id: $input.all()[0]?.json?.data[0]?.user?.id,\n    name: $input.all()[0]?.json?.data[0]?.user?.name\n  };\n}"
       },
       "id": "cec60da1-9f8b-43a4-8881-00fbad2b0e0d",
       "name": "Check create 7d46",
@@ -4510,7 +4405,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Lấy danh sách items từ input\nconst items = $('If114').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 240, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
+        "jsCode": "// Lấy danh sách items từ input\nconst items = $('If114').all()[0]?.json?.items || [];\n\n// Khởi tạo biến để tính tổng\nlet totalSum = 0;\n\n// Lặp qua từng item và cộng giá trị 'total_minutes' vào tổng\nfor (const item of items) {\n  const total = item?.total_minutes || 0; // Lấy giá trị 'total_minutes', mặc định là 0 nếu không tồn tại\n  totalSum += total; // Cộng giá trị vào tổng\n}\n\n// Tạo kết quả cuối cùng để trả về\nconst result = [{\n  totalSum, // Tổng tất cả total_minutes\n  isboolen: totalSum > 360, // Trả về true nếu tổng lớn hơn 240, ngược lại false\n  name: items[0]?.user?.name,\n  id: items[0]?.user?.id\n}];\n\n// Trả về mảng chỉ chứa kết quả cuối cùng\nreturn result;\n"
       },
       "id": "f3f52d41-cf3e-484b-ad77-19d63ec343f6",
       "name": "Code16",
@@ -4560,7 +4455,7 @@
         "operation": "minus",
         "user_id": "={{ $('If115').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If115').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If115').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "759cdb47-ebb3-4535-9938-d7fadbf8d781",
       "name": "Cloodo Point61",
@@ -4879,7 +4774,7 @@
         "operation": "minus",
         "user_id": "={{ $('If117').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If117').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If117').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "186b88f8-3636-429d-8eef-a3e24c3531b8",
       "name": "Cloodo Point63",
@@ -5198,7 +5093,7 @@
         "operation": "minus",
         "user_id": "={{ $('If113').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If113').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If113').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "b604448b-bc6b-4887-9e4d-a83acd622a88",
       "name": "Cloodo Point65",
@@ -5238,7 +5133,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "d7a4acff-ca04-427a-921c-df97785af9d5",
@@ -5612,7 +5507,7 @@
         "operation": "minus",
         "user_id": "={{ $('If89').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If89').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If89').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "85025ef2-bf0a-4b02-bf26-1c28cfd3e10f",
       "name": "Cloodo Point",
@@ -5652,7 +5547,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "cd1857ea-7049-4776-8dd0-ff9ac17af31c",
@@ -6012,7 +5907,7 @@
         "operation": "minus",
         "user_id": "={{ $('If74').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If74').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If74').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "01d9c9ca-2a3c-43c7-80b2-0dabdc5bcbba",
       "name": "Cloodo Point16",
@@ -6052,7 +5947,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "845adfab-d81b-4931-8899-fb9a035e31de",
@@ -6412,7 +6307,7 @@
         "operation": "minus",
         "user_id": "={{ $('If76').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If76').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If76').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "1fb1c50c-47d1-42f7-b303-f4192caa543e",
       "name": "Cloodo Point1",
@@ -6452,7 +6347,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "277c7dc2-784c-42ca-be08-7aca9c7a2756",
@@ -6812,7 +6707,7 @@
         "operation": "minus",
         "user_id": "={{ $('If120').item.json.id }}",
         "points": 3,
-        "note": "=QCM 88: {{ $('If120').item.json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}"
+        "note": "=QCM 88: {{ $('If120').item.json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}"
       },
       "id": "74aaf057-bf20-4285-addd-59c95a642b95",
       "name": "Cloodo Point22",
@@ -6852,7 +6747,7 @@
     {
       "parameters": {
         "operation": "search",
-        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.format('yyyy-MM-dd')}}",
+        "keyword": "=QCM 88: {{ $json.name }} -3 Point No Logtime on day {{$now.minus(1,'days').format('yyyy-MM-dd')}}",
         "max_limit_record": 50
       },
       "id": "2c5c9c22-2d0c-42f5-b19b-a3bccc6d762a",
@@ -6924,9 +6819,13 @@
             {
               "field": "weeks",
               "triggerAtDay": [
-                1
+                2,
+                3,
+                4,
+                5,
+                6
               ],
-              "triggerAtHour": 18
+              "triggerAtHour": 5
             }
           ]
         }
@@ -6937,7 +6836,7 @@
       "typeVersion": 1.2,
       "position": [
         -8240,
-        2440
+        2420
       ]
     },
     {
@@ -6947,9 +6846,13 @@
             {
               "field": "weeks",
               "triggerAtDay": [
-                1
+                2,
+                3,
+                4,
+                5,
+                6
               ],
-              "triggerAtHour": 21
+              "triggerAtHour": 6
             }
           ]
         }
@@ -6975,6 +6878,152 @@
       "position": [
         -8620,
         2640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "keyword": "Logtime on day 2025-02-25",
+        "max_limit_record": 50
+      },
+      "id": "8aaca9db-cc43-4dc0-9a56-c6bb94473e2e",
+      "name": "Cloodo Point44",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -5780,
+        3340
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "uYFtcIGXdFXgli6w",
+          "name": "Cloodo account test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "point_id": 74661
+      },
+      "id": "a9aed97e-cc3f-45a0-aa56-5120f464c651",
+      "name": "Cloodo Point45",
+      "type": "@cloodo/n8n-nodes-cloodo-point.cloodoPoint",
+      "typeVersion": 1,
+      "position": [
+        -5440,
+        3340
+      ],
+      "credentials": {
+        "cloodoApi2": {
+          "id": "82nsSr6jMyGAQbyu",
+          "name": "Cmsmart Point API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "CmsMart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CmsMart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5d349bbc-6f8c-4c10-9a93-162d623cd47c",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "PrintCart",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PrintCart"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6187ad4a-68a3-4231-852f-1c03921eacb0",
+                    "leftValue": "={{ $json.companyName }}",
+                    "rightValue": "Cloodo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cloodo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9aa68a9a-709c-41d6-86fc-d8a74ea9b971",
+      "name": "Switch Company1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -2280,
+        1240
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "useDataOfInput": 2
+      },
+      "id": "6c89dc70-4832-45d5-b0fa-8aa6248fc94a",
+      "name": "Merge15",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -400,
+        1580
       ]
     }
   ],
@@ -7102,31 +7151,6 @@
         [
           {
             "node": "Switch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Switch Company1": {
-      "main": [
-        [
-          {
-            "node": "get Timelog22",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "get Timelog23",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "get Timelog24",
             "type": "main",
             "index": 0
           }
@@ -9491,17 +9515,6 @@
         ]
       ]
     },
-    "Merge15": {
-      "main": [
-        [
-          {
-            "node": "Cloodo Point54",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If120": {
       "main": [
         [
@@ -9552,16 +9565,62 @@
             "node": "Get All Department",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Get All Department1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get All Department2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Company1": {
+      "main": [
+        [
+          {
+            "node": "get Timelog22",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Timelog23",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get Timelog24",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge15": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Point54",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a24b2920-087c-46ff-be89-a9c3f13ddccd",
+  "versionId": "7d9ddf87-4ec6-433e-8b60-ce795ae9cd30",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
