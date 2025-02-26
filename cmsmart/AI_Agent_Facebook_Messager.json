@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        420,
-        -2280
+        340,
+        -1940
       ]
     },
     {
@@ -47,8 +47,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        640,
-        -2280
+        560,
+        -1940
       ]
     },
     {
@@ -268,8 +268,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5720,
-        -2940
+        5740,
+        -3080
       ]
     },
     {
@@ -299,8 +299,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        6180,
-        -2940
+        6200,
+        -3080
       ]
     },
     {
@@ -3419,8 +3419,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        5940,
-        -2940
+        5960,
+        -3080
       ],
       "credentials": {
         "mySql": {
@@ -3447,8 +3447,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        6480,
-        -2940
+        6500,
+        -3080
       ],
       "onError": "continueErrorOutput"
     },
@@ -4904,39 +4904,6 @@
         "messages": {
           "values": [
             {
-              "content": "=You are a customer request analyst. The customer makes a request in the message below, analyzes and concludes \"problem\" or \"email\" based on the content that the customer mentions needing support.\n\nIf in the conversation, the customer only states the problem and does not explain further or the customer explains, then the conclusion is \"problem\"\nIf in the conversation, in the most recent message, the customer sends information including email, then the conclusion is \"email\". For example, if in the conversation, the customer talks about the problem of anything that does not have email in it, then the conclusion is \"problem\"; If in the conversation, the customer talks about information including email, then the conclusion is \"email\".\n\nJust conclude \"problem\" or \"email\" without further explanation.\nHere is the message information you need to analyze to draw conclusions:\n{{ $json.messagesSent }}\n",
-              "role": "assistant"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "d27adf91-90aa-4d19-b1e6-35e58e2849c4",
-      "name": "OpenAI4",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        4660,
-        -2620
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "wXCGwiut9MvtTGmk",
-          "name": "OpenAI CMS"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "modelId": {
-          "__rl": true,
-          "value": "gpt-4",
-          "mode": "list",
-          "cachedResultName": "GPT-4"
-        },
-        "messages": {
-          "values": [
-            {
               "content": "=You are analyzing a chat conversation between an agent and a client. \nFocus on analyzing the last messages sent by customers to know what the customer wants? Do they want to continue the conversation? Based on the sending time to know which is the last message and which is the current chat session. In each chat session, the time between messages is not more than 30 minutes, if more than 30 minutes, it is a new chat session.\n\nChat messages:\n{{ $json?.data?.slice(0,10).reverse().map(item => \n    item?.user_one == 62844 \n    ? `Admin sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n    : `Client sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n).join('') }}\n\nDetermine if the customer's question is about the price of a product. \n- If yes, return: \"pricing\"\n- If no, return: \"normal\"\n\nDetermine if the customer's question is about the information about we service. \n- If yes, return: \"service\"\n- If no, return: \"normal\"\n\nAlways Returns only one of the 3 keywords \"pricing\" or \"normal\" or \"service\". Do not provide any explanation.",
               "role": "assistant"
             }
@@ -5226,8 +5193,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        5360,
-        -2940
+        5380,
+        -3080
       ],
       "credentials": {
         "openAiApi": {
@@ -5353,6 +5320,39 @@
         880,
         -2000
       ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4",
+          "mode": "list",
+          "cachedResultName": "GPT-4"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a customer request analyst. The customer makes a request in the message below, analyzes and concludes \"problem\" or \"email\" based on the content that the customer mentions needing support.\n\nIf in the conversation, the customer only states the problem and does not explain further or the customer explains, then the conclusion is \"problem\"\nIf in the conversation, in the most recent message, the customer sends information including email, then the conclusion is \"email\". For example, if in the conversation, the customer talks about the problem of anything that does not have email in it, then the conclusion is \"problem\"; If in the conversation, the customer talks about information including email, then the conclusion is \"email\".\n\nJust conclude \"problem\" or \"email\" without further explanation.\nHere is the message information you need to analyze to draw conclusions:\n{{ $json.messagesSent }}\n",
+              "role": "assistant"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d27adf91-90aa-4d19-b1e6-35e58e2849c4",
+      "name": "OpenAI4",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        4660,
+        -2620
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "OpenAI CMS"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -6730,17 +6730,6 @@
         ]
       ]
     },
-    "OpenAI4": {
-      "main": [
-        [
-          {
-            "node": "Switch3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "OpenAI9": {
       "main": [
         [
@@ -6905,9 +6894,15 @@
         ]
       ]
     },
-    "Execute Workflow Trigger": {
+    "OpenAI4": {
       "main": [
-        []
+        [
+          {
+            "node": "Switch3",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -6915,7 +6910,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "be2a1ecc-331e-4d87-9f5d-d619317e71fc",
+  "versionId": "05e07c9e-6087-4024-b3b4-b99038b08fba",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
