@@ -8,9 +8,10 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        -160,
+        -540,
         500
-      ]
+      ],
+      "disabled": true
     },
     {
       "parameters": {},
@@ -19,20 +20,20 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -280,
+        -660,
         720
       ]
     },
     {
       "parameters": {
-        "jsCode": "return{\n\n\n\n    \"id\": 90164,\n    \"status\": \"wait_chat\",\n    \"level\": \"2\"\n\n}"
+        "jsCode": "return{\n\n\n    \"id\": 81325,\n    \"status\": \"wait_chat\",\n    \"level\": \"2\"\n\n\n}"
       },
       "id": "19a4c362-70f2-4c91-a698-0935c6e085d7",
       "name": "Execute Workflow Trigger1",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -60,
+        -440,
         720
       ]
     },
@@ -91,7 +92,7 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        400,
+        20,
         720
       ],
       "webhookId": "4277215a-71d9-467b-9736-d55b47bf7a05",
@@ -126,7 +127,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        160,
+        -220,
         720
       ],
       "alwaysOutputData": true,
@@ -167,7 +168,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        680,
+        300,
         720
       ]
     },
@@ -198,7 +199,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1220,
+        840,
         700
       ]
     },
@@ -233,7 +234,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        960,
+        580,
         700
       ]
     },
@@ -264,7 +265,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1460,
+        1080,
         700
       ]
     },
@@ -298,7 +299,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1760,
+        1380,
         700
       ]
     },
@@ -316,7 +317,7 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        3580,
+        3460,
         680
       ],
       "credentials": {
@@ -328,10 +329,8 @@
     },
     {
       "parameters": {
-        "resource": "project",
-        "additionalFields": {
-          "client_id": "={{ $json.data[0].user.id }}"
-        },
+        "resource": "clientDetails",
+        "ID": "={{ $json.data[0].user.id }}",
         "requestOptions": {}
       },
       "id": "62b93e25-46c2-4848-917c-3eec5c0da296",
@@ -361,8 +360,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        4080,
-        680
+        4300,
+        660
       ],
       "credentials": {
         "cloodoApi": {
@@ -382,8 +381,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-hrm.CloodoHRM",
       "typeVersion": 1,
       "position": [
-        4300,
-        680
+        4360,
+        280
       ],
       "credentials": {
         "cloodoApi": {
@@ -401,9 +400,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3340,
+        2960,
         680
-      ]
+      ],
+      "disabled": true
     },
     {
       "parameters": {
@@ -416,7 +416,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        2480,
+        2100,
         680
       ],
       "credentials": {
@@ -436,7 +436,7 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        2680,
+        2300,
         680
       ]
     },
@@ -451,7 +451,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.2,
       "position": [
-        2280,
+        1900,
         680
       ],
       "credentials": {
@@ -488,37 +488,9 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2040,
+        1660,
         680
       ]
-    },
-    {
-      "parameters": {
-        "resource": "assistant",
-        "assistantId": {
-          "__rl": true,
-          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
-          "mode": "list",
-          "cachedResultName": "Cmsmart AI"
-        },
-        "prompt": "define",
-        "text": "=You are a project assistant whom responsible for creating client-facing tickets based on provided chat or email content. \n\nAnalyze the following conversation messages between the client and admin. Focus on the most recent messages sent by the client, especially the last one, to determine the client's intent and construct a JSON object based on the following format:\n{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"note\":\"\",\n  \"type\":\"\",\n  \"type_ticket\"\n\n}\n\nInstructions:  \n1. title: Title of the problem the customer encountered:\n2. description: is a detailed description of the problem, \nThe description must include the following sections:\n\n2.1. Summary of Request: A concise overview of what the client is asking for, written in a client-friendly tone.\n2.2 Proposed Next Steps: Clearly outline what actions will be taken by the team and any required input from the client.\n2.3. Action Items: Break down actionable tasks for the internal team and the client.\n\nUse this format:\n\nSummary of Request\n[Summarize the client’s request in a professional and client-friendly tone.]\n\nProposed Next Steps\n[List the steps the team will take to address the request, as well as any input required from the client.]\n\nAction Items\nFor Our Team:\n[List specific tasks for the team to complete.]\nFor You:\n[List any actions required from the client, if applicable.]\n\nMake sure the ticket is clear, actionable, and formatted for both internal use and client review. Use professional and concise language throughout.\n\nSample Input:\n\"tung wants to add a 'Manage Cart' feature to the Auto Reply from WF 50 project.\"\n\nExpected Output:\nA complete ticket with all required sections and a professional tone, formatted as per the structure above.\n\nBase on summary problem provided and History chat messages, let create an object with subject anb message.\n3. note: additional notes, notes, further explanations of the problem and the last .\n4. Ensure the JSON is correctly formatted, valid, and accurately reflects the client’s most recent intent.   \n5. Do not include any explanation, only return the JSON object in the exact specified format.\n6. Remember alway Write description with format like a detail email profesional for our client (Dear [client name]) and focus on problem what client need to help, what client need to help. use html tag for text effect like <strong> for bold text .\n7. type is an analysis of whether the customer conversation has a clear issue if it is a \"clear issue\" or  \"not clear issue\", in which the not clear issue is the conversations such as greeting , unspecified problem...\n8. type_ticket : I have: \na7449e63-6ce3-4840-ab67-27298faf086f -> Product Enquiry,\n0c8ba87a-f6ae-44c2-9c4d-404c49ec255b -> Payment & Billing,\n00f4494e-68c5-4926-9ff1-3faafe812e94 -> Setup Assistance ,\n2b32b674-741a-4833-8328-925a48bef030 -> Feature Requests,\n4bbfa6dd-beb7-43af-926c-f736ca00bdd3 -> Project Maintenance ,\n28cab752-15e1-433e-8abf-609fde9b5b7f -> Renewal and Upsell ,\nf58a0a7e-9561-4cac-a326-6e0cfe93360b -> Onboarding and Training,\n6dc7b7c5-a130-4357-9d83-03030a8a134f -> Custom Development ,\n7abb55c6-8135-44db-b99a-8cabd31aeab0 -> Business Meeting,\n89050de5-8c35-4947-92d2-2c108b32aaa4 -> Extra Service ,\n\n\nare the ids are the names of the ticket types, please classify that content by the ticket type name whichever is appropriate and give me that type of ticket\nCategorization rules:  \n\n1. Product Inquiry  \n   - Keywords: Form requests, new client messages, pricing, product details, compatibility, feature comparisons, demos, trials.  \n   - Client Context: Questions from new or potential clients about product features, compatibility, pricing, or demo requests.  \n   - Examples:  \n     - \"What’s the cost of the Printshop Premium package?\"  \n     - \"Can I see a demo of the Product Designer tool?\"  \n\n2. Payment & Billing  \n   - Keywords: Cancel subscription, refund request, renewal inquiries, invoices, payment errors, prorated upgrades/downgrades.  \n   - Client Context: Issues related to payments, subscriptions, or invoices from clients.  \n   - Examples:  \n     - \"How can I get a refund for my subscription?\"  \n     - \"I need to renew my license for another year.\"  \n\n3. Setup Assistance  \n   - Keywords: Installation, download issues, free plugins, domain setup, hosting issues, product configuration, API setup.  \n   - Client Context: Clients seeking help with the initial setup of a system, plugin, or eCommerce platform.  \n   - Examples:  \n     - \"Help me set up my domain and hosting.\"  \n     - \"I need assistance installing free plugins.\"  \n\n4. Feature Request  \n   - Keywords: Add feature, new functionality, expand capabilities, request enhancement, tool improvement, custom modules.  \n   - Client Context: Clients requesting new features or enhancements for existing tools.  \n   - Examples:  \n     - \"Can you add a one-click checkout feature?\"  \n     - \"I’d like a feature for advanced reporting.\"  \n\n5. Project Maintenance  \n   - Keywords: Bug fix, performance issues, general support requests, system downtime, error reports, minor improvements.  \n   - Client Context: Ongoing support requests from existing clients for bugs, performance optimization, or fixes.  \n   - Examples:  \n     - \"Fix the 500 error on the homepage.\"  \n     - \"The checkout page isn’t working properly.\"  \n\n6. Renewal and Upsell  \n   - Keywords: Contract renewal, subscription upsell, add-on features, expanding services.  \n   - Client Context: Clients looking to renew contracts, subscriptions, or add additional services.  \n   - Examples:  \n     - \"I’d like to renew my subscription for another year.\"  \n     - \"Can you provide an upsell package for advanced analytics?\"  \n\n7. Onboarding and Training  \n   - Keywords: Training session, onboarding assistance, platform overview, user training.  \n   - Client Context: New clients needing guidance to get started with a product or service.  \n   - Examples:  \n     - \"Can you guide me through the platform setup?\"  \n     - \"We need training for our team on the new software.\"  \n\n8. Custom Development  \n   - Keywords: Bespoke features, tailor-made solutions, custom-built modules, specific functionality.  \n   - Client Context: Clients requesting customized solutions tailored to their specific business needs.  \n   - Examples:  \n     - \"We need a custom-built module for order tracking.\"  \n     - \"Can you create a feature that integrates with our existing CRM?\"  \n\n9. Business Meeting  \n   - Keywords: Scheduling meetings, meeting memo, project discussions, progress updates.  \n   - Client Context: Coordination and scheduling of meetings between clients and team members.  \n   - Examples:  \n     - \"Let’s schedule a meeting to discuss the project roadmap.\"  \n     - \"We need to have a progress review with your team next week.\"  \n\n10. Extra Service  \n    - Keywords: Additional service, beyond scope, add-on requests, non-standard service.  \n    - Client Context: Clients requesting extra services beyond what is included in their plan.  \n    - Examples:  \n      - \"Can you provide a custom report for our sales data?\"  \n      - \"We’d like additional security monitoring for our servers.\"  \n\nHere are the history conversation messages: \n\nInformation of client\nclient name: {{ $('If Status is Wait1').item.json.client_name }}\nSummary problem:\n{{ \n  $json.data.filter(item => new Date(item?.created_at) >= new Date(new Date().setHours(new Date().getHours() - 2))) // Lọc tin nhắn trong 2 giờ qua\n    .slice(0, 10).reverse()\n    .map(item => \n      item?.user_one == 5 \n        ? `Admin sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n        : `Client sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n    )\n    .join('')\n}}\n\n\nALWAYS respond only with the correctly formatted JSON object.  ",
-        "options": {}
-      },
-      "id": "186fdb80-3639-4347-8ebe-8262bee558bf",
-      "name": "OpenAI",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.7,
-      "position": [
-        2940,
-        680
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "wXCGwiut9MvtTGmk",
-          "name": "OpenAI CMS"
-        }
-      }
     },
     {
       "parameters": {
@@ -550,8 +522,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4420,
-        440
+        4480,
+        40
       ]
     },
     {
@@ -569,8 +541,8 @@
       "type": "@cloodo/n8n-nodes-cloodo-crm.CloodoLeads",
       "typeVersion": 1,
       "position": [
-        4880,
-        520
+        4940,
+        120
       ],
       "credentials": {
         "cloodoApi": {
@@ -605,8 +577,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5080,
-        420
+        5140,
+        20
       ],
       "credentials": {
         "cloodoApi": {
@@ -645,8 +617,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4620,
-        540
+        4700,
+        140
       ]
     },
     {
@@ -792,8 +764,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        5920,
-        660
+        5960,
+        720
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -811,7 +783,7 @@
         "nodeCredentialType": "cloodoApi",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n    \"tags\": [],\n    \"project_id\":\"{{ $('Cloodo Detail Project').item.json.data.id }}\",\n    \"user_id\": \"{{ $('Get Client Project').item.json.data[0].client.id }}\",\n    \"subject\": \"{{ $('Get Info Issue CMS Admin1').item.json.title }}\",\n    \"priority\": \"low\",\n    \"agent_id\": \"{{ $('Cloodo Detail Project').item.json.data.members[0].id }}\",\n     \"type_id\": \"9a0cfe86-9460-4dd6-8ce5-e5e9facc11f2\",\n    \"channel_id\": \"bcf82a93-134d-49dd-8df3-fda61992e37d\",\n    \"status\": \"open\",\n    \"message\": \"{{ $('Get Info Issue CMS Admin1').item.json.description }}\",\n    \"note\": \"{{ $('Get Info Issue CMS Admin1').item.json.note }}\",\n    \"ticket_files\": []\n}",
+        "jsonBody": "={\n    \"tags\": [],\n    \"project_id\":\"{{ $('Cloodo Detail Project').item.json.data.id }}\",\n    \"user_id\": \"{{ $('Get Client Project').item.json.data[0].client.id }}\",\n    \"subject\": \"{{ $('Get Info Issue CMS Admin1').item.json.title }}\",\n    \"priority\": \"low\",\n    \"agent_id\": \"{{ $('Get Client Project').item.json.data.project_admin.id}}\",\n     \"type_id\": \"9a0cfe86-9460-4dd6-8ce5-e5e9facc11f2\",\n    \"channel_id\": \"bcf82a93-134d-49dd-8df3-fda61992e37d\",\n    \"status\": \"open\",\n    \"message\": \"{{ $('Get Info Issue CMS Admin1').item.json.description }}\",\n    \"note\": \"{{ $('Get Info Issue CMS Admin1').item.json.note }}\",\n    \"ticket_files\": []\n}",
         "options": {
           "redirect": {
             "redirect": {}
@@ -823,8 +795,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5220,
-        660
+        5260,
+        720
       ],
       "credentials": {
         "cloodoApi": {
@@ -860,8 +832,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5460,
-        660
+        5500,
+        720
       ]
     },
     {
@@ -882,8 +854,651 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5680,
+        5720,
+        720
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "96893bd5-9dd5-46e3-ba9e-60b735278836",
+              "leftValue": "={{ $('If Status is Wait1').item.json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9b125fc1-8a4c-46dd-bf77-c2e20786ea3a",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3180,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_zcZjKKD7msrnRvUMoHUoWzhV",
+          "mode": "list",
+          "cachedResultName": "Cmsmart AI"
+        },
+        "prompt": "define",
+        "text": "=You are a project assistant whom responsible for creating client-facing tickets based on provided chat or email content. \n\nAnalyze the following conversation messages between the client and admin. Focus on the most recent messages sent by the client, especially the last one, to determine the client's intent and construct a JSON object based on the following format:\n{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"note\":\"\",\n  \"type\":\"\",\n  \"type_ticket\"\n\n}\n\nInstructions:  \n1. title: Title of the problem the customer encountered:\n2. description: is a detailed description of the problem, \nThe description must include the following sections:\n\n2.1. Summary of Request: A concise overview of what the client is asking for, written in a client-friendly tone.\n2.2 Proposed Next Steps: Clearly outline what actions will be taken by the team and any required input from the client.\n2.3. Action Items: Break down actionable tasks for the internal team and the client.\n\nUse this format:\n\nSummary of Request\n[Summarize the client’s request in a professional and client-friendly tone.]\n\nProposed Next Steps\n[List the steps the team will take to address the request, as well as any input required from the client.]\n\nAction Items\nFor Our Team:\n[List specific tasks for the team to complete.]\nFor You:\n[List any actions required from the client, if applicable.]\n\nMake sure the ticket is clear, actionable, and formatted for both internal use and client review. Use professional and concise language throughout.\n\nSample Input:\n\"tung wants to add a 'Manage Cart' feature to the Auto Reply from WF 50 project.\"\n\nExpected Output:\nA complete ticket with all required sections and a professional tone, formatted as per the structure above.\n\nBase on summary problem provided and History chat messages, let create an object with subject anb message.\n3. note: additional notes, notes, further explanations of the problem and the last .\n4. Ensure the JSON is correctly formatted, valid, and accurately reflects the client’s most recent intent.   \n5. Do not include any explanation, only return the JSON object in the exact specified format.\n6. Remember alway Write description with format like a detail email profesional for our client (Dear [client name]) and focus on problem what client need to help, what client need to help. use html tag for text effect like <strong> for bold text .\n7. type is an analysis of whether the customer conversation has a clear issue if it is a \"clear issue\" or  \"not clear issue\", in which the not clear issue is the conversations such as greeting , unspecified problem...\n8. type_ticket : I have: \na7449e63-6ce3-4840-ab67-27298faf086f -> Product Enquiry,\n0c8ba87a-f6ae-44c2-9c4d-404c49ec255b -> Payment & Billing,\n00f4494e-68c5-4926-9ff1-3faafe812e94 -> Setup Assistance ,\n2b32b674-741a-4833-8328-925a48bef030 -> Feature Requests,\n4bbfa6dd-beb7-43af-926c-f736ca00bdd3 -> Project Maintenance ,\n28cab752-15e1-433e-8abf-609fde9b5b7f -> Renewal and Upsell ,\nf58a0a7e-9561-4cac-a326-6e0cfe93360b -> Onboarding and Training,\n6dc7b7c5-a130-4357-9d83-03030a8a134f -> Custom Development ,\n7abb55c6-8135-44db-b99a-8cabd31aeab0 -> Business Meeting,\n89050de5-8c35-4947-92d2-2c108b32aaa4 -> Extra Service ,\n\n\nare the ids are the names of the ticket types, please classify that content by the ticket type name whichever is appropriate and give me that type of ticket\nCategorization rules:  \n\n1. Product Inquiry  \n   - Keywords: Form requests, new client messages, pricing, product details, compatibility, feature comparisons, demos, trials.  \n   - Client Context: Questions from new or potential clients about product features, compatibility, pricing, or demo requests.  \n   - Examples:  \n     - \"What’s the cost of the Printshop Premium package?\"  \n     - \"Can I see a demo of the Product Designer tool?\"  \n\n2. Payment & Billing  \n   - Keywords: Cancel subscription, refund request, renewal inquiries, invoices, payment errors, prorated upgrades/downgrades.  \n   - Client Context: Issues related to payments, subscriptions, or invoices from clients.  \n   - Examples:  \n     - \"How can I get a refund for my subscription?\"  \n     - \"I need to renew my license for another year.\"  \n\n3. Setup Assistance  \n   - Keywords: Installation, download issues, free plugins, domain setup, hosting issues, product configuration, API setup.  \n   - Client Context: Clients seeking help with the initial setup of a system, plugin, or eCommerce platform.  \n   - Examples:  \n     - \"Help me set up my domain and hosting.\"  \n     - \"I need assistance installing free plugins.\"  \n\n4. Feature Request  \n   - Keywords: Add feature, new functionality, expand capabilities, request enhancement, tool improvement, custom modules.  \n   - Client Context: Clients requesting new features or enhancements for existing tools.  \n   - Examples:  \n     - \"Can you add a one-click checkout feature?\"  \n     - \"I’d like a feature for advanced reporting.\"  \n\n5. Project Maintenance  \n   - Keywords: Bug fix, performance issues, general support requests, system downtime, error reports, minor improvements.  \n   - Client Context: Ongoing support requests from existing clients for bugs, performance optimization, or fixes.  \n   - Examples:  \n     - \"Fix the 500 error on the homepage.\"  \n     - \"The checkout page isn’t working properly.\"  \n\n6. Renewal and Upsell  \n   - Keywords: Contract renewal, subscription upsell, add-on features, expanding services.  \n   - Client Context: Clients looking to renew contracts, subscriptions, or add additional services.  \n   - Examples:  \n     - \"I’d like to renew my subscription for another year.\"  \n     - \"Can you provide an upsell package for advanced analytics?\"  \n\n7. Onboarding and Training  \n   - Keywords: Training session, onboarding assistance, platform overview, user training.  \n   - Client Context: New clients needing guidance to get started with a product or service.  \n   - Examples:  \n     - \"Can you guide me through the platform setup?\"  \n     - \"We need training for our team on the new software.\"  \n\n8. Custom Development  \n   - Keywords: Bespoke features, tailor-made solutions, custom-built modules, specific functionality.  \n   - Client Context: Clients requesting customized solutions tailored to their specific business needs.  \n   - Examples:  \n     - \"We need a custom-built module for order tracking.\"  \n     - \"Can you create a feature that integrates with our existing CRM?\"  \n\n9. Business Meeting  \n   - Keywords: Scheduling meetings, meeting memo, project discussions, progress updates.  \n   - Client Context: Coordination and scheduling of meetings between clients and team members.  \n   - Examples:  \n     - \"Let’s schedule a meeting to discuss the project roadmap.\"  \n     - \"We need to have a progress review with your team next week.\"  \n\n10. Extra Service  \n    - Keywords: Additional service, beyond scope, add-on requests, non-standard service.  \n    - Client Context: Clients requesting extra services beyond what is included in their plan.  \n    - Examples:  \n      - \"Can you provide a custom report for our sales data?\"  \n      - \"We’d like additional security monitoring for our servers.\"  \n\nHere are the history conversation messages: \n\nInformation of client\nclient name: {{ $('If Status is Wait1').item.json.client_name }}\nSummary problem:\n{{ \n  $json.data.filter(item => new Date(item?.created_at) >= new Date(new Date().setHours(new Date().getHours() - 2))) // Lọc tin nhắn trong 2 giờ qua\n    .slice(0, 10).reverse()\n    .map(item => \n      item?.user_one == 5 \n        ? `Admin sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n        : `Client sent: ${item?.message || \"No message\"}\\nTime Send:  ${item?.created_at || \"No message\"}\\n\\n`\n    )\n    .join('')\n}}\n\n\nALWAYS respond only with the correctly formatted JSON object.  ",
+        "options": {}
+      },
+      "id": "186fdb80-3639-4347-8ebe-8262bee558bf",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        2560,
+        680
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "wXCGwiut9MvtTGmk",
+          "name": "OpenAI CMS"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8bea279b-d6d9-4c13-9ad7-13070d7d9379",
+              "leftValue": "={{ $json.data.project_admin }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "27ed0386-dcbd-404f-a3ae-2cd485270633",
+      "name": "If2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4560,
         660
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "39a6f53f-6b91-4945-94c3-8925954028a4",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a3c340ba-e415-478b-8ced-60fdb8f6f575",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4040,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://erp-amz.cloodo.com/v4/projects/{{ $json.data.id }}/project-admin",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "user_id",
+              "value": "afd3f239-57cb-44be-80dc-b4d0b488aab3"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "27bbd9b4-f04b-4fcf-9075-4b1e01d734d4",
+      "name": "Update Project Admin1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4920,
+        420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 972471998,
+          "mode": "list",
+          "cachedResultName": "Track Messenger",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=972471998"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "client": "={{ $('Get User Facebook2').item.json.participants.data[0].id }}",
+            "Note": "=Completed On {{ $now.format('yyyy-MM-dd | HH:mm') }}",
+            "level": "3",
+            "status": "done"
+          },
+          "matchingColumns": [
+            "client"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "start_session",
+              "displayName": "start_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_chat _at",
+              "displayName": "last_chat _at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8e5d26e3-d4e9-4261-b337-d73b779a81e2",
+      "name": "End Session Chat Printcart",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        5960,
+        420
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"tags\": [],\n    \"project_id\":\"{{ $json.data.id }}\",\n    \"user_id\": \"\",\n    \"subject\": \"{{ $('Get Info Issue CMS Admin1').item.json.title }}\",\n    \"priority\": \"low\",\n    \"agent_id\": \"{{ $json.data.project_admin.id }}\",\n     \"type_id\": \"9a0cfe86-9460-4dd6-8ce5-e5e9facc11f2\",\n    \"channel_id\": \"bcf82a93-134d-49dd-8df3-fda61992e37d\",\n    \"status\": \"open\",\n    \"message\": \"{{ $('Get Info Issue CMS Admin1').item.json.description }}\",\n    \"note\": \"{{ $('Get Info Issue CMS Admin1').item.json.note }}\",\n    \"ticket_files\": []\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "084d0826-51fc-4e12-a2d3-e79bee895f34",
+      "name": "Create Ticket1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5260,
+        420
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/213439902114044/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Get User Facebook2').item.json.participants.data[0].id }}\"\n  },\n  \"messaging_type\": \"MESSAGE_TAG\",\n  \"tag\": \"ACCOUNT_UPDATE\",\n  \"message\": {\n    \"text\": \"Hi there! 😊\\nI just wanted to let you know that since we haven't heard back from you, I've gone ahead and created a support ticket for your recent inquiry. You can easily track and manage it here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }} \\nIf there's anything else you'd like to chat about or if you need more help, just give me a shout! \\nI'm here to connect you with our team for any extra support you might need.\\nThanks a bunch for reaching out!\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "66d64143-82f9-4458-9290-eb5d60bb4069",
+      "name": "send welcome",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5500,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook2').item.json.participants.data[0].email }}\",\n      \"body\": \"Hi there! 😊\\nI just wanted to let you know that since we haven't heard back from you, I've gone ahead and created a support ticket for your recent inquiry. You can easily track and manage it here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }} \\nIf there's anything else you'd like to chat about or if you need more help, just give me a shout! \\nI'm here to connect you with our team for any extra support you might need.\\nThanks a bunch for reaching out!\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook2').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "73730da7-43df-494d-8078-9ada4d97414c",
+      "name": "Post message lên workchat from admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5720,
+        420
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 972471998,
+          "mode": "list",
+          "cachedResultName": "Track Messenger",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=972471998"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "client": "={{ $('Get User Facebook2').item.json.participants.data[0].id }}",
+            "Note": "=Completed On {{ $now.format('yyyy-MM-dd | HH:mm') }}",
+            "level": "3",
+            "status": "done"
+          },
+          "matchingColumns": [
+            "client"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "start_session",
+              "displayName": "start_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_chat _at",
+              "displayName": "last_chat _at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e9df913a-d6be-450e-916a-acd03b14b711",
+      "name": "End Session Chat Printcart2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        5020,
+        1000
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "P5h6CdXmV7twphIt",
+          "name": "Canh Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://erp-amz.cloodo.com/v4/tickets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloodoApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"tags\": [],\n    \"project_id\":\"\",\n    \"user_id\": \"{{ $('Get Client Project').item.json.data[0].client.id }}\",\n    \"subject\": \"{{ $('Get Info Issue CMS Admin1').item.json.title }}\",\n    \"priority\": \"low\",\n    \"agent_id\": \"{{ $('Get Client Project').item.json.data.project_admin.id}}\",\n     \"type_id\": \"9a0cfe86-9460-4dd6-8ce5-e5e9facc11f2\",\n    \"channel_id\": \"bcf82a93-134d-49dd-8df3-fda61992e37d\",\n    \"status\": \"open\",\n    \"message\": \"{{ $('Get Info Issue CMS Admin1').item.json.description }}\",\n    \"note\": \"{{ $('Get Info Issue CMS Admin1').item.json.note }}\",\n    \"ticket_files\": []\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "1027dc8f-0e13-40a6-b224-a3915936a56d",
+      "name": "Create Ticket2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4320,
+        1000
+      ],
+      "credentials": {
+        "cloodoApi": {
+          "id": "nP7U7wKTbfdSeafq",
+          "name": "Cmsmart Worksuite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/213439902114044/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAA3ZCtCZCe57kBOzXf4fqSrVflYWE5Fk2P0BNfjOerautjGD8cKV0pZAnvdV3zRQwokzJiKmPUZBRWFn8Tmeq2rPD4zCHvZAZCRZCg9943vq93AmFKnbtrFd7bfZBiGBmOgiYYKD7qipJyirD8a3KxZC2GgLXxok3Dj2ZBObBCyBqHoLywAZAdC7mpmnbcTOYKZCZB6wZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Get User Facebook2').item.json.participants.data[0].id }}\"\n  },\n  \"messaging_type\": \"MESSAGE_TAG\",\n  \"tag\": \"ACCOUNT_UPDATE\",\n  \"message\": {\n    \"text\": \"Hi there! 😊\\nI just wanted to let you know that since we haven't heard back from you, I've gone ahead and created a support ticket for your recent inquiry. You can easily track and manage it here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }} \\nIf there's anything else you'd like to chat about or if you need more help, just give me a shout! \\nI'm here to connect you with our team for any extra support you might need.\\nThanks a bunch for reaching out!\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "7ea20630-edeb-4e86-b8dc-31f13e3c945b",
+      "name": "send welcome4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4560,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://convert.cloodo.com/push-message-waba",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"only_info_company\": \"1\",\n    \"id\": \"411\",\n    \"data\": {\n      \"from\": \"213439902114044@facebook.com\",\n      \"to\": \"{{ $('Get User Facebook2').item.json.participants.data[0].email }}\",\n      \"body\": \"Hi there! 😊\\nI just wanted to let you know that since we haven't heard back from you, I've gone ahead and created a support ticket for your recent inquiry. You can easily track and manage it here: \\nhttps://worksuite.cloodo.com/apps/tickets/all-tickets/{{ $json.data.id }} \\nIf there's anything else you'd like to chat about or if you need more help, just give me a shout! \\nI'm here to connect you with our team for any extra support you might need.\\nThanks a bunch for reaching out!\",\n      \"fromMe\": true,\n      \"type\": \"chat\",\n      \"nameContact\": \"{{ $('Get User Facebook2').item.json.participants.data[0].name }}\"\n    }\n  },\n  \"act\": \"syncWabaChat\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "d5363c96-dddc-4423-afbf-c9b305afc19b",
+      "name": "Post message lên workchat from admin7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4780,
+        1000
       ],
       "onError": "continueErrorOutput"
     }
@@ -993,7 +1608,7 @@
       "main": [
         [
           {
-            "node": "Cloodo Detail Project",
+            "node": "If3",
             "type": "main",
             "index": 0
           }
@@ -1004,7 +1619,7 @@
       "main": [
         [
           {
-            "node": "Get detail employ to check active",
+            "node": "If2",
             "type": "main",
             "index": 0
           }
@@ -1015,7 +1630,7 @@
       "main": [
         [
           {
-            "node": "Search Client",
+            "node": "If1",
             "type": "main",
             "index": 0
           }
@@ -1077,17 +1692,6 @@
         ]
       ]
     },
-    "OpenAI": {
-      "main": [
-        [
-          {
-            "node": "Get Info Issue CMS Admin1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Check project ad is deactive and Chau is Member": {
       "main": [
         [
@@ -1125,8 +1729,7 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "Get detail employ to check active": {
@@ -1134,11 +1737,6 @@
         [
           {
             "node": "Check project ad is deactive and Chau is Member",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Create Ticket",
             "type": "main",
             "index": 0
           }
@@ -1195,13 +1793,165 @@
           }
         ]
       ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Search Client",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Get Info Issue CMS Admin1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Update Project Admin1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Cloodo Detail Project",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Ticket2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Project Admin1": {
+      "main": [
+        [
+          {
+            "node": "Create Ticket1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Ticket1": {
+      "main": [
+        [
+          {
+            "node": "send welcome",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send welcome": {
+      "main": [
+        [
+          {
+            "node": "Post message lên workchat from admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin": {
+      "main": [
+        [
+          {
+            "node": "End Session Chat Printcart",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "End Session Chat Printcart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Ticket2": {
+      "main": [
+        [
+          {
+            "node": "send welcome4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send welcome4": {
+      "main": [
+        [
+          {
+            "node": "Post message lên workchat from admin7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post message lên workchat from admin7": {
+      "main": [
+        [
+          {
+            "node": "End Session Chat Printcart2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "End Session Chat Printcart2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "KjtJnPPwpZllLEKs"
   },
-  "versionId": "168b4aad-b6c0-4ba9-a1d4-9fea54be49eb",
+  "versionId": "fe15e3ce-3b43-4a8a-9ab5-55e2150a684c",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
