@@ -1,0 +1,1499 @@
+{
+  "name": "AI Messager - Warm Up V1",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0baf3d98-fed4-4cf2-b9a8-e5e8ff964452",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1180,
+        -20
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "c1551d74-6c68-44b6-b8b7-5f9ac9c58a78",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1140,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return{\n\n\n\n    \"id\": 90164,\n    \"client_name\": \"Nguyễn Thanh Tùng\",\n    \"client\": \"9328599640527653\",\n    \"level\": \"1\",\n    \"status\": \"open\",\n    \"last_chat _at\": \"2025-02-26 | 10:31\"\n\n\n}"
+      },
+      "id": "623aab2c-fbe3-4024-a0f2-703359858c96",
+      "name": "Execute Workflow Trigger1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -920,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1016493999,
+          "mode": "list",
+          "cachedResultName": "Track Messenger Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1016493999"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7c0aff38-07a7-4ea4-9dea-5d78559995a1",
+      "name": "Track",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -660,
+        280
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "foCuzZWQWHFQWQLj",
+          "name": "Google Sheets Tung"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c96bc19b-0003-4b97-8f7b-0f27d1db92ee",
+              "leftValue": "={{ $json.Note }}",
+              "rightValue": "wait_chat",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "abf6fa4b-b2f7-48dd-86ff-9193467cbe25",
+      "name": "If Ticket Have not Created1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -300,
+        280
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.data[0].id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "messages{id,message,from,to}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BO1fNrEeu0ZAu2gJUDWZBLlpdRxF2UTJcEjHKCuADyievD57Hcoc75ZBMp2eJcwYAOWvf40q0wobDZCxJk7mFBl0kdkUZCBDrnfvyorpYmMO9D2g4j7eKRglBjnZCq3rOXrcQ6V42YFZC9CSOxgMEiPdqCyuUuZAWo3Uxmr0ic0rXTBZAe4pjkW7EZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "b0e366d0-d3a1-4ebb-843f-1acd60453238",
+      "name": "Get Detail list Chat User6",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        140,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v21.0/112710510078308/conversations",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "platform",
+              "value": "MESSENGER"
+            },
+            {
+              "name": "user_id",
+              "value": "={{ $json.client }}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BO1fNrEeu0ZAu2gJUDWZBLlpdRxF2UTJcEjHKCuADyievD57Hcoc75ZBMp2eJcwYAOWvf40q0wobDZCxJk7mFBl0kdkUZCBDrnfvyorpYmMO9D2g4j7eKRglBjnZCq3rOXrcQ6V42YFZC9CSOxgMEiPdqCyuUuZAWo3Uxmr0ic0rXTBZAe4pjkW7EZD"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "3b49d4e7-f593-49d6-aa2d-04875e73bb39",
+      "name": "HTTP Request5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -40,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.messages.data[0].id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BO1fNrEeu0ZAu2gJUDWZBLlpdRxF2UTJcEjHKCuADyievD57Hcoc75ZBMp2eJcwYAOWvf40q0wobDZCxJk7mFBl0kdkUZCBDrnfvyorpYmMO9D2g4j7eKRglBjnZCq3rOXrcQ6V42YFZC9CSOxgMEiPdqCyuUuZAWo3Uxmr0ic0rXTBZAe4pjkW7EZD"
+            },
+            {
+              "name": "fields",
+              "value": "id,message,from,to,created_time"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "e0847e37-cf55-4542-89d1-c37ccbed2015",
+      "name": "Get Detail Last list Chat User",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        380,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fef2a134-c1ce-4ae1-8e74-98ee087fac85",
+              "leftValue": "={{ $json.from.id }}",
+              "rightValue": "=213439902114044",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4e302aad-c2a2-4311-a3a5-845eaf033f60",
+      "name": "Track Last send by client CMS Admin1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5ae2266a-1ff0-426e-bbad-5255031da0e0",
+              "leftValue": "={{ $('Track').item.json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5471ca56-cd78-463c-8770-a345dc94aa1d",
+      "name": "Check mail",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1280,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $('HTTP Request5').item.json.data[0].id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BO1fNrEeu0ZAu2gJUDWZBLlpdRxF2UTJcEjHKCuADyievD57Hcoc75ZBMp2eJcwYAOWvf40q0wobDZCxJk7mFBl0kdkUZCBDrnfvyorpYmMO9D2g4j7eKRglBjnZCq3rOXrcQ6V42YFZC9CSOxgMEiPdqCyuUuZAWo3Uxmr0ic0rXTBZAe4pjkW7EZD"
+            },
+            {
+              "name": "fields",
+              "value": "participants"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "49cddf3a-8f98-4c35-8276-2bee6324ee53",
+      "name": "Get User Facebook2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1080,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BO1fNrEeu0ZAu2gJUDWZBLlpdRxF2UTJcEjHKCuADyievD57Hcoc75ZBMp2eJcwYAOWvf40q0wobDZCxJk7mFBl0kdkUZCBDrnfvyorpYmMO9D2g4j7eKRglBjnZCq3rOXrcQ6V42YFZC9CSOxgMEiPdqCyuUuZAWo3Uxmr0ic0rXTBZAe4pjkW7EZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Get User Facebook2').item.json.participants.data[0].id }}\"\n  },\n  \"messaging_type\": \"MESSAGE_TAG\",\n  \"tag\": \"ACCOUNT_UPDATE\",\n  \"message\": {\n    \"text\": \"Hello! 😊 Just wanted to check if you wanted to chat about anything else. I'm always here to help! If you have any questions, please don't hesitate to let me know. To make things easier for us, please provide your email address so we can get in touch. Thank you very much for contacting Cmsmart!\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "18573bc0-60e4-4281-b2f5-892953b9d59a",
+      "name": "send welcome3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2120,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1016493999,
+          "mode": "list",
+          "cachedResultName": "Track Messenger Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1016493999"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Track').item.json.id }}",
+            "status": "wait_chat",
+            "level": "2"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "start_session",
+              "displayName": "start_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_chat _at",
+              "displayName": "last_chat _at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b5356435-1ba9-4681-9853-692a2f0472e0",
+      "name": "Track2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2360,
+        220
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "foCuzZWQWHFQWQLj",
+          "name": "Google Sheets Tung"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1945469018,
+          "mode": "list",
+          "cachedResultName": "client_message",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1945469018"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id_client_message",
+              "lookupValue": "={{ $json.participants.data[0].id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4fec5080-3dab-4535-836c-0cd92206b223",
+      "name": "Track3",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1480,
+        -20
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "foCuzZWQWHFQWQLj",
+          "name": "Google Sheets Tung"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BO1fNrEeu0ZAu2gJUDWZBLlpdRxF2UTJcEjHKCuADyievD57Hcoc75ZBMp2eJcwYAOWvf40q0wobDZCxJk7mFBl0kdkUZCBDrnfvyorpYmMO9D2g4j7eKRglBjnZCq3rOXrcQ6V42YFZC9CSOxgMEiPdqCyuUuZAWo3Uxmr0ic0rXTBZAe4pjkW7EZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Get User Facebook2').item.json.participants.data[0].id }}\"\n  },\n  \"messaging_type\": \"MESSAGE_TAG\",\n  \"tag\": \"ACCOUNT_UPDATE\",\n  \"message\": {\n    \"text\": \"Hi there! 😊 I'm just checking in to see if there's anything else you'd like to chat about. I'm here to help! If you have more questions, just let me know and we can continue our conversation. If not, no worries—I can create a support ticket for you to ensure our team follows up soon. Thanks so much for reaching out to Cmsmart!\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "1eba04cb-6f9d-460a-aead-d56b1cc8ca70",
+      "name": "send welcome",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2000,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1016493999,
+          "mode": "list",
+          "cachedResultName": "Track Messenger Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1016493999"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Track').item.json.id }}",
+            "status": "wait_chat",
+            "level": "2"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "start_session",
+              "displayName": "start_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_chat _at",
+              "displayName": "last_chat _at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1df2067d-9141-468d-9d8b-d8eb591429af",
+      "name": "Track4",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2240,
+        480
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "foCuzZWQWHFQWQLj",
+          "name": "Google Sheets Tung"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "MPChO6KSKQPPVTdF",
+          "mode": "list",
+          "cachedResultName": "AI Messager - Create Message V1"
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "id": "0e956a63-e3fe-47f4-b3b1-4726d8fdcc2b",
+      "name": "Call To Create Ticket2",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        3060,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.email_worksuit }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Email"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "eb541ca5-f2ee-42ee-b189-738c90d304dd",
+                    "leftValue": "={{ $json.email_worksuit }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "No mail"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6d11f164-52d5-4434-9d3c-df3363d48a8a",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1760,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BO1fNrEeu0ZAu2gJUDWZBLlpdRxF2UTJcEjHKCuADyievD57Hcoc75ZBMp2eJcwYAOWvf40q0wobDZCxJk7mFBl0kdkUZCBDrnfvyorpYmMO9D2g4j7eKRglBjnZCq3rOXrcQ6V42YFZC9CSOxgMEiPdqCyuUuZAWo3Uxmr0ic0rXTBZAe4pjkW7EZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Get User Facebook2').item.json.participants.data[0].id }}\"\n  },\n  \"messaging_type\": \"MESSAGE_TAG\",\n  \"tag\": \"ACCOUNT_UPDATE\",\n  \"message\": {\n    \"text\": \"Hi there! 😊 I'm just checking in to see if there's anything else you'd like to chat about. I'm here to help! If you have more questions, just let me know and we can continue our conversation. If not, no worries—I can create a support ticket for you to ensure our team follows up soon. Thanks so much for reaching out to Cmsmart!\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "df985b31-3f98-4b53-b1e4-98a51bf7886f",
+      "name": "send welcome1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2420,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1016493999,
+          "mode": "list",
+          "cachedResultName": "Track Messenger Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1016493999"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Track').item.json.id }}",
+            "status": "wait_chat",
+            "level": "2",
+            "email": "={{ $('Switch').item.json.email_worksuit }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "start_session",
+              "displayName": "start_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_chat _at",
+              "displayName": "last_chat _at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "48c69629-07ae-41d9-93b9-c462bc84e872",
+      "name": "Track5",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2660,
+        -260
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "foCuzZWQWHFQWQLj",
+          "name": "Google Sheets Tung"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c8c7a664-72ad-4284-bddc-dd19e6f688f8",
+              "leftValue": "={{ $json.email_worksuit }}",
+              "rightValue": "@facebook.com",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "57e0dffd-ab17-4c58-b06f-50be03f09c43",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2080,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/112710510078308/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAQEYCcZCVQ0BO1fNrEeu0ZAu2gJUDWZBLlpdRxF2UTJcEjHKCuADyievD57Hcoc75ZBMp2eJcwYAOWvf40q0wobDZCxJk7mFBl0kdkUZCBDrnfvyorpYmMO9D2g4j7eKRglBjnZCq3rOXrcQ6V42YFZC9CSOxgMEiPdqCyuUuZAWo3Uxmr0ic0rXTBZAe4pjkW7EZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Get User Facebook2').item.json.participants.data[0].id }}\"\n  },\n  \"messaging_type\": \"MESSAGE_TAG\",\n  \"tag\": \"ACCOUNT_UPDATE\",\n  \"message\": {\n    \"text\": \"Hello! 😊 Just wanted to check if you wanted to chat about anything else. I'm always here to help! If you have any questions, please don't hesitate to let me know. To make things easier for us, please provide your email address so we can get in touch. Thank you very much for contacting Cmsmart!\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "aaaceade-ae3c-49cd-a37e-c91c4dedfb70",
+      "name": "send welcome4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2420,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1016493999,
+          "mode": "list",
+          "cachedResultName": "Track Messenger Printcart",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lM_TG2ExLdbs1YoBcaFzBFscVqB3MOEFjBFnvE9kAa0/edit#gid=1016493999"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Track').item.json.id }}",
+            "status": "wait_chat",
+            "level": "2"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "admin",
+              "displayName": "admin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client",
+              "displayName": "client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "level",
+              "displayName": "level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "start_session",
+              "displayName": "start_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_chat _at",
+              "displayName": "last_chat _at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2003feef-d122-4ee0-bd8e-6bb230ddc9eb",
+      "name": "Track6",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2660,
+        -20
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "foCuzZWQWHFQWQLj",
+          "name": "Google Sheets Tung"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "unit": "minutes"
+      },
+      "id": "9e92674e-3be3-4afa-98e2-bba6b9d24af6",
+      "name": "Wait 5p",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -480,
+        280
+      ],
+      "webhookId": "4277215a-71d9-467b-9736-d55b47bf7a05"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Track",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow Trigger1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Track",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track": {
+      "main": [
+        [
+          {
+            "node": "Wait 5p",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Ticket Have not Created1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Detail list Chat User6": {
+      "main": [
+        [
+          {
+            "node": "Get Detail Last list Chat User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request5": {
+      "main": [
+        [
+          {
+            "node": "Get Detail list Chat User6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Detail Last list Chat User": {
+      "main": [
+        [
+          {
+            "node": "Track Last send by client CMS Admin1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track Last send by client CMS Admin1": {
+      "main": [
+        [
+          {
+            "node": "Get User Facebook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check mail": {
+      "main": [
+        [
+          {
+            "node": "Track3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send welcome",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Facebook2": {
+      "main": [
+        [
+          {
+            "node": "Check mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send welcome3": {
+      "main": [
+        [
+          {
+            "node": "Track2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track3": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send welcome": {
+      "main": [
+        [
+          {
+            "node": "Track4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track4": {
+      "main": [
+        [
+          {
+            "node": "Call To Create Ticket2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send welcome3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send welcome1": {
+      "main": [
+        [
+          {
+            "node": "Track5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track5": {
+      "main": [
+        [
+          {
+            "node": "Call To Create Ticket2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "send welcome1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send welcome4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send welcome4": {
+      "main": [
+        [
+          {
+            "node": "Track6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5p": {
+      "main": [
+        [
+          {
+            "node": "If Ticket Have not Created1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "48efd514-581d-4ef2-adf3-94b5c52c7754",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "rVU5wpUMyE90GA39",
+  "tags": []
+}
