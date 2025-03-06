@@ -1,0 +1,1112 @@
+{
+  "name": "Convert Ageny review",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://strapi4.cloodo.com/api/projects",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[$and][0][id][$eq]",
+              "value": "={{ $json.ID }}"
+            },
+            {
+              "name": "populate[1]",
+              "value": "project_categories"
+            },
+            {
+              "name": "populate[0]",
+              "value": "project_tags"
+            },
+            {
+              "name": "populate[1]",
+              "value": "faqs"
+            },
+            {
+              "name": "populate[2]",
+              "value": "benefits"
+            },
+            {
+              "name": "populate[3]",
+              "value": "project_reviews"
+            },
+            {
+              "name": "populate[4]",
+              "value": "features"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "03e3de76-cea2-44c4-8ba1-d6a6b7be6cf2",
+      "name": "Get Detail Project",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1000,
+        340
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "64541c69-7b66-4bf9-a0f2-c0c49c8a008c",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        800,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "382a7bcc-6b4e-43ec-b106-3f702ccde9bc",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "01cd4c8a-f02b-47cc-82fb-42e181333ede",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1340,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://strapi4.cloodo.com/api/project-reviews",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "pagination[pageSize]",
+              "value": "10"
+            },
+            {
+              "name": "pagination[page]",
+              "value": "={{ $runIndex+4 }}"
+            },
+            {
+              "name": "populate",
+              "value": "*"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c9c8db64-2e78-425d-8d90-a1412d4f0dbc",
+      "name": "Get Project Reviews",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1060,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://strapi4.cloodo.com/api/projects",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "pagination[pageSize]",
+              "value": "10"
+            },
+            {
+              "name": "pagination[page]",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "13365bec-34c9-4b8e-8d59-9a0854f843e8",
+      "name": "Get Project Reviews1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        180,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Tạo một danh sách tên tiếng Anh ngẫu nhiên\nconst names = [\"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\", \"11\", \"12\", \"13\", \"14\"];\n\n// Loop over input items và thêm một cột với tên tiếng Anh ngẫu nhiên vào mỗi item\nfor (const item of $input.all()) {\n  item.json.randomReview = names[Math.floor(Math.random() * names.length)]; // Thêm cột randomName\n}\n\nreturn $input.all();"
+      },
+      "id": "4387d003-80e3-4188-a2df-b440c186e7c6",
+      "name": "Random Review",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2180,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Tạo một danh sách tên tiếng Anh ngẫu nhiên\nconst names = [\"John\", \"Alice\", \"Michael\", \"Sarah\", \"David\", \"Emily\", \"James\", \"Sophia\", \"Daniel\", \"Olivia\"];\n\n// Loop over input items và thêm một cột với tên tiếng Anh ngẫu nhiên vào mỗi item\nfor (const item of $input.all()) {\n  item.json.randomName = names[Math.floor(Math.random() * names.length)]; // Thêm cột randomName\n}\n\nreturn $input.all();"
+      },
+      "id": "41dab322-b322-41c6-8c5f-ff0d532db343",
+      "name": "Random User",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://strapi4.cloodo.com/api/projects/{{ $json.attributes.project.data.id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "populate[0]",
+              "value": "agency"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d45bbe89-4dcc-44ab-aa12-f9251cd81fed",
+      "name": "Get Project Agency",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2400,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "04b968b7-24c9-4759-aae2-30b6822a58a2",
+              "leftValue": "={{ $json.data.attributes.agency.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "770504b6-cd8b-4c6d-825a-effac861829c",
+      "name": "Check Project Agency",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2620,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.attributes.user_profile.data }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "not null"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "77241882-687d-4caa-aca4-d38d11f920e9",
+                    "leftValue": "={{ $json.attributes.user_profile.data }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "null"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "60a860c2-d259-46cc-bc69-bcecdb735022",
+      "name": "Check User Profile",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1600,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://strapi4.cloodo.com/api/user-profiles/{{ $('Random Review').item.json.attributes.user_profile.data.id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "populate[0]",
+              "value": "agencies"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "42c58f24-628c-4082-a216-a0b20e8f3d63",
+      "name": "Get User Agency",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2860,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "04b968b7-24c9-4759-aae2-30b6822a58a2",
+              "leftValue": "={{ $json.data.attributes.agencies.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c8c9fbdb-0480-4cbb-ae74-69ba2a1a082f",
+      "name": "Check User Agency",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3060,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.attributes.review_channel.data }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "null"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "60402fef-c041-4466-b4fb-dcd5f4b165a2",
+                    "leftValue": "={{ $json.attributes.review_channel.data }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "not null"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "30fd894d-003e-472c-9f67-01c8b1782915",
+      "name": "Check Review Channel",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1900,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://data2.cloodo.com/api/user/execProjectErp",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"data\": {\n        \"title\": \"{{ $('Random Review').item.json.attributes.title }}\",\n        \"rating\": {{ $('Random Review').item.json.attributes.rating }},\n        \"comment\": \"{{ $('Random Review').item.json.attributes.comment.replaceAll(/\\n/g, '\\\\n') }}\",\n        \"reviewer\": \"{{ $json.randomName }}\",\n        \"agency\": 7,\n        \"project\": {{ $('Random Review').item.json.attributes.project.data.id }},\n        \"review_channel\": {{ $('Random Review').item.json.randomReview }}\n    },\n\n    \"type\": \"agency-reviews\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "85435f9f-6cd2-4570-9480-9f6579270b4f",
+      "name": "create Agency",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3920,
+        180
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "bFqbjFfMlfs4tuCQ",
+          "name": "Header Auth OceanPham WorkSpace"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://data2.cloodo.com/api/user/execProjectErp",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"data\": {\n        \"title\": \"{{ $('Random Review').item.json.attributes.title }}\",\n        \"rating\": {{ $('Random Review').item.json.attributes.rating }},\n        \"comment\": \"{{ $('Random Review').item.json.attributes.comment.replaceAll(/\\n/g, '\\\\n').replaceAll(/\"/g, '\\\"') }}\",\n        \"reviewer\": \"{{ $json.randomName }}\",\n        \"agency\": 7,\n        \n        \"project\": {{ $('Random Review').item.json.attributes.project.data.id }},\n        \"review_channel\": {{ $('Random Review').item.json.randomReview }}\n    },\n    \"type\": \"agency-reviews\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "7b155dc4-f8de-4700-8b84-551a451a4c25",
+      "name": "create Agency1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3460,
+        -20
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "bFqbjFfMlfs4tuCQ",
+          "name": "Header Auth OceanPham WorkSpace"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://data2.cloodo.com/api/user/execProjectErp",
+        "authentication": "predefinedCredentialType",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"data\": {\n        \"title\": \"ΠΟΛΥ ΚΑΛΟ!!!!\",\n        \"rating\": 5,\n        \"comment\": \"<p>ΠΟΛΥ ΚΑΛΟ!!!!</p>\",\n        \"reviewer\": \"James\",\n        \"agency\": 7,\n        \n        \"project\": 10903,\n        \"review_channel\": 12\n    },\n    \"type\": \"agency-reviews\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "7b3fc6e4-650d-4c43-99d0-d328f16adcd2",
+      "name": "create Agency2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        700,
+        320
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "bFqbjFfMlfs4tuCQ",
+          "name": "Header Auth OceanPham WorkSpace"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://data2.cloodo.com/api/user/execProjectErp",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"data\": {\n        \"title\": \"{{ $('Random Review').item.json.attributes.title }}\",\n        \"Rating\": \"{{ $('Random Review').item.json.attributes.rating }}\",\n        \"Comment\": \"{{ $('Random Review').item.json.attributes.comment }}\",\n        \"reviewer\": \"\",\n        \"Agency\": \"7\",\n        \"user_profile\": \"{{ $('Random Review').item.json.attributes.user_profile.data.id }}\",\n        \"project\": \"{{ $('Random Review').item.json.attributes.project.data.id }}\",\n        \"review_channel\": \"{{ $('Random Review').item.json.randomReview }}\",\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Njg3NDksImlhdCI6MTc0MTE1Nzg1NywiZXhwIjoxNzQzNzQ5ODU3fQ.LjCk7MALYp4pXYEXYF_RR3YKYEryMHnMjRcGuoMEr9g\",\n    \"type\": \"agency-reviews\",\n    \"id\": \"\"\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "1f09b505-790a-4d32-84b4-3d9dbd83a535",
+      "name": "create Agency3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        260
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "bFqbjFfMlfs4tuCQ",
+          "name": "Header Auth OceanPham WorkSpace"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  let messagerAI = $node['Random Review']?.json?.attributes?.comment\n  console.log('commen', messagerAI)\n  messagerAI = messagerAI.replace(/\\n\\n/g, '\\\\n\\\\n');\n  messagerAI = messagerAI.replace(/\\n/g, '\\\\n');\n  item.json.content = messagerAI;\n}\n\nreturn $input.all();"
+      },
+      "id": "88c8701b-4353-478b-98da-0970075766da",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3160,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $runIndex+1 }}",
+              "operation": "smallerEqual",
+              "value2": 100
+            }
+          ]
+        }
+      },
+      "id": "1b720b3a-c145-4831-b2dd-65cd1f4b7037",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "id": "e9ccf702-9ec0-4efc-bf61-6528f0cf87bf",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        980,
+        840
+      ],
+      "webhookId": "0695c6d0-e193-45e6-8aae-e80dc8888d7a"
+    },
+    {
+      "parameters": {
+        "errorMessage": "ee"
+      },
+      "id": "dfc904a5-1b92-4631-a276-107234d9e9a0",
+      "name": "Stop and Error",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        2120,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "ee"
+      },
+      "id": "ce9f84f8-1d98-48a9-a013-9b692e931e0c",
+      "name": "Stop and Error1",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        3320,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Tạo một danh sách tên tiếng Anh ngẫu nhiên\nconst names = [\"John\", \"Alice\", \"Michael\", \"Sarah\", \"David\", \"Emily\", \"James\", \"Sophia\", \"Daniel\", \"Olivia\"];\n\n// Loop over input items và thêm một cột với tên tiếng Anh ngẫu nhiên vào mỗi item\nfor (const item of $input.all()) {\n  item.json.randomName = names[Math.floor(Math.random() * names.length)]; // Thêm cột randomName\n}\n\nreturn $input.all();"
+      },
+      "id": "39f966db-bc5b-4009-9598-47bbdfd514f4",
+      "name": "Random User1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2920,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Tạo một danh sách tên tiếng Anh ngẫu nhiên\nconst names = [\"John\", \"Alice\", \"Michael\", \"Sarah\", \"David\", \"Emily\", \"James\", \"Sophia\", \"Daniel\", \"Olivia\"];\n\n// Loop over input items và thêm một cột với tên tiếng Anh ngẫu nhiên vào mỗi item\nfor (const item of $input.all()) {\n  item.json.randomName = names[Math.floor(Math.random() * names.length)]; // Thêm cột randomName\n}\n\nreturn $input.all();"
+      },
+      "id": "8843667e-71f9-4d94-aa69-48e969606963",
+      "name": "Random User2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3300,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://strapi4.cloodo.com/content-manager/collection-types/api::agency-review.agency-review/18273/actions/publish",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjksImlhdCI6MTc0MTI1MjQwMSwiZXhwIjoxNzQzODQ0NDAxfQ.TlKD_N5_tyfRYMMqGZK5UlY1dUdSGCl4nOKtVw482tQ"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "comment",
+              "value": "<p>test</p>"
+            },
+            {
+              "name": "title",
+              "value": "tung"
+            },
+            {
+              "name": "agency",
+              "value": 7
+            },
+            {
+              "name": "user_profile",
+              "value": 2
+            },
+            {
+              "name": "review_channel",
+              "value": 3
+            },
+            {
+              "name": "project",
+              "value": 2
+            },
+            {
+              "name": "rating",
+              "value": 4
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "be577f1c-92c1-45e6-88cb-93551d77a404",
+      "name": "create Agency4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        540,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://strapi4.cloodo.com/content-manager/collection-types/api::agency-review.agency-review",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjksImlhdCI6MTc0MTI1MjQwMSwiZXhwIjoxNzQzODQ0NDAxfQ.TlKD_N5_tyfRYMMqGZK5UlY1dUdSGCl4nOKtVw482tQ"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "comment",
+              "value": "={{ $('Random Review').item.json.attributes.comment.replaceAll(/\\n/g, '\\\\n').replaceAll(/\"/g, '\\\"') }}"
+            },
+            {
+              "name": "title",
+              "value": "={{ $('Random Review').item.json.attributes.title }}"
+            },
+            {
+              "name": "agency",
+              "value": "={{ $json.data.attributes.agency.data.id }}"
+            },
+            {
+              "name": "user_profile",
+              "value": "={{ $('Random Review').item.json.attributes.user_profile.data.id }}"
+            },
+            {
+              "name": "review_channel",
+              "value": "={{ $('Random Review').item.json.randomReview }}"
+            },
+            {
+              "name": "project",
+              "value": "={{ $('Random Review').item.json.attributes.project.data.id }}"
+            },
+            {
+              "name": "rating",
+              "value": "={{ $('Random Review').item.json.attributes.rating }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "23e5a090-2b48-4ab3-905f-91b42559e46d",
+      "name": "create Agency5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3200,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://strapi4.cloodo.com/content-manager/collection-types/api::agency-review.agency-review/{{ $json.id }}/actions/publish",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjksImlhdCI6MTc0MTI1MjQwMSwiZXhwIjoxNzQzODQ0NDAxfQ.TlKD_N5_tyfRYMMqGZK5UlY1dUdSGCl4nOKtVw482tQ"
+            }
+          ]
+        },
+        "sendBody": true,
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "c5e71f4f-8182-4f56-a959-464771bdf279",
+      "name": "Update Agency6",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3480,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://strapi4.cloodo.com/content-manager/collection-types/api::agency-review.agency-review",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjksImlhdCI6MTc0MTI1MjQwMSwiZXhwIjoxNzQzODQ0NDAxfQ.TlKD_N5_tyfRYMMqGZK5UlY1dUdSGCl4nOKtVw482tQ"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "comment",
+              "value": "={{ $('Random Review').item.json.attributes.comment.replaceAll(/\\n/g, '\\\\n').replaceAll(/\"/g, '\\\"') }}"
+            },
+            {
+              "name": "title",
+              "value": "={{ $('Random Review').item.json.attributes.title }}"
+            },
+            {
+              "name": "agency",
+              "value": "=7"
+            },
+            {
+              "name": "user_profile",
+              "value": "={{ $('Random Review').item.json.attributes.user_profile.data.id }}"
+            },
+            {
+              "name": "review_channel",
+              "value": "={{ $('Random Review').item.json.randomReview }}"
+            },
+            {
+              "name": "project",
+              "value": "={{ $('Random Review').item.json.attributes.project.data.id }}"
+            },
+            {
+              "name": "rating",
+              "value": "={{ $('Random Review').item.json.attributes.rating }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "b6a25b5d-2c31-42ff-be3d-daa4f5067782",
+      "name": "create Agency6",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3560,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://strapi4.cloodo.com/content-manager/collection-types/api::agency-review.agency-review/{{ $json.id }}/actions/publish",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjksImlhdCI6MTc0MTI1MjQwMSwiZXhwIjoxNzQzODQ0NDAxfQ.TlKD_N5_tyfRYMMqGZK5UlY1dUdSGCl4nOKtVw482tQ"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "9573ffb1-aa70-4108-b293-d1a4fa744456",
+      "name": "Update Agency",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3840,
+        620
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Check User Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project Reviews": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random Review": {
+      "main": [
+        [
+          {
+            "node": "Get Project Agency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project Agency": {
+      "main": [
+        [
+          {
+            "node": "Check Project Agency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Project Reviews",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Project Agency": {
+      "main": [
+        [
+          {
+            "node": "Random User1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get User Agency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check User Profile": {
+      "main": [
+        [
+          {
+            "node": "Check Review Channel",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Random User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Agency": {
+      "main": [
+        [
+          {
+            "node": "Check User Agency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check User Agency": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Random User2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Review Channel": {
+      "main": [
+        [
+          {
+            "node": "Random Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get Project Reviews",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random User": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random User1": {
+      "main": [
+        [
+          {
+            "node": "create Agency5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create Agency5": {
+      "main": [
+        [
+          {
+            "node": "Update Agency6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random User2": {
+      "main": [
+        [
+          {
+            "node": "create Agency6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create Agency6": {
+      "main": [
+        [
+          {
+            "node": "Update Agency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "074b1ced-8db4-4f5e-bf8f-8a156e921d18",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "zUfGdEuKJ7W99r6x",
+  "tags": []
+}
