@@ -1,0 +1,334 @@
+{
+  "name": "WF API X",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "032cd9ad-0207-4622-bc61-59f1a9e680c1",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "text": "s",
+        "additionalFields": {
+          "attachments": ""
+        }
+      },
+      "id": "c638a672-92ff-424c-9a59-4608f7453e4d",
+      "name": "X",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        180
+      ],
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "Hy0JOqc0P9agSx75",
+          "name": "Printcart"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgur.com/3/image",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Client-ID 887e79e83c319e6"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image",
+              "value": "={{ $binary[\"data\"] }}"
+            },
+            {
+              "name": "type",
+              "value": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9acdd1d6-cbbb-4b7a-9a1f-a878c9eabf7c",
+      "name": "api imgur",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        700,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/640px-PNG_transparency_demonstration_1.png",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "0c5d645a-a284-40b9-8f18-fda66145052d",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        500,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "url": "https://api.imgur.com/3/image",
+        "options": {}
+      },
+      "id": "ba7db22a-4e3b-4470-b928-64d7fa01a915",
+      "name": "Upload to Imgur",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        560,
+        -100
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "UBJuGRA9L3fOpSJ5",
+          "name": "Unnamed credential 2"
+        },
+        "httpHeaderAuth": {
+          "id": "DC9IpkXMAqsxyULh",
+          "name": "Imgur"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/640px-PNG_transparency_demonstration_1.png",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "8ac3503a-2cfb-4876-b2fb-498b47bd76f0",
+      "name": "Download Image1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        700,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.imgur.com/3/image",
+        "options": {}
+      },
+      "id": "c381ec63-d575-4ab4-93f2-a6fa2c51ddd0",
+      "name": "Upload to Imgur1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        890,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "=https://api.cloudinary.com/v1_1/dkjfmxxom/image/upload",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "file",
+              "value": "={{$binary.data}}"
+            },
+            {
+              "name": "upload_preset",
+              "value": "canhtestcloud"
+            }
+          ]
+        }
+      },
+      "id": "41a7a9a2-b7a9-4980-acbd-54b0238ba403",
+      "name": "Upload to Cloudinary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        200,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/640px-PNG_transparency_demonstration_1.png",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "1e8042f7-f395-492a-a116-97f95180518b",
+      "name": "Download Image2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        -420,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloudinary.com/v1_1/dkjfmxxom/image/upload",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "file",
+              "value": "={{$binary.data}}"
+            },
+            {
+              "name": "upload_preset",
+              "value": "canhtestcloud"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "44cd1f12-7868-4e3f-ba00-20c3f29e57e9",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        360,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://upload.twitter.com/1.1/media/upload.json",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twitterOAuth1Api",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "media",
+              "value": "={{$binary.data}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "eca420d2-decf-494b-a27f-4171bcee3145",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -220,
+        180
+      ],
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "Hy0JOqc0P9agSx75",
+          "name": "Printcart"
+        },
+        "twitterOAuth1Api": {
+          "id": "M96KiUwgoBh6xJ3u",
+          "name": "Printcart"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Download Image2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "api imgur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image1": {
+      "main": [
+        [
+          {
+            "node": "Upload to Imgur1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Cloudinary": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Upload to Imgur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c7ff268e-1500-4847-80f4-466cbf8d04af",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
+  },
+  "id": "M7zZS83ptKr8iEzu",
+  "tags": []
+}
