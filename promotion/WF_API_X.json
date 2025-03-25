@@ -8,15 +8,17 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -600,
+        -620,
         180
       ]
     },
     {
       "parameters": {
-        "text": "s",
-        "additionalFields": {
-          "attachments": ""
+        "operation": "retweet",
+        "tweetId": {
+          "__rl": true,
+          "value": "1904492162731098392",
+          "mode": "id"
         }
       },
       "id": "c638a672-92ff-424c-9a59-4608f7453e4d",
@@ -217,15 +219,16 @@
       "parameters": {
         "method": "POST",
         "url": "https://upload.twitter.com/1.1/media/upload.json",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "twitterOAuth1Api",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth1Api",
         "sendBody": true,
         "contentType": "multipart-form-data",
         "bodyParameters": {
           "parameters": [
             {
+              "parameterType": "formBinaryData",
               "name": "media",
-              "value": "={{$binary.data}}"
+              "inputDataFieldName": "data"
             }
           ]
         },
@@ -247,6 +250,34 @@
         "twitterOAuth1Api": {
           "id": "M96KiUwgoBh6xJ3u",
           "name": "Printcart"
+        },
+        "oAuth1Api": {
+          "id": "PJ4PDGH9UbpWwgTi",
+          "name": "Unnamed credential 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pageId": {
+          "__rl": true,
+          "mode": "url",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        -100
+      ],
+      "id": "49f868cd-4338-4028-b40e-c1e84c2609d8",
+      "name": "Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "MldWLFNCEiJbP5d0",
+          "name": "Notion account Ocean"
         }
       }
     }
@@ -288,13 +319,7 @@
     },
     "Download Image2": {
       "main": [
-        [
-          {
-            "node": "HTTP Request1",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Upload to Cloudinary": {
@@ -318,13 +343,29 @@
           }
         ]
       ]
+    },
+    "X": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "X",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "c7ff268e-1500-4847-80f4-466cbf8d04af",
+  "versionId": "084736fd-c5cf-450b-9ccc-f209bdf0a009",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3909475c03ca6926b6e6edc6a6f06c1feb448ce7ac700d69b17002085d9011f8"
